@@ -1,0 +1,235 @@
+% definit le type de document et ses options
+\documentclass[a4paper,12pt,twoside]{article}
+
+% des paquetages indispensables, qui ajoutent des fonctionnalites
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{xspace}
+\usepackage[english]{babel}
+\usepackage{setspace}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage[normalem]{ulem}
+\usepackage[final]{pdfpages}
+\usepackage{stmaryrd}
+\usepackage{caption}
+
+
+\usepackage[left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+
+%%Couleurs des licornes
+\definecolor{darkblue}{RGB}{8, 3, 51}
+\definecolor{darkgreen}{RGB}{0, 33, 11}
+\definecolor{darkred}{RGB}{150,0,24}
+
+
+%Partie
+\addto\captionsfrench{
+	\renewcommand{\partname}{Partie}
+	\renewcommand{\thepart}{\Roman{part}}
+}
+%Barre verticale
+\newcommand\horizon{\setlength\unitlength{\textwidth}
+	\line(1,0){1} 
+	\newline}
+
+
+% des commandes utiles pour ecrire des maths : rajoutez les votres!
+\newcommand{\dx}{\,dx}
+\newcommand{\ito}{,\dotsc,}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Poly}[1]{\mathcal{P}_{#1}}
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\pars}[1]{\left(#1\right)}
+\newcommand{\bigpars}[1]{\bigl(#1\bigr)}
+\newcommand{\set}[1]{\left\{#1\right\}}
+
+
+
+% titre, auteur et date
+\title{\textbf{{\textcolor{darkblue}{{\Huge Project of speciality - Ensimag 2015/2016}\\[2cm] {\huge Generation, simulation and animation of an ecosystem}}}}}
+\author{\large \textbf{{\textcolor{darkblue}{}}}}
+\date{\Large \textbf{\textcolor{darkblue}{}}}
+
+
+%%bas de page
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{emptypage}
+\renewcommand{\headrulewidth}{0pt}
+
+\fancyhead{}
+\renewcommand{\footrulewidth}{0pt}
+
+
+\fancyfoot[C]{}
+\fancyfoot[RO]{\bfseries\textcolor{darkblue}{\thepage}}
+\fancyfoot[LO]{\bfseries\textcolor{darkblue}{Hammen - Kacher - Ly - Stoffel}}
+
+\fancyfoot[LE]{\bfseries\textcolor{darkblue}{\thepage}}
+\fancyfoot[RE]{\bfseries\textcolor{darkblue}{Hammen - Kacher - Ly - Stoffel}}
+	
+
+\newcommand{\puce}{\renewcommand{\labelitemi}{\textbullet}}
+
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\usepackage{xcolor}
+\usepackage{sectsty}
+\partfont{\Huge\color{darkgreen}}  % sets colour of chapters
+\chapterfont{\color{darkgreen}\thispagestyle{fancy}} 
+\sectionfont{\color{darkgreen}} 
+\subsectionfont{\color{darkgreen}}
+\subsubsectionfont{\color{darkgreen}}
+
+\usepackage{titlesec}
+
+%\titleformat*{\chapter}{\color{darkgreen}\bfseries\Large}
+%\titleformat*{\subsubsection}{\color{darkgreen}\bfseries\Large}
+
+\titlespacing*{\chapter}
+{0pt}{5.5ex plus 1ex minus .2ex}{4.3ex plus .2ex}
+\titlespacing*{\section}
+{0pt}{5.5ex plus 1ex minus .2ex}{4.3ex plus .2ex}
+\titlespacing*{\subsection}
+{0pt}{5.5ex plus 1ex minus .2ex}{4.3ex plus .2ex}
+\titlespacing*{\subsubsection}
+{0pt}{5.5ex plus 1ex minus .2ex}{4.3ex plus .2ex}
+
+\usepackage{indentfirst}
+
+
+
+\usepackage{changepage,ifthen}
+\newcommand\skiptoevenpage{%
+	\checkoddpage
+	\ifthenelse{\boolean{oddpage}}%
+	{\null\clearpage}%
+	{\null\clearpage \null \clearpage}%
+}
+
+\newcommand\skiptooddpage{%
+	\checkoddpage
+	\ifthenelse{\boolean{oddpage}}%
+	{\null\clearpage \null \clearpage}%
+	{\null\clearpage}%
+}
+% le debut du contenu
+%===============
+\begin{document}
+	\begin{spacing}{1.3}%agrandir l'interline
+	\setcounter{page}{1}
+	\begin{center}
+	% Front page
+	~~\\
+	\vspace{0cm}
+	
+	\begin{minipage}{\linewidth}
+		\maketitle
+	\end{minipage}	
+~~\\
+	
+	\begin{flushright}
+
+	\begin{minipage}{0.5\linewidth}
+		%\includegraphics[height=6cm]{chess.png}	
+		~~
+		\vspace{5cm}	
+		Here a badass picture of our project
+	\end{minipage}
+	\end{flushright}
+	
+	\vspace{2cm}
+	
+	\begin{flushright}
+	
+	\begin{minipage}{0.5\linewidth}
+	\begin{tabular}{|l l l}
+		\hspace{0.1cm}&\huge \textcolor{darkblue}{Hammen} & \huge \textcolor{darkblue}{Maxence} \\
+		\hspace{0.1cm}&\huge \textcolor{darkblue}{Kacher} & \huge \textcolor{darkblue}{Ilyes} \\
+		\hspace{0.1cm}&\huge \textcolor{darkblue}{Ly} & \huge \textcolor{darkblue}{Mickaël} \\
+		\hspace{0.1cm}&\huge \textcolor{darkblue}{Stoffel} & \huge \textcolor{darkblue}{MaThieu} \\
+	\end{tabular}
+	\end{minipage}
+	\end{flushright}
+	\end{center}
+		
+	\thispagestyle{empty}
+	% % % % % % % % % % % % % % % % %
+	\newpage
+	% % Blank page
+	~~\\
+	\thispagestyle{empty}
+	% % % % % % % % % % % % % % %
+	\newpage
+	~~\\
+	%\pagestyle{empty}
+	\tableofcontents
+	\pagestyle{empty}
+	\newpage
+
+
+	% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+	% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+	% % %
+	% % %  Beginning of the content
+	% % %
+	% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+	% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+
+	\skiptooddpage
+	\setcounter{page}{1}
+	\pagestyle{fancy}
+	
+	
+	~~
+	\vspace{1cm}
+	
+	\part{Introduction}
+	~~
+	\vspace{1cm}
+	
+	Unleash your power here to deploy the most beautiful man-made introduction.\\ 
+	
+	
+	
+	\Large For now, we can also use this report to take our own notes here
+	
+	\newpage
+	\skiptooddpage
+	~~
+	\vspace{1cm}
+
+	\part{Core part i don't know the title yet}
+	~~
+	
+	\section{Waow, a section !}
+
+	% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+	% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+	% % %
+	% % %  End of the content
+	% % %
+	% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+	% % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % % %
+
+	\appendix
+	\newpage
+	
+	\addcontentsline{toc}{section}{References}
+	
+	\bibliographystyle{apalike}
+	\nocite{*}
+	\bibliography{Report_Ecosystem}
+\end{spacing}
+\end{document}
