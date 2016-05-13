@@ -64,8 +64,9 @@ public:
      * specified size.
      * \param width Width of the window in pixel.
      * \param height Height of the window in pixel.
+     * \param maxFPS Upper bound for the FPS.
      */
-    Viewer(float width, float height);
+    Viewer(float width, float height, int maxFPS = 90);
     /**@}*/
 
     /** @name Shader Program management
@@ -329,11 +330,6 @@ private:
      */
     bool isFollowing = false;
     ParticlePtr m_particleToFollow = NULL;
-    /**
-     * @brief Values to limit the fps
-     */
-    double oneOverFps = 1./50.;
-    double oldTime = -1.;
     
 };
 

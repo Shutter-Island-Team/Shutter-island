@@ -2,16 +2,18 @@
 #include <glm/gtc/matrix_access.hpp>
 
 
-Plane::Plane(
-    const glm::vec3& normal,
-    const glm::vec3& point )
-  : m_n{ normal },
-    m_d{ dot( normal, point ) }
-  {}
+Plane::Plane(const glm::vec3& normal,
+	     const glm::vec3& point )
+    : m_d{ dot( glm::normalize(normal), point ) },
+    m_origin{glm::vec3(point)}
+{
+    this->setNormal(glm::normalize(normal));
+}
 
 Plane::Plane(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c)
 {
-    m_n = glm::normalize( glm::cross(b-a, c-a) );
+    m_origin = glm::vec3(a);
+    this->setNormal(glm::normalize( glm::cross(b-a, c-a)));
     m_d = glm::dot(m_n, a);
 }
 
@@ -37,9 +39,46 @@ const float& Plane::distanceToOrigin() const
 void Plane::setNormal(const glm::vec3& n)
 {
     m_n = n;
+    
+    this->computeLocalFrame();
 }
 
 const glm::vec3& Plane::normal() const
 {
     return m_n;
 }
+
+
+void Plane::boundX(bool limit, float min, float max) {
+    m_isLimitedX = limit;
+    m_xMin = min;
+    m_xMax = max;
+}
+
+
+void Plane::boundY(bool limit, float min, float max) {
+    m_isLimitedY = limit;
+    m_yMin = min;
+    m_yMax = max;
+}
+
+bool Plane::projectionBelongsToPlane(const glm::vec3 &p) {
+    if ((not m_isLimitedX) and (not m_isLimitedY))
+	return true;
+    
+    glm::vec3 projection = this->projectOnPlane(p);
+    glm::vec3 localVector = projection - m_origin;
+
+    float x = glm::dot(localVector, m_xAxis);
+    float y = glm::dot(localVector, m_yAxis);
+    return ((((not m_isLimitedX)) or ((m_xMin <= x) and (x <= m_xMax)))
+	    and (((not m_isLimitedY)) or ((m_yMin <= y) and (y <= m_yMax))));
+	
+}
+
+
+void Plane::computeLocalFrame() {
+    m_xAxis = glm::vec3(-m_n[1], m_n[0], 0.0);
+    m_yAxis = glm::vec3(0.0, 0.0, 1.0);	
+}
+

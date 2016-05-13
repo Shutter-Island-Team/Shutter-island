@@ -38,7 +38,7 @@ Viewer::KeyboardState::KeyboardState()
 Viewer::~Viewer()
 {}
 
-Viewer::Viewer(float width, float height) :
+Viewer::Viewer(float width, float height, int maxFPS) :
     m_window{
         sf::VideoMode(width, height),
         "Computer Graphics Practicals",
@@ -71,7 +71,8 @@ Viewer::Viewer(float width, float height) :
     //engine store some data on the graphic card)
     m_tengine.init();
     m_tengine.setWindowDimensions( m_window.getSize().x, m_window.getSize().y );
-    m_window.setFramerateLimit(60);
+    
+    m_window.setFramerateLimit(maxFPS);
 }
 
 static const std::string g_help_message =
@@ -113,13 +114,6 @@ void Viewer::followParticle(ParticlePtr particle) {
 
 void Viewer::draw()
 {
-    // double time = ((double) std::clock()/CLOCKS_PER_SEC); 
-    // double delta = time - oldTime;
-    // if (delta < oneOverFps) {
-    // 	usleep((int)(1000000.*(oneOverFps - delta)));
-    // }
-    // oldTime = time;
-    
 
     glcheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
     for( ShaderProgramPtr prog : m_programs )
@@ -130,7 +124,7 @@ void Viewer::draw()
         PointLight::sendToGPU( prog, m_pointLights);
     }
 
-    // Eventually set the camera to follow the renderable
+    // Eventually set the camera to follow a particle
     if (isFollowing) {
     	m_particleToFollow->recomputeCamera();
     	m_camera.setViewMatrix(glm::lookAt(m_particleToFollow->getCameraPosition(), 
