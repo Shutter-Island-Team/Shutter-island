@@ -1,11 +1,11 @@
-if( ${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR}/build )
-else()
-	message( FATAL_ERROR "Dear student, you just tried to launch"
-	" cmake in another directory than build/. We encourage you to"
-	" be more careful in the future and NEVER DO THAT AGAIN. Now "
-	"the build system will stop, and you will remove " 
-	"../CMakeCache.txt and ../CMakefiles/.\n--Your 3D Computer Graphics teachers.")
-endif()
+#if( ${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR}/build )
+#else()
+# 	message( FATAL_ERROR "Dear student, you just tried to launch"
+# 	" cmake in another directory than build/. We encourage you to"
+# 	" be more careful in the future and NEVER DO THAT AGAIN. Now "
+# 	"the build system will stop, and you will remove " 
+# 	"../CMakeCache.txt and ../CMakefiles/.\n--Your 3D Computer Graphics teachers.")
+# endif()
 
 #==========================================
 #Project options
@@ -125,4 +125,4 @@ target_link_libraries(${EXECUTABLE_NAME} ${SFML_WINDOW_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_GRAPHICS_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${TINYOBJLOADER_LIBRARIES})
  
-message( "The build type is set to " ${CMAKE_BUILD_TYPE})
+#message( "The build type is set to " ${CMAKE_BUILD_TYPE})
