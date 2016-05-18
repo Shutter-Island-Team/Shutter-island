@@ -13,6 +13,8 @@
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/properties.hpp>
 
 class HierarchicalRenderable;
 typedef std::shared_ptr<HierarchicalRenderable> HierarchicalRenderablePtr;
@@ -147,15 +149,6 @@ public :
     std::vector< HierarchicalRenderablePtr > & getChildren();
 
     
-    /** 
-     * @brief Functon to set the masterParticle
-     */
-    void setMasterParticle(ParticlePtr &particle);
-    /**
-     * Function to update the masterParticle of the renderable
-     */
-    void updateMasterParticle();
-    
 private:
 
     /**@brief Pointer to the parent renderable.
@@ -205,22 +198,6 @@ private:
     virtual void afterAnimate( float time );
 
 
-
-protected:
-    /**
-     * @brief Field to know if the position of the renderable
-     * is linked to a particle that needs 
-     * to call updatePosition() and updateVelocity()
-     * to update a particle hierarchy 
-     *
-     * It's very dirty for now, as the only particle that
-     * can defined a hierarchy is StickParticle
-     *
-     * A better implementation would be to have a HierarchicalParticle
-     *
-     */
-    bool m_hasAMasterParticle = false;
-    ParticlePtr m_masterParticle = NULL;
 
 };
 typedef std::shared_ptr<HierarchicalRenderable> HierarchicalRenderablePtr;

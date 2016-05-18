@@ -58,8 +58,6 @@ void HierarchicalRenderable::beforeDraw()
     //Each time m_localTransform is modified we need to update the model matrix of the instance.
     //Each time m_parentTransform is modified we need to udpate the model matrix of the instance and its children.
     //This could be implemented efficiently using a flag system to update the hierarchy whenever m_parentTransform is called.
-    //However this is a simple implementation and we chose to pay the price of a brutal update before each draw.
-    updateMasterParticle();
     updateModelMatrix();
 }
 
@@ -109,25 +107,3 @@ std::vector< HierarchicalRenderablePtr > & HierarchicalRenderable::getChildren()
 {
     return m_children;
 }
-
-void HierarchicalRenderable::setMasterParticle(ParticlePtr &particle) {
-    if (particle) 
-	m_hasAMasterParticle = true;
-    else 
-	m_hasAMasterParticle = false;	
-    m_masterParticle = particle;
-}
-
-
-
-void HierarchicalRenderable::updateMasterParticle() {
-    if (m_hasAMasterParticle && m_masterParticle)
-	// Very dirty downcast
-	if (m_masterParticle->isABox() or m_masterParticle->isAStick()) {
-	    StickParticlePtr stickPtr = (StickParticlePtr) std::static_pointer_cast<StickParticle, Particle>(m_masterParticle);
-	    stickPtr->updateHierarchy();
-	}
-    // if it's not a stick or a box ie it does not have a hierarchy,
-    // the dynamic system will be enough
-}
-	
