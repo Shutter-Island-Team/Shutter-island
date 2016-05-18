@@ -1,18 +1,18 @@
-#include "./../include/CylinderRenderable.hpp"
-#include "./../include/gl_helper.hpp"
-#include "./../include/log.hpp"
-#include "./../include/Utils.hpp"
+#include "./../../include/graphicPrimitives/SphereRenderable.hpp"
+#include "./../../include/gl_helper.hpp"
+#include "./../../include/log.hpp"
+#include "./../../include/Utils.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <GL/glew.h>
 
-CylinderRenderable::CylinderRenderable(ShaderProgramPtr shaderProgram) :
+SphereRenderable::SphereRenderable(ShaderProgramPtr shaderProgram) :
     Renderable(shaderProgram),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
-    unsigned int strips=50;
-    getUnitCylinder(m_positions, m_normals, strips);
+    unsigned int strips=20;
+    unsigned int slices=40;
+    getUnitSphere(m_positions, m_normals, strips, slices);
     m_colors.resize(m_positions.size(), glm::vec4(1.0,0.0,0.0,1.0));
     for(size_t i=0; i<m_colors.size(); ++i) for(size_t j=0; j<3; ++j) m_colors[i][j] = m_normals[i][j];
 
@@ -30,15 +30,13 @@ CylinderRenderable::CylinderRenderable(ShaderProgramPtr shaderProgram) :
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
 }
 
-void CylinderRenderable::do_draw()
+void SphereRenderable::do_draw()
 {
-    //Location
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
     int normalLocation = m_shaderProgram->getAttributeLocation("vNormal");
     int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
 
-    //Send data to GPU
     if(modelLocation != ShaderProgram::null_location)
     {
         glcheck(glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(getModelMatrix())));
@@ -46,11 +44,8 @@ void CylinderRenderable::do_draw()
 
     if(positionLocation != ShaderProgram::null_location)
     {
-        //Activate location
         glcheck(glEnableVertexAttribArray(positionLocation));
-        //Bind buffer
         glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
-        //Specify internal format
         glcheck(glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
     }
 
@@ -85,9 +80,9 @@ void CylinderRenderable::do_draw()
     }
 }
 
-void CylinderRenderable::do_animate(float /*time*/) {}
+void SphereRenderable::do_animate(float time) {}
 
-CylinderRenderable::~CylinderRenderable()
+SphereRenderable::~SphereRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));

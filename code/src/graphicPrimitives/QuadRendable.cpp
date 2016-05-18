@@ -1,27 +1,47 @@
-#include "./../include/MeshRenderable.hpp"
-#include "./../include/gl_helper.hpp"
-#include "./../include/log.hpp"
-#include "./../include/Io.hpp"
-#include "./../include/Utils.hpp"
+#include "./../../include/graphicPrimitives/QuadRenderable.hpp"
+#include "./../../include/gl_helper.hpp"
+#include "./../../include/log.hpp"
+#include "./../../include/Utils.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-MeshRenderable::MeshRenderable( ShaderProgramPtr shaderProgram, const std::string& filename) :
-    Renderable(shaderProgram),
-    m_pBuffer(0), m_cBuffer(0), m_nBuffer(0), m_iBuffer(0)
+QuadRenderable::QuadRenderable(ShaderProgramPtr shaderProgram,
+                                 const glm::vec3 &p1, const glm::vec3 &p2, const glm::vec3 &p3, const glm::vec3 &p4,
+                                 const glm::vec4& color ) :
+    HierarchicalRenderable(shaderProgram),
+    m_pBuffer(0),
+    m_cBuffer(0),
+    m_nBuffer(0)
 {
-    std::vector<glm::vec2> texCoords;
-    read_obj(filename, m_positions, m_indices, m_normals, texCoords);
-    m_colors.resize( m_positions.size() );
-    for(size_t i=0; i<m_colors.size(); ++i)
-        m_colors[i] = randomColor();
+    m_positions.push_back(p1);
+    m_positions.push_back(p2);
+    m_positions.push_back(p3);
+
+    m_positions.push_back(p1);
+    m_positions.push_back(p3);
+    m_positions.push_back(p4);
+
+    glm::vec3 normal = glm::normalize(glm::cross(p2-p1, p3-p1));
+    m_normals.push_back(normal);
+    m_normals.push_back(normal);
+    m_normals.push_back(normal);
+    m_normals.push_back(normal);
+    m_normals.push_back(normal);
+    m_normals.push_back(normal);
+
+    m_colors.push_back(color);
+    m_colors.push_back(color);
+    m_colors.push_back(color);
+    m_colors.push_back(color);
+    m_colors.push_back(color);
+    m_colors.push_back(color);
 
     //Create buffers
     glGenBuffers(1, &m_pBuffer); //vertices
     glGenBuffers(1, &m_cBuffer); //colors
     glGenBuffers(1, &m_nBuffer); //normals
-    glGenBuffers(1, &m_iBuffer); //indices
 
     //Activate buffer and send data to the graphics card
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
@@ -30,20 +50,20 @@ MeshRenderable::MeshRenderable( ShaderProgramPtr shaderProgram, const std::strin
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_STATIC_DRAW));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
-    glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
-    glcheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size()*sizeof(unsigned int), m_indices.data(), GL_STATIC_DRAW));
 }
 
-void MeshRenderable::do_draw()
+void QuadRenderable::do_draw()
 {
+    //Draw geometric data
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
     int normalLocation = m_shaderProgram->getAttributeLocation("vNormal");
-
     int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
 
     if(modelLocation != ShaderProgram::null_location)
+    {
         glcheck(glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(getModelMatrix())));
+    }
 
     if(positionLocation != ShaderProgram::null_location)
     {
@@ -67,31 +87,27 @@ void MeshRenderable::do_draw()
     }
 
     //Draw triangles elements
-    glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
-    glcheck(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, (void*)0));
+    glcheck(glDrawArrays(GL_TRIANGLES,0, m_positions.size()));
 
     if(positionLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(positionLocation));
     }
-
     if(colorLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(colorLocation));
     }
-
     if(normalLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(normalLocation));
     }
 }
 
-void MeshRenderable::do_animate(float time) {}
+void QuadRenderable::do_animate(float time) {}
 
-MeshRenderable::~MeshRenderable()
+QuadRenderable::~QuadRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));
     glcheck(glDeleteBuffers(1, &m_nBuffer));
-    glcheck(glDeleteBuffers(1, &m_iBuffer));
 }

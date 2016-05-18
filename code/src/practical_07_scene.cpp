@@ -1,7 +1,7 @@
 #include "./../include/practical_07_scene.hpp"
 
 #include "../include/ShaderProgram.hpp"
-#include "../include/FrameRenderable.hpp"
+#include "../include/graphicPrimitives/FrameRenderable.hpp"
 #include "../include/texturing/TexturedPlaneRenderable.hpp"
 #include "../include/texturing/TexturedCubeRenderable.hpp"
 #include "../include/texturing/MultiTexturedCubeRenderable.hpp"

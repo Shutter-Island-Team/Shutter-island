@@ -1,7 +1,7 @@
 #ifndef KEYFRAMECOLLECTION_HPP_
 #define KEYFRAMECOLLECTION_HPP_
 
-#include "GeometricTransformation.hpp"
+#include "../GeometricTransformation.hpp"
 
 # include <map>
 # include <array>

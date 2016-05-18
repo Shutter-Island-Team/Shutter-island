@@ -5,7 +5,7 @@
 #include <memory>
 #include <glm/glm.hpp>
 #include "Collision.hpp"
-#include "../Plane.hpp"
+#include "Plane.hpp"
 /**
  * @brief Represent a particle affected by physics
  * 

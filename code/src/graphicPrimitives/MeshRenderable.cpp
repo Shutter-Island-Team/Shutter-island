@@ -1,30 +1,27 @@
-# include "../include/KeyframedCylinderRenderable.hpp"
-# include "../include/gl_helper.hpp"
-# include "../include/GeometricTransformation.hpp"
-# include "../include/Utils.hpp"
+#include "./../../include/graphicPrimitives/MeshRenderable.hpp"
+#include "./../../include/gl_helper.hpp"
+#include "./../../include/log.hpp"
+#include "./../../include/Io.hpp"
+#include "./../../include/Utils.hpp"
 
-# include <glm/gtc/type_ptr.hpp>
-# include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
+#include <GL/glew.h>
 
-KeyframedCylinderRenderable::KeyframedCylinderRenderable( ShaderProgramPtr prog )
-   : HierarchicalRenderable( prog )
- {
-    unsigned int numberOfSlice=50;
-    getUnitCylinder(m_positions, m_normals, numberOfSlice);
-    unsigned int numberOfVertices = m_positions.size();
-    m_colors.resize(numberOfVertices);
-    for(size_t i=0; i<numberOfVertices/3; i++)
-    {
-        float factor=240.0*(float)3*i/(float)numberOfVertices;
-        m_colors[3*i] = getColor(factor, 0.0, 240.0);
-        m_colors[3*i+1] = getColor(factor, 0.0, 240.0);
-        m_colors[3*i+2] = getColor(factor, 0.0, 240.0);
-    }
+MeshRenderable::MeshRenderable( ShaderProgramPtr shaderProgram, const std::string& filename) :
+    Renderable(shaderProgram),
+    m_pBuffer(0), m_cBuffer(0), m_nBuffer(0), m_iBuffer(0)
+{
+    std::vector<glm::vec2> texCoords;
+    read_obj(filename, m_positions, m_indices, m_normals, texCoords);
+    m_colors.resize( m_positions.size() );
+    for(size_t i=0; i<m_colors.size(); ++i)
+        m_colors[i] = randomColor();
 
     //Create buffers
     glGenBuffers(1, &m_pBuffer); //vertices
     glGenBuffers(1, &m_cBuffer); //colors
     glGenBuffers(1, &m_nBuffer); //normals
+    glGenBuffers(1, &m_iBuffer); //indices
 
     //Activate buffer and send data to the graphics card
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
@@ -33,39 +30,25 @@ KeyframedCylinderRenderable::KeyframedCylinderRenderable( ShaderProgramPtr prog 
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_STATIC_DRAW));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
- }
-
-void KeyframedCylinderRenderable::addLocalTransformKeyframe( const GeometricTransformation& transformation, float time )
-{
-  m_localKeyframes.add( transformation, time );
+    glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
+    glcheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size()*sizeof(unsigned int), m_indices.data(), GL_STATIC_DRAW));
 }
 
-void KeyframedCylinderRenderable::addParentTransformKeyframe( const GeometricTransformation& transformation, float time )
+void MeshRenderable::do_draw()
 {
-  m_parentKeyframes.add( transformation, time );
-}
-
-void KeyframedCylinderRenderable::do_draw()
-{
-    //Location
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
     int normalLocation = m_shaderProgram->getAttributeLocation("vNormal");
+
     int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
 
-    //Send data to GPU
     if(modelLocation != ShaderProgram::null_location)
-    {
         glcheck(glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(getModelMatrix())));
-    }
 
     if(positionLocation != ShaderProgram::null_location)
     {
-        //Activate location
         glcheck(glEnableVertexAttribArray(positionLocation));
-        //Bind buffer
         glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
-        //Specify internal format
         glcheck(glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
     }
 
@@ -84,38 +67,31 @@ void KeyframedCylinderRenderable::do_draw()
     }
 
     //Draw triangles elements
-    glcheck(glDrawArrays(GL_TRIANGLES,0, m_positions.size()));
+    glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
+    glcheck(glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, (void*)0));
 
     if(positionLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(positionLocation));
     }
+
     if(colorLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(colorLocation));
     }
+
     if(normalLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(normalLocation));
     }
 }
 
-void KeyframedCylinderRenderable::do_animate( float time )
-{
-    //Assign the interpolated transformations from the keyframes to the local/parent transformations.
-    if(!m_localKeyframes.empty())
-    {
-        setLocalTransform( m_localKeyframes.interpolateTransformation( time ) );
-    }
-    if(!m_parentKeyframes.empty())
-    {
-        setParentTransform( m_parentKeyframes.interpolateTransformation( time ) );
-    }
-}
+void MeshRenderable::do_animate(float time) {}
 
-KeyframedCylinderRenderable::~KeyframedCylinderRenderable()
+MeshRenderable::~MeshRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));
     glcheck(glDeleteBuffers(1, &m_nBuffer));
+    glcheck(glDeleteBuffers(1, &m_iBuffer));
 }

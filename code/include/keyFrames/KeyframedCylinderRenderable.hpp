@@ -1,7 +1,7 @@
 #ifndef KEYFRAMED_CYLINDER_RENDERABLE_HPP
 #define KEYFRAMED_CYLINDER_RENDERABLE_HPP
 
-#include "HierarchicalRenderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include "KeyframeCollection.hpp"
 
 #include <glm/glm.hpp>

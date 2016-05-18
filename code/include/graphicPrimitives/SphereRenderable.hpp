@@ -1,16 +1,15 @@
-#ifndef CUBE_RENDERABLE_HPP
-#define CUBE_RENDERABLE_HPP
+#ifndef SPHERE_RENDERABLE_HPP
+#define SPHERE_RENDERABLE_HPP
 
-#include "Renderable.hpp"
+#include "../Renderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class CubeRenderable : public Renderable
+class SphereRenderable : public Renderable
 {
     public:
-        ~CubeRenderable();
-        CubeRenderable();
-        CubeRenderable( ShaderProgramPtr program );
+        ~SphereRenderable();
+        SphereRenderable( ShaderProgramPtr program );
 
     private:
         void do_draw();
@@ -25,6 +24,6 @@ class CubeRenderable : public Renderable
         unsigned int m_nBuffer;
 };
 
-typedef std::shared_ptr<CubeRenderable> CubeRenderablePtr;
+typedef std::shared_ptr<SphereRenderable> SphereRenderablePtr;
 
 #endif

@@ -1,6 +1,6 @@
-#include "./../include/TriangleRenderable.hpp"
-#include "./../include/gl_helper.hpp"
-#include "./../include/log.hpp"
+#include "./../../include/graphicPrimitives/TriangleRenderable.hpp"
+#include "./../../include/gl_helper.hpp"
+#include "./../../include/log.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>

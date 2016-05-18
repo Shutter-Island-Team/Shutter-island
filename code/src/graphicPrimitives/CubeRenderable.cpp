@@ -1,7 +1,7 @@
-#include "./../include/CubeRenderable.hpp"
-#include "./../include/gl_helper.hpp"
-#include "./../include/log.hpp"
-#include "./../include/Utils.hpp"
+#include "./../../include/graphicPrimitives/CubeRenderable.hpp"
+#include "./../../include/gl_helper.hpp"
+#include "./../../include/log.hpp"
+#include "./../../include/Utils.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>

@@ -1,7 +1,7 @@
 #ifndef CYLINDER_RENDERABLE_HPP
 #define CYLINDER_RENDERABLE_HPP
 
-#include "Renderable.hpp"
+#include "../Renderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 

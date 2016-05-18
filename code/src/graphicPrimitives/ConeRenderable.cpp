@@ -1,29 +1,23 @@
-#include "./../include/IndexedCubeRenderable.hpp"
-#include "./../include/gl_helper.hpp"
-#include "./../include/log.hpp"
-#include "./../include/Utils.hpp"
+#include "./../../include/graphicPrimitives/ConeRenderable.hpp"
+#include "./../../include/gl_helper.hpp"
+#include "./../../include/log.hpp"
+#include "./../../include/Utils.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-IndexedCubeRenderable::IndexedCubeRenderable(ShaderProgramPtr shaderProgram) : Renderable(shaderProgram),
-    m_pBuffer(0), m_cBuffer(0), m_nBuffer(0), m_iBuffer(0)
+ConeRenderable::ConeRenderable(ShaderProgramPtr shaderProgram) : Renderable(shaderProgram), m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
-    getUnitIndexedCube(m_positions, m_normals, m_indices);
-    m_colors.push_back(glm::vec4(1,0,0,1));
-    m_colors.push_back(glm::vec4(0,1,0,1));
-    m_colors.push_back(glm::vec4(0,0,1,1));
-    m_colors.push_back(glm::vec4(0,1,1,1));
-    m_colors.push_back(glm::vec4(1,0,0,1));
-    m_colors.push_back(glm::vec4(0,1,0,1));
-    m_colors.push_back(glm::vec4(0,0,1,1));
-    m_colors.push_back(glm::vec4(0,1,1,1));
+    unsigned int strips=1;
+    unsigned int slices=50;
+    getUnitCone(m_positions, m_normals, strips, slices);
+    m_colors.resize(m_positions.size(), glm::vec4(1.0,0.0,0.0,1.0));
+    for(size_t i=0; i<m_colors.size(); ++i) for(size_t j=0; j<3; ++j) m_colors[i][j] = m_normals[i][j];
 
     //Create buffers
     glGenBuffers(1, &m_pBuffer); //vertices
     glGenBuffers(1, &m_cBuffer); //colors
     glGenBuffers(1, &m_nBuffer); //normals
-    glGenBuffers(1, &m_iBuffer); //indices
 
     //Activate buffer and send data to the graphics card
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
@@ -32,11 +26,9 @@ IndexedCubeRenderable::IndexedCubeRenderable(ShaderProgramPtr shaderProgram) : R
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_STATIC_DRAW));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
-    glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
-    glcheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size()*sizeof(glm::ivec3), m_indices.data(), GL_STATIC_DRAW));
 }
 
-void IndexedCubeRenderable::do_draw()
+void ConeRenderable::do_draw()
 {
     //Location
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
@@ -75,8 +67,7 @@ void IndexedCubeRenderable::do_draw()
     }
 
     //Draw triangles elements
-    glcheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_iBuffer));
-    glcheck(glDrawElements(GL_TRIANGLES, m_indices.size()*3, GL_UNSIGNED_INT, (void*)0));
+    glcheck(glDrawArrays(GL_TRIANGLES,0, m_positions.size()));
 
     if(positionLocation != ShaderProgram::null_location)
     {
@@ -92,12 +83,11 @@ void IndexedCubeRenderable::do_draw()
     }
 }
 
-void IndexedCubeRenderable::do_animate(float time) {}
+void ConeRenderable::do_animate(float time) {}
 
-IndexedCubeRenderable::~IndexedCubeRenderable()
+ConeRenderable::~ConeRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));
     glcheck(glDeleteBuffers(1, &m_nBuffer));
-    glcheck(glDeleteBuffers(1, &m_iBuffer));
 }

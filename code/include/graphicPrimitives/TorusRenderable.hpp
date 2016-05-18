@@ -1,15 +1,15 @@
-#ifndef SPHERE_RENDERABLE_HPP
-#define SPHERE_RENDERABLE_HPP
+#ifndef TORUS_RENDERABLE_HPP
+#define TORUS_RENDERABLE_HPP
 
-#include "Renderable.hpp"
+#include "../Renderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class SphereRenderable : public Renderable
+class TorusRenderable : public Renderable
 {
     public:
-        ~SphereRenderable();
-        SphereRenderable( ShaderProgramPtr program );
+        ~TorusRenderable();
+        TorusRenderable( ShaderProgramPtr program );
 
     private:
         void do_draw();
@@ -20,10 +20,10 @@ class SphereRenderable : public Renderable
         std::vector< glm::vec3 > m_normals;
 
         unsigned int m_pBuffer;
-        unsigned int m_cBuffer;
+        unsigned int m_cBuffer;        
         unsigned int m_nBuffer;
 };
 
-typedef std::shared_ptr<SphereRenderable> SphereRenderablePtr;
+typedef std::shared_ptr<TorusRenderable> TorusRenderablePtr;
 
 #endif

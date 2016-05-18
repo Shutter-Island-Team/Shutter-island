@@ -1,18 +1,20 @@
-#include "./../include/SphereRenderable.hpp"
-#include "./../include/gl_helper.hpp"
-#include "./../include/log.hpp"
-#include "./../include/Utils.hpp"
+#include "./../../include/graphicPrimitives/TorusRenderable.hpp"
+#include "./../../include/gl_helper.hpp"
+#include "./../../include/log.hpp"
+#include "./../../include/Utils.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-SphereRenderable::SphereRenderable(ShaderProgramPtr shaderProgram) :
+TorusRenderable::TorusRenderable(ShaderProgramPtr shaderProgram) :
     Renderable(shaderProgram),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
-    unsigned int strips=20;
-    unsigned int slices=40;
-    getUnitSphere(m_positions, m_normals, strips, slices);
+    double a = 0.5; //Tube radius
+    double c = 0.8; //Distance between hole center and tube center
+    int strips = 50;
+    int slices = 50;
+    getTorus(m_positions, m_normals, a, c, strips, slices);
     m_colors.resize(m_positions.size(), glm::vec4(1.0,0.0,0.0,1.0));
     for(size_t i=0; i<m_colors.size(); ++i) for(size_t j=0; j<3; ++j) m_colors[i][j] = m_normals[i][j];
 
@@ -30,13 +32,15 @@ SphereRenderable::SphereRenderable(ShaderProgramPtr shaderProgram) :
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
 }
 
-void SphereRenderable::do_draw()
+void TorusRenderable::do_draw()
 {
+    //Location
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
     int normalLocation = m_shaderProgram->getAttributeLocation("vNormal");
     int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
 
+    //Send data to GPU
     if(modelLocation != ShaderProgram::null_location)
     {
         glcheck(glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(getModelMatrix())));
@@ -44,8 +48,11 @@ void SphereRenderable::do_draw()
 
     if(positionLocation != ShaderProgram::null_location)
     {
+        //Activate location
         glcheck(glEnableVertexAttribArray(positionLocation));
+        //Bind buffer
         glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
+        //Specify internal format
         glcheck(glVertexAttribPointer(positionLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
     }
 
@@ -80,9 +87,9 @@ void SphereRenderable::do_draw()
     }
 }
 
-void SphereRenderable::do_animate(float time) {}
+void TorusRenderable::do_animate(float time) {}
 
-SphereRenderable::~SphereRenderable()
+TorusRenderable::~TorusRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));

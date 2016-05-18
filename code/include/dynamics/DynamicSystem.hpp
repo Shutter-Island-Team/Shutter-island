@@ -7,7 +7,7 @@
 #include "ForceField.hpp"
 #include "Particle.hpp"
 #include "Solver.hpp"
-#include "../Plane.hpp"
+#include "Plane.hpp"
 
 /**@brief A dynamic system.
  *

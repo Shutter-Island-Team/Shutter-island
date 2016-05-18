@@ -1,22 +1,25 @@
-#include "./../include/TorusRenderable.hpp"
-#include "./../include/gl_helper.hpp"
-#include "./../include/log.hpp"
-#include "./../include/Utils.hpp"
+# include "../../include/keyFrames/KeyframedCylinderRenderable.hpp"
+# include "../../include/gl_helper.hpp"
+# include "../../include/GeometricTransformation.hpp"
+# include "../../include/Utils.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-#include <GL/glew.h>
+# include <glm/gtc/type_ptr.hpp>
+# include <GL/glew.h>
 
-TorusRenderable::TorusRenderable(ShaderProgramPtr shaderProgram) :
-    Renderable(shaderProgram),
-    m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
-{
-    double a = 0.5; //Tube radius
-    double c = 0.8; //Distance between hole center and tube center
-    int strips = 50;
-    int slices = 50;
-    getTorus(m_positions, m_normals, a, c, strips, slices);
-    m_colors.resize(m_positions.size(), glm::vec4(1.0,0.0,0.0,1.0));
-    for(size_t i=0; i<m_colors.size(); ++i) for(size_t j=0; j<3; ++j) m_colors[i][j] = m_normals[i][j];
+KeyframedCylinderRenderable::KeyframedCylinderRenderable( ShaderProgramPtr prog )
+   : HierarchicalRenderable( prog )
+ {
+    unsigned int numberOfSlice=50;
+    getUnitCylinder(m_positions, m_normals, numberOfSlice);
+    unsigned int numberOfVertices = m_positions.size();
+    m_colors.resize(numberOfVertices);
+    for(size_t i=0; i<numberOfVertices/3; i++)
+    {
+        float factor=240.0*(float)3*i/(float)numberOfVertices;
+        m_colors[3*i] = getColor(factor, 0.0, 240.0);
+        m_colors[3*i+1] = getColor(factor, 0.0, 240.0);
+        m_colors[3*i+2] = getColor(factor, 0.0, 240.0);
+    }
 
     //Create buffers
     glGenBuffers(1, &m_pBuffer); //vertices
@@ -30,9 +33,19 @@ TorusRenderable::TorusRenderable(ShaderProgramPtr shaderProgram) :
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_STATIC_DRAW));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
+ }
+
+void KeyframedCylinderRenderable::addLocalTransformKeyframe( const GeometricTransformation& transformation, float time )
+{
+  m_localKeyframes.add( transformation, time );
 }
 
-void TorusRenderable::do_draw()
+void KeyframedCylinderRenderable::addParentTransformKeyframe( const GeometricTransformation& transformation, float time )
+{
+  m_parentKeyframes.add( transformation, time );
+}
+
+void KeyframedCylinderRenderable::do_draw()
 {
     //Location
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
@@ -87,9 +100,20 @@ void TorusRenderable::do_draw()
     }
 }
 
-void TorusRenderable::do_animate(float time) {}
+void KeyframedCylinderRenderable::do_animate( float time )
+{
+    //Assign the interpolated transformations from the keyframes to the local/parent transformations.
+    if(!m_localKeyframes.empty())
+    {
+        setLocalTransform( m_localKeyframes.interpolateTransformation( time ) );
+    }
+    if(!m_parentKeyframes.empty())
+    {
+        setParentTransform( m_parentKeyframes.interpolateTransformation( time ) );
+    }
+}
 
-TorusRenderable::~TorusRenderable()
+KeyframedCylinderRenderable::~KeyframedCylinderRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));

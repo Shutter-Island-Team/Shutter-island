@@ -1,5 +1,5 @@
-#include "./../include/FrameRenderable.hpp"
-#include "./../include/gl_helper.hpp"
+#include "./../../include/graphicPrimitives/FrameRenderable.hpp"
+#include "./../../include/gl_helper.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 

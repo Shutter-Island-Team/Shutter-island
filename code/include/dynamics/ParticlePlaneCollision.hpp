@@ -5,7 +5,7 @@
 #include "Particle.hpp"
 #include "RoundedParticle.hpp"
 #include "BoxParticle.hpp"
-#include "./../../include/Plane.hpp"
+#include "Plane.hpp"
 
 /**@brief Implement the resolution of a collision event between a plane and a particle.
  *

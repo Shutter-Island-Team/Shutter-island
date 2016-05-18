@@ -6,8 +6,7 @@
  */
 
 #include "GeometricTransformation.hpp"
-#include "Sphere.hpp"
-#include "Plane.hpp"
+#include "dynamics/Plane.hpp"
 
 #include <array>
 #include <vector>

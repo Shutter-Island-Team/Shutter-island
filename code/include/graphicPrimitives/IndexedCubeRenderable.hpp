@@ -1,7 +1,7 @@
 #ifndef INDEXED_CUBE_RENDERABLE_HPP
 #define INDEXED_CUBE_RENDERABLE_HPP
 
-#include "Renderable.hpp"
+#include "../Renderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 

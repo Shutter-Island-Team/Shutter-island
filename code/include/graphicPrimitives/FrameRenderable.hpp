@@ -5,7 +5,7 @@
  *
  * This file defines the class FrameRenderable to render the world frame.
  */
-#include "Renderable.hpp"
+#include "../Renderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 

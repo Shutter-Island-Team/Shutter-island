@@ -1,7 +1,7 @@
 #ifndef MESH_RENDERABLE_HPP
 #define MESH_RENDERABLE_HPP
 
-#include "Renderable.hpp"
+#include "../Renderable.hpp"
 
 #include <string>
 #include <vector>

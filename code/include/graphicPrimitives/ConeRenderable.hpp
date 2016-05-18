@@ -1,15 +1,15 @@
-#ifndef TORUS_RENDERABLE_HPP
-#define TORUS_RENDERABLE_HPP
+#ifndef CONE_RENDERABLE_HPP
+#define CONE_RENDERABLE_HPP
 
-#include "Renderable.hpp"
+#include "../Renderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class TorusRenderable : public Renderable
+class ConeRenderable : public Renderable
 {
     public:
-        ~TorusRenderable();
-        TorusRenderable( ShaderProgramPtr program );
+        ~ConeRenderable();
+        ConeRenderable( ShaderProgramPtr program );
 
     private:
         void do_draw();
@@ -20,10 +20,10 @@ class TorusRenderable : public Renderable
         std::vector< glm::vec3 > m_normals;
 
         unsigned int m_pBuffer;
-        unsigned int m_cBuffer;        
+        unsigned int m_cBuffer;
         unsigned int m_nBuffer;
 };
 
-typedef std::shared_ptr<TorusRenderable> TorusRenderablePtr;
+typedef std::shared_ptr<ConeRenderable> ConeRenderablePtr;
 
 #endif

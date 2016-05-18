@@ -1,15 +1,16 @@
-#ifndef CONE_RENDERABLE_HPP
-#define CONE_RENDERABLE_HPP
+#ifndef CUBE_RENDERABLE_HPP
+#define CUBE_RENDERABLE_HPP
 
-#include "Renderable.hpp"
+#include "../Renderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class ConeRenderable : public Renderable
+class CubeRenderable : public Renderable
 {
     public:
-        ~ConeRenderable();
-        ConeRenderable( ShaderProgramPtr program );
+        ~CubeRenderable();
+        CubeRenderable();
+        CubeRenderable( ShaderProgramPtr program );
 
     private:
         void do_draw();
@@ -24,6 +25,6 @@ class ConeRenderable : public Renderable
         unsigned int m_nBuffer;
 };
 
-typedef std::shared_ptr<ConeRenderable> ConeRenderablePtr;
+typedef std::shared_ptr<CubeRenderable> CubeRenderablePtr;
 
 #endif
