@@ -101,9 +101,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(0.5, 0.5, -0.5));
     positions.push_back(glm::vec3(0.5, -0.5, -0.5));
 
-    texCoords.push_back(glm::vec2(0.0,0.0));
-    texCoords.push_back(glm::vec2(1.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,1.0));
     texCoords.push_back(glm::vec2(1.0,0.0));
+    texCoords.push_back(glm::vec2(1.0,1.0));
 
     normals.push_back(glm::vec3(0.0,0.0,-1.0));
     normals.push_back(glm::vec3(0.0,0.0,-1.0));
@@ -114,9 +114,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(-0.5, 0.5, -0.5));
     positions.push_back(glm::vec3(0.5, 0.5, -0.5));
 
-    texCoords.push_back(glm::vec2(0.0,0.0));
     texCoords.push_back(glm::vec2(0.0,1.0));
-    texCoords.push_back(glm::vec2(1.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,0.0));
+    texCoords.push_back(glm::vec2(1.0,0.0));
 
     normals.push_back(glm::vec3(0.0,0.0,-1.0));
     normals.push_back(glm::vec3(0.0,0.0,-1.0));
@@ -129,7 +129,7 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
 
     texCoords.push_back(glm::vec2(0.0,0.0));
     texCoords.push_back(glm::vec2(1.0,1.0));
-    texCoords.push_back(glm::vec2(1.0,0.0));
+    texCoords.push_back(glm::vec2(0.0,1.0));
 
     normals.push_back(glm::vec3(1.0,0.0,0.0));
     normals.push_back(glm::vec3(1.0,0.0,0.0));
@@ -141,7 +141,7 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(0.5, 0.5, 0.5));
 
     texCoords.push_back(glm::vec2(0.0,0.0));
-    texCoords.push_back(glm::vec2(0.0,1.0));
+    texCoords.push_back(glm::vec2(1.0,0.0));
     texCoords.push_back(glm::vec2(1.0,1.0));
 
     normals.push_back(glm::vec3(1.0,0.0,0.0));
@@ -153,9 +153,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(-0.5, -0.5, 0.5));
     positions.push_back(glm::vec3(0.5, -0.5, 0.5));
 
-    texCoords.push_back(glm::vec2(1.0,1.0));
-    texCoords.push_back(glm::vec2(1.0,0.0));
+    texCoords.push_back(glm::vec2(0.0,1.0));
     texCoords.push_back(glm::vec2(0.0,0.0));
+    texCoords.push_back(glm::vec2(1.0,0.0));
 
     normals.push_back(glm::vec3(0.0,0.0,1.0));
     normals.push_back(glm::vec3(0.0,0.0,1.0));
@@ -166,9 +166,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(0.5, -0.5, 0.5));
     positions.push_back(glm::vec3(0.5, 0.5, 0.5));
 
-    texCoords.push_back(glm::vec2(1.0,1.0));
-    texCoords.push_back(glm::vec2(0.0,0.0));
     texCoords.push_back(glm::vec2(0.0,1.0));
+    texCoords.push_back(glm::vec2(1.0,0.0));
+    texCoords.push_back(glm::vec2(1.0,1.0));
 
     normals.push_back(glm::vec3(0.0,0.0,1.0));
     normals.push_back(glm::vec3(0.0,0.0,1.0));
@@ -179,8 +179,8 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(-0.5, 0.5, -0.5));
     positions.push_back(glm::vec3(-0.5, -0.5, -0.5));
 
-    texCoords.push_back(glm::vec2(0.0,0.0));
     texCoords.push_back(glm::vec2(1.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,0.0));
     texCoords.push_back(glm::vec2(1.0,0.0));
 
     normals.push_back(glm::vec3(-1.0,0.0,0.0));
@@ -192,9 +192,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(-0.5, 0.5, 0.5));
     positions.push_back(glm::vec3(-0.5, 0.5, -0.5));
 
-    texCoords.push_back(glm::vec2(0.0,0.0));
-    texCoords.push_back(glm::vec2(0.0,1.0));
     texCoords.push_back(glm::vec2(1.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,0.0));
 
     normals.push_back(glm::vec3(-1.0,0.0,0.0));
     normals.push_back(glm::vec3(-1.0,0.0,0.0));
@@ -205,9 +205,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(0.5, 0.5, 0.5));
     positions.push_back(glm::vec3(0.5, 0.5, -0.5));
 
-    texCoords.push_back(glm::vec2(0.0,0.0));
-    texCoords.push_back(glm::vec2(1.0,1.0));
     texCoords.push_back(glm::vec2(1.0,0.0));
+    texCoords.push_back(glm::vec2(0.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,0.0));
 
     normals.push_back(glm::vec3(0.0,1.0,0.0));
     normals.push_back(glm::vec3(0.0,1.0,0.0));
@@ -218,9 +218,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(-0.5, 0.5, 0.5));
     positions.push_back(glm::vec3(0.5, 0.5, 0.5));
 
-    texCoords.push_back(glm::vec2(0.0,0.0));
-    texCoords.push_back(glm::vec2(0.0,1.0));
+    texCoords.push_back(glm::vec2(1.0,0.0));
     texCoords.push_back(glm::vec2(1.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,1.0));
 
     normals.push_back(glm::vec3(0.0,1.0,0.0));
     normals.push_back(glm::vec3(0.0,1.0,0.0));
@@ -231,9 +231,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(-0.5, -0.5, -0.5));
     positions.push_back(glm::vec3(0.5, -0.5, -0.5));
 
-    texCoords.push_back(glm::vec2(0.0,0.0));
     texCoords.push_back(glm::vec2(0.0,1.0));
-    texCoords.push_back(glm::vec2(1.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,0.0));
+    texCoords.push_back(glm::vec2(1.0,0.0));
 
     normals.push_back(glm::vec3(0.0,-1.0,0.0));
     normals.push_back(glm::vec3(0.0,-1.0,0.0));
@@ -244,9 +244,9 @@ void getUnitCube(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     positions.push_back(glm::vec3(0.5, -0.5, -0.5));
     positions.push_back(glm::vec3(0.5, -0.5, 0.5));
 
-    texCoords.push_back(glm::vec2(0.0,0.0));
-    texCoords.push_back(glm::vec2(1.0,1.0));
+    texCoords.push_back(glm::vec2(0.0,1.0));
     texCoords.push_back(glm::vec2(1.0,0.0));
+    texCoords.push_back(glm::vec2(1.0,1.0));
 
     normals.push_back(glm::vec3(0.0,-1.0,0.0));
     normals.push_back(glm::vec3(0.0,-1.0,0.0));
