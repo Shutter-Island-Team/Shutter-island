@@ -13,8 +13,6 @@
 #include <vector>
 #include <memory>
 #include <glm/glm.hpp>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/properties.hpp>
 
 class HierarchicalRenderable;
 typedef std::shared_ptr<HierarchicalRenderable> HierarchicalRenderablePtr;
@@ -148,6 +146,7 @@ public :
      * @return A vector of hierarchical renderable shared pointers. */
     std::vector< HierarchicalRenderablePtr > & getChildren();
 
+    
     
 private:
 
