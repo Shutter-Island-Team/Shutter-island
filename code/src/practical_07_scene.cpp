@@ -9,6 +9,9 @@
 #include "../include/texturing/TexturedLightedMeshRenderable.hpp"
 #include "../include/lighting/DirectionalLightRenderable.hpp"
 
+#include "../include/boids2D/Rabbit.hpp"
+#include "../include/boids2D/BoidRenderable.hpp"
+
 void initialize_practical_07_scene( Viewer& viewer )
 {
     //Position the camera
@@ -102,4 +105,39 @@ void initialize_practical_07_scene( Viewer& viewer )
 
     viewer.startAnimation();
     viewer.setAnimationLoop(true, 4.0);
+}
+
+void initialize_boid_scene( Viewer& viewer )
+{
+    //Position the camera
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, -8, -8 ), glm::vec3(0, 0, 0), glm::vec3( 0, 0, 1 ) ) );
+
+    //Default shader
+    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/flatVertex.vert", 
+        "../shaders/flatFragment.frag"});
+    viewer.addShaderProgram( flatShader );
+
+    //Add a 3D frame to the viewer
+    FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
+    viewer.addRenderable(frame);
+
+    // One boid
+    Rabbit r(glm::vec3(-5, 0, 2));
+    BoidRenderablePtr boid = std::make_shared<BoidRenderable>(flatShader, r);
+
+    viewer.addRenderable(boid);
+
+    //Textured plane
+        //Textured shader
+    ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/textureVertex.vert",
+        "../shaders/textureFragment.frag"});
+    viewer.addShaderProgram( texShader );
+
+    std::string filename = "./../textures/grass_texture.png";
+    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+    texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(10.0,10.0,10.0)), glm::vec3(0.0, 0.0, -0.1)));
+    texPlane->setMaterial(Material::Pearl());
+    viewer.addRenderable(texPlane);
 }

@@ -69,22 +69,21 @@ void ParticleListRenderable::do_draw()
     const size_t nparticles = m_particles.size();
     glm::mat4 model = getModelMatrix();
     glm::mat4 transformation(1.0);
-    for( size_t i = 0; i < nparticles; ++ i )
-    {
-	ParticlePtr particlePtr = m_particles[i];
-	if (particlePtr->isRounded()) {
-	    RoundedParticlePtr roundedPtr = (RoundedParticlePtr) std::static_pointer_cast<RoundedParticle, Particle>(particlePtr);
-	    glm::vec3 position = roundedPtr->getPosition();
-	    float scale = roundedPtr->getRadius();
-	    transformation[0][0] = scale;
-	    transformation[1][1] = scale;
-	    transformation[2][2] = scale;
-	    transformation[3][0] = position.x;
-	    transformation[3][1] = position.y;
-	    transformation[3][2] = position.z;
-	} else {
-	    continue;
-	}
+    for( size_t i = 0; i < nparticles; ++ i ) {
+    	ParticlePtr particlePtr = m_particles[i];
+    	if (particlePtr->isRounded()) {
+    	    RoundedParticlePtr roundedPtr = (RoundedParticlePtr) std::static_pointer_cast<RoundedParticle, Particle>(particlePtr);
+    	    glm::vec3 position = roundedPtr->getPosition();
+    	    float scale = roundedPtr->getRadius();
+    	    transformation[0][0] = scale;
+    	    transformation[1][1] = scale;
+    	    transformation[2][2] = scale;
+    	    transformation[3][0] = position.x;
+    	    transformation[3][1] = position.y;
+    	    transformation[3][2] = position.z;
+    	} else {
+    	    continue;
+    	}
 
         glcheck(glUniformMatrix4fv( modelLocation, 1, GL_FALSE, glm::value_ptr(model * transformation)));
         glcheck(glDrawArrays(GL_TRIANGLES, 0, m_numberOfVertices));

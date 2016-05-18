@@ -4,5 +4,6 @@
 #include "Viewer.hpp"
 
 void initialize_practical_07_scene( Viewer& viewer );
+void initialize_boid_scene( Viewer& viewer );
 
 #endif 

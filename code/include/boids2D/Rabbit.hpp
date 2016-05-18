@@ -6,7 +6,7 @@
 class Rabbit : public MovableBoid
 {
  public:
-	Rabbit(void);
+	Rabbit(glm::vec3 position);
 };
 
 #endif

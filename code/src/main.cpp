@@ -3,15 +3,15 @@
 
 #include <sstream>
 
-void initialize_practical_07_scene( Viewer& viewer );
-
+#include "../include/practical_07_scene.hpp"
 
 int main( int argc, char* argv[] )
 {
     Viewer viewer(1280,720);
 
-    initialize_practical_07_scene( viewer );
-    
+    initialize_boid_scene( viewer );
+    // initialize_practical_07_scene( viewer );
+
     while( viewer.isRunning() )
     {
 	viewer.handleEvent();
