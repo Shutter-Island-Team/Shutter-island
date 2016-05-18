@@ -1,0 +1,4 @@
+#ifndef BOIDS_MANAGER_HPP
+#define BOIDS_MANAGER_HPP
+
+#endif
