@@ -1,11 +1,11 @@
 #ifndef TORUS_RENDERABLE_HPP
 #define TORUS_RENDERABLE_HPP
 
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class TorusRenderable : public Renderable
+class TorusRenderable : public HierarchicalRenderable
 {
     public:
         ~TorusRenderable();

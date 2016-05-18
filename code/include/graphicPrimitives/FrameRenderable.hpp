@@ -5,7 +5,7 @@
  *
  * This file defines the class FrameRenderable to render the world frame.
  */
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -20,7 +20,7 @@
 
 // A renderable must implement the Renderable interface, as such we make this
 // class inherit publicly from Renderable.
-class FrameRenderable : public Renderable
+class FrameRenderable : public HierarchicalRenderable
 {
 // Only the constructor and the destructor are meant to be called outside of
 // the class. This is why they constitute the only public methods.

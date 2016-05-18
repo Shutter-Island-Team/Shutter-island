@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-IndexedCubeRenderable::IndexedCubeRenderable(ShaderProgramPtr shaderProgram) : Renderable(shaderProgram),
+IndexedCubeRenderable::IndexedCubeRenderable(ShaderProgramPtr shaderProgram) : HierarchicalRenderable(shaderProgram),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0), m_iBuffer(0)
 {
     getUnitIndexedCube(m_positions, m_normals, m_indices);

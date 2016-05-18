@@ -6,7 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-ConeRenderable::ConeRenderable(ShaderProgramPtr shaderProgram) : Renderable(shaderProgram), m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
+ConeRenderable::ConeRenderable(ShaderProgramPtr shaderProgram) : HierarchicalRenderable(shaderProgram), m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
     unsigned int strips=1;
     unsigned int slices=50;

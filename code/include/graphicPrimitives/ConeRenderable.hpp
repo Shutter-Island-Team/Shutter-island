@@ -1,11 +1,11 @@
 #ifndef CONE_RENDERABLE_HPP
 #define CONE_RENDERABLE_HPP
 
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class ConeRenderable : public Renderable
+class ConeRenderable : public HierarchicalRenderable
 {
     public:
         ~ConeRenderable();

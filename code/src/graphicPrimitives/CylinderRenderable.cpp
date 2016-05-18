@@ -8,7 +8,7 @@
 #include <GL/glew.h>
 
 CylinderRenderable::CylinderRenderable(ShaderProgramPtr shaderProgram) :
-    Renderable(shaderProgram),
+    HierarchicalRenderable(shaderProgram),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
     unsigned int strips=50;

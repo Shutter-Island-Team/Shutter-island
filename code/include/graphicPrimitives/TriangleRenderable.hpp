@@ -1,11 +1,11 @@
 #ifndef TRIANGLE_RENDERABLE_HPP
 #define TRIANGLE_RENDERABLE_HPP
 
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class TriangleRenderable : public Renderable
+class TriangleRenderable : public HierarchicalRenderable
 {
     public:
         ~TriangleRenderable();

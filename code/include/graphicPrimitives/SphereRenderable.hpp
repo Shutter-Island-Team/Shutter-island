@@ -1,11 +1,11 @@
 #ifndef SPHERE_RENDERABLE_HPP
 #define SPHERE_RENDERABLE_HPP
 
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class SphereRenderable : public Renderable
+class SphereRenderable : public HierarchicalRenderable
 {
     public:
         ~SphereRenderable();

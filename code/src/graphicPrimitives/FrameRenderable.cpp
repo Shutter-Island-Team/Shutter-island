@@ -17,7 +17,7 @@ FrameRenderable::FrameRenderable(ShaderProgramPtr shaderProgram)
   // It is a good practice to initialize data and acquire resources
   // here. It faster to perform initialization here than in the
   // constructor body.
-  : Renderable(shaderProgram), // call the Renderable constructor
+  : HierarchicalRenderable(shaderProgram), // call the Renderable constructor
     m_pBuffer(0), m_cBuffer(0) // initialize the buffers to default value (useful for debugging purposes)
 {
     initAttributes();
