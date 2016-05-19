@@ -20,8 +20,13 @@ class Boid
 
 	float getDistanceMin();
 
+	float getAngle();
+
+	void setAngle(float angle);
+
  private:
  	glm::vec3 m_location;
+ 	float m_angle;
  	TypeBoid m_typeBoid;
  	bool m_movable;
  	float m_distanceMin = 1;

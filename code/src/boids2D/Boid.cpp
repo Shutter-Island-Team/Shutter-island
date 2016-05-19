@@ -21,3 +21,11 @@ bool Boid::isMovable() {
 float Boid::getDistanceMin() {
 	return m_distanceMin;
 }
+
+float Boid::getAngle() {
+	return m_angle;
+}
+
+void Boid::setAngle(float angle) {
+	m_angle = angle;
+}
