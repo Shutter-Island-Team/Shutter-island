@@ -496,3 +496,11 @@ void getUnitCone(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     }
 
 }
+
+glm::vec3 limitVec3(const glm::vec3 vec, const float val) {
+    if (glm::length(vec) > val) {
+        return glm::normalize(vec) * val;
+    } else {
+        return vec;
+    }
+}
