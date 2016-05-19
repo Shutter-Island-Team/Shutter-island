@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 
+#include <vector>
 #include "TypeBoid.hpp"
 
 class Boid
@@ -14,9 +15,15 @@ class Boid
 
 	void setLocation(glm::vec3 newLocation);
 
+	bool isMovable();
+
+	float getDistanceMin();
+
  private:
  	glm::vec3 m_location;
  	TypeBoid m_typeBoid;
+ 	bool m_movable;
+ 	float m_distanceMin = 1;
 };
 
 #endif

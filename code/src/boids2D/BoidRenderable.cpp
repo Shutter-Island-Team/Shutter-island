@@ -106,7 +106,8 @@ void BoidRenderable::do_draw()
     }
 }
 
-void BoidRenderable::do_animate(float time) {}
+void BoidRenderable::do_animate(float time) {
+}
 
 BoidRenderable::~BoidRenderable()
 {

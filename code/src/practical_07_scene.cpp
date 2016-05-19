@@ -110,7 +110,7 @@ void initialize_practical_07_scene( Viewer& viewer )
 void initialize_boid_scene( Viewer& viewer )
 {
     //Position the camera
-    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, -8, -8 ), glm::vec3(0, 0, 0), glm::vec3( 0, 0, 1 ) ) );
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 8, 8 ), glm::vec3(0, 0, 0), glm::vec3( 0, 0, 1 ) ) );
 
     //Default shader
     ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
@@ -140,4 +140,7 @@ void initialize_boid_scene( Viewer& viewer )
     texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(10.0,10.0,10.0)), glm::vec3(0.0, 0.0, -0.1)));
     texPlane->setMaterial(Material::Pearl());
     viewer.addRenderable(texPlane);
+
+    viewer.startAnimation();
+    viewer.setAnimationLoop(true, 4.0);
 }

@@ -3,6 +3,7 @@
 Boid::Boid(glm::vec3 position, TypeBoid t) {
 	m_location = position;
 	m_typeBoid = t;
+	m_movable = (m_typeBoid == RABBIT || m_typeBoid == WOLF);
 }
 
 glm::vec3 Boid::getLocation() {
@@ -11,4 +12,12 @@ glm::vec3 Boid::getLocation() {
 
 void Boid::setLocation(glm::vec3 newLocation) {
 	m_location = newLocation;
+}
+
+bool Boid::isMovable() {
+	return m_movable;
+}
+
+float Boid::getDistanceMin() {
+	return m_distanceMin;
 }
