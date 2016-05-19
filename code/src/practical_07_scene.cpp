@@ -11,6 +11,7 @@
 
 #include "../include/boids2D/Rabbit.hpp"
 #include "../include/boids2D/BoidRenderable.hpp"
+#include "../include/boids2D/BoidsManager.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -147,14 +148,16 @@ void initialize_boid_scene( Viewer& viewer )
     texPlane->setMaterial(Material::Pearl());
     viewer.addRenderable(texPlane);
 
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>();
+    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-2, 0, 2), RABBIT);
+    boidsManager->addMovableBoid(mvb1);
+
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
     DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
     SolverBoidPtr solver = std::make_shared<SolverBoid>();
     system->setSolver(solver);
     system->setDt(0.01);
-
-    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-2, 0, 2), RABBIT);
-    system->addMovableBoid(mvb1);
+    system->setBoidsManager(boidsManager);
 
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function

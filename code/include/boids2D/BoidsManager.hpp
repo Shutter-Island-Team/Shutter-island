@@ -12,12 +12,14 @@ class BoidsManager
  public:
 	BoidsManager(void);
 
-	void addMovable(MovableBoidPtr b);
+	void addMovableBoid(MovableBoidPtr b);
 
 	std::vector<MovableBoidPtr> & getMovableBoids();
 
  private:
  	std::vector<MovableBoidPtr> m_movableBoids;
 };
+
+typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;
 
 #endif

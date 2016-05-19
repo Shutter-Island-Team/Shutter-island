@@ -115,15 +115,3 @@ BoidRenderable::~BoidRenderable()
     glcheck(glDeleteBuffers(1, &m_cBuffer));
     glcheck(glDeleteBuffers(1, &m_nBuffer));
 }
-
-void BoidRenderable::do_keyPressedEvent(sf::Event& e) {
-    switch(e.key.code) {
-        case sf::Keyboard::Left:
-            boid->setLocation(boid->getLocation() - glm::vec3(1, 0, 0));
-            break;
-        case sf::Keyboard::Right:
-            boid->setLocation(boid->getLocation() + glm::vec3(1, 0, 0));
-            break;
-    }
-    std::cerr << "Position : " << boid->getLocation().x << std::endl;
-}

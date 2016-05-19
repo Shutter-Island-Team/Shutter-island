@@ -16,7 +16,7 @@ private:
     * and velocities will be updated thanks to the solver, taking into
     * account the force field applied to them.
     */
-    BoidsManager m_boidsManager;
+    BoidsManagerPtr m_boidsManager;
 
     /**@brief The solver of the dynamic system.
      *
@@ -59,19 +59,12 @@ public:
      */
     void setSolver(SolverBoidPtr solver);
 
-    /**@brief Access to the boids of this system.
-     *
-     * Get the set of boids of this dynamic system.
-     * @return The set of boids of this system.
-     */
-    const std::vector<BoidPtr>& getBoids() const;
-
     /**@brief Set the particles of this system.
      *
      * Define a new set of particles for this dynamic system.
      * @param particles The new set of particles of this system.
      */
-    void setBoidManager(const BoidsManager & boidManager);
+    void setBoidsManager(BoidsManagerPtr boidsManager);
 
     /**@brief Compute a simulation step for this system.
      *
@@ -94,7 +87,6 @@ public:
      */
     void setDt(float dt);
 
-    void addMovableBoid(MovableBoidPtr b);
 };
 
 typedef std::shared_ptr<DynamicSystemBoid> DynamicSystemBoidPtr;

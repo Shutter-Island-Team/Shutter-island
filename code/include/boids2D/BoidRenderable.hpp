@@ -9,11 +9,8 @@
 class BoidRenderable : public HierarchicalRenderable
 {
     public:
-        ~BoidRenderable();
-        BoidRenderable();
         BoidRenderable( ShaderProgramPtr program, BoidPtr boid );
-
-        void do_keyPressedEvent(sf::Event& e);
+        ~BoidRenderable();
 
     private:
         void do_draw();
