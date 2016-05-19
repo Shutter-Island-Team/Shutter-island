@@ -4,6 +4,9 @@
 #include "BoidsManager.hpp"
 #include "SolverBoid.hpp"
 
+// TODO : Now the class take all the boids. In reality only movable boids
+// can compute a next position
+
 class DynamicSystemBoid
 {
 private:
