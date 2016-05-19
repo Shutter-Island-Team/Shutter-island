@@ -4,6 +4,8 @@
 
 #include "../../include/Utils.hpp"
 
+// TODO : steering + solver. The force send should be only normalize in the end
+
 MovableBoid::MovableBoid(glm::vec3 position, TypeBoid t) 
 : Boid(position, t) {
 	// TODO
@@ -27,8 +29,10 @@ bool MovableBoid::angleVision (Boid b) {
     }
 }
 
-void MovableBoid::computeNextStep() {
-	// TODO : to implement
+void MovableBoid::computeNextStep(float dt) {
+    m_velocity += (dt / m_mass) * limitVec3(m_acceleration, m_maxSpeed);
+    m_velocity = limitVec3(m_velocity, m_maxSpeed);
+    setLocation( getLocation() + dt * m_velocity );
 }
 
 glm::vec3 MovableBoid::getVelocity(){
@@ -44,8 +48,12 @@ float MovableBoid::getMass() {
 }
 
 glm::vec3 MovableBoid::computeAcceleration () {
+	// Reset acceleration
 	m_acceleration = glm::vec3(0, 0, 0);
-	applyForce(wander());
+	// applyForce(arrive(glm::vec3(0, 0, 2)));
+	glm::vec3 wanderVec = wander();
+	glm::vec3 stayWithinWalls = 4.0f * ruleStayWithinWalls();
+	applyForce(wanderVec + stayWithinWalls);
 }
 
 bool MovableBoid::isNeighbor(Boid b) {
@@ -113,6 +121,30 @@ glm::vec3 MovableBoid::ruleMatchSpeed(std::vector<MovableBoid>& movableBoids){
 
 	return sum;
 
+}
+
+glm::vec3 MovableBoid::ruleStayWithinWalls() {
+	glm::vec3 steer(0, 0, 0);
+	float distToWall = 20.0f;
+    if (getLocation().x < -distToWall) {
+      glm::vec3 desired(m_maxSpeed, m_velocity.y, 0);
+      steer = desired - m_velocity;
+    } else if (getLocation().x >  distToWall) {
+      glm::vec3 desired(m_maxSpeed, -m_velocity.y, 0);
+      steer = m_velocity - desired; // TODO : This is horrible and not understandible at all
+    }
+    
+    if (getLocation().y < -distToWall) {
+      glm::vec3 desired(m_maxSpeed, m_velocity.x, 0);
+      steer = desired + steer - m_velocity;
+    } else if (getLocation().y >  distToWall) {
+      glm::vec3 desired(m_maxSpeed, -m_velocity.x, 0);
+      steer = m_velocity + steer - desired; // TODO : This is horrible and not understandible at all
+    }
+
+    steer = limitVec3(steer, m_maxForce);
+
+    return steer;
 }
 
 

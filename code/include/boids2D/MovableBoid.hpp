@@ -13,7 +13,7 @@ class MovableBoid : public Boid
 
 	bool canSee(Boid b);
 
-	void computeNextStep();
+	void computeNextStep(float dt);
 
   bool angleVision (Boid b);
 
@@ -25,6 +25,8 @@ class MovableBoid : public Boid
 
   glm::vec3 wander();
 
+  glm::vec3 ruleStayWithinWalls();
+
   glm::vec3 arrive(glm::vec3 target);
 
   glm::vec3 computeAcceleration();
@@ -34,11 +36,11 @@ class MovableBoid : public Boid
  private:
   glm::vec3 m_velocity;
   glm::vec3 m_acceleration;
-  float m_mass;
+  float m_mass = 0.005f;
 
-  const float MAX_SPEED = 0; 
-  const float NORMAL_SPEED = 1.5; 
-  const float MAX_FORCE = 2; 
+  const float MAX_SPEED = 10.0f; 
+  const float NORMAL_SPEED = 1.5f; 
+  const float MAX_FORCE = 50.0f;
 
   float m_maxSpeed = MAX_SPEED;
   float m_normalSpeed = NORMAL_SPEED;
@@ -55,9 +57,9 @@ class MovableBoid : public Boid
   void update();
 
   // Variable to wander
-  float rCircleWander = 20.0f;
-  float distToCircle = 60.0f;
-  float distStartSlowingDown = 100.0f;
+  float rCircleWander = 3.0f;
+  float distToCircle = 9.0f;
+  float distStartSlowingDown = 5.0f;
 
 };
 

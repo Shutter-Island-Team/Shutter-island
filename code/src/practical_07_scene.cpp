@@ -18,6 +18,8 @@
 #include "../include/boids2D/DynamicSystemBoid.hpp"
 #include "../include/boids2D/DynamicSystemBoidRenderable.hpp"
 
+#include "../include/Utils.hpp"
+
 void initialize_practical_07_scene( Viewer& viewer )
 {
     //Position the camera
@@ -116,23 +118,13 @@ void initialize_practical_07_scene( Viewer& viewer )
 void initialize_boid_scene( Viewer& viewer )
 {
     //Position the camera
-    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 8, 8 ), glm::vec3(0, 0, 0), glm::vec3( 0, 0, 1 ) ) );
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 0, 30 ), glm::vec3(0, 0, 0), glm::vec3( 0, 1, 0 ) ) );
 
     //Default shader
     ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
         "../shaders/flatVertex.vert", 
         "../shaders/flatFragment.frag"});
     viewer.addShaderProgram( flatShader );
-
-    //Add a 3D frame to the viewer
-    FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
-    viewer.addRenderable(frame);
-
-    // One boid
-    // Rabbit r(glm::vec3(-5, 0, 2));
-    // BoidRenderablePtr boid = std::make_shared<BoidRenderable>(flatShader, r);
-
-    // viewer.addRenderable(boid);
 
     //Textured plane
         //Textured shader
@@ -143,7 +135,7 @@ void initialize_boid_scene( Viewer& viewer )
 
     std::string filename = "./../textures/grass_texture.png";
     TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
-    texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(10.0,10.0,10.0)), glm::vec3(0.0, 0.0, -0.1)));
+    texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(50.0,50.0,50.0)), glm::vec3(0.0, 0.0, -0.1)));
     texPlane->setMaterial(Material::Pearl());
     viewer.addRenderable(texPlane);
 
@@ -153,16 +145,25 @@ void initialize_boid_scene( Viewer& viewer )
     system->setSolver(solver);
     system->setDt(0.01);
 
-    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-2, 0, 2), RABBIT);
-    system->addMovableBoid(mvb1);
-
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    BoidRenderablePtr mvb1r = std::make_shared<BoidRenderable>(flatShader, mvb1);
-    HierarchicalRenderable::addChild( systemRenderable, mvb1r );
+    MovableBoidPtr mvb;
+    BoidRenderablePtr br;
+
+    for (int i = 0; i < 10; ++i) {
+        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-10, 10), random(-10, 10), 2), RABBIT);
+        system->addMovableBoid(mvb);
+        br = std::make_shared<BoidRenderable>(flatShader, mvb);
+        HierarchicalRenderable::addChild( systemRenderable, br );
+    }
+
+    // MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, 0, 2), RABBIT);
+    // system->addMovableBoid(mvb1);
+    // BoidRenderablePtr mvb1r = std::make_shared<BoidRenderable>(flatShader, mvb1);
+    // HierarchicalRenderable::addChild( systemRenderable, mvb1r );
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
