@@ -2,6 +2,7 @@
 #define BOID_HPP
 
 #include <glm/glm.hpp>
+#include <memory>
 
 #include <vector>
 #include "TypeBoid.hpp"
@@ -25,5 +26,7 @@ class Boid
  	bool m_movable;
  	float m_distanceMin = 1;
 };
+
+typedef std::shared_ptr<Boid> BoidPtr;
 
 #endif
