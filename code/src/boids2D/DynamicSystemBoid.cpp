@@ -22,17 +22,17 @@ void DynamicSystemBoid::setSolver(SolverBoidPtr solver)
     m_solver = solver;
 }
 
+void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
+    m_boidsManager = boidsManager;
+}
+
 void DynamicSystemBoid::computeSimulationStep()
 {
-    for(MovableBoidPtr b : m_boidsManager.getMovableBoids())
+    for(MovableBoidPtr b : m_boidsManager->getMovableBoids())
     {
         b-> computeAcceleration();
     }
 
     //Integrate position and velocity of particles
-    m_solver->solve(m_dt, m_boidsManager.getMovableBoids());
-}
-
-void DynamicSystemBoid::addMovableBoid(MovableBoidPtr b) {
-    m_boidsManager.addMovable(b);
+    m_solver->solve(m_dt, m_boidsManager->getMovableBoids());
 }

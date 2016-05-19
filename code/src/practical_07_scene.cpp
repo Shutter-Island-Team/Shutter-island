@@ -11,6 +11,7 @@
 
 #include "../include/boids2D/Rabbit.hpp"
 #include "../include/boids2D/BoidRenderable.hpp"
+#include "../include/boids2D/BoidsManager.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -139,11 +140,14 @@ void initialize_boid_scene( Viewer& viewer )
     texPlane->setMaterial(Material::Pearl());
     viewer.addRenderable(texPlane);
 
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>();
+
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
     DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
     SolverBoidPtr solver = std::make_shared<SolverBoid>();
     system->setSolver(solver);
     system->setDt(0.01);
+    system->setBoidsManager(boidsManager);
 
     //Create a renderable associated to the dynamic system
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
@@ -155,15 +159,10 @@ void initialize_boid_scene( Viewer& viewer )
 
     for (int i = 0; i < 10; ++i) {
         mvb = std::make_shared<MovableBoid>(glm::vec3(random(-10, 10), random(-10, 10), 2), RABBIT);
-        system->addMovableBoid(mvb);
+        boidsManager->addMovableBoid(mvb);
         br = std::make_shared<BoidRenderable>(flatShader, mvb);
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
-
-    // MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, 0, 2), RABBIT);
-    // system->addMovableBoid(mvb1);
-    // BoidRenderablePtr mvb1r = std::make_shared<BoidRenderable>(flatShader, mvb1);
-    // HierarchicalRenderable::addChild( systemRenderable, mvb1r );
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
