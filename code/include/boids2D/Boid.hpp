@@ -2,6 +2,7 @@
 #define BOID_HPP
 
 #include <glm/glm.hpp>
+#include <memory>
 
 #include "TypeBoid.hpp"
 
@@ -18,5 +19,7 @@ class Boid
  	glm::vec3 m_location;
  	TypeBoid m_typeBoid;
 };
+
+typedef std::shared_ptr<Boid> BoidPtr;
 
 #endif
