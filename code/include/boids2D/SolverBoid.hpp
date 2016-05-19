@@ -4,6 +4,8 @@
 #include <vector>
 
 #include "Boid.hpp"
+#include "../../include/boids2D/MovableBoid.hpp"
+
 
 /**@brief Dynamic system solver interface for boids.
  *
@@ -20,7 +22,7 @@ public:
    * @param dt The time step for the integration.
    * @param particles The collection of particles.
    */
-  void solve( const float& dt, std::vector<BoidPtr>& boids );
+  void solve( const float& dt, std::vector<MovableBoidPtr>& boids );
 };
 
 typedef std::shared_ptr<SolverBoid> SolverBoidPtr;

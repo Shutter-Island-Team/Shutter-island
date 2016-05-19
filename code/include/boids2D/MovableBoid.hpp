@@ -2,6 +2,7 @@
 #define MOVABLE_BOID_HPP
 
 #include "Boid.hpp"
+#include <vector>
 
 #include <cmath>
 
@@ -16,18 +17,50 @@ class MovableBoid : public Boid
 
   bool angleVision (Boid b);
 
+	glm::vec3 getVelocity();
+
+  void setVelocity(glm::vec3 velocity);
+
+  float getMass();
+
+  glm::vec3 wander();
+
+  glm::vec3 arrive(glm::vec3 target);
+
+  glm::vec3 computeAcceleration();
+
+  glm::vec3 getAcceleration();
+
  private:
   glm::vec3 m_velocity;
   glm::vec3 m_acceleration;
+  float m_mass;
 
-  const float MAX_SPEED = 2; 
+  const float MAX_SPEED = 0; 
+  const float NORMAL_SPEED = 1.5; 
   const float MAX_FORCE = 2; 
 
   float m_maxSpeed = MAX_SPEED;
+  float m_normalSpeed = NORMAL_SPEED;
   float m_maxForce = MAX_FORCE;
 
   float m_angleView = M_PI;
   float m_distView = M_PI;
+  bool isNeighbor(Boid b);
+  bool isNear(Boid b);
+  glm::vec3 ruleFlyToCenter(std::vector<MovableBoid>& movableBoids);
+  glm::vec3 ruleKeepDistance(std::vector<MovableBoid>& movableBoids);
+  glm::vec3 ruleMatchSpeed(std::vector<MovableBoid>& movableBoids);
+  void applyForce(glm::vec3 f);
+  void update();
+
+  // Variable to wander
+  float rCircleWander = 20.0f;
+  float distToCircle = 60.0f;
+  float distStartSlowingDown = 100.0f;
+
 };
+
+typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
 #endif

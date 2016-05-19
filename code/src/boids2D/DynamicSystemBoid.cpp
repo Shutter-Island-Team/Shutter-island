@@ -24,15 +24,15 @@ void DynamicSystemBoid::setSolver(SolverBoidPtr solver)
 
 void DynamicSystemBoid::computeSimulationStep()
 {
-	// TODO : implement it
-    //Compute particle's force
-    // for(ParticlePtr p : m_particles)
-    // {
-    //     p->setForce(glm::vec3(0.0,0.0,0.0));
-    // }
-	// for Boids
+    for(MovableBoidPtr b : m_boidsManager.getMovableBoids())
+    {
+        b-> computeAcceleration();
+    }
 
     //Integrate position and velocity of particles
-    // m_solver->solve(m_dt, m_particles);
-	// BoidSolver
+    m_solver->solve(m_dt, m_boidsManager.getMovableBoids());
+}
+
+void DynamicSystemBoid::addMovableBoid(MovableBoidPtr b) {
+    m_boidsManager.addMovable(b);
 }

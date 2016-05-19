@@ -3,7 +3,8 @@
 
 #include <vector>
 
-#include "Boid.hpp"
+#include "MovableBoid.hpp"
+#include "TypeBoid.hpp"
 
 
 class BoidsManager
@@ -11,8 +12,12 @@ class BoidsManager
  public:
 	BoidsManager(void);
 
+	void addMovable(MovableBoidPtr b);
+
+	std::vector<MovableBoidPtr> & getMovableBoids();
+
  private:
- 	std::vector<Boid> boids;
+ 	std::vector<MovableBoidPtr> m_movableBoids;
 };
 
 #endif

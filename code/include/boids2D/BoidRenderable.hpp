@@ -3,15 +3,15 @@
 
 #include <glm/glm.hpp>
 
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include "Boid.hpp"
 
-class BoidRenderable : public Renderable
+class BoidRenderable : public HierarchicalRenderable
 {
     public:
         ~BoidRenderable();
         BoidRenderable();
-        BoidRenderable( ShaderProgramPtr program, Boid boid );
+        BoidRenderable( ShaderProgramPtr program, BoidPtr boid );
 
         void do_keyPressedEvent(sf::Event& e);
 
@@ -19,7 +19,7 @@ class BoidRenderable : public Renderable
         void do_draw();
         void do_animate( float time );
 
-        Boid boid;
+        BoidPtr boid;
 
         std::vector< glm::vec3 > m_positions;
         std::vector< glm::vec4 > m_colors;

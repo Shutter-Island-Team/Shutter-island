@@ -1,7 +1,7 @@
 #include "../../include/boids2D/DynamicSystemBoidRenderable.hpp"
 
 DynamicSystemBoidRenderable::DynamicSystemBoidRenderable(DynamicSystemBoidPtr system) :
-    Renderable(nullptr), m_lastUpdateTime( 0 )
+    HierarchicalRenderable(nullptr), m_lastUpdateTime( 0 )
 {
     m_system = system;
 }

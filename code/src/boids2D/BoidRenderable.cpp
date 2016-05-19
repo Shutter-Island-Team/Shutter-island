@@ -8,8 +8,8 @@
 #include <GL/glew.h>
 
 
-BoidRenderable::BoidRenderable(ShaderProgramPtr shaderProgram, Boid boid)
-  : Renderable(shaderProgram),
+BoidRenderable::BoidRenderable(ShaderProgramPtr shaderProgram, BoidPtr boid)
+  : HierarchicalRenderable(shaderProgram),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0), boid(boid)
 {
 	m_positions.push_back(glm::vec3(0.5,0,0));
@@ -79,7 +79,7 @@ void BoidRenderable::do_draw()
     glm::mat4 transformation(1.0);
     glm::mat4 model = getModelMatrix();
 
-    glm::vec3 position = boid.getLocation();
+    glm::vec3 position = boid->getLocation();
     transformation[0][0] = 1;
     transformation[1][1] = 1;
     transformation[2][2] = 1;
@@ -106,7 +106,8 @@ void BoidRenderable::do_draw()
     }
 }
 
-void BoidRenderable::do_animate(float time) {}
+void BoidRenderable::do_animate(float time) {
+}
 
 BoidRenderable::~BoidRenderable()
 {
@@ -118,11 +119,11 @@ BoidRenderable::~BoidRenderable()
 void BoidRenderable::do_keyPressedEvent(sf::Event& e) {
     switch(e.key.code) {
         case sf::Keyboard::Left:
-            boid.setLocation(boid.getLocation() - glm::vec3(1, 0, 0));
+            boid->setLocation(boid->getLocation() - glm::vec3(1, 0, 0));
             break;
         case sf::Keyboard::Right:
-            boid.setLocation(boid.getLocation() + glm::vec3(1, 0, 0));
+            boid->setLocation(boid->getLocation() + glm::vec3(1, 0, 0));
             break;
     }
-    std::cerr << "Position : " << boid.getLocation().x << std::endl;
+    std::cerr << "Position : " << boid->getLocation().x << std::endl;
 }

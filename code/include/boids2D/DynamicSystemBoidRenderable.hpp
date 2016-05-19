@@ -1,7 +1,7 @@
 #ifndef DYNAMIC_SYSTEM_BOID_RENDERABLE_HPP
 #define DYNAMIC_SYSTEM_BOID_RENDERABLE_HPP
 
-#include "../../include/Renderable.hpp"
+#include "../../include/HierarchicalRenderable.hpp"
 #include "DynamicSystemBoid.hpp"
 
 
@@ -14,7 +14,7 @@
  * possible to define a dynamic system in a local frame and then use hierarchical
  * geometric transformation to replace it correctly in the scene.
  */
-class DynamicSystemBoidRenderable : public Renderable
+class DynamicSystemBoidRenderable : public HierarchicalRenderable
 {
 public:
     /**@brief Build a dynamic system renderable.

@@ -12,6 +12,12 @@
 #include "../include/boids2D/Rabbit.hpp"
 #include "../include/boids2D/BoidRenderable.hpp"
 
+#include <cstdlib>
+#include <ctime>
+
+#include "../include/boids2D/DynamicSystemBoid.hpp"
+#include "../include/boids2D/DynamicSystemBoidRenderable.hpp"
+
 void initialize_practical_07_scene( Viewer& viewer )
 {
     //Position the camera
@@ -110,7 +116,7 @@ void initialize_practical_07_scene( Viewer& viewer )
 void initialize_boid_scene( Viewer& viewer )
 {
     //Position the camera
-    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, -8, -8 ), glm::vec3(0, 0, 0), glm::vec3( 0, 0, 1 ) ) );
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 8, 8 ), glm::vec3(0, 0, 0), glm::vec3( 0, 0, 1 ) ) );
 
     //Default shader
     ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
@@ -123,10 +129,10 @@ void initialize_boid_scene( Viewer& viewer )
     viewer.addRenderable(frame);
 
     // One boid
-    Rabbit r(glm::vec3(-5, 0, 2));
-    BoidRenderablePtr boid = std::make_shared<BoidRenderable>(flatShader, r);
+    // Rabbit r(glm::vec3(-5, 0, 2));
+    // BoidRenderablePtr boid = std::make_shared<BoidRenderable>(flatShader, r);
 
-    viewer.addRenderable(boid);
+    // viewer.addRenderable(boid);
 
     //Textured plane
         //Textured shader
@@ -140,4 +146,24 @@ void initialize_boid_scene( Viewer& viewer )
     texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(10.0,10.0,10.0)), glm::vec3(0.0, 0.0, -0.1)));
     texPlane->setMaterial(Material::Pearl());
     viewer.addRenderable(texPlane);
+
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
+    SolverBoidPtr solver = std::make_shared<SolverBoid>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+
+    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-2, 0, 2), RABBIT);
+    system->addMovableBoid(mvb1);
+
+    //Create a renderable associated to the dynamic system
+    //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
+    //It is also responsible for some of the key/mouse events
+    DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
+
+    BoidRenderablePtr mvb1r = std::make_shared<BoidRenderable>(flatShader, mvb1);
+    HierarchicalRenderable::addChild( systemRenderable, mvb1r );
+
+    viewer.addRenderable(systemRenderable);
+    viewer.startAnimation();
 }

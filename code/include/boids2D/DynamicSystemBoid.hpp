@@ -16,7 +16,7 @@ private:
     * and velocities will be updated thanks to the solver, taking into
     * account the force field applied to them.
     */
-    BoidsManager boidsManager;
+    BoidsManager m_boidsManager;
 
     /**@brief The solver of the dynamic system.
      *
@@ -93,6 +93,8 @@ public:
      * @param dt The new time integration interval.
      */
     void setDt(float dt);
+
+    void addMovableBoid(MovableBoidPtr b);
 };
 
 typedef std::shared_ptr<DynamicSystemBoid> DynamicSystemBoidPtr;
