@@ -53,8 +53,6 @@ class MovableBoid : public Boid
   glm::vec3 ruleFlyToCenter(std::vector<MovableBoid>& movableBoids);
   glm::vec3 ruleKeepDistance(std::vector<MovableBoid>& movableBoids);
   glm::vec3 ruleMatchSpeed(std::vector<MovableBoid>& movableBoids);
-  void applyForce(glm::vec3 f);
-  void update();
 
   // Variable to wander
   float rCircleWander = 3.0f;

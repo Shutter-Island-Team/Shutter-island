@@ -1,3 +1,4 @@
+#include <iostream>
 #include <cmath>
 
 #include "../../include/boids2D/MovableBoid.hpp"
@@ -8,8 +9,7 @@
 
 MovableBoid::MovableBoid(glm::vec3 position, TypeBoid t) 
 : Boid(position, t) {
-	// TODO
-	// HERE
+
 }
 
 bool MovableBoid::canSee(Boid b) {
@@ -32,6 +32,7 @@ bool MovableBoid::angleVision (Boid b) {
 void MovableBoid::computeNextStep(float dt) {
     m_velocity += (dt / m_mass) * limitVec3(m_acceleration, m_maxSpeed);
     m_velocity = limitVec3(m_velocity, m_maxSpeed);
+    setAngle(atan2(m_velocity.y, m_velocity.x));
     setLocation( getLocation() + dt * m_velocity );
 }
 
@@ -53,7 +54,7 @@ glm::vec3 MovableBoid::computeAcceleration () {
 	// applyForce(arrive(glm::vec3(0, 0, 2)));
 	glm::vec3 wanderVec = wander();
 	glm::vec3 stayWithinWalls = 4.0f * ruleStayWithinWalls();
-	applyForce(wanderVec + stayWithinWalls);
+	m_acceleration = wanderVec + stayWithinWalls;
 }
 
 bool MovableBoid::isNeighbor(Boid b) {
@@ -145,31 +146,6 @@ glm::vec3 MovableBoid::ruleStayWithinWalls() {
     steer = limitVec3(steer, m_maxForce);
 
     return steer;
-}
-
-
-void MovableBoid::applyForce(glm::vec3 f){
-	// TODO function limit
-	glm::vec3 tmp(0,0,0);
-	tmp.x = std::min(f.x, m_maxForce);
-	tmp.y = std::min(f.y, m_maxForce);
-	tmp.z = std::min(f.z, m_maxForce);
-
-	m_acceleration = tmp / m_mass;
-}
-
-void MovableBoid::update(){
-	m_velocity += m_acceleration;
-	// TODO function limit
-	m_velocity.x = std::min(m_velocity.x, m_maxSpeed);
-	m_velocity.y = std::min(m_velocity.y, m_maxSpeed);
-	m_velocity.z = std::min(m_velocity.z, m_maxSpeed);
-
-	setLocation(getLocation() + m_velocity);
-
-	m_acceleration.x = 0;
-	m_acceleration.y = 0;
-	m_acceleration.z = 0;
 }
 
 glm::vec3 MovableBoid::wander() {

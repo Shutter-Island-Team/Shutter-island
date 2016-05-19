@@ -7,6 +7,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
+#include <glm/gtx/vector_angle.hpp>
+
 
 BoidRenderable::BoidRenderable(ShaderProgramPtr shaderProgram, BoidPtr boid)
   : HierarchicalRenderable(shaderProgram),
@@ -79,13 +81,19 @@ void BoidRenderable::do_draw()
     glm::mat4 transformation(1.0);
     glm::mat4 model = getModelMatrix();
 
+    float c = cos(boid->getAngle());
+    float s = sin(boid->getAngle());
+
     glm::vec3 position = boid->getLocation();
-    transformation[0][0] = 1;
-    transformation[1][1] = 1;
+    transformation[0][0] = c;
+    transformation[1][1] = c;
+    transformation[1][0] = -s;
+    transformation[0][1] = s;
     transformation[2][2] = 1;
     transformation[3][0] = position.x;
     transformation[3][1] = position.y;
     transformation[3][2] = position.z;
+    transformation[3][3] = 1;
 
     glcheck(glUniformMatrix4fv( modelLocation, 1, GL_FALSE, glm::value_ptr(model * transformation)));
 
