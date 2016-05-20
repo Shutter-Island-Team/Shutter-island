@@ -8,6 +8,7 @@
  * are going to represent the Voronoi diagram's verteces.
  */
 
+#include "Seed.hpp"
 #include <vector>
 
 /*
@@ -24,13 +25,8 @@
 /*
  * Defining a useful macro to compute the distance between two points.
  */
-#define DISTANCE(x,y) sqrt(     ((x).first-(y).first)*((x).first-(y).first) \
-                            +   ((x).second-(y).second)*((x).second-(y).second))
-
-/*
- * Defining a type in order to make the code clearer.
- */
-typedef std::pair<float, float> T_point;
+#define DISTANCE(x,y) sqrt(     ((x).getX()-(y).getX())*((x).getX()-(y).getX()) \
+                            +   ((x).getY()-(y).getY())*((x).getY()-(y).getY()))
 
 /**
  * @brief VoronoiSeedsGenerator interface.
@@ -127,7 +123,7 @@ public:
 	 * @param listOfSeeds A reference on the vector to fill with the randomly
 	 *	generated seeds.
 	 */
-	void generateSeeds(std::vector<T_point>& listOfSeeds);
+	void generateSeeds(std::vector<Seed>& listOfSeeds);
 
 private:
     /**
@@ -144,10 +140,10 @@ private:
      * @param seed The newly generated seed.
      */
     bool isMinDistVerified(
-        std::vector<T_point> **seedsOfSub, 
+        std::vector<Seed> **seedsOfSub, 
         int widthID,
         int heightID,
-        T_point seed
+        Seed seed
     );
  };
 

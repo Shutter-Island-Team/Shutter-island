@@ -1,3 +1,4 @@
+#include "../../include/terrain/Seed.hpp"
 #include "../../include/terrain/VoronoiSeedsGenerator.hpp"
 #include <cmath>
 #include <cstdlib>
@@ -50,7 +51,7 @@ VoronoiSeedsGenerator::~VoronoiSeedsGenerator()
 }
 
 void VoronoiSeedsGenerator::generateSeeds(
-	std::vector<T_point>& listOfSeeds
+	std::vector<Seed>& listOfSeeds
 )
 {
 	/*
@@ -64,9 +65,9 @@ void VoronoiSeedsGenerator::generateSeeds(
      * This one is dynamically allocated since it will be necessary to use it as an argument
      * for a function.
      */
-    std::vector<T_point>** seedsBySub = new std::vector<T_point>* [m_nbOfHeightSubdivisions];
+    std::vector<Seed>** seedsBySub = new std::vector<Seed>* [m_nbOfHeightSubdivisions];
     for (int i = 0; i < m_nbOfHeightSubdivisions; i++) {
-        seedsBySub[i] = new std::vector<T_point> [m_nbOfWidthSubdivisions];
+        seedsBySub[i] = new std::vector<Seed> [m_nbOfWidthSubdivisions];
     }
 
 	/*
@@ -99,7 +100,7 @@ void VoronoiSeedsGenerator::generateSeeds(
             &&  (heightID >=0) && (heightID < m_nbOfHeightSubdivisions)
         ) {
             if (nbSeedsBySub[heightID][widthID] < m_maxNbOfSeedsBySubdivision) {
-                T_point seed(wPosition, hPosition);
+                Seed seed(wPosition, hPosition);
 
                 /*
                  * Inserting only if the new seed is at a minimal distance of the other ones
@@ -125,10 +126,10 @@ void VoronoiSeedsGenerator::generateSeeds(
 }
  
 bool VoronoiSeedsGenerator::isMinDistVerified(
-    std::vector<T_point> **seedsOfSub,
+    std::vector<Seed> **seedsOfSub,
     int widthID,
     int heightID,
-    T_point seed
+    Seed seed
 )
 {
     /*
