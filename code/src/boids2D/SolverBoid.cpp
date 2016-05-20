@@ -5,8 +5,7 @@ SolverBoid::SolverBoid() {
 }
 
 void SolverBoid::solve( const float& dt, std::vector<MovableBoidPtr>& boids ) {
-	for(MovableBoidPtr b : boids)
-    {
+	for(MovableBoidPtr b : boids) {
     	b->computeNextStep(dt);
     }
 }

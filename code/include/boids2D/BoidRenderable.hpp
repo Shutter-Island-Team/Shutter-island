@@ -12,6 +12,8 @@ class BoidRenderable : public HierarchicalRenderable
         BoidRenderable( ShaderProgramPtr program, BoidPtr boid );
         ~BoidRenderable();
 
+        void mousePressEvent(sf::Event& e);
+
     private:
         void do_draw();
         void do_animate( float time );

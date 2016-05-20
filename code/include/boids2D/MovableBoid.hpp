@@ -36,11 +36,11 @@ class MovableBoid : public Boid
  private:
   glm::vec3 m_velocity;
   glm::vec3 m_acceleration;
-  float m_mass = 0.005f;
+  float m_mass = 0.05f;
 
-  const float MAX_SPEED = 10.0f; 
+  const float MAX_SPEED = 2.0f; 
   const float NORMAL_SPEED = 1.5f; 
-  const float MAX_FORCE = 50.0f;
+  const float MAX_FORCE = 1.0f;
 
   float m_maxSpeed = MAX_SPEED;
   float m_normalSpeed = NORMAL_SPEED;
@@ -54,9 +54,11 @@ class MovableBoid : public Boid
   glm::vec3 ruleKeepDistance(std::vector<MovableBoid>& movableBoids);
   glm::vec3 ruleMatchSpeed(std::vector<MovableBoid>& movableBoids);
 
+  glm::vec3 separate(std::vector<MovableBoid> mvB, float desiredSeparation);
+
   // Variable to wander
-  float rCircleWander = 3.0f;
-  float distToCircle = 9.0f;
+  float rCircleWander = 9.0f;
+  float distToCircle = 3.0f;
   float distStartSlowingDown = 5.0f;
 
 };

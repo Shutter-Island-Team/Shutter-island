@@ -33,6 +33,8 @@ public:
      */
     void setDynamicSystem(const DynamicSystemBoidPtr &system);
 
+    void do_mousePressEvent(sf::Event& e);
+
 private:
     void do_draw();
     /**@brief Update the dynamic system.
@@ -58,6 +60,8 @@ private:
      * keep updating the dynamic system at the specified time interval.
      */
     float m_lastUpdateTime;
+
+    int choice = 0;
 };
 
 typedef std::shared_ptr<DynamicSystemBoidRenderable> DynamicSystemBoidRenderablePtr;

@@ -30,10 +30,18 @@ bool MovableBoid::angleVision (Boid b) {
 }
 
 void MovableBoid::computeNextStep(float dt) {
-    m_velocity += (dt / m_mass) * limitVec3(m_acceleration, m_maxSpeed);
+    m_velocity += (dt / m_mass) * limitVec3(m_acceleration, m_maxForce);
     m_velocity = limitVec3(m_velocity, m_maxSpeed);
     setAngle(atan2(m_velocity.y, m_velocity.x));
     setLocation( getLocation() + dt * m_velocity );
+
+    // Borderless
+    glm::vec3 locationInBox = getLocation() + glm::vec3(20, 20, 20);
+    locationInBox.x = fmod(locationInBox.x + 20, 20);
+    locationInBox.y = fmod(locationInBox.y + 20, 20);
+    locationInBox.z = fmod(locationInBox.z + 20, 20);
+
+    setLocation( locationInBox );
 }
 
 glm::vec3 MovableBoid::getVelocity(){
@@ -51,10 +59,12 @@ float MovableBoid::getMass() {
 glm::vec3 MovableBoid::computeAcceleration () {
 	// Reset acceleration
 	m_acceleration = glm::vec3(0, 0, 0);
-	// applyForce(arrive(glm::vec3(0, 0, 2)));
-	glm::vec3 wanderVec = wander();
-	glm::vec3 stayWithinWalls = 4.0f * ruleStayWithinWalls();
-	m_acceleration = wanderVec + stayWithinWalls;
+
+	if (getTarget().x == 0) {
+		m_acceleration = 20.0f * wander();
+	} else {
+		m_acceleration = arrive(glm::vec3(getTarget().x, getTarget().y, 2));
+	}
 }
 
 bool MovableBoid::isNeighbor(Boid b) {
@@ -155,6 +165,26 @@ glm::vec3 MovableBoid::wander() {
     return arrive(desiredTarget);
 }
 
+glm::vec3 MovableBoid::separate(std::vector<MovableBoid> mvB, float desiredSeparation) {
+	glm::vec3 sum;
+	int count = 0;
+	for(MovableBoid m : mvB) {
+		float d = glm::distance(getLocation(), m.getLocation());
+		if ((d > 0) && (d < desiredSeparation)) {
+			glm::vec3 diff = getLocation() - m.getLocation();
+			diff = glm::normalize(diff) / d;
+			sum += diff;
+			count++;
+		}
+		if (count > 0) {
+			sum /= count;
+			sum = glm::normalize(sum) * m_maxSpeed;
+			glm::vec3 steer = sum - m_velocity;
+			return limitVec3(steer, m_maxForce);
+		}
+		return glm::vec3(0, 0, 0);
+	}
+}
 
 glm::vec3 MovableBoid::arrive(glm::vec3 target) {
 	glm::vec3 desired = target - getLocation();

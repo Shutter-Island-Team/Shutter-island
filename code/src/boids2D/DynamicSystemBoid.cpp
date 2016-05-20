@@ -28,11 +28,16 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
 
 void DynamicSystemBoid::computeSimulationStep()
 {
-    for(MovableBoidPtr b : m_boidsManager->getMovableBoids())
-    {
+    for(MovableBoidPtr b : m_boidsManager->getMovableBoids()) {
         b-> computeAcceleration();
     }
 
     //Integrate position and velocity of particles
     m_solver->solve(m_dt, m_boidsManager->getMovableBoids());
+}
+
+void DynamicSystemBoid::setTargetBoid(float x, float y) {
+    for(MovableBoidPtr b : m_boidsManager->getMovableBoids()) {
+        b->setTarget(x, y);
+    }
 }

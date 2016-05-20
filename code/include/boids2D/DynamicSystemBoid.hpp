@@ -87,6 +87,8 @@ public:
      */
     void setDt(float dt);
 
+    void setTargetBoid(float x, float y);
+
 };
 
 typedef std::shared_ptr<DynamicSystemBoid> DynamicSystemBoidPtr;
