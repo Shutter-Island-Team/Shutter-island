@@ -1,5 +1,7 @@
 #include "../../include/boids2D/SolverBoid.hpp"
 
+#include <iostream>
+
 SolverBoid::SolverBoid() {
 
 }

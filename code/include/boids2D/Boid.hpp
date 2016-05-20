@@ -12,7 +12,7 @@ class Boid
  public:
 	Boid(glm::vec3 location, BoidType t);
 
-	glm::vec3 getLocation();
+	glm::vec3 getLocation() const;
 
 	void setLocation(glm::vec3 location);
 

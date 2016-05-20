@@ -6,5 +6,6 @@
 void initialize_practical_07_scene( Viewer& viewer );
 void initialize_boid_scene( Viewer& viewer );
 void initialize_boid_scene_test_separate( Viewer& viewer );
+void initialize_boid_scene_test_canSee( Viewer& viewer );
 
 #endif 

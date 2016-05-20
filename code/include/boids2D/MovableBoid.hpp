@@ -20,13 +20,13 @@ class MovableBoid : public Boid
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t);
 
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
-    float angleView, float distView, BoidType t);
+    float angleView, float distViewSeparate, float distViewCohesion, BoidType t);
 
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
-    float angleView, float distView, float maxSpeed, 
+    float angleView, float distViewSeparate, float distViewCohesion, float maxSpeed, 
     float maxForce, BoidType t);
 
-	bool canSee(Boid b);
+	bool canSee(Boid b, float distView);
 
 	void computeNextStep(float dt);
 
@@ -47,17 +47,12 @@ class MovableBoid : public Boid
   glm::vec3 getAcceleration();
 
  protected:
-  const float DEFAULT_MAX_SPEED = 3.5f; 
-  const float DEFAULT_MAX_FORCE = 2.0f;
-  const float DEFAULT_ANGLE_VIEW = M_PI;
-  const float DEFAULT_DISTANCE_VIEW = M_PI;
-  const float DEFAULT_MASS = 0.05f;
-
   glm::vec3 m_velocity;
   glm::vec3 m_acceleration;
   float m_mass;
   float m_angleView;
-  float m_distView;
+  float m_distViewSeparate;
+  float m_distViewCohesion;
   float m_maxSpeed;
   float m_maxForce;
 
@@ -67,8 +62,16 @@ class MovableBoid : public Boid
   float distStartSlowingDown = 5.0f;
 
  private:
-  glm::vec3 separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation);
+  glm::vec3 separate(std::vector<MovableBoidPtr> mvB);
 
+  glm::vec3 align (std::vector<MovableBoidPtr> mvB);
+
+  glm::vec3 cohesion (std::vector<MovableBoidPtr> mvB);
 };
+
+bool operator==(const MovableBoid& b1, const MovableBoid& b2);
+
+bool operator!=(const MovableBoid& b1, const MovableBoid& b2);
+
 
 #endif

@@ -5,7 +5,7 @@ Boid::Boid(glm::vec3 location, BoidType t)
 	m_movable = (m_boidType == RABBIT || m_boidType == WOLF); // TODO do it with a function
 }
 
-glm::vec3 Boid::getLocation() {
+glm::vec3 Boid::getLocation() const {
 	return m_location;
 }
 

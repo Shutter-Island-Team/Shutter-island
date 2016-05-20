@@ -1,5 +1,7 @@
 #include "../../include/boids2D/DynamicSystemBoid.hpp"
 
+#include <iostream>
+
 DynamicSystemBoid::DynamicSystemBoid() : m_dt(0.1) {}
 
 float DynamicSystemBoid::getDt() const
@@ -29,11 +31,12 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
 void DynamicSystemBoid::computeSimulationStep()
 {
     for(MovableBoidPtr b : m_boidsManager->getMovableBoids()) {
-        b-> computeAcceleration(m_boidsManager->getMovableBoids());
+        b->computeAcceleration(m_boidsManager->getMovableBoids());
     }
 
     //Integrate position and velocity of particles
     m_solver->solve(m_dt, m_boidsManager->getMovableBoids());
+
 }
 
 void DynamicSystemBoid::setTargetBoid(float x, float y) {

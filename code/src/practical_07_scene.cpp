@@ -158,7 +158,8 @@ void initialize_boid_scene( Viewer& viewer )
     BoidRenderablePtr br;
 
     for (int i = 0; i < 50; ++i) {
-        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-5, 5), random(-5, 5), 2), RABBIT);
+        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), RABBIT);
+        std::cerr << mvb->getMass() << std::endl;
         boidsManager->addMovableBoid(mvb);
         br = std::make_shared<BoidRenderable>(flatShader, mvb);
         HierarchicalRenderable::addChild( systemRenderable, br );
@@ -212,6 +213,62 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
     MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(-1, 0, 0), RABBIT);
     boidsManager->addMovableBoid(mvb1);
     MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(5, -5, 2), glm::vec3(1, 0, 0), RABBIT);
+    boidsManager->addMovableBoid(mvb2);
+
+    BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(flatShader, mvb1);
+    BoidRenderablePtr br2 = std::make_shared<BoidRenderable>(flatShader, mvb2);
+
+    HierarchicalRenderable::addChild( systemRenderable, br1 );
+    HierarchicalRenderable::addChild( systemRenderable, br2 );
+
+    viewer.addRenderable(systemRenderable);
+    viewer.startAnimation();
+}
+
+void initialize_boid_scene_test_canSee( Viewer& viewer )
+{
+    //Position the camera
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 0, 50 ), glm::vec3(0, 0, 0), glm::vec3( 0, 1, 0 ) ) );
+
+    //Default shader
+    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/flatVertex.vert", 
+        "../shaders/flatFragment.frag"});
+    viewer.addShaderProgram( flatShader );
+
+    //Textured plane
+        //Textured shader
+    ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/textureVertex.vert",
+        "../shaders/textureFragment.frag"});
+    viewer.addShaderProgram( texShader );
+
+    std::string filename = "./../textures/grass_texture.png";
+    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+    texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(50.0,50.0,50.0)), glm::vec3(0.0, 0.0, -0.1)));
+    texPlane->setMaterial(Material::Pearl());
+    viewer.addRenderable(texPlane);
+
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>();
+
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
+    SolverBoidPtr solver = std::make_shared<SolverBoid>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+    system->setBoidsManager(boidsManager);
+
+    //Create a renderable associated to the dynamic system
+    //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
+    //It is also responsible for some of the key/mouse events
+    DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
+
+    MovableBoidPtr mvb;
+    BoidRenderablePtr br;
+
+    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT);
+    boidsManager->addMovableBoid(mvb1);
+    MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(0, -1, 2), glm::vec3(0, -1, 0), RABBIT);
     boidsManager->addMovableBoid(mvb2);
 
     BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(flatShader, mvb1);
