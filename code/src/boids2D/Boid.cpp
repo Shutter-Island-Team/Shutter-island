@@ -29,3 +29,12 @@ float Boid::getAngle() {
 void Boid::setAngle(float angle) {
 	m_angle = angle;
 }
+
+void Boid::setTarget(float x, float y) {
+	m_target = glm::vec2(x, y);
+}
+
+glm::vec2 Boid::getTarget() {
+	return m_target;
+}
+

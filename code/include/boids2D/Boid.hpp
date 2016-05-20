@@ -24,12 +24,18 @@ class Boid
 
 	void setAngle(float angle);
 
+	void setTarget(float x, float y);
+
+	glm::vec2 getTarget();
+
  private:
  	glm::vec3 m_location;
  	float m_angle;
  	TypeBoid m_typeBoid;
  	bool m_movable;
  	float m_distanceMin = 1;
+	glm::vec2 m_target;
+
 };
 
 typedef std::shared_ptr<Boid> BoidPtr;
