@@ -42,9 +42,13 @@ class MovableBoid : public Boid
 
   glm::vec3 arrive(glm::vec3 target);
 
+  glm::vec3 separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation);
+
   glm::vec3 computeAcceleration(std::vector<MovableBoidPtr> mvB);
 
   glm::vec3 getAcceleration();
+
+  void setAcceleration(glm::vec3 acceleration);
 
  protected:
   glm::vec3 m_velocity;

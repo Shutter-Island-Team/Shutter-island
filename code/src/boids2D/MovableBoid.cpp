@@ -223,3 +223,7 @@ bool operator==(const MovableBoid& b1, const MovableBoid& b2) {
 bool operator!=(const MovableBoid& b1, const MovableBoid& b2){
 	return !(b1 == b2);
 }
+
+void MovableBoid::setAcceleration(glm::vec3 acceleration) {
+	m_acceleration = acceleration;
+}
