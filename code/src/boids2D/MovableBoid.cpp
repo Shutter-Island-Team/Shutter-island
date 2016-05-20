@@ -7,18 +7,61 @@
 
 // TODO : steering + solver. The force send should be only normalize in the end
 
-MovableBoid::MovableBoid(glm::vec3 position, TypeBoid t) 
-: Boid(position, t) {
+MovableBoid::MovableBoid(glm::vec3 location, BoidType t) 
+	: Boid(location, t), m_velocity(glm::vec3(0,0,0)), 
+	m_acceleration(glm::vec3(0,0,0)), m_mass(DEFAULT_MASS),
+	m_angleView(DEFAULT_ANGLE_VIEW), m_distView(DEFAULT_DISTANCE_VIEW), 
+	m_maxSpeed(DEFAULT_MAX_SPEED), m_maxForce(DEFAULT_MAX_FORCE)
+{
+
+}
+
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t) 
+	: Boid(location, t), m_velocity(velocity), 
+	m_acceleration(glm::vec3(0,0,0)), m_mass(DEFAULT_MASS),
+	m_angleView(DEFAULT_ANGLE_VIEW), m_distView(DEFAULT_DISTANCE_VIEW), 
+	m_maxSpeed(DEFAULT_MAX_SPEED), m_maxForce(DEFAULT_MAX_FORCE)
+{
+
+}
+
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t)
+	: Boid(location, t), m_velocity(velocity), 
+	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
+	m_angleView(DEFAULT_ANGLE_VIEW), m_distView(DEFAULT_DISTANCE_VIEW), 
+	m_maxSpeed(DEFAULT_MAX_SPEED), m_maxForce(DEFAULT_MAX_FORCE)
+{
+
+}
+
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
+    float angleView, float distView, BoidType t)
+	: Boid(location, t), m_velocity(velocity), 
+	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
+	m_angleView(angleView), m_distView(distView), 
+	m_maxSpeed(DEFAULT_MAX_SPEED), m_maxForce(DEFAULT_MAX_FORCE)
+{
+
+}
+
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
+    float angleView, float distView, float maxSpeed, 
+    float maxForce, BoidType t)
+	: Boid(location, t), m_velocity(velocity), 
+	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
+	m_angleView(angleView), m_distView(distView), 
+	m_maxSpeed(maxSpeed), m_maxForce(maxForce)
+{
 
 }
 
 bool MovableBoid::canSee(Boid b) {
-	return (glm::distance(getLocation(), b.getLocation()) < m_distView) && (angleVision(b));
+	return (glm::distance(m_location, b.getLocation()) < m_distView) && (angleVision(b));
 }
 
 bool MovableBoid::angleVision (Boid b) {
-	glm::vec3 diffPos = b.getLocation() - getLocation();
-	float comparativeValue = acos(glm::dot(glm::normalize(getVelocity()), glm::normalize(diffPos)));
+	glm::vec3 diffPos = b.getLocation() - m_location;
+	float comparativeValue = acos(glm::dot(glm::normalize(m_velocity), glm::normalize(diffPos)));
 
 	if (m_angleView <= M_PI) {
 		return (0 <= comparativeValue) && (comparativeValue <= m_angleView/2);
@@ -33,7 +76,7 @@ void MovableBoid::computeNextStep(float dt) {
     m_velocity += (dt / m_mass) * limitVec3(m_acceleration, m_maxForce);
     m_velocity = limitVec3(m_velocity, m_maxSpeed);
     setAngle(atan2(m_velocity.y, m_velocity.x));
-    setLocation( getLocation() + dt * m_velocity );
+    m_location += dt * m_velocity;
 
     // Borderless
     glm::vec3 locationInBox = getLocation() + glm::vec3(20, 20, 20);
@@ -41,7 +84,7 @@ void MovableBoid::computeNextStep(float dt) {
     locationInBox.y = fmod(locationInBox.y + 20, 20);
     locationInBox.z = fmod(locationInBox.z + 20, 20);
 
-    setLocation( locationInBox );
+    m_location = locationInBox ;
 }
 
 glm::vec3 MovableBoid::getVelocity(){
@@ -67,88 +110,21 @@ glm::vec3 MovableBoid::computeAcceleration () {
 	}
 }
 
-bool MovableBoid::isNeighbor(Boid b) {
-	// TODO
-	return true;
-}
-
-bool MovableBoid::isNear(Boid b) {
-	// TODO
-	return true;
-}
-
-glm::vec3 MovableBoid::ruleFlyToCenter(std::vector<MovableBoid>& movableBoids){
-	glm::vec3 sum(0,0,0);
-	int count = 0;
-
-	for(size_t i=0; i<movableBoids.size(); ++i) {
-	 	MovableBoid b = movableBoids[i];
-	 	if(isNeighbor(b)) {
-	 		sum += b.getLocation();
-	 		count++;
-	 	}
-	}
-
-	if(count > 0){ 
-		sum /= count;
-		glm::normalize(sum);
-		sum *= m_normalSpeed;
-	}
-
-	return sum;
-
-}
-
-glm::vec3 MovableBoid::ruleKeepDistance(std::vector<MovableBoid>& movableBoids){
-	glm::vec3 sum(0,0,0);
-
-	for(size_t i=0; i<movableBoids.size(); ++i) {
-	 	MovableBoid b = movableBoids[i];
-	 	if(isNear(b)) {
-	 		if(glm::distance(getLocation(), b.getLocation()) < getDistanceMin())
-	 		sum = sum + (getLocation() - b.getLocation());
-	 	}
-	}
-
-	return sum;
-}
-
-glm::vec3 MovableBoid::ruleMatchSpeed(std::vector<MovableBoid>& movableBoids){
-	glm::vec3 sum(0,0,0);
-	int count = 0;
-
-	for(size_t i=0; i<movableBoids.size(); ++i) {
-	 	MovableBoid b = movableBoids[i];
-	 	if(isNeighbor(b)) {
-	 		sum += b.getVelocity();
-	 		count++;
-	 	}
-	}
-
-	if(count > 0){ 
-		sum /= count;
-		sum -= m_velocity;
-	}
-
-	return sum;
-
-}
-
 glm::vec3 MovableBoid::ruleStayWithinWalls() {
 	glm::vec3 steer(0, 0, 0);
 	float distToWall = 20.0f;
-    if (getLocation().x < -distToWall) {
+    if (m_location.x < -distToWall) {
       glm::vec3 desired(m_maxSpeed, m_velocity.y, 0);
       steer = desired - m_velocity;
-    } else if (getLocation().x >  distToWall) {
+    } else if (m_location.x >  distToWall) {
       glm::vec3 desired(m_maxSpeed, -m_velocity.y, 0);
       steer = m_velocity - desired; // TODO : This is horrible and not understandible at all
     }
     
-    if (getLocation().y < -distToWall) {
+    if (m_location.y < -distToWall) {
       glm::vec3 desired(m_maxSpeed, m_velocity.x, 0);
       steer = desired + steer - m_velocity;
-    } else if (getLocation().y >  distToWall) {
+    } else if (m_location.y >  distToWall) {
       glm::vec3 desired(m_maxSpeed, -m_velocity.x, 0);
       steer = m_velocity + steer - desired; // TODO : This is horrible and not understandible at all
     }
@@ -161,7 +137,7 @@ glm::vec3 MovableBoid::ruleStayWithinWalls() {
 glm::vec3 MovableBoid::wander() {
 	float randomVal = random(0.0f, 2*M_PI);
 	glm::vec3 randomVec3(cos(randomVal), sin(randomVal), 0);
-    glm::vec3 desiredTarget = getLocation() + distToCircle*m_velocity + rCircleWander*randomVec3;
+    glm::vec3 desiredTarget = m_location + distToCircle*m_velocity + rCircleWander*randomVec3;
     return arrive(desiredTarget);
 }
 
@@ -187,7 +163,7 @@ glm::vec3 MovableBoid::separate(std::vector<MovableBoid> mvB, float desiredSepar
 }
 
 glm::vec3 MovableBoid::arrive(glm::vec3 target) {
-	glm::vec3 desired = target - getLocation();
+	glm::vec3 desired = target - m_location;
 
 	float d = glm::length(desired);
 	glm::normalize(desired);

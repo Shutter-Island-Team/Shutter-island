@@ -5,20 +5,18 @@
 #include <memory>
 
 #include <vector>
-#include "TypeBoid.hpp"
+#include "BoidType.hpp"
 
 class Boid
 {
  public:
-	Boid(glm::vec3 position, TypeBoid t);
+	Boid(glm::vec3 location, BoidType t);
 
 	glm::vec3 getLocation();
 
-	void setLocation(glm::vec3 newLocation);
+	void setLocation(glm::vec3 location);
 
 	bool isMovable();
-
-	float getDistanceMin();
 
 	float getAngle();
 
@@ -28,14 +26,20 @@ class Boid
 
 	glm::vec2 getTarget();
 
- private:
+	float getMinDistance();
+
+	void setMinDistance(float minDistance);
+
+	BoidType getBoidType();
+
+ protected:
  	glm::vec3 m_location;
  	float m_angle;
- 	TypeBoid m_typeBoid;
+ 	BoidType m_boidType;
  	bool m_movable;
- 	float m_distanceMin = 1;
 	glm::vec2 m_target;
 
+ 	float m_minDistance = 1;
 };
 
 typedef std::shared_ptr<Boid> BoidPtr;

@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "MovableBoid.hpp"
-#include "TypeBoid.hpp"
+#include "BoidType.hpp"
 
 
 class BoidsManager
