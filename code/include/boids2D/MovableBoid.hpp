@@ -34,8 +34,6 @@ class MovableBoid : public Boid
 
 	glm::vec3 getVelocity();
 
-  void setVelocity(glm::vec3 velocity);
-
   float getMass();
 
   glm::vec3 wander();
@@ -48,13 +46,12 @@ class MovableBoid : public Boid
 
   glm::vec3 getAcceleration();
 
-
  protected:
-  const float DEFAULT_MAX_SPEED = 2.0f; 
+  const float DEFAULT_MAX_SPEED = 3.5f; 
   const float DEFAULT_MAX_FORCE = 2.0f;
   const float DEFAULT_ANGLE_VIEW = M_PI;
   const float DEFAULT_DISTANCE_VIEW = M_PI;
-  const float DEFAULT_MASS = 0.5f;
+  const float DEFAULT_MASS = 0.05f;
 
   glm::vec3 m_velocity;
   glm::vec3 m_acceleration;

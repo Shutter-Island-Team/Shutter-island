@@ -158,7 +158,7 @@ void initialize_boid_scene( Viewer& viewer )
     BoidRenderablePtr br;
 
     for (int i = 0; i < 50; ++i) {
-        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-10, 10), random(-10, 10), 2), RABBIT);
+        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-5, 5), random(-5, 5), 2), RABBIT);
         boidsManager->addMovableBoid(mvb);
         br = std::make_shared<BoidRenderable>(flatShader, mvb);
         HierarchicalRenderable::addChild( systemRenderable, br );
@@ -209,12 +209,16 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
     MovableBoidPtr mvb;
     BoidRenderablePtr br;
 
-    for (int i = 0; i < 50; ++i) {
-        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-10, 10), random(-10, 10), 2), RABBIT);
-        boidsManager->addMovableBoid(mvb);
-        br = std::make_shared<BoidRenderable>(flatShader, mvb);
-        HierarchicalRenderable::addChild( systemRenderable, br );
-    }
+    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(-1, 0, 0), RABBIT);
+    boidsManager->addMovableBoid(mvb1);
+    MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(5, -5, 2), glm::vec3(1, 0, 0), RABBIT);
+    boidsManager->addMovableBoid(mvb2);
+
+    BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(flatShader, mvb1);
+    BoidRenderablePtr br2 = std::make_shared<BoidRenderable>(flatShader, mvb2);
+
+    HierarchicalRenderable::addChild( systemRenderable, br1 );
+    HierarchicalRenderable::addChild( systemRenderable, br2 );
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();

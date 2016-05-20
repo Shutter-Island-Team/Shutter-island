@@ -10,6 +10,7 @@ int main( int argc, char* argv[] )
     Viewer viewer(1280,720);
 
     initialize_boid_scene( viewer );
+    // initialize_boid_scene_test_separate( viewer );
     // initialize_practical_07_scene( viewer );
 
     while( viewer.isRunning() )

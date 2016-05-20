@@ -73,26 +73,13 @@ bool MovableBoid::angleVision (Boid b) {
 }
 
 void MovableBoid::computeNextStep(float dt) {
-    m_velocity += (dt / m_mass) * limitVec3(m_acceleration, m_maxForce);
-    m_velocity = limitVec3(m_velocity, m_maxSpeed);
-    setAngle(atan2(m_velocity.y, m_velocity.x));
+    m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, m_maxForce), m_maxSpeed);
+	setAngle(atan2(m_velocity.y, m_velocity.x));
     m_location += dt * m_velocity;
-
-    // Borderless
-    glm::vec3 locationInBox = getLocation() + glm::vec3(20, 20, 20);
-    locationInBox.x = fmod(locationInBox.x + 20, 20);
-    locationInBox.y = fmod(locationInBox.y + 20, 20);
-    locationInBox.z = fmod(locationInBox.z + 20, 20);
-
-    m_location = locationInBox ;
 }
 
 glm::vec3 MovableBoid::getVelocity(){
 	return m_velocity;
-}
-
-void MovableBoid::setVelocity(glm::vec3 velocity) {
-	m_velocity = velocity;
 }
 
 float MovableBoid::getMass() {
@@ -104,12 +91,16 @@ glm::vec3 MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
 	m_acceleration = glm::vec3(0, 0, 0);
 
 	if (getTarget().x == 0) {
-		glm::vec3 wanderVec = 5.0f * wander();
-		glm::vec3 separateVec = 0.0f * separate(mvB, 2.0f);
+		glm::vec3 wanderVec = 1.0f * wander();
+		glm::vec3 separateVec = 5.0f * separate(mvB, 2.0f);
+		glm::vec3 stayWithinWallsVec = 14.0f * ruleStayWithinWalls();
 
-		m_acceleration = wanderVec + separateVec;
+		m_acceleration = wanderVec + separateVec + stayWithinWallsVec;
 	} else {
-		m_acceleration = arrive(glm::vec3(getTarget().x, getTarget().y, 2));
+		glm::vec3 seek = 1.0f * arrive(glm::vec3(getTarget().x, getTarget().y, 2));
+		glm::vec3 separateVec = 5.0f * separate(mvB, 2.0f);
+
+		m_acceleration = seek + separateVec;
 	}
 }
 
@@ -155,14 +146,14 @@ glm::vec3 MovableBoid::separate(std::vector<MovableBoidPtr> mvB, float desiredSe
 			sum += diff;
 			count++;
 		}
-		if (count > 0) {
-			sum /= count;
-			sum = glm::normalize(sum) * m_maxSpeed;
-			glm::vec3 steer = sum - m_velocity;
-			return limitVec3(steer, m_maxForce);
-		}
-		return glm::vec3(0, 0, 0);
 	}
+	if (count > 0) {
+		sum /= count;
+		sum = glm::normalize(sum) * m_maxSpeed;
+		glm::vec3 steer = sum - m_velocity;
+		return limitVec3(steer, m_maxForce);
+	}
+	return glm::vec3(0, 0, 0);
 }
 
 glm::vec3 MovableBoid::arrive(glm::vec3 target) {
