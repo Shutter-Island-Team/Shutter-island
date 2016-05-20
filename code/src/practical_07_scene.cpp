@@ -119,7 +119,7 @@ void initialize_practical_07_scene( Viewer& viewer )
 void initialize_boid_scene( Viewer& viewer )
 {
     //Position the camera
-    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 0, 30 ), glm::vec3(0, 0, 0), glm::vec3( 0, 1, 0 ) ) );
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 0, 50 ), glm::vec3(0, 0, 0), glm::vec3( 0, 1, 0 ) ) );
 
     //Default shader
     ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
