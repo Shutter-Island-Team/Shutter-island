@@ -5,8 +5,6 @@
 
 #include "../../include/Utils.hpp"
 
-// TODO : steering + solver. The force send should be only normalize in the end
-
 MovableBoid::MovableBoid(glm::vec3 location, BoidType t) 
 	: MovableBoid(location, glm::vec3(0,0,0), t)
 {
@@ -20,7 +18,7 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t)
 }
 
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t)
-	: MovableBoid(location, velocity, mass, 3*M_PI/4, 1.0f, 2.0f, t)
+	: MovableBoid(location, velocity, mass, 3*M_PI/4, 0.3f, 2.0f, t)
 {
 
 }
