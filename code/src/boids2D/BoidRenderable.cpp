@@ -18,9 +18,25 @@ BoidRenderable::BoidRenderable(ShaderProgramPtr shaderProgram, BoidPtr boid)
 	m_positions.push_back(glm::vec3(-0.2,0.2,0));
 	m_positions.push_back(glm::vec3(-0.2,-0.2,0));
 
-    m_colors.push_back(glm::vec4(1,0,0,1));
-    m_colors.push_back(glm::vec4(1,0,0,1));
-    m_colors.push_back(glm::vec4(1,0,0,1));
+    switch(boid->getBoidType()) {
+        case RABBIT:
+            m_colors.push_back(glm::vec4(0,1,0,1));
+            m_colors.push_back(glm::vec4(0,1,0,1));
+            m_colors.push_back(glm::vec4(0,1,0,1));
+            break;
+
+        case WOLF:
+            m_colors.push_back(glm::vec4(1,0,0,1));
+            m_colors.push_back(glm::vec4(1,0,0,1));
+            m_colors.push_back(glm::vec4(1,0,0,1));
+            break;
+
+        default:
+            m_colors.push_back(randomColor());
+            m_colors.push_back(randomColor());
+            m_colors.push_back(randomColor());
+            break;
+    }
 
     m_normals.push_back(glm::vec3(0,0,1));
     m_normals.push_back(glm::vec3(0,0,1));
