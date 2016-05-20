@@ -9,6 +9,8 @@
 **/*.o
 **/*.bbl
 **/*.blg
+**/*.swp
 code/extlib
 code/build
 code/archives
+**/tumeur*
