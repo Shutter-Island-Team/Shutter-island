@@ -99,12 +99,15 @@ float MovableBoid::getMass() {
 	return m_mass;
 }
 
-glm::vec3 MovableBoid::computeAcceleration () {
+glm::vec3 MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
 	// Reset acceleration
 	m_acceleration = glm::vec3(0, 0, 0);
 
 	if (getTarget().x == 0) {
-		m_acceleration = 20.0f * wander();
+		glm::vec3 wanderVec = 5.0f * wander();
+		glm::vec3 separateVec = 0.0f * separate(mvB, 2.0f);
+
+		m_acceleration = wanderVec + separateVec;
 	} else {
 		m_acceleration = arrive(glm::vec3(getTarget().x, getTarget().y, 2));
 	}
@@ -141,13 +144,13 @@ glm::vec3 MovableBoid::wander() {
     return arrive(desiredTarget);
 }
 
-glm::vec3 MovableBoid::separate(std::vector<MovableBoid> mvB, float desiredSeparation) {
+glm::vec3 MovableBoid::separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation) {
 	glm::vec3 sum;
 	int count = 0;
-	for(MovableBoid m : mvB) {
-		float d = glm::distance(getLocation(), m.getLocation());
+	for(MovableBoidPtr m : mvB) {
+		float d = glm::distance(getLocation(), m->getLocation());
 		if ((d > 0) && (d < desiredSeparation)) {
-			glm::vec3 diff = getLocation() - m.getLocation();
+			glm::vec3 diff = getLocation() - m->getLocation();
 			diff = glm::normalize(diff) / d;
 			sum += diff;
 			count++;

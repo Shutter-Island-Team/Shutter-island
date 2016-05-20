@@ -6,6 +6,10 @@
 
 #include <cmath>
 
+class MovableBoid;
+
+typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
+
 class MovableBoid : public Boid
 {
  public:
@@ -40,17 +44,17 @@ class MovableBoid : public Boid
 
   glm::vec3 arrive(glm::vec3 target);
 
-  glm::vec3 computeAcceleration();
+  glm::vec3 computeAcceleration(std::vector<MovableBoidPtr> mvB);
 
   glm::vec3 getAcceleration();
 
 
  protected:
-  const float DEFAULT_MAX_SPEED = 10.0f; 
-  const float DEFAULT_MAX_FORCE = 50.0f;
+  const float DEFAULT_MAX_SPEED = 2.0f; 
+  const float DEFAULT_MAX_FORCE = 2.0f;
   const float DEFAULT_ANGLE_VIEW = M_PI;
   const float DEFAULT_DISTANCE_VIEW = M_PI;
-  const float DEFAULT_MASS = 0.005f;
+  const float DEFAULT_MASS = 0.5f;
 
   glm::vec3 m_velocity;
   glm::vec3 m_acceleration;
@@ -66,10 +70,8 @@ class MovableBoid : public Boid
   float distStartSlowingDown = 5.0f;
 
  private:
-  glm::vec3 separate(std::vector<MovableBoid> mvB, float desiredSeparation);
+  glm::vec3 separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation);
 
 };
-
-typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
 #endif
