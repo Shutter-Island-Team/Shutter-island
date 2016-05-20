@@ -42,9 +42,13 @@ class MovableBoid : public Boid
 
   glm::vec3 arrive(glm::vec3 target);
 
+  glm::vec3 separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation);
+
   glm::vec3 computeAcceleration(std::vector<MovableBoidPtr> mvB);
 
   glm::vec3 getAcceleration();
+
+  void setAcceleration(glm::vec3 acceleration);
 
  protected:
   const float DEFAULT_MAX_SPEED = 3.5f; 
@@ -65,9 +69,6 @@ class MovableBoid : public Boid
   float rCircleWander = 9.0f;
   float distToCircle = 3.0f;
   float distStartSlowingDown = 5.0f;
-
- private:
-  glm::vec3 separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation);
 
 };
 

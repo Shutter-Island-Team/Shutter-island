@@ -182,3 +182,7 @@ glm::vec3 MovableBoid::arrive(glm::vec3 target) {
 glm::vec3 MovableBoid::getAcceleration() {
 	return m_acceleration;
 }
+
+void MovableBoid::setAcceleration(glm::vec3 acceleration) {
+	m_acceleration = acceleration;
+}
