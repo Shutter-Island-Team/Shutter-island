@@ -1,25 +1,20 @@
 #include "../../include/boids2D/Boid.hpp"
 
-Boid::Boid(glm::vec3 position, TypeBoid t) {
-	m_location = position;
-	m_typeBoid = t;
-	m_movable = (m_typeBoid == RABBIT || m_typeBoid == WOLF);
+Boid::Boid(glm::vec3 location, BoidType t) 
+	: m_location(location), m_boidType(t) {
+	m_movable = (m_boidType == RABBIT || m_boidType == WOLF); // TODO do it with a function
 }
 
 glm::vec3 Boid::getLocation() {
 	return m_location;
 }
 
-void Boid::setLocation(glm::vec3 newLocation) {
-	m_location = newLocation;
+void Boid::setLocation(glm::vec3 location) {
+	m_location = location;
 }
 
 bool Boid::isMovable() {
 	return m_movable;
-}
-
-float Boid::getDistanceMin() {
-	return m_distanceMin;
 }
 
 float Boid::getAngle() {
@@ -28,4 +23,16 @@ float Boid::getAngle() {
 
 void Boid::setAngle(float angle) {
 	m_angle = angle;
+}
+
+float Boid::getMinDistance() {
+	return m_minDistance;
+}
+
+void Boid::setMinDistance(float minDistance) {
+	m_minDistance = minDistance;
+}
+
+BoidType Boid::getBoidType() {
+	return m_boidType;
 }

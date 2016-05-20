@@ -157,7 +157,7 @@ void initialize_boid_scene( Viewer& viewer )
     MovableBoidPtr mvb;
     BoidRenderablePtr br;
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 2000; ++i) {
         mvb = std::make_shared<MovableBoid>(glm::vec3(random(-10, 10), random(-10, 10), 2), RABBIT);
         boidsManager->addMovableBoid(mvb);
         br = std::make_shared<BoidRenderable>(flatShader, mvb);

@@ -9,7 +9,18 @@
 class MovableBoid : public Boid
 {
  public:
-	MovableBoid(glm::vec3 position, TypeBoid t);
+	MovableBoid(glm::vec3 location, BoidType t);
+
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t);
+
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t);
+
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
+    float angleView, float distView, BoidType t);
+
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
+    float angleView, float distView, float maxSpeed, 
+    float maxForce, BoidType t);
 
 	bool canSee(Boid b);
 
@@ -33,27 +44,24 @@ class MovableBoid : public Boid
 
   glm::vec3 getAcceleration();
 
- private:
+ protected:
+  const float DEFAULT_MAX_SPEED = 10.0f; 
+  const float DEFAULT_MAX_FORCE = 50.0f;
+  const float DEFAULT_ANGLE_VIEW = M_PI;
+  const float DEFAULT_DISTANCE_VIEW = M_PI;
+  const float DEFAULT_MASS = 0.005f;
+
+
   glm::vec3 m_velocity;
   glm::vec3 m_acceleration;
-  float m_mass = 0.005f;
+  float m_mass;
+  float m_angleView;
+  float m_distView;
+  float m_maxSpeed;
+  float m_maxForce;
 
-  const float MAX_SPEED = 10.0f; 
-  const float NORMAL_SPEED = 1.5f; 
-  const float MAX_FORCE = 50.0f;
-
-  float m_maxSpeed = MAX_SPEED;
-  float m_normalSpeed = NORMAL_SPEED;
-  float m_maxForce = MAX_FORCE;
-
-  float m_angleView = M_PI;
-  float m_distView = M_PI;
-  bool isNeighbor(Boid b);
-  bool isNear(Boid b);
-  glm::vec3 ruleFlyToCenter(std::vector<MovableBoid>& movableBoids);
-  glm::vec3 ruleKeepDistance(std::vector<MovableBoid>& movableBoids);
-  glm::vec3 ruleMatchSpeed(std::vector<MovableBoid>& movableBoids);
-
+  
+  // TODO : remove for here during the state machine développement
   // Variable to wander
   float rCircleWander = 3.0f;
   float distToCircle = 9.0f;
