@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 
 TorusRenderable::TorusRenderable(ShaderProgramPtr shaderProgram) :
-    Renderable(shaderProgram),
+    HierarchicalRenderable(shaderProgram),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
     double a = 0.5; //Tube radius

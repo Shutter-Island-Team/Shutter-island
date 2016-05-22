@@ -1,13 +1,13 @@
 #ifndef MESH_RENDERABLE_HPP
 #define MESH_RENDERABLE_HPP
 
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
 
-class MeshRenderable : public Renderable
+class MeshRenderable : public HierarchicalRenderable
 {
     public:
         ~MeshRenderable();

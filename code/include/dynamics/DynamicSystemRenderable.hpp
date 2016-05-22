@@ -3,8 +3,8 @@
 
 #include <vector>
 
+#include "../HierarchicalRenderable.hpp"
 #include "DynamicSystem.hpp"
-#include "../HierarchicalCylinderRenderable.hpp"
 
 /**@brief A little hack to incorporate the dynamic system.
  *

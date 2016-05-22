@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-TriangleRenderable::TriangleRenderable(ShaderProgramPtr shaderProgram) : Renderable(shaderProgram)
+TriangleRenderable::TriangleRenderable(ShaderProgramPtr shaderProgram) : HierarchicalRenderable(shaderProgram)
 {
     m_positions.push_back(glm::vec3(-1, 0, 0));
     m_positions.push_back(glm::vec3(1, 0, 0));

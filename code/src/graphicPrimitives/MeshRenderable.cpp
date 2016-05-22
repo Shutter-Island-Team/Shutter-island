@@ -8,7 +8,7 @@
 #include <GL/glew.h>
 
 MeshRenderable::MeshRenderable( ShaderProgramPtr shaderProgram, const std::string& filename) :
-    Renderable(shaderProgram),
+    HierarchicalRenderable(shaderProgram),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0), m_iBuffer(0)
 {
     std::vector<glm::vec2> texCoords;

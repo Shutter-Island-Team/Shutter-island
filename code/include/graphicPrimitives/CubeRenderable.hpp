@@ -1,11 +1,11 @@
 #ifndef CUBE_RENDERABLE_HPP
 #define CUBE_RENDERABLE_HPP
 
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include <vector>
 #include <glm/glm.hpp>
 
-class CubeRenderable : public Renderable
+class CubeRenderable : public HierarchicalRenderable
 {
     public:
         ~CubeRenderable();
