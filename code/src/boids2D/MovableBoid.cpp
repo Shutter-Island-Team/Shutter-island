@@ -38,7 +38,7 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 	m_angleView(angleView), m_distViewSeparate(distViewSeparate),
 	m_distViewCohesion(distViewCohesion),
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce),
-	m_currentState(new WalkState())
+	m_currentState(new TestState())
 {
 
 }
@@ -75,6 +75,8 @@ float MovableBoid::getMass() {
 }
 
 glm::vec3 MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
+	m_currentState->computeAcceleration(*this, mvB);
+	/*
 	// Reset acceleration
 	m_acceleration = glm::vec3(0, 0, 0);
 
@@ -92,6 +94,7 @@ glm::vec3 MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
 
 		m_acceleration = seek + separateVec;
 	}
+	*/
 }
 
 glm::vec3 MovableBoid::ruleStayWithinWalls() {

@@ -1,5 +1,8 @@
 #include "../../include/boids2D/MovableState.hpp"
 
+#include "../../include/Utils.hpp"
+#include <iostream>
+
 glm::vec3 MovableState::computeAcceleration(MovableBoid& b, std::vector<MovableBoidPtr> mvB) 
 {
 	return computeNewForces(b, mvB);
@@ -7,8 +10,53 @@ glm::vec3 MovableState::computeAcceleration(MovableBoid& b, std::vector<MovableB
 
 glm::vec3 TestState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
 {
-	// TODO : test rules (debug)
-	return glm::vec3(0,0,0);
+	// Reset acceleration
+	b.setAcceleration(glm::vec3(0, 0, 0));
+
+	if (b.getTarget().x == 0) {
+		glm::vec3 wanderVec = 4.0f * wander(b);
+
+		b.setAcceleration(wanderVec);
+	} else {
+		glm::vec3 seek = 1.0f * arrive(b, glm::vec3(b.getTarget().x, b.getTarget().y, 2));
+
+		b.setAcceleration(seek);
+	}
+
+	std::cout << "Acceleration : (" << b.getAcceleration().x << ", " 
+		<< b.getAcceleration().y << ", " << b.getAcceleration().z << ")" << std::endl;
+}
+
+glm::vec3 TestState::wander(MovableBoid& b)
+{
+	float randomVal = random(0.0f, 2*M_PI);
+	glm::vec3 randomVec3(cos(randomVal), sin(randomVal), 0);
+    glm::vec3 desiredTarget = b.getLocation() + t_distToCircle*b.getVelocity() + t_rCircleWander*randomVec3;
+    return arrive(b, desiredTarget);
+}
+	
+glm::vec3 TestState::arrive(MovableBoid& b, glm::vec3 target)
+{
+	glm::vec3 desired = target - b.getLocation();
+
+	float d = glm::length(desired);
+	glm::normalize(desired);
+	if (d < t_distStartSlowingDown) {
+	  // Set the magnitude according to how close we are.
+	  float m = d*t_maxSpeed/t_distStartSlowingDown;
+	  desired *= m;
+	} else {
+	  // Otherwise, proceed at maximum speed.
+	  desired *= t_maxSpeed;
+	}
+
+	// The usual steering = desired - velocity
+	glm::vec3 steer = desired - b.getVelocity();
+	if (glm::length(steer) > t_maxForce) {
+		steer = glm::normalize(steer)*t_maxForce;
+	}
+
+	return steer;
 }
 
 /* ==================================== Boid State Value ====================================

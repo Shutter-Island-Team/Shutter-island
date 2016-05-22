@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <cmath>
 #include "MovableBoid.hpp"
 
 class MovableBoid;
@@ -22,7 +23,16 @@ class TestState : public MovableState
 {
 
 private:
+	float t_maxSpeed = 3.5f;
+  	float t_maxForce = 2.0f;
+
+	float t_rCircleWander = 9.0f;
+  	float t_distToCircle = 3.0f;
+  	float t_distStartSlowingDown = 5.0f;
+
 	glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB);
+	glm::vec3 wander(MovableBoid& b);
+	glm::vec3 arrive(MovableBoid& b, glm::vec3 target);
 };
 
 class WalkState : public MovableState 
