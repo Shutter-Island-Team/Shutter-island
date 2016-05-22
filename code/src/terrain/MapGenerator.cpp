@@ -11,6 +11,7 @@
 #define DEFAULT_DIST_MIN            ( 10)
 
 #include "../../include/terrain/MapGenerator.hpp"
+#include "../../include/terrain/BiomeRepartition.hpp"
 
 MapGenerator::MapGenerator(float size) :
     mapSize{size},
@@ -76,12 +77,16 @@ void MapGenerator::compute() {
 	 iterator++, loopAll.inc()
     )
     {
-	voro::voronoicell currentCell = *iterator;
+	voro::voronoicell_neighbor currentCell = *iterator;
 	seedsContainer.compute_cell(currentCell, 
 				    loopAll);
     }
+    
+    // Repartition land/sea
+    computeCoast(seeds, mapSize);
 
     // Whittaker step
+    
 
     // HeightTree step
 

@@ -16,7 +16,7 @@
 typedef std::pair<float, float> Vertex2D;
 
 
-class Seed : public voro::voronoicell {
+class Seed : public voro::voronoicell_neighbor {
 
 public:
     /**
