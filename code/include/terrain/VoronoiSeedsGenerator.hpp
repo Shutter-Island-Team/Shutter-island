@@ -109,7 +109,7 @@ public:
 		int nbOfWidthSubdivisions,
 		int nbOfHeightSubdivisions,
 		int maxNbOfSeedsBySubdivision,
-        float minDist
+		float minDist
 	);
 
 	/**
