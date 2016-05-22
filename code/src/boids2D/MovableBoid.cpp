@@ -37,7 +37,8 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
 	m_angleView(angleView), m_distViewSeparate(distViewSeparate),
 	m_distViewCohesion(distViewCohesion),
-	m_maxSpeed(maxSpeed), m_maxForce(maxForce)
+	m_maxSpeed(maxSpeed), m_maxForce(maxForce),
+	m_currentState(new WalkState())
 {
 
 }

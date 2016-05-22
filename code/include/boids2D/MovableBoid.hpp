@@ -3,11 +3,12 @@
 
 #include "Boid.hpp"
 #include <vector>
-
 #include <cmath>
 
-class MovableBoid;
+#include "MovableState.hpp"
+class MovableState;
 
+class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
 class MovableBoid : public Boid
@@ -64,6 +65,8 @@ class MovableBoid : public Boid
   float rCircleWander = 9.0f;
   float distToCircle = 3.0f;
   float distStartSlowingDown = 5.0f;
+
+  MovableState* m_currentState;
 
  private:
   glm::vec3 separate(std::vector<MovableBoidPtr> mvB);
