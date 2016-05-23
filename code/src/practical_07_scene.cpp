@@ -225,24 +225,23 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     MovableParameters* parameters;
 
     for (int i = 0; i < 50; ++i) {
-        // parameters = new MovableParameters(nullptr);
-        // rbb = std::make_shared<RabbitPtr>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
-        // rbb->initializeParameters(rbb);
-        // boidsManager->addMovableBoid(rbb);
-        // br = std::make_shared<BoidRenderable>(flatShader, rbb);
-        // HierarchicalRenderable::addChild( systemRenderable, br );
+        parameters = new MovableParameters(nullptr);
+        rbb = std::make_shared<Rabbit>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
+        rbb->initializeParameters(rbb);
+        boidsManager->addMovableBoid(rbb);
+        br = std::make_shared<BoidRenderable>(flatShader, rbb);
+        HierarchicalRenderable::addChild( systemRenderable, br );
     }
 
-    // WolfPtr wbb;
-
-    // for (int i = 0; i < 10; ++i) {
-    //     parameters = new MovableParameters(nullptr);
-    //     wbb = std::make_shared<WolfPtr>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
-    //     wbb->initializeParameters(wbb);
-    //     boidsManager->addMovableBoid(wbb);
-    //     br = std::make_shared<BoidRenderable>(flatShader, wbb);
-    //     HierarchicalRenderable::addChild( systemRenderable, br );
-    // }
+    WolfPtr wbb;
+    for (int i = 0; i < 10; ++i) {
+        parameters = new MovableParameters(nullptr);
+        wbb = std::make_shared<Wolf>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
+        wbb->initializeParameters(wbb);
+        boidsManager->addMovableBoid(wbb);
+        br = std::make_shared<BoidRenderable>(flatShader, wbb);
+        HierarchicalRenderable::addChild( systemRenderable, br );
+    }
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
