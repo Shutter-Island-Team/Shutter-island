@@ -7,14 +7,16 @@
 #define SEED_HPP
 
 
+
 #include "Biome.hpp"
+#include "../../lib/voro++/src/voro++.hh"
 #include <utility>
 
 
 typedef std::pair<float, float> Vertex2D;
 
 
-class Seed {
+class Seed : public voro::voronoicell_neighbor {
 
 public:
     /**
