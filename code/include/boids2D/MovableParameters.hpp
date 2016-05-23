@@ -10,7 +10,7 @@ class MovableParameters
 
 public:
 
-	MovableParameters(bool isLeader, MovableBoidPtr m_leader);
+	MovableParameters(MovableBoidPtr m_leader);
 	void initializeParameters(MovableBoidPtr thisBoid);
 
 	// TODO : add function isLow, isHigh or isHungry, ...
@@ -46,8 +46,6 @@ protected:
 	float m_danger;
 	float m_affinity;
 	MovableBoidPtr m_thisBoid;
-
-	bool m_isLeader;
 	MovableBoidPtr m_leader;
 };
 

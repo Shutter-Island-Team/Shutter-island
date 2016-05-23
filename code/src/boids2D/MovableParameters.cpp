@@ -1,9 +1,9 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 #include <cmath>
 
-MovableParameters::MovableParameters(bool isLeader, MovableBoidPtr leader)
+MovableParameters::MovableParameters(MovableBoidPtr leader)
 	: m_stamina(100.0f), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
-	m_affinity(0.0f), m_isLeader(isLeader), m_leader(leader)
+	m_affinity(0.0f), m_leader(leader)
 {
 
 }
@@ -100,7 +100,7 @@ void MovableParameters::affinityDecrease()
 
 bool MovableParameters::isLeader()
 {
-	return m_isLeader;
+	return m_leader == m_thisBoid;
 }
 
 MovableBoidPtr MovableParameters::getLeader()
@@ -110,6 +110,5 @@ MovableBoidPtr MovableParameters::getLeader()
 
 void MovableParameters::setNewLeader(MovableBoidPtr newLeader)
 {
-	m_isLeader = (newLeader == m_thisBoid);
 	m_leader = newLeader;
 }
