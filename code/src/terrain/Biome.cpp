@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "../../include/Utils.hpp"
-#include "../../include/terrai/Biome.hpp"
+#include "../../include/terrain/Biome.hpp"
 
 
 
@@ -59,13 +59,13 @@ float computeBlobScale(Biome biome, Biome biomeNeighbour1, Biome biomeNeighbour2
 
 
 bool checkSubdibision(int currentDepth,
-		      biome biomeTL, biome biomeTR,
-		      biome biomeBL, biome biomeBR) {
+		      Biome biomeTL, Biome biomeTR,
+		      Biome biomeBL, Biome biomeBR) {
 
     return ( // Not going to deep in the tree
 	    (currentDepth <= BIOME_DEPTH_MAX)
 	    && ( // But still deep enough
-		(profondeur <= BIOME_DEPTH_MIN)
+		(currentDepth <= BIOME_DEPTH_MIN)
 		// Or if the we are not in a homogeneous area
 		|| (not ((biomeTL == biomeTR) && (biomeTR == biomeBL) && (biomeBL == biomeBR)))
 		// Or if we are, go only for the detail depth of the area type

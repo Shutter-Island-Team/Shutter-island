@@ -75,7 +75,7 @@ float computeBlobScale(Biome biome, Biome biomeNeighbour1, Biome biomeNeighbour2
  */
 
 bool checkSubdibision(int currentDepth,
-		      biome biomeTL, biome biomeTR,
-		      biome biomeBL, biome biomeBR);
+		      Biome biomeTL, Biome biomeTR,
+		      Biome biomeBL, Biome biomeBR);
 
 #endif
