@@ -38,10 +38,17 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 	m_angleView(angleView), m_distViewSeparate(distViewSeparate),
 	m_distViewCohesion(distViewCohesion),
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce),
-	m_parameters(parameters),
-	m_currentState(new TestState())
+	m_parameters(parameters), m_stateType(WALK)
 {
-
+	switch(m_stateType) {
+		case WALK:
+			m_currentState = new WalkState();
+			break;
+		default:
+			std::cerr << "State not recognize. Default state walk initialization" << std::endl;
+			m_currentState = new WalkState();
+			break;
+	}
 }
 
 void MovableBoid::initializeParameters(MovableBoidPtr thisBoid)
@@ -80,27 +87,50 @@ float MovableBoid::getMass() {
 	return m_mass;
 }
 
-glm::vec3 MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
-	m_currentState->computeAcceleration(*this, mvB);
-	/*
-	// Reset acceleration
-	m_acceleration = glm::vec3(0, 0, 0);
-
-	if (getTarget().x == 0) {
-		glm::vec3 wanderVec = 4.0f * wander();
-		glm::vec3 separateVec = 16.0f * separate(mvB);
-		glm::vec3 alignVec = 16.0f * align(mvB);
-		glm::vec3 cohesionVec = 16.0f * cohesion(mvB);
-		glm::vec3 stayWithinWallsVec = 48.0f * ruleStayWithinWalls();
-
-		m_acceleration = wanderVec + separateVec + alignVec + cohesionVec + stayWithinWallsVec;
+void MovableBoid::walk(std::vector<MovableBoidPtr> mvB) {
+	if (m_parameters->isLowStamina()) {
+		delete m_currentState;
+		m_currentState = new StayState();
+		m_stateType = STAY;
 	} else {
-		glm::vec3 seek = 1.0f * arrive(glm::vec3(getTarget().x, getTarget().y, 2));
-		glm::vec3 separateVec = 16.0f * separate(mvB);
 
-		m_acceleration = seek + separateVec;
 	}
-	*/
+}
+
+void MovableBoid::stay(std::vector<MovableBoidPtr> mvB) {
+	if (m_parameters->isHighStamina()) {
+		delete m_currentState;
+		m_currentState = new WalkState();
+		m_stateType = WALK;
+	} else {
+
+	}
+}
+
+MovableParameters & MovableBoid::getParameters() {
+	return *m_parameters;
+}
+
+void MovableBoid::resetAcceleration() {
+	m_acceleration = glm::vec3(0, 0, 0);
+}
+
+
+void MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
+	std::cerr << "Value of stamina : " << m_parameters->getStamina() << std::endl;
+	switch (m_stateType) {
+		case WALK:
+			walk(mvB);
+			break;
+		case STAY:
+			std::cerr << "J'arrive là maintenant" << std::endl;
+			stay(mvB);
+			break;
+		default:
+			std::cerr << "Unknown state" << std::endl;
+			break;
+	}
+	setAcceleration(m_currentState->computeAcceleration(*this, mvB));
 }
 
 glm::vec3 MovableBoid::ruleStayWithinWalls() {

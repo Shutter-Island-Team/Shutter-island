@@ -2,6 +2,7 @@
 #define MOVABLE_BOID_HPP
 
 #include "Boid.hpp"
+#include "StateType.hpp"
 #include <vector>
 #include <cmath>
 
@@ -9,6 +10,7 @@
 #include "MovableParameters.hpp"
 
 class MovableState;
+class TestState;
 class MovableParameters;
 
 class MovableBoid;
@@ -50,11 +52,13 @@ class MovableBoid : public Boid
 
   glm::vec3 separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation);
 
-  glm::vec3 computeAcceleration(std::vector<MovableBoidPtr> mvB);
+  void computeAcceleration(std::vector<MovableBoidPtr> mvB);
 
   glm::vec3 getAcceleration();
 
-  void setAcceleration(glm::vec3 acceleration);
+  void resetAcceleration();
+
+  MovableParameters & getParameters();
 
  protected:
   glm::vec3 m_velocity;
@@ -80,6 +84,14 @@ class MovableBoid : public Boid
   glm::vec3 align (std::vector<MovableBoidPtr> mvB);
 
   glm::vec3 cohesion (std::vector<MovableBoidPtr> mvB);
+
+  void walk(std::vector<MovableBoidPtr> mvB);
+
+  void stay(std::vector<MovableBoidPtr> mvB);
+
+  void setAcceleration(glm::vec3 acceleration);
+
+  StateType m_stateType;
 };
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2);

@@ -1,9 +1,10 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 #include <cmath>
+#include <iostream>
 
-MovableParameters::MovableParameters(bool isLeader, MovableBoidPtr leader)
+MovableParameters::MovableParameters(MovableBoidPtr leader)
 	: m_stamina(100.0f), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
-	m_affinity(0.0f), m_isLeader(isLeader), m_leader(leader)
+	m_affinity(0.0f), m_leader(leader), m_lowStaminaValue(10.0f), m_highStaminaValue(99.0f)
 {
 
 }
@@ -100,7 +101,7 @@ void MovableParameters::affinityDecrease()
 
 bool MovableParameters::isLeader()
 {
-	return m_isLeader;
+	return m_leader == m_thisBoid;
 }
 
 MovableBoidPtr MovableParameters::getLeader()
@@ -110,6 +111,30 @@ MovableBoidPtr MovableParameters::getLeader()
 
 void MovableParameters::setNewLeader(MovableBoidPtr newLeader)
 {
-	m_isLeader = (newLeader == m_thisBoid);
 	m_leader = newLeader;
 }
+
+bool MovableParameters::isLowStamina() {
+	return m_stamina <= m_lowStaminaValue;
+}
+
+bool MovableParameters::isHighStamina() {
+	return m_stamina >= m_highStaminaValue;
+}
+
+float MovableParameters::getMaxSpeed() {
+	return m_maxSpeed;
+}
+float MovableParameters::getMaxForce() {
+	return m_maxForce;
+}
+float MovableParameters::getRadiusCircleWander() {
+	return m_rCircleWander;
+}
+float MovableParameters::getDistToCircleWander() {
+	return m_distToCircle;
+}
+float MovableParameters::getDistStartSlowingDown() {
+	return m_distStartSlowingDown;
+}
+

@@ -5,52 +5,38 @@
 
 glm::vec3 MovableState::computeAcceleration(MovableBoid& b, std::vector<MovableBoidPtr> mvB) 
 {
+	// Reset acceleration
+	b.resetAcceleration();
 	return computeNewForces(b, mvB);
 }
 
-glm::vec3 TestState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
-{
-	// Reset acceleration
-	b.setAcceleration(glm::vec3(0, 0, 0));
-
-	if (b.getTarget().x == 0) {
-		glm::vec3 wanderVec = 4.0f * wander(b);
-
-		b.setAcceleration(wanderVec);
-	} else {
-		glm::vec3 seek = 1.0f * arrive(b, glm::vec3(b.getTarget().x, b.getTarget().y, 2));
-
-		b.setAcceleration(seek);
-	}
-}
-
-glm::vec3 TestState::wander(MovableBoid& b)
+glm::vec3 MovableState::wander(MovableBoid& b)
 {
 	float randomVal = random(0.0f, 2*M_PI);
 	glm::vec3 randomVec3(cos(randomVal), sin(randomVal), 0);
-    glm::vec3 desiredTarget = b.getLocation() + m_distToCircle*b.getVelocity() + m_rCircleWander*randomVec3;
+    glm::vec3 desiredTarget = b.getLocation() + b.getParameters().getRadiusCircleWander()*b.getVelocity() + b.getParameters().getRadiusCircleWander()*randomVec3;
     return arrive(b, desiredTarget);
 }
-	
-glm::vec3 TestState::arrive(MovableBoid& b, glm::vec3 target)
+
+glm::vec3 MovableState::arrive(MovableBoid& b, glm::vec3 target)
 {
 	glm::vec3 desired = target - b.getLocation();
 
 	float d = glm::length(desired);
 	glm::normalize(desired);
-	if (d < m_distStartSlowingDown) {
+	if (d < b.getParameters().getDistStartSlowingDown()) {
 	  // Set the magnitude according to how close we are.
-	  float m = d*m_maxSpeed/m_distStartSlowingDown;
+	  float m = d*b.getParameters().getMaxSpeed()/b.getParameters().getDistStartSlowingDown();
 	  desired *= m;
 	} else {
 	  // Otherwise, proceed at maximum speed.
-	  desired *= m_maxSpeed;
+	  desired *= b.getParameters().getMaxSpeed();
 	}
 
 	// The usual steering = desired - velocity
 	glm::vec3 steer = desired - b.getVelocity();
-	if (glm::length(steer) > m_maxForce) {
-		steer = glm::normalize(steer)*m_maxForce;
+	if (glm::length(steer) > b.getParameters().getMaxForce()) {
+		steer = glm::normalize(steer)*b.getParameters().getMaxForce();
 	}
 
 	return steer;
@@ -79,7 +65,8 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	return glm::vec3(0,0,0);
+	b.getParameters().staminaDecrease();
+	return 4.0f * wander(b);
 }
 
 glm::vec3 StayState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
@@ -91,7 +78,8 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	return glm::vec3(0,0,0);
+	b.getParameters().staminaIncrease();
+	return arrive(b, b.getLocation());
 }
 
 glm::vec3 SleepState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
