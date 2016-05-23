@@ -56,6 +56,32 @@ void MovableBoid::initializeParameters(MovableBoidPtr thisBoid)
 	m_parameters->initializeParameters(thisBoid);
 }
 
+glm::vec3 MovableBoid::getVelocity(){
+	return m_velocity;
+}
+
+glm::vec3 MovableBoid::getAcceleration() {
+	return m_acceleration;
+}
+
+float MovableBoid::getMass() {
+	return m_mass;
+}
+
+MovableParameters & MovableBoid::getParameters() {
+	return *m_parameters;
+}
+
+void MovableBoid::resetAcceleration() {
+	m_acceleration = glm::vec3(0, 0, 0);
+}
+
+void MovableBoid::computeNextStep(float dt) {
+    m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, m_maxForce), m_maxSpeed);
+	setAngle(atan2(m_velocity.y, m_velocity.x));
+    m_location += dt * m_velocity;
+}
+
 bool MovableBoid::canSee(Boid b, float distView) {
 	return (glm::distance(m_location, b.getLocation()) < distView) && (angleVision(b));
 }
@@ -71,20 +97,6 @@ bool MovableBoid::angleVision (Boid b) {
         comparativeValue = - comparativeValue;
         return !((0 <= comparativeValue) && (comparativeValue <= M_PI - m_angleView/2));
     }
-}
-
-void MovableBoid::computeNextStep(float dt) {
-    m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, m_maxForce), m_maxSpeed);
-	setAngle(atan2(m_velocity.y, m_velocity.x));
-    m_location += dt * m_velocity;
-}
-
-glm::vec3 MovableBoid::getVelocity(){
-	return m_velocity;
-}
-
-float MovableBoid::getMass() {
-	return m_mass;
 }
 
 void MovableBoid::walk(std::vector<MovableBoidPtr> mvB) {
@@ -107,15 +119,6 @@ void MovableBoid::stay(std::vector<MovableBoidPtr> mvB) {
 	}
 }
 
-MovableParameters & MovableBoid::getParameters() {
-	return *m_parameters;
-}
-
-void MovableBoid::resetAcceleration() {
-	m_acceleration = glm::vec3(0, 0, 0);
-}
-
-
 void MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
 	std::cerr << "Value of stamina : " << m_parameters->getStamina() << std::endl;
 	switch (m_stateType) {
@@ -123,7 +126,6 @@ void MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
 			walk(mvB);
 			break;
 		case STAY:
-			std::cerr << "J'arrive là maintenant" << std::endl;
 			stay(mvB);
 			break;
 		default:
@@ -157,13 +159,6 @@ glm::vec3 MovableBoid::ruleStayWithinWalls() {
     return steer;
 }
 
-glm::vec3 MovableBoid::wander() {
-	float randomVal = random(0.0f, 2*M_PI);
-	glm::vec3 randomVec3(cos(randomVal), sin(randomVal), 0);
-    glm::vec3 desiredTarget = m_location + distToCircle*m_velocity + rCircleWander*randomVec3;
-    return arrive(desiredTarget);
-}
-
 glm::vec3 MovableBoid::separate(std::vector<MovableBoidPtr> mvB) {
 	glm::vec3 sum;
 	int count = 0;
@@ -183,29 +178,6 @@ glm::vec3 MovableBoid::separate(std::vector<MovableBoidPtr> mvB) {
 		return limitVec3(steer, m_maxForce);
 	}
 	return glm::vec3(0, 0, 0);
-}
-
-glm::vec3 MovableBoid::arrive(glm::vec3 target) {
-	glm::vec3 desired = target - m_location;
-
-	float d = glm::length(desired);
-	glm::normalize(desired);
-	if (d < distStartSlowingDown) {
-	  // Set the magnitude according to how close we are.
-	  float m = d*m_maxSpeed/distStartSlowingDown;
-	  desired *= m;
-	} else {
-	  // Otherwise, proceed at maximum speed.
-	  desired *= m_maxSpeed;
-	}
-
-	// The usual steering = desired - velocity
-	glm::vec3 steer = desired - m_velocity;
-	if (glm::length(steer) > m_maxForce) {
-		steer = glm::normalize(steer)*m_maxForce;
-	}
-
-	return steer;
 }
 
 glm::vec3 MovableBoid::align (std::vector<MovableBoidPtr> mvB) {
@@ -246,14 +218,11 @@ glm::vec3 MovableBoid::cohesion (std::vector<MovableBoidPtr> mvB) {
 		// wrote in Example 6.8.  The target
 		// we seek is the average location of
 		// our neighbors.
-		return arrive(sum);
+		// return arrive(sum);
+        return glm::vec3(0,0,0);
     }
 
     return glm::vec3(0,0,0);
-}
-
-glm::vec3 MovableBoid::getAcceleration() {
-	return m_acceleration;
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2) {

@@ -34,31 +34,30 @@ class MovableBoid : public Boid
 
   void initializeParameters(MovableBoidPtr thisBoid);
 
-	bool canSee(Boid b, float distView);
+  glm::vec3 getVelocity();
 
-	void computeNextStep(float dt);
-
-  bool angleVision (Boid b);
-
-	glm::vec3 getVelocity();
+  glm::vec3 getAcceleration();
 
   float getMass();
 
-  glm::vec3 wander();
+  MovableParameters & getParameters();
+
+  void resetAcceleration();
+
+  // Used in solver
+  void computeNextStep(float dt);
+
+	bool canSee(Boid b, float distView);
+
+  // Return the boolean if b is in the angle of vision of this
+  // Warning : don't work if angleVision = PI
+  bool angleVision (Boid b);
 
   glm::vec3 ruleStayWithinWalls();
-
-  glm::vec3 arrive(glm::vec3 target);
 
   glm::vec3 separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation);
 
   void computeAcceleration(std::vector<MovableBoidPtr> mvB);
-
-  glm::vec3 getAcceleration();
-
-  void resetAcceleration();
-
-  MovableParameters & getParameters();
 
  protected:
   glm::vec3 m_velocity;
@@ -69,11 +68,6 @@ class MovableBoid : public Boid
   float m_distViewCohesion;
   float m_maxSpeed;
   float m_maxForce;
-
-  // Variable to wander
-  float rCircleWander = 9.0f;
-  float distToCircle = 3.0f;
-  float distStartSlowingDown = 5.0f;
 
   MovableState* m_currentState;
   MovableParameters* m_parameters;
