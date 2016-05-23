@@ -22,16 +22,13 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 
 		b.setAcceleration(seek);
 	}
-
-	std::cout << "Acceleration : (" << b.getAcceleration().x << ", " 
-		<< b.getAcceleration().y << ", " << b.getAcceleration().z << ")" << std::endl;
 }
 
 glm::vec3 TestState::wander(MovableBoid& b)
 {
 	float randomVal = random(0.0f, 2*M_PI);
 	glm::vec3 randomVec3(cos(randomVal), sin(randomVal), 0);
-    glm::vec3 desiredTarget = b.getLocation() + t_distToCircle*b.getVelocity() + t_rCircleWander*randomVec3;
+    glm::vec3 desiredTarget = b.getLocation() + m_distToCircle*b.getVelocity() + m_rCircleWander*randomVec3;
     return arrive(b, desiredTarget);
 }
 	
@@ -41,19 +38,19 @@ glm::vec3 TestState::arrive(MovableBoid& b, glm::vec3 target)
 
 	float d = glm::length(desired);
 	glm::normalize(desired);
-	if (d < t_distStartSlowingDown) {
+	if (d < m_distStartSlowingDown) {
 	  // Set the magnitude according to how close we are.
-	  float m = d*t_maxSpeed/t_distStartSlowingDown;
+	  float m = d*m_maxSpeed/m_distStartSlowingDown;
 	  desired *= m;
 	} else {
 	  // Otherwise, proceed at maximum speed.
-	  desired *= t_maxSpeed;
+	  desired *= m_maxSpeed;
 	}
 
 	// The usual steering = desired - velocity
 	glm::vec3 steer = desired - b.getVelocity();
-	if (glm::length(steer) > t_maxForce) {
-		steer = glm::normalize(steer)*t_maxForce;
+	if (glm::length(steer) > m_maxForce) {
+		steer = glm::normalize(steer)*m_maxForce;
 	}
 
 	return steer;

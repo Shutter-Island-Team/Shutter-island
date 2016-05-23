@@ -6,7 +6,10 @@
 #include <cmath>
 
 #include "MovableState.hpp"
+#include "MovableParameters.hpp"
+
 class MovableState;
+class MovableParameters;
 
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
@@ -14,18 +17,20 @@ typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 class MovableBoid : public Boid
 {
  public:
-	MovableBoid(glm::vec3 location, BoidType t);
+	MovableBoid(glm::vec3 location, BoidType t, MovableParameters* parameters);
 
-  MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t);
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, MovableParameters* parameters);
 
-  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t);
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t, MovableParameters* parameters);
 
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
-    float angleView, float distViewSeparate, float distViewCohesion, BoidType t);
+    float angleView, float distViewSeparate, float distViewCohesion, BoidType t, MovableParameters* parameters);
 
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     float angleView, float distViewSeparate, float distViewCohesion, float maxSpeed, 
-    float maxForce, BoidType t);
+    float maxForce, BoidType t, MovableParameters* parameters);
+
+  void initializeParameters(MovableBoidPtr thisBoid);
 
 	bool canSee(Boid b, float distView);
 
@@ -67,6 +72,7 @@ class MovableBoid : public Boid
   float distStartSlowingDown = 5.0f;
 
   MovableState* m_currentState;
+  MovableParameters* m_parameters;
 
  private:
   glm::vec3 separate(std::vector<MovableBoidPtr> mvB);

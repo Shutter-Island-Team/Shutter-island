@@ -13,6 +13,7 @@
 #include "../include/boids2D/Wolf.hpp"
 #include "../include/boids2D/BoidRenderable.hpp"
 #include "../include/boids2D/BoidsManager.hpp"
+#include "../include/boids2D/MovableParameters.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -157,16 +158,21 @@ void initialize_boid_scene( Viewer& viewer )
 
     MovableBoidPtr mvb;
     BoidRenderablePtr br;
+    MovableParameters* parameters;
 
     for (int i = 0; i < 50; ++i) {
-        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), RABBIT);
+        parameters = new MovableParameters(false, nullptr);
+        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), RABBIT, parameters);
+        mvb->initializeParameters(mvb);
         boidsManager->addMovableBoid(mvb);
         br = std::make_shared<BoidRenderable>(flatShader, mvb);
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 
     for (int i = 0; i < 10; ++i) {
-        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), WOLF);
+        parameters = new MovableParameters(false, nullptr);
+        mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), WOLF, parameters);
+        mvb->initializeParameters(mvb);
         boidsManager->addMovableBoid(mvb);
         br = std::make_shared<BoidRenderable>(flatShader, mvb);
         HierarchicalRenderable::addChild( systemRenderable, br );
@@ -216,9 +222,12 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
 
     RabbitPtr rbb;
     BoidRenderablePtr br;
+    MovableParameters* parameters;
 
     for (int i = 0; i < 50; ++i) {
-        // rbb = std::make_shared<RabbitPtr>(glm::vec3(random(-15, 15), random(-15, 15), 2));
+        // parameters = new MovableParameters(false, nullptr);
+        // rbb = std::make_shared<RabbitPtr>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
+        // rbb->initializeParameters(rbb);
         // boidsManager->addMovableBoid(rbb);
         // br = std::make_shared<BoidRenderable>(flatShader, rbb);
         // HierarchicalRenderable::addChild( systemRenderable, br );
@@ -227,7 +236,9 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     // WolfPtr wbb;
 
     // for (int i = 0; i < 10; ++i) {
-    //     wbb = std::make_shared<WolfPtr>(glm::vec3(random(-15, 15), random(-15, 15), 2));
+    //     parameters = new MovableParameters(false, nullptr);
+    //     wbb = std::make_shared<WolfPtr>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
+    //     wbb->initializeParameters(wbb);
     //     boidsManager->addMovableBoid(wbb);
     //     br = std::make_shared<BoidRenderable>(flatShader, wbb);
     //     HierarchicalRenderable::addChild( systemRenderable, br );
@@ -277,10 +288,16 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
 
     MovableBoidPtr mvb;
     BoidRenderablePtr br;
+    MovableParameters* parameters;
 
-    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(-1, 0, 0), RABBIT);
+    parameters = new MovableParameters(false, nullptr);
+    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(-1, 0, 0), RABBIT, parameters);
+    mvb1->initializeParameters(mvb1);
     boidsManager->addMovableBoid(mvb1);
-    MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(5, -5, 2), glm::vec3(1, 0, 0), RABBIT);
+
+    parameters = new MovableParameters(false, nullptr);
+    MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
+    mvb2->initializeParameters(mvb2);
     boidsManager->addMovableBoid(mvb2);
 
     BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(flatShader, mvb1);
@@ -333,10 +350,16 @@ void initialize_boid_scene_test_canSee( Viewer& viewer )
 
     MovableBoidPtr mvb;
     BoidRenderablePtr br;
+    MovableParameters* parameters;
 
-    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT);
+    parameters = new MovableParameters(false, nullptr);
+    MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
+    mvb1->initializeParameters(mvb1);
     boidsManager->addMovableBoid(mvb1);
-    MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(0, -1, 2), glm::vec3(0, -1, 0), RABBIT);
+
+    parameters = new MovableParameters(false, nullptr);
+    MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(0, -1, 2), glm::vec3(0, -1, 0), RABBIT, parameters);
+    mvb2->initializeParameters(mvb2);
     boidsManager->addMovableBoid(mvb2);
 
     BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(flatShader, mvb1);
@@ -387,7 +410,9 @@ void initialize_boid_scene_test_machine_state( Viewer& viewer )
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    MovableBoidPtr mvb = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT);
+    MovableParameters* parameters = new MovableParameters(false, nullptr);
+    MovableBoidPtr mvb = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
+    mvb->initializeParameters(mvb);
     boidsManager->addMovableBoid(mvb);
 
     BoidRenderablePtr br = std::make_shared<BoidRenderable>(flatShader, mvb);

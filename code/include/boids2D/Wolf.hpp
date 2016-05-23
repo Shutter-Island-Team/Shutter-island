@@ -6,18 +6,18 @@
 class Wolf : public MovableBoid
 {
  public:
-  Wolf(glm::vec3 location);
+  Wolf(glm::vec3 location, MovableParameters* parameters);
 
-  Wolf(glm::vec3 location, glm::vec3 velocity);
+  Wolf(glm::vec3 location, glm::vec3 velocity, MovableParameters* parameters);
 
-  Wolf(glm::vec3 location, glm::vec3 velocity, float mass);
+  Wolf(glm::vec3 location, glm::vec3 velocity, float mass, MovableParameters* parameters);
 
   Wolf(glm::vec3 location, glm::vec3 velocity, float mass,
-    float angleView, float distViewSeparate, float distViewCohesion);
+    float angleView, float distViewSeparate, float distViewCohesion, MovableParameters* parameters);
 
   Wolf(glm::vec3 location, glm::vec3 velocity, float mass,
     float angleView, float distViewSeparate, float distViewCohesion, float maxSpeed, 
-    float maxForce);
+    float maxForce, MovableParameters* parameters);
 };
 
 typedef std::shared_ptr<Wolf> WolfPtr;

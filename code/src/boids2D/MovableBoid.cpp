@@ -5,42 +5,48 @@
 
 #include "../../include/Utils.hpp"
 
-MovableBoid::MovableBoid(glm::vec3 location, BoidType t) 
-	: MovableBoid(location, glm::vec3(0,0,0), t)
+MovableBoid::MovableBoid(glm::vec3 location, BoidType t, MovableParameters* parameters) 
+	: MovableBoid(location, glm::vec3(0,0,0), t, parameters)
 {
 
 }
 
-MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t) 
-	: MovableBoid(location, velocity, 0.05f, t)
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, MovableParameters* parameters) 
+	: MovableBoid(location, velocity, 0.05f, t, parameters)
 {
 
 }
 
-MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t)
-	: MovableBoid(location, velocity, mass, 3*M_PI/4, 0.3f, 2.0f, t)
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t, MovableParameters* parameters)
+	: MovableBoid(location, velocity, mass, 3*M_PI/4, 0.3f, 2.0f, t, parameters)
 {
 
 }
 
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
-    float angleView, float distViewSeparate, float distViewCohesion, BoidType t)
-	: MovableBoid(location, velocity, mass, angleView, distViewSeparate, distViewCohesion, 3.5f, 2.0f, t)
+    float angleView, float distViewSeparate, float distViewCohesion, BoidType t, MovableParameters* parameters)
+	: MovableBoid(location, velocity, mass, angleView, distViewSeparate, distViewCohesion, 3.5f, 2.0f, t, parameters)
 {
 
 }
 
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     float angleView, float distViewSeparate, float distViewCohesion, float maxSpeed, 
-    float maxForce, BoidType t)
+    float maxForce, BoidType t, MovableParameters* parameters)
 	: Boid(location, t), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
 	m_angleView(angleView), m_distViewSeparate(distViewSeparate),
 	m_distViewCohesion(distViewCohesion),
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce),
+	m_parameters(parameters),
 	m_currentState(new TestState())
 {
 
+}
+
+void MovableBoid::initializeParameters(MovableBoidPtr thisBoid)
+{
+	m_parameters->initializeParameters(thisBoid);
 }
 
 bool MovableBoid::canSee(Boid b, float distView) {
