@@ -9,6 +9,7 @@
  */
 
 #include "Seed.hpp"
+#include <list>
 #include <vector>
 
 /*
@@ -28,6 +29,17 @@
 #define DISTANCE(x,y) sqrt(     ((x).getX()-(y).getX())*((x).getX()-(y).getX()) \
                             +   ((x).getY()-(y).getY())*((x).getY()-(y).getY()))
 
+/*
+ * Defining a useful macro to compute the "distance" from a point to the
+ * center.
+ * As a matter of fact, we just need this macro to sort the seeds according
+ * to their distances to the center, so we just need an "image of the distance".
+ * That is why we do not have to apply the square root, reducing the complexity
+ * cost.
+ */
+#define DIST_TO_CENTER(x) ((x).getX()-m_width/2.0)*((x).getX()-m_width/2.0) \
+                      +   ((x).getY()-m_height/2.0)*((x).getY()-m_height/2.0)
+
 /**
  * @brief VoronoiSeedsGenerator interface.
  *
@@ -40,7 +52,7 @@
  * going to be a "Biom" of the former).
  *
  * Quite obviously, purely "randomized" seeds may entail degenerated patterns
- * (from the Voronoi diagram's pointof view) and, thus, degenerated maps.
+ * (from the Voronoi diagram's point of view) and, thus, degenerated maps.
  * That is why we decided to subdivide the considered 2D space thanks to a grid,
  * and to impose both a maximum number of generated seeds by subdivision and
  * a minimum distance between two generated seeds.
@@ -49,6 +61,11 @@
  * Voronoi diagram's generation.
  *
  * ####### TODO => Mettre un lien vers l'en-tête de la classe implémentant Lloyd
+ *
+ * Last piece of information to add about this generator : the generated
+ * seeds are sorted according to their distance to the center of the map.
+ * This is a pre-treatment of the "Whittaker step", so as to ease the latter
+ * while reducing at most the complexity cost of sorting the seeds.
  */
 
  class VoronoiSeedsGenerator
@@ -126,6 +143,11 @@ public:
 	void generateSeeds(std::vector<Seed>& listOfSeeds);
 
 private:
+    /**
+     *
+     */
+    void insertIntoList(std::list<Seed>& list, Seed& seed);
+
     /**
      * @brief Verifies if the new randomly generated seed is sufficiently
      *  far from the previously inserted seeds.

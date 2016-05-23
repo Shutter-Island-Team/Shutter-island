@@ -3,6 +3,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <list>
 #include <random>
 #include <vector>
 
@@ -75,14 +76,18 @@ void VoronoiSeedsGenerator::generateSeeds(
 	 * generate the seeds.
 	 */
 	std::default_random_engine generator;
-	//std::uniform_real_distribution<float> widthDistrib(0.0, m_width);
-	//std::uniform_real_distribution<float> heightDistrib(0.0, m_height);
 	std::normal_distribution<float> widthDistrib(m_width/2.0, m_width/5.0);
 	std::normal_distribution<float> heightDistrib(m_height/2.0, m_height/5.0);
 
 	/*
 	 * Main loop of the function in which the seeds are generated.
+     * On top of that, in order to ease the implementation of the "Whittaker
+     * step", the seeds have to be sorted according to their distance to the
+     * center of the map.
+     * So as to do so, the seeds are sorted by "insertion" in a temporary list,
+     * and then pushed back in the given vector.
 	 */
+    std::list<Seed> tmpList;
 	int currentNbOfSeeds = 0;
 	while (currentNbOfSeeds < m_nbOfSeeds) {
 		float wPosition = widthDistrib(generator);
@@ -103,11 +108,11 @@ void VoronoiSeedsGenerator::generateSeeds(
                 Seed seed(wPosition, hPosition);
 
                 /*
-                 * Inserting only if the new seed is at a minimal distance of the other ones
-                 * previously inserted.
+                 * Inserting only if the new seed is at a minimal distance 
+                 * of the other ones previously inserted.
                  */
                 if (isMinDistVerified(seedsBySub, widthID, heightID, seed)) {
-                    listOfSeeds.push_back(seed);
+                    insertIntoList(tmpList, seed);
                     currentNbOfSeeds++;
                     nbSeedsBySub[heightID][widthID]++;
                     seedsBySub[heightID][widthID].push_back(seed);
@@ -123,6 +128,46 @@ void VoronoiSeedsGenerator::generateSeeds(
         delete [] seedsBySub[i];
     }
     delete [] seedsBySub;
+
+    /*
+     * Finally, we just have to insert the content of the list into the
+     * given vector.
+     */
+    for (
+        auto iterator = tmpList.begin();
+        iterator != tmpList.end();
+        iterator++
+    ) {
+        listOfSeeds.push_back(*iterator);
+    }
+}
+
+void VoronoiSeedsGenerator::insertIntoList(std::list<Seed>& list, Seed& seed)
+{
+    /*
+     * If the list is empty, just pushing back the new seed.
+     * Otherwise, we have to determine the position to insert the seed to.
+     *  In order to do so, we simply iterate over the seeds, comparing the
+     *  distance to center of the one to insert with the latter's ones.
+     *  The last comparison needs extra care, since we may have to push
+     *  back the seed to insert if its distance to center is greater than
+     *  the one of the list's last seed.
+     */
+    if (list.empty()) {
+        list.push_back(seed);
+    } else {
+        auto current = list.begin();
+        auto last = list.end();
+        float distance = DIST_TO_CENTER(seed);
+        while ((current != last) && (distance > DIST_TO_CENTER(*current))) {
+            current++;   
+        }
+        if (distance <= DIST_TO_CENTER(*current)) {
+            list.insert(current, seed);
+        } else {
+            list.push_back(seed);
+        }
+    }
 }
  
 bool VoronoiSeedsGenerator::isMinDistVerified(
