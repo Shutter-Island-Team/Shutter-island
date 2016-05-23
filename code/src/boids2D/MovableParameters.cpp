@@ -1,13 +1,62 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 #include <cmath>
 #include <iostream>
+#include <fstream>
 #include "../../include/Utils.hpp"
 
-MovableParameters::MovableParameters(MovableBoidPtr leader)
-	: m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
-	m_affinity(0.0f), m_leader(leader), m_lowStaminaValue(10.0f), m_highStaminaValue(99.0f)
+MovableParameters::MovableParameters()
+	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 5.0f)
 {
-	m_stamina = random(1, 100);
+
+}
+
+MovableParameters::MovableParameters(float maxSpeed, float maxForce,
+	float angleView, float distViewSeparate, float distViewCohesion) : 
+	MovableParameters(maxSpeed, maxForce, angleView, distViewSeparate, distViewCohesion,
+		5.0f, 9.0f, 3.0f)
+{
+
+}
+
+MovableParameters::MovableParameters(float maxSpeed, float maxForce,
+	float angleView, float distViewSeparate, float distViewCohesion,
+	float distStartSlowingDown,float rCircleWander, float distToCircle) :
+	m_maxSpeed(maxSpeed), m_maxForce(maxForce), m_angleView(angleView),
+	m_distViewSeparate(distViewSeparate), m_distViewCohesion(distViewCohesion),
+	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
+	m_distToCircle(distToCircle), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
+	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f)
+{
+	m_stamina = random(1, 99);
+}
+
+MovableParameters::MovableParameters( const std::string & filename )
+{
+	// file >> m_maxSpeed;
+	// file >> m_maxForce;
+	// file >> m_angleView;
+	// file >> m_distViewSeparate;
+	// file >> m_distViewCohesion;
+	// file >> m_distStartSlowingDown;
+	// file >> m_rCircleWander;
+	// file >> m_distToCircle;
+}
+
+MovableParameters::MovableParameters(BoidType type)
+{
+	switch (type) {
+		case RABBIT:
+			std::cerr << "Implementation rabbit" << std::endl;
+			*this = MovableParameters( "../../XML_data/RabbitParameters.xml" ); 
+			break;
+		case WOLF:
+			std::cerr << "Implementation wolf" << std::endl;
+			*this = MovableParameters( "../../XML_data/WolfParameters.xml" );
+			break;
+		default:
+			std::cerr << "Unknown animal" << std::endl;
+			break;
+	}
 }
 
 void MovableParameters::initializeParameters(MovableBoidPtr thisBoid)
@@ -158,4 +207,3 @@ float MovableParameters::getDistViewCohesion() {
 float MovableParameters::getAngleView() {
 	return m_angleView;
 }
-

@@ -12,6 +12,8 @@ int main( int argc, char* argv[] )
     initialize_boid_scene_multiple_pop( viewer );
     //initialize_boid_scene_test_machine_state( viewer );
 
+    test_create_MovableParameters_from_file();
+
     while( viewer.isRunning() )
     {
     	viewer.handleEvent();
