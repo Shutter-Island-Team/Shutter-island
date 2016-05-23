@@ -39,6 +39,15 @@ public:
 	MovableBoidPtr getLeader();
 	void setNewLeader(MovableBoidPtr newLeader);
 
+	bool isLowStamina();
+	bool isHighStamina();
+
+	float getMaxSpeed();
+	float getMaxForce();
+	float getRadiusCircleWander();
+	float getDistToCircleWander();
+	float getDistStartSlowingDown();
+
 protected:
 	float m_stamina;
 	float m_hunger;
@@ -47,6 +56,17 @@ protected:
 	float m_affinity;
 	MovableBoidPtr m_thisBoid;
 	MovableBoidPtr m_leader;
+
+	float m_lowStaminaValue;
+	float m_highStaminaValue;
+
+ private:
+  float m_maxSpeed = 3.5f;
+  float m_maxForce = 2.0f;
+
+  float m_rCircleWander = 9.0f;
+  float m_distToCircle = 3.0f;
+  float m_distStartSlowingDown = 5.0f;
 };
 
 #endif

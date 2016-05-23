@@ -11,28 +11,15 @@ typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
 class MovableState 
 {
-public:
+ public:
+  glm::vec3 computeAcceleration(MovableBoid& b, std::vector<MovableBoidPtr> mvB);
 
-	glm::vec3 computeAcceleration(MovableBoid& b, std::vector<MovableBoidPtr> mvB);
+ private:
+  virtual glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB) = 0;
 
-private:
-	virtual glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB) = 0;
-};
-
-class TestState : public MovableState 
-{
-
-private:
-	float m_maxSpeed = 3.5f;
-  	float m_maxForce = 2.0f;
-
-	float m_rCircleWander = 9.0f;
-  	float m_distToCircle = 3.0f;
-  	float m_distStartSlowingDown = 5.0f;
-
-	glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB);
+ protected:
 	glm::vec3 wander(MovableBoid& b);
-	glm::vec3 arrive(MovableBoid& b, glm::vec3 target);
+	glm::vec3 arrive(MovableBoid& b, glm::vec3 target); 	
 };
 
 class WalkState : public MovableState 
