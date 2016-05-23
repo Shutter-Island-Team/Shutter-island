@@ -1,12 +1,13 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 #include <cmath>
 #include <iostream>
+#include "../../include/Utils.hpp"
 
 MovableParameters::MovableParameters(MovableBoidPtr leader)
-	: m_stamina(100.0f), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
+	: m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
 	m_affinity(0.0f), m_leader(leader), m_lowStaminaValue(10.0f), m_highStaminaValue(99.0f)
 {
-
+	m_stamina = random(1, 100);
 }
 
 void MovableParameters::initializeParameters(MovableBoidPtr thisBoid)
@@ -21,14 +22,22 @@ float MovableParameters::getStamina()
 
 void MovableParameters::staminaIncrease()
 {
-	// TODO : improve with maybe a better function
-	m_stamina = fmin(m_stamina + 1.0f, 100.0f);
+	return staminaIncrease(0.5f);
+}
+
+void MovableParameters::staminaIncrease(float f)
+{
+	m_stamina = fmin(m_stamina + f, 100.0f);
 }
 
 void MovableParameters::staminaDecrease()
 {
-	// TODO : improve with maybe a better function
-	m_stamina = fmax(m_stamina - 1.0f, 0.0f);
+	return staminaDecrease(0.5f);
+}
+
+void MovableParameters::staminaDecrease(float f)
+{
+	m_stamina = fmax(m_stamina - f, 0.0f);
 }
 
 float MovableParameters::getHunger()
@@ -136,5 +145,17 @@ float MovableParameters::getDistToCircleWander() {
 }
 float MovableParameters::getDistStartSlowingDown() {
 	return m_distStartSlowingDown;
+}
+
+float MovableParameters::getDistSeparate() {
+	return m_distViewSeparate;
+}
+
+float MovableParameters::getDistViewCohesion() {
+	return m_distViewCohesion;
+}
+
+float MovableParameters::getAngleView() {
+	return m_angleView;
 }
 

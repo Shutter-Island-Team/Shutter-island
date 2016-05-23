@@ -9,15 +9,18 @@ class MovableParameters
 {
 
 public:
-
+	// TODO : Constructor with parameter
 	MovableParameters(MovableBoidPtr m_leader);
 	void initializeParameters(MovableBoidPtr thisBoid);
 
 	// TODO : add function isLow, isHigh or isHungry, ...
+	// TODO : getter are not quite useful here. TODO : to remove
 
 	float getStamina();
 	void staminaIncrease();
+	void staminaIncrease(float f);
 	void staminaDecrease();
+	void staminaDecrease(float f);
 
 	float getHunger();
 	void hungerIncrease();
@@ -48,6 +51,11 @@ public:
 	float getDistToCircleWander();
 	float getDistStartSlowingDown();
 
+	float getDistSeparate();
+	float getDistViewCohesion();
+
+	float getAngleView();
+
 protected:
 	float m_stamina;
 	float m_hunger;
@@ -67,6 +75,12 @@ protected:
   float m_rCircleWander = 9.0f;
   float m_distToCircle = 3.0f;
   float m_distStartSlowingDown = 5.0f;
+
+  float m_distViewSeparate = 2.0f;
+  float m_distViewCohesion = 5.0f;
+
+  float m_angleView = 3*M_PI/4;
+
 };
 
 #endif

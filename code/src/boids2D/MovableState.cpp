@@ -42,6 +42,95 @@ glm::vec3 MovableState::arrive(MovableBoid& b, glm::vec3 target)
 	return steer;
 }
 
+glm::vec3 MovableState::stayWithinWalls(MovableBoid& b) {
+	glm::vec3 steer(0, 0, 0);
+	float distToWall = 20.0f;
+    if (b.getLocation().x < -distToWall) {
+    	glm::vec3 desired(b.getParameters().getMaxForce(), b.getVelocity().y, 0);
+    	steer = desired - b.getVelocity();
+    } else if (b.getLocation().x >  distToWall) {
+		glm::vec3 desired(-b.getParameters().getMaxForce(), b.getVelocity().y, 0);
+		steer = desired - b.getVelocity() ;
+    }
+    
+    if (b.getLocation().y < -distToWall) {
+		glm::vec3 desired(b.getVelocity().x, b.getParameters().getMaxForce(), 0);
+		steer += desired - b.getVelocity();
+    } else if (b.getLocation().y >  distToWall) {
+		glm::vec3 desired(b.getVelocity().x, -b.getParameters().getMaxForce(), 0);
+		steer += desired - b.getVelocity();
+    }
+
+    steer = limitVec3(steer, b.getParameters().getMaxForce());
+
+    return steer;
+}
+
+glm::vec3 MovableState::separate(MovableBoid& b, std::vector<MovableBoidPtr> mvB){
+	glm::vec3 sum;
+	int count = 0;
+	for(MovableBoidPtr m : mvB) {
+		float d = glm::distance(b.getLocation(), m->getLocation());
+		if ((d > 0) && b.distVision(*m, b.getParameters().getDistSeparate())) {
+			glm::vec3 diff = b.getLocation() - m->getLocation();
+			diff = glm::normalize(diff) / d;
+			sum += diff;
+			count++;
+		}
+	}
+	if (count > 0) {
+		sum /= count;
+		sum = glm::normalize(sum) * b.getParameters().getMaxForce();
+		glm::vec3 steer = sum - b.getVelocity();
+		return limitVec3(steer, b.getParameters().getMaxForce());
+	}
+	return glm::vec3(0, 0, 0);
+}
+
+glm::vec3 MovableState::align (MovableBoid& b, std::vector<MovableBoidPtr> mvB) {
+	glm::vec3 sum(0,0,0);
+	int count = 0;
+	for (MovableBoidPtr other : mvB) {
+		float d = glm::distance(b.getLocation(), other->getLocation());
+		if ((d > 0) && (d < b.getParameters().getDistViewCohesion()) && b.canSee(*other, b.getParameters().getAngleView())) {
+			sum += other->getVelocity();
+			// For an average, we need to keep track of
+			// how many boids are within the distance.
+			count++;
+		}
+	}
+	if (count > 0) {
+		sum = sum / (float) count;
+		// sum.normalize();
+		// sum.mult(maxspeed);
+		return glm::normalize(limitVec3(sum - b.getVelocity(), b.getParameters().getMaxForce()));
+	}
+	return glm::vec3(0,0,0);
+}
+
+glm::vec3 MovableState::cohesion (MovableBoid& b, std::vector<MovableBoidPtr> mvB) {
+    glm::vec3 sum(0,0,0);
+    int count = 0;
+    for (MovableBoidPtr other : mvB) {
+		float d = glm::distance(b.getLocation(), other->getLocation());
+		if ((d > 0) && (d < b.getParameters().getDistViewCohesion()) && b.canSee(*other, b.getParameters().getAngleView())) {
+			// Adding up all the others’ locations
+			sum += other->getLocation();
+			count++;
+		}
+    }
+    if (count > 0) {
+		sum /= (float) count;
+		// Here we make use of the seek() function we
+		// wrote in Example 6.8.  The target
+		// we seek is the average location of
+		// our neighbors.
+		// return arrive(sum);
+        return glm::vec3(0,0,0);
+    }
+
+    return glm::vec3(0,0,0);
+}
 /* ==================================== Boid State Value ====================================
  * Each States update stamina, hunger, thrist, danger and affinity
  * Increasing function are si(stamina), hi(hunger), ti(thrist), di(danger), ai(affinity)
@@ -65,8 +154,8 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	b.getParameters().staminaDecrease();
-	return 4.0f * wander(b);
+	b.getParameters().staminaDecrease(0.5f);
+	return 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) + 4.0f * align(b, mvB) + 16.0f * stayWithinWalls(b);
 }
 
 glm::vec3 StayState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
@@ -78,7 +167,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	b.getParameters().staminaIncrease();
+	b.getParameters().staminaIncrease(3.0f);
 	return arrive(b, b.getLocation());
 }
 
