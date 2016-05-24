@@ -75,7 +75,8 @@ void VoronoiSeedsGenerator::generateSeeds(
 	 * Initializing the random generator which is going to be used in order to
 	 * generate the seeds.
 	 */
-	std::default_random_engine generator;
+    std::random_device randomDevice;
+	std::mt19937 generator(randomDevice());
 	std::normal_distribution<float> widthDistrib(m_width/2.0, m_width/5.0);
 	std::normal_distribution<float> heightDistrib(m_height/2.0, m_height/5.0);
 
@@ -92,7 +93,6 @@ void VoronoiSeedsGenerator::generateSeeds(
 	while (currentNbOfSeeds < m_nbOfSeeds) {
 		float wPosition = widthDistrib(generator);
 		float hPosition = heightDistrib(generator);
-
 		/*
 		 * Testing if the subdivision which is going to contain the new seed
 		 * is "full".

@@ -144,7 +144,12 @@ public:
 
 private:
     /**
+     * @brief Performs a sorted insert of a seed into a list according to
+     *  its distance to center of the map.
      *
+     * @param list A reference of the list in which the insertion has to
+     *  be performed.
+     * @param seed The seed to insert into the list.
      */
     void insertIntoList(std::list<Seed>& list, Seed& seed);
 
