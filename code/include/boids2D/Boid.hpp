@@ -49,11 +49,11 @@ class Boid
   BoidType getBoidType() const;
 
  protected:
- 	glm::vec3 m_location;
+ 	glm::vec3 m_location; ///< Position of the boid
 
  private:
- 	float m_angle;
- 	BoidType m_boidType;
+ 	float m_angle; ///< Angle of position of the boid
+ 	BoidType m_boidType; ///< Type of the boid @see BoidType.hpp
 };
 
 typedef std::shared_ptr<Boid> BoidPtr;

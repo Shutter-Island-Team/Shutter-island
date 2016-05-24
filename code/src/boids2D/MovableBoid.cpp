@@ -1,9 +1,7 @@
 #include <iostream>
 #include <cmath>
-
-#include "../../include/boids2D/MovableBoid.hpp"
-
 #include "../../include/Utils.hpp"
+#include "../../include/boids2D/MovableBoid.hpp"
 
 MovableBoid::~MovableBoid()
 {
@@ -40,17 +38,13 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 	}
 }
 
-void MovableBoid::initializeParameters(MovableBoidPtr thisBoid)
+void MovableBoid::associateBoid(MovableBoidPtr boidPtr)
 {
-	m_parameters->initializeParameters(thisBoid);
+	m_parameters->associateBoid(boidPtr);
 }
 
 glm::vec3 MovableBoid::getVelocity(){
 	return m_velocity;
-}
-
-glm::vec3 MovableBoid::getAcceleration() {
-	return m_acceleration;
 }
 
 float MovableBoid::getMass() {
@@ -68,19 +62,19 @@ void MovableBoid::resetAcceleration() {
 void MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
 	switch (m_stateType) {
 		case WALK_STATE:
-			walkStateHandler(mvB);
+			walkStateHandler();
 			break;
 		case STAY_STATE:
-			stayStateHandler(mvB);
+			stayStateHandler();
 			break;
 		case FIND_FOOD_STATE:
-			findFoodStateHandler(mvB);
+			findFoodStateHandler();
 			break;
 		default:
 			std::cerr << "Unknown state" << std::endl;
 			break;
 	}
-	setAcceleration(m_currentState->computeAcceleration(*this, mvB));
+	m_acceleration = m_currentState->computeAcceleration(*this, mvB);
 }
 
 void MovableBoid::computeNextStep(float dt) {
@@ -89,21 +83,21 @@ void MovableBoid::computeNextStep(float dt) {
     m_location += dt * m_velocity;
 }
 
-bool MovableBoid::canSee(Boid b, float distView) const {
-	return (distVision(b, distView)) && (angleVision(b));
+bool MovableBoid::canSee(Boid other, float distView) const {
+	return (distVision(other, distView)) && (angleVision(other));
 }
 
-bool MovableBoid::distVision (Boid b, float distView) const {
-	return (glm::distance(m_location, b.getLocation()) < distView);
+bool MovableBoid::distVision (Boid other, float distView) const {
+	return (glm::distance(m_location, other.getLocation()) < distView);
 }
 
-bool MovableBoid::sameSpecies(Boid b)
+bool MovableBoid::sameSpecies(Boid other)
 {
-	return b.getBoidType() == getBoidType();
+	return other.getBoidType() == getBoidType();
 }
 
-bool MovableBoid::angleVision (Boid b) const {
-	glm::vec3 diffPos = b.getLocation() - m_location;
+bool MovableBoid::angleVision (Boid other) const {
+	glm::vec3 diffPos = other.getLocation() - m_location;
 	float comparativeValue = acos(glm::dot(glm::normalize(m_velocity), glm::normalize(diffPos)));
 
 	if (getParameters().getAngleView() <= M_PI) {
@@ -115,7 +109,7 @@ bool MovableBoid::angleVision (Boid b) const {
     }
 }
 
-void MovableBoid::walkStateHandler(std::vector<MovableBoidPtr> mvB) {
+void MovableBoid::walkStateHandler() {
 	/*
 	if (m_parameters->isLowStamina()) {
 		delete m_currentState;
@@ -130,7 +124,7 @@ void MovableBoid::walkStateHandler(std::vector<MovableBoidPtr> mvB) {
 	}
 }
 
-void MovableBoid::stayStateHandler(std::vector<MovableBoidPtr> mvB) {
+void MovableBoid::stayStateHandler() {
 	if (m_parameters->isHighStamina()) {
 		delete m_currentState;
 		m_currentState = new WalkState();
@@ -140,7 +134,7 @@ void MovableBoid::stayStateHandler(std::vector<MovableBoidPtr> mvB) {
 	}
 }
 
-void MovableBoid::findFoodStateHandler(std::vector<MovableBoidPtr> mvB) {
+void MovableBoid::findFoodStateHandler() {
 
 }
 
@@ -150,8 +144,4 @@ bool operator==(const MovableBoid& b1, const MovableBoid& b2) {
 
 bool operator!=(const MovableBoid& b1, const MovableBoid& b2){
 	return !(b1 == b2);
-}
-
-void MovableBoid::setAcceleration(glm::vec3 acceleration) {
-	m_acceleration = acceleration;
 }

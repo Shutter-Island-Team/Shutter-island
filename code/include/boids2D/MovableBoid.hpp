@@ -19,40 +19,87 @@ typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 class MovableBoid : public Boid
 {
  public:
-  ~MovableBoid();
-
 	MovableBoid(glm::vec3 location, BoidType t, MovableParameters* parameters);
 
-  MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, MovableParameters* parameters);
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t,
+              MovableParameters* parameters);
 
-  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t, MovableParameters* parameters);
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
+              MovableParameters* parameters);
 
-  void initializeParameters(MovableBoidPtr thisBoid);
+  ~MovableBoid();
 
+  /**
+   * @brief     This function is used for a MovableBoidPtr to be
+   *            linked with its parameter
+   * @param[in] boidPtr The boid to get the parameter from
+   */
+  void associateBoid(MovableBoidPtr boidPtr);
+
+  /**
+   * @brief Getter for the velocity of the object
+   */
   glm::vec3 getVelocity();
 
-  glm::vec3 getAcceleration();
-
+  /**
+   * @brief Getter for the mass of the object
+   */
   float getMass();
 
+  /**
+   * @brief   Getter for the parameter of the object
+   * @return  Parameter of the object
+   */
   MovableParameters & getParameters() const;
 
+  /**
+   * @brief Set the acceleration field of the class to 0
+   */
   void resetAcceleration();
 
+  /**
+   * @brief     Update the acceleration of the boid. Save the value
+   *            in the acceleration field of the class
+   * @param[in] mvB Other movable boid the object is aware of
+   */
   void computeAcceleration(std::vector<MovableBoidPtr> mvB);
 
-  // Used in solver
+  /**
+   * @brief     Update the position and the velocity for the next step in the simulation 
+   * @param[in] dt Value of the time step
+   */
   void computeNextStep(float dt);
 
-	bool canSee(Boid b, float distView) const;
+  /**
+   * @brief     Check if the other boid is in the cone of vision of this
+   * @param[in] other     The other boid to check if in range
+   * @param[in] distView  The maximum distance viewable by this
+   */
+	bool canSee(Boid other, float distView) const;
 
-  bool distVision (Boid b, float distView) const;
+  /**
+   * @brief     Check if the other boid is in the circle of center of the
+   *            location of this and of the radius of distView 
+   * @param[in] other     The other boid to check if in range
+   * @param[in] distView  The radius of the circle
+   * @return    true if in the circle, false otherwise
+   */
+  bool distVision (Boid other, float distView) const;
 
-  bool sameSpecies(Boid b);
+  /**
+   * @brief     Check if the other boid is the same type of this
+   * @param[in] other The other boid
+   * @return    true if the other boid is the same type of the, false otherwise
+   */
+  bool sameSpecies(Boid other);
 
-  // Return the boolean if b is in the angle of vision of this
-  // Warning : don't work if angleVision = PI
-  bool angleVision (Boid b) const;
+  /**
+   * @brief     Check if the other boid is in the angle of view of this (distance don't matter)
+   * @param[in] other The other boid
+   * @return    true if the other boid is in the angle of view of this, false otherwise
+   * @warning   If the angle of view of the object is equal to PI, this function might not work
+   */
+  bool angleVision (Boid other) const;
 
  private:
   glm::vec3 m_velocity;
@@ -62,19 +109,24 @@ class MovableBoid : public Boid
   MovableState* m_currentState;
   MovableParameters* m_parameters;
 
-  void walkStateHandler(std::vector<MovableBoidPtr> mvB);
+  void walkStateHandler();
 
-  void stayStateHandler(std::vector<MovableBoidPtr> mvB);
+  void stayStateHandler();
 
-  void findFoodStateHandler(std::vector<MovableBoidPtr> mvB);
-
-  void setAcceleration(glm::vec3 acceleration);
+  void findFoodStateHandler();
 
   StateType m_stateType;
 };
 
+/**
+ * @brief   Comparator between 2 boid.
+ * @return  true if b1 and b2 has the same position
+ */
 bool operator==(const MovableBoid& b1, const MovableBoid& b2);
 
+/**
+ * @brief Comparator between 2 boid. @see ==
+ */
 bool operator!=(const MovableBoid& b1, const MovableBoid& b2);
 
 
