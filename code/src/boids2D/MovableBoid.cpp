@@ -94,6 +94,11 @@ bool MovableBoid::distVision (Boid b, float distView) {
 	return (glm::distance(m_location, b.getLocation()) < distView);
 }
 
+bool MovableBoid::sameSpecies(Boid b)
+{
+	return b.getBoidType() == m_boidType;
+}
+
 bool MovableBoid::angleVision (Boid b) {
 	glm::vec3 diffPos = b.getLocation() - m_location;
 	float comparativeValue = acos(glm::dot(glm::normalize(m_velocity), glm::normalize(diffPos)));

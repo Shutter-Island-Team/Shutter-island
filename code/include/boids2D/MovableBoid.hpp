@@ -48,6 +48,8 @@ class MovableBoid : public Boid
 
   bool distVision (Boid b, float distView);
 
+  bool sameSpecies(Boid b);
+
   // Return the boolean if b is in the angle of vision of this
   // Warning : don't work if angleVision = PI
   bool angleVision (Boid b);
