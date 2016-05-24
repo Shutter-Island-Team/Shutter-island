@@ -211,7 +211,8 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 
 	b.getParameters().staminaDecrease(0.01f);
 	//b.getParameters().hungerDecrease();
-	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) + 4.0f * align(b, mvB) + 160.0f * stayWithinWalls(b);
+	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) 
+		+ 4.0f * align(b, mvB) + 160.0f * stayWithinWalls(b);
 	newForces.z = 0.0f;
 	//newForces /= 29.0f;
 	return newForces;
