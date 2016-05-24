@@ -59,7 +59,7 @@ MovableParameters::MovableParameters(BoidType type)
 	}
 }
 
-void MovableParameters::initializeParameters(MovableBoidPtr thisBoid)
+void MovableParameters::associateBoid(MovableBoidPtr thisBoid)
 {
 	m_thisBoid = thisBoid;
 }

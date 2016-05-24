@@ -7,38 +7,53 @@
 #include <vector>
 #include "BoidType.hpp"
 
+/**
+ * @class Boid
+ * @brief Parent class for a Boid (can be rooted or movable)
+ */
 class Boid
 {
  public:
   /**
-   * @brief
-   * @param[in]
-   * @param[in]
+   * @brief		Constructor for a Boid
+   * @param[in]	location 	The initial position
+   * @param[in]	t 			Type of the boid
    */
   Boid(glm::vec3 location, BoidType t);
 
+  /**
+   * @brief Getter for the location
+   */
   glm::vec3 getLocation() const;
 
+  /**
+   * @brief 	Setter for the location
+   * @param[in]	location The new location
+   */
   void setLocation(const glm::vec3 & location);
 
+  /**
+   * @brief Getter of the angle
+   */
   float getAngle() const;
 
+  /**
+   * @brief 	Setter of the angle
+   * @param[in]	angle The new angle
+   */
   void setAngle(const float & angle);
 
-  float getMinDistance() const;
-
-  void setMinDistance(const float & minDistance);
-
+  /**
+   * @brief Getter of the type of the boid
+   */
   BoidType getBoidType() const;
 
  protected:
- 	glm::vec3 m_location;
+ 	glm::vec3 m_location; ///< Position of the boid
 
  private:
- 	float m_angle;
- 	BoidType m_boidType;
-
- 	float m_minDistance = 1;
+ 	float m_angle; ///< Angle of position of the boid
+ 	BoidType m_boidType; ///< Type of the boid @see BoidType.hpp
 };
 
 typedef std::shared_ptr<Boid> BoidPtr;

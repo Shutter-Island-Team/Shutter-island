@@ -169,7 +169,7 @@ void initialize_boid_scene( Viewer& viewer )
     for (int i = 0; i < 50; ++i) {
         parameters = new MovableParameters();
         mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), RABBIT, parameters);
-        mvb->initializeParameters(mvb);
+        mvb->associateBoid(mvb);
         boidsManager->addMovableBoid(mvb);
         br = std::make_shared<BoidRenderable>(texShader, mvb);
         br->setMaterial(pearl);
@@ -179,7 +179,7 @@ void initialize_boid_scene( Viewer& viewer )
     for (int i = 0; i < 10; ++i) {
         parameters = new MovableParameters();
         mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), WOLF, parameters);
-        mvb->initializeParameters(mvb);
+        mvb->associateBoid(mvb);
         boidsManager->addMovableBoid(mvb);
         br = std::make_shared<BoidRenderable>(texShader, mvb);
         br->setMaterial(pearl);
@@ -247,7 +247,7 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     for (int i = 0; i < 10; ++i) {
         parameters = new MovableParameters();
         rabbitBoid = std::make_shared<Rabbit>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
-        rabbitBoid->initializeParameters(rabbitBoid);
+        rabbitBoid->associateBoid(rabbitBoid);
         boidsManager->addMovableBoid(rabbitBoid);
         br = std::make_shared<BoidRenderable>(texShader, rabbitBoid);
         br->setMaterial(pearl);
@@ -257,7 +257,7 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     for (int i = 0; i < 10; ++i) {
         parameters = new MovableParameters();
         wolfBoid = std::make_shared<Wolf>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
-        wolfBoid->initializeParameters(wolfBoid);
+        wolfBoid->associateBoid(wolfBoid);
         boidsManager->addMovableBoid(wolfBoid);
         br = std::make_shared<BoidRenderable>(texShader, wolfBoid);
         br->setMaterial(pearl);
@@ -337,12 +337,12 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
 
     parameters = new MovableParameters();
     MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(-1, 0, 0), RABBIT, parameters);
-    mvb1->initializeParameters(mvb1);
+    mvb1->associateBoid(mvb1);
     boidsManager->addMovableBoid(mvb1);
 
     parameters = new MovableParameters();
     MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
-    mvb2->initializeParameters(mvb2);
+    mvb2->associateBoid(mvb2);
     boidsManager->addMovableBoid(mvb2);
 
     BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(texShader, mvb1);
@@ -411,12 +411,12 @@ void initialize_boid_scene_test_canSee( Viewer& viewer )
 
     parameters = new MovableParameters();
     MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
-    mvb1->initializeParameters(mvb1);
+    mvb1->associateBoid(mvb1);
     boidsManager->addMovableBoid(mvb1);
 
     parameters = new MovableParameters();
     MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(0, -1, 2), glm::vec3(0, -1, 0), RABBIT, parameters);
-    mvb2->initializeParameters(mvb2);
+    mvb2->associateBoid(mvb2);
     boidsManager->addMovableBoid(mvb2);
 
     BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(texShader, mvb1);
@@ -480,7 +480,7 @@ void initialize_boid_scene_test_machine_state( Viewer& viewer )
 
     MovableParameters* parameters = new MovableParameters();
     MovableBoidPtr mvb = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
-    mvb->initializeParameters(mvb);
+    mvb->associateBoid(mvb);
     boidsManager->addMovableBoid(mvb);
 
     BoidRenderablePtr br = std::make_shared<BoidRenderable>(texShader, mvb);
@@ -552,7 +552,7 @@ void initialize_boid_scene_walkstate( Viewer& viewer)
     for (int i = 0; i < 10; ++i) {
         parameters = new MovableParameters();
         rabbitBoid = std::make_shared<Rabbit>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
-        rabbitBoid->initializeParameters(rabbitBoid);
+        rabbitBoid->associateBoid(rabbitBoid);
         boidsManager->addMovableBoid(rabbitBoid);
         br = std::make_shared<BoidRenderable>(texShader, rabbitBoid);
         br->setMaterial(pearl);
@@ -564,7 +564,7 @@ void initialize_boid_scene_walkstate( Viewer& viewer)
     {
         parameters = new MovableParameters();
         wolfBoids.push_back(std::make_shared<Wolf>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters));
-        wolfBoids[i]->initializeParameters(wolfBoids[i]);
+        wolfBoids[i]->associateBoid(wolfBoids[i]);
         wolfBoids[i]->getParameters().setNewLeader(wolfBoids[0]);
         boidsManager->addMovableBoid(wolfBoids[i]);
         br = std::make_shared<BoidRenderable>(texShader, wolfBoids[i]);

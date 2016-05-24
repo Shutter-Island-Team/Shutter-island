@@ -22,8 +22,6 @@ public:
 
 	MovableParameters(BoidType type);
 
-	void initializeParameters(MovableBoidPtr thisBoid);
-
 	// TODO : add function isLow, isHigh or isHungry, ...
 	// TODO : getter are not quite useful here. TODO : to remove
 
@@ -101,6 +99,10 @@ protected:
   float m_angleView;
 
   float m_distViewMax;
+
+  // Only allow MovableBoid to use associateBoid
+  friend class MovableBoid;
+  void associateBoid(MovableBoidPtr thisBoid);
 
 };
 

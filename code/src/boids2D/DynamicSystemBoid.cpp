@@ -28,6 +28,12 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
     m_boidsManager = boidsManager;
 }
 
+/**
+ * It is important in this function to note that it first computes
+ * the acceleration of each boid then update the boid in two different
+ * loops. Therefore each boid can the computation is not polluted by
+ * unexpected update of positions of other boids.
+ */ 
 void DynamicSystemBoid::computeSimulationStep()
 {
     for(MovableBoidPtr b : m_boidsManager->getMovableBoids()) {
