@@ -17,6 +17,4 @@ code/lib/voro++/examples/*
 code/lib/voro++/src/libvoro++.a
 code/lib/voro++/src/voro++
 **/tumeur*
-code/lib/voro++/examples/*
-code/lib/voro++/src/libvoro++.a
-code/lib/voro++/src/voro++
+**/oedeme*
