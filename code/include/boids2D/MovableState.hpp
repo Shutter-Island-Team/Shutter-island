@@ -18,6 +18,7 @@ class MovableState
   virtual glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB) = 0;
 
  protected:
+  glm::vec3 seek(MovableBoid& b, glm::vec3 target);
   glm::vec3 wander(MovableBoid& b);
   glm::vec3 arrive(MovableBoid& b, glm::vec3 target);
   glm::vec3 stayWithinWalls(MovableBoid& b);

@@ -1,7 +1,7 @@
 #include "../../include/boids2D/Boid.hpp"
 
 Boid::Boid(glm::vec3 location, BoidType t) 
-	: m_location(location), m_boidType(t)
+	: m_location(location), m_boidType(t), m_angle(0.0f)
 {
 
 }

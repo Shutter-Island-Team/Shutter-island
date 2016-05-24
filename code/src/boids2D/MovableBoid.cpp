@@ -116,18 +116,19 @@ bool MovableBoid::angleVision (Boid b) const {
 }
 
 void MovableBoid::walkStateHandler(std::vector<MovableBoidPtr> mvB) {
-	/*
+	
 	if (m_parameters->isLowStamina()) {
 		delete m_currentState;
 		m_currentState = new StayState();
 		m_stateType = STAY_STATE;
 	} 
-	*/
+	/*
 	if (m_parameters->isLowHunger()) {
 		delete m_currentState;
 		m_currentState = new FindFoodState();
 		m_stateType = FIND_FOOD_STATE;
 	}
+	*/
 }
 
 void MovableBoid::stayStateHandler(std::vector<MovableBoidPtr> mvB) {
