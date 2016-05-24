@@ -32,9 +32,7 @@ public:
      * @param system The new dynamic system managed by this.
      */
     void setDynamicSystem(const DynamicSystemBoidPtr &system);
-
-    void do_mousePressEvent(sf::Event& e);
-
+    
 private:
     void do_draw();
     /**@brief Update the dynamic system.

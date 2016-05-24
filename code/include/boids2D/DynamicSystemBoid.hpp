@@ -86,9 +86,6 @@ public:
      * @param dt The new time integration interval.
      */
     void setDt(float dt);
-
-    void setTargetBoid(float x, float y);
-
 };
 
 typedef std::shared_ptr<DynamicSystemBoid> DynamicSystemBoidPtr;

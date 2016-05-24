@@ -10,34 +10,33 @@
 class Boid
 {
  public:
-	Boid(glm::vec3 location, BoidType t);
+  /**
+   * @brief
+   * @param[in]
+   * @param[in]
+   */
+  Boid(glm::vec3 location, BoidType t);
 
-	glm::vec3 getLocation() const;
+  glm::vec3 getLocation() const;
 
-	void setLocation(glm::vec3 location);
+  void setLocation(const glm::vec3 & location);
 
-	bool isMovable();
+  float getAngle() const;
 
-	float getAngle();
+  void setAngle(const float & angle);
 
-	void setAngle(float angle);
+  float getMinDistance() const;
 
-	void setTarget(float x, float y);
+  void setMinDistance(const float & minDistance);
 
-	glm::vec2 getTarget();
-
-	float getMinDistance();
-
-	void setMinDistance(float minDistance);
-
-	BoidType getBoidType();
+  BoidType getBoidType() const;
 
  protected:
  	glm::vec3 m_location;
+
+ private:
  	float m_angle;
  	BoidType m_boidType;
- 	bool m_movable;
-	glm::vec2 m_target;
 
  	float m_minDistance = 1;
 };

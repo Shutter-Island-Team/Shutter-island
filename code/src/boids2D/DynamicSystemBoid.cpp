@@ -38,9 +38,3 @@ void DynamicSystemBoid::computeSimulationStep()
     m_solver->solve(m_dt, m_boidsManager->getMovableBoids());
 
 }
-
-void DynamicSystemBoid::setTargetBoid(float x, float y) {
-    for(MovableBoidPtr b : m_boidsManager->getMovableBoids()) {
-        b->setTarget(x, y);
-    }
-}
