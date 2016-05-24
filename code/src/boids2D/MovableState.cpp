@@ -84,6 +84,7 @@ glm::vec3 MovableState::stayWithinWalls(MovableBoid& b) {
 
 glm::vec3 MovableState::separate(MovableBoid& b, std::vector<MovableBoidPtr> mvB){
 	glm::vec3 sum(0,0,0);
+	glm::vec3 steer(0,0,0);
 	int count = 0;
 	for(MovableBoidPtr m : mvB) {
 		float d = glm::distance(b.getLocation(), m->getLocation());
@@ -96,11 +97,11 @@ glm::vec3 MovableState::separate(MovableBoid& b, std::vector<MovableBoidPtr> mvB
 	}
 	if (count > 0) {
 		sum /= count;
-		sum = glm::normalize(sum) * b.getParameters().getMaxForce();
-		glm::vec3 steer = sum - b.getVelocity();
-		sum = limitVec3(steer, b.getParameters().getMaxForce());
+		sum = glm::normalize(sum) * b.getParameters().getMaxSpeed();
+		steer = sum - b.getVelocity();
+		steer = limitVec3(steer, b.getParameters().getMaxForce());
 	}
-	return sum;
+	return steer;
 }
 
 glm::vec3 MovableState::align (MovableBoid& b, std::vector<MovableBoidPtr> mvB) {

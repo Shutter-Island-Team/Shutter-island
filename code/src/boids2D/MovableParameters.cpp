@@ -5,7 +5,7 @@
 #include "../../include/Utils.hpp"
 
 MovableParameters::MovableParameters()
-	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f)
+	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 4.0f, 4.0f, 5.0f)
 {
 
 }
