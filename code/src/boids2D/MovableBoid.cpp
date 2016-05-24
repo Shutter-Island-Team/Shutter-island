@@ -57,7 +57,7 @@ float MovableBoid::getMass() {
 	return m_mass;
 }
 
-MovableParameters & MovableBoid::getParameters() {
+MovableParameters & MovableBoid::getParameters() const {
 	return *m_parameters;
 }
 
@@ -73,6 +73,9 @@ void MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
 		case STAY_STATE:
 			stayStateHandler(mvB);
 			break;
+		case FIND_FOOD_STATE:
+			findFoodStateHandler(mvB);
+			break;
 		default:
 			std::cerr << "Unknown state" << std::endl;
 			break;
@@ -86,20 +89,21 @@ void MovableBoid::computeNextStep(float dt) {
     m_location += dt * m_velocity;
 }
 
-bool MovableBoid::canSee(Boid b, float distView) {
+bool MovableBoid::canSee(Boid b, float distView) const {
 	return (distVision(b, distView)) && (angleVision(b));
 }
 
-bool MovableBoid::distVision (Boid b, float distView) {
+bool MovableBoid::distVision (Boid b, float distView) const {
 	return (glm::distance(m_location, b.getLocation()) < distView);
 }
+
 
 bool MovableBoid::sameSpecies(Boid b)
 {
 	return b.getBoidType() == m_boidType;
 }
 
-bool MovableBoid::angleVision (Boid b) {
+bool MovableBoid::angleVision (Boid b) const {
 	glm::vec3 diffPos = b.getLocation() - m_location;
 	float comparativeValue = acos(glm::dot(glm::normalize(m_velocity), glm::normalize(diffPos)));
 
@@ -112,84 +116,18 @@ bool MovableBoid::angleVision (Boid b) {
     }
 }
 
-glm::vec3 MovableBoid::ruleStayWithinWalls() {
-	glm::vec3 steer(0, 0, 0);
-	float distToWall = 20.0f;
-    if (m_location.x < -distToWall) {
-      glm::vec3 desired(getParameters().getMaxSpeed(), m_velocity.y, 0);
-      steer = desired - m_velocity;
-    } else if (m_location.x >  distToWall) {
-      glm::vec3 desired(-getParameters().getMaxSpeed(), m_velocity.y, 0);
-      steer = desired - m_velocity ;
-    }
-    
-    if (m_location.y < -distToWall) {
-      glm::vec3 desired(m_velocity.x, getParameters().getMaxSpeed(), 0);
-      steer += desired - m_velocity;
-    } else if (m_location.y >  distToWall) {
-      glm::vec3 desired(m_velocity.x, -getParameters().getMaxSpeed(), 0);
-      steer += desired - m_velocity;
-    }
-
-    steer = limitVec3(steer, getParameters().getMaxForce());
-
-    return steer;
-}
-
-/*
-glm::vec3 MovableBoid::align (std::vector<MovableBoidPtr> mvB) {
-	glm::vec3 sum(0,0,0);
-	int count = 0;
-	for (MovableBoidPtr other : mvB) {
-		float d = glm::distance(getLocation(), other->getLocation());
-		if ((d > 0) && (d < m_distViewCohesion) && canSee(*other, m_angleView)) {
-			sum += other->m_velocity;
-			// For an average, we need to keep track of
-			// how many boids are within the distance.
-			count++;
-		}
-	}
-	if (count > 0) {
-		sum = sum / (float) count;
-		// sum.normalize();
-		// sum.mult(maxspeed);
-		return glm::normalize(limitVec3(sum - m_velocity, getParameters().getMaxForce()));
-	}
-	return glm::vec3(0,0,0);
-}
-
-glm::vec3 MovableBoid::cohesion (std::vector<MovableBoidPtr> mvB) {
-    glm::vec3 sum(0,0,0);
-    int count = 0;
-    for (MovableBoidPtr other : mvB) {
-		float d = glm::distance(getLocation(), other->getLocation());
-		if ((d > 0) && (d < m_distViewCohesion) && canSee(*other, m_angleView)) {
-			// Adding up all the others’ locations
-			sum += other->getLocation();
-			count++;
-		}
-    }
-    if (count > 0) {
-		sum /= (float) count;
-		// Here we make use of the seek() function we
-		// wrote in Example 6.8.  The target
-		// we seek is the average location of
-		// our neighbors.
-		// return arrive(sum);
-        return glm::vec3(0,0,0);
-    }
-
-    return glm::vec3(0,0,0);
-}
-*/
-
 void MovableBoid::walkStateHandler(std::vector<MovableBoidPtr> mvB) {
+	/*
 	if (m_parameters->isLowStamina()) {
 		delete m_currentState;
 		m_currentState = new StayState();
 		m_stateType = STAY_STATE;
-	} else {
-
+	} 
+	*/
+	if (m_parameters->isLowHunger()) {
+		delete m_currentState;
+		m_currentState = new FindFoodState();
+		m_stateType = FIND_FOOD_STATE;
 	}
 }
 
@@ -201,6 +139,10 @@ void MovableBoid::stayStateHandler(std::vector<MovableBoidPtr> mvB) {
 	} else {
 
 	}
+}
+
+void MovableBoid::findFoodStateHandler(std::vector<MovableBoidPtr> mvB) {
+
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2) {

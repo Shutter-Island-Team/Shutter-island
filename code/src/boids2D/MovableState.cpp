@@ -165,16 +165,22 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 		case RABBIT:
 		break;
 		case WOLF:
+			if(b.getParameters().getLeader() != nullptr)
+			{
+				newForces += 8.0f * arrive(b, b.getParameters().getLeader()->getLocation());
+			}
+			/*
 			if(b.canSee(*b.getParameters().getLeader(), b.getParameters().getDistViewMax()))
 			{
 				// follow leader
-				newForces += 8.0f * arrive(b.getParameters().getLeader()->getLocation());
+				
 			} 
 			else
 			{
 				// wander
 				// nothing to do
 			}
+			*/
 		break;
 	}
 
@@ -185,6 +191,8 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 */
 
 	b.getParameters().staminaDecrease(0.5f);
+	b.getParameters().hungerDecrease();
+
 	return newForces;
 }
 
@@ -226,6 +234,21 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	return glm::vec3(0,0,0);
 }
 
+MovableBoidPtr closestAnimal(const MovableBoid & b, const BoidType & type, const std::vector<MovableBoidPtr> & mvB) {
+	// TODO : After optimization, call getNeighboor(b)
+	float tmpDistance = FLT_MAX;
+	MovableBoidPtr target = (MovableBoidPtr) nullptr;
+
+	for (MovableBoidPtr m : mvB) {
+		if (b.canSee(*m, b.getParameters().getDistViewMax()) && b.distVision(*m, tmpDistance) && m->getBoidType() == type) { 
+			// TODO : optimization possible		
+			tmpDistance = glm::distance(m->getLocation(), b.getLocation());
+			target = m;
+		}
+	}
+	return target;
+}
+
 glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
 {
 	// TODO : wander or follow group until the boid find sth (we can mix both in funtion of hunger variable)
@@ -235,6 +258,33 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, std::vector<MovableBoi
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
+	
+	MovableBoidPtr target;
+	switch (b.getBoidType()) {
+		case WOLF:
+			target = closestAnimal(b, RABBIT, mvB);
+			if (target == (MovableBoidPtr) nullptr) {
+				return wander(b) + 16.0f * stayWithinWalls(b);
+			} else {
+				// TODO : Chase
+				return arrive(b, target->getLocation());
+			}
+			break;
+		case RABBIT:
+			// Can't find the target because it is not in mvB list
+			target = closestAnimal(b, CARROT, mvB);
+			if (target == (MovableBoidPtr) nullptr) {
+				return wander(b) + 16.0f * stayWithinWalls(b);
+			} else {
+				// TODO : Chase
+				return arrive(b, target->getLocation());
+			}
+			break;
+		default:
+			std::cerr << "Unknown animal looking for food" << std::endl;
+			return glm::vec3(0,0,0);
+			break;
+	}
 	return glm::vec3(0,0,0);
 }
 

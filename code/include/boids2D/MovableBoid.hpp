@@ -35,7 +35,7 @@ class MovableBoid : public Boid
 
   float getMass();
 
-  MovableParameters & getParameters();
+  MovableParameters & getParameters() const;
 
   void resetAcceleration();
 
@@ -44,19 +44,15 @@ class MovableBoid : public Boid
   // Used in solver
   void computeNextStep(float dt);
 
-	bool canSee(Boid b, float distView);
+	bool canSee(Boid b, float distView) const;
 
-  bool distVision (Boid b, float distView);
+  bool distVision (Boid b, float distView) const;
 
   bool sameSpecies(Boid b);
 
   // Return the boolean if b is in the angle of vision of this
   // Warning : don't work if angleVision = PI
-  bool angleVision (Boid b);
-
-  glm::vec3 ruleStayWithinWalls();
-
-  glm::vec3 separate(std::vector<MovableBoidPtr> mvB, float desiredSeparation);
+  bool angleVision (Boid b) const;
 
  private:
   glm::vec3 m_velocity;
@@ -69,6 +65,8 @@ class MovableBoid : public Boid
   void walkStateHandler(std::vector<MovableBoidPtr> mvB);
 
   void stayStateHandler(std::vector<MovableBoidPtr> mvB);
+
+  void findFoodStateHandler(std::vector<MovableBoidPtr> mvB);
 
   void setAcceleration(glm::vec3 acceleration);
 
