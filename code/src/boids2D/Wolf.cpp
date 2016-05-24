@@ -13,23 +13,9 @@ Wolf::Wolf(glm::vec3 location, glm::vec3 velocity, MovableParameters* parameters
 
 }
 
-Wolf::Wolf(glm::vec3 location, glm::vec3 velocity, float mass, MovableParameters* parameters)
-	: Wolf(location, velocity, mass, 3*M_PI/4, 0.3f, 2.0f, parameters)
-{
-
-}
-
 Wolf::Wolf(glm::vec3 location, glm::vec3 velocity, float mass,
-    float angleView, float distViewSeparate, float distViewCohesion, MovableParameters* parameters)
-	: Wolf(location, velocity, mass, angleView, distViewSeparate, distViewCohesion, 3.5f, 2.0f, parameters)
-{
-
-}
-
-Wolf::Wolf(glm::vec3 location, glm::vec3 velocity, float mass,
-    float angleView, float distViewSeparate, float distViewCohesion, float maxSpeed, 
-    float maxForce, MovableParameters* parameters)
-	: MovableBoid(location, velocity, mass, angleView, m_distViewSeparate, m_distViewCohesion, maxSpeed, maxForce, WOLF, parameters)
+    MovableParameters* parameters)
+	: MovableBoid(location, velocity, mass, WOLF, parameters)
 {
 
 }

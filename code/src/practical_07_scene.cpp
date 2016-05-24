@@ -167,7 +167,7 @@ void initialize_boid_scene( Viewer& viewer )
     MovableParameters* parameters;
 
     for (int i = 0; i < 50; ++i) {
-        parameters = new MovableParameters(nullptr);
+        parameters = new MovableParameters();
         mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), RABBIT, parameters);
         mvb->initializeParameters(mvb);
         boidsManager->addMovableBoid(mvb);
@@ -177,7 +177,7 @@ void initialize_boid_scene( Viewer& viewer )
     }
 
     for (int i = 0; i < 10; ++i) {
-        parameters = new MovableParameters(nullptr);
+        parameters = new MovableParameters();
         mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), WOLF, parameters);
         mvb->initializeParameters(mvb);
         boidsManager->addMovableBoid(mvb);
@@ -245,7 +245,7 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     MovableParameters* parameters;
 
     for (int i = 0; i < 10; ++i) {
-        parameters = new MovableParameters(nullptr);
+        parameters = new MovableParameters();
         rabbitBoid = std::make_shared<Rabbit>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
         rabbitBoid->initializeParameters(rabbitBoid);
         boidsManager->addMovableBoid(rabbitBoid);
@@ -255,7 +255,7 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     }
 
     for (int i = 0; i < 10; ++i) {
-        parameters = new MovableParameters(nullptr);
+        parameters = new MovableParameters();
         wolfBoid = std::make_shared<Wolf>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
         wolfBoid->initializeParameters(wolfBoid);
         boidsManager->addMovableBoid(wolfBoid);
@@ -335,12 +335,12 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
     BoidRenderablePtr br;
     MovableParameters* parameters;
 
-    parameters = new MovableParameters(nullptr);
+    parameters = new MovableParameters();
     MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(-1, 0, 0), RABBIT, parameters);
     mvb1->initializeParameters(mvb1);
     boidsManager->addMovableBoid(mvb1);
 
-    parameters = new MovableParameters(nullptr);
+    parameters = new MovableParameters();
     MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
     mvb2->initializeParameters(mvb2);
     boidsManager->addMovableBoid(mvb2);
@@ -409,12 +409,12 @@ void initialize_boid_scene_test_canSee( Viewer& viewer )
     BoidRenderablePtr br;
     MovableParameters* parameters;
 
-    parameters = new MovableParameters(nullptr);
+    parameters = new MovableParameters();
     MovableBoidPtr mvb1 = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
     mvb1->initializeParameters(mvb1);
     boidsManager->addMovableBoid(mvb1);
 
-    parameters = new MovableParameters(nullptr);
+    parameters = new MovableParameters();
     MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(0, -1, 2), glm::vec3(0, -1, 0), RABBIT, parameters);
     mvb2->initializeParameters(mvb2);
     boidsManager->addMovableBoid(mvb2);
@@ -478,7 +478,7 @@ void initialize_boid_scene_test_machine_state( Viewer& viewer )
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    MovableParameters* parameters = new MovableParameters(nullptr);
+    MovableParameters* parameters = new MovableParameters();
     MovableBoidPtr mvb = std::make_shared<MovableBoid>(glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0), RABBIT, parameters);
     mvb->initializeParameters(mvb);
     boidsManager->addMovableBoid(mvb);
@@ -489,4 +489,10 @@ void initialize_boid_scene_test_machine_state( Viewer& viewer )
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
+}
+
+void test_create_MovableParameters_from_file() {
+    MovableParameters* parameters = new MovableParameters(WOLF);
+
+    std::cout << "MaxSpeed lu (3.5 attendu) : " << parameters->getMaxSpeed() << std::endl;
 }

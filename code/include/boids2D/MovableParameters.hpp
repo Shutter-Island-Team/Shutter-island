@@ -1,6 +1,8 @@
 #ifndef MOVABLE_PARAMETERS_HPP
 #define MOVABLE_PARAMETERS_HPP
 
+#include <sstream>
+
 #include "MovableBoid.hpp"
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
@@ -9,15 +11,27 @@ class MovableParameters
 {
 
 public:
+	// TODO : Constructor with parameter
+	MovableParameters();
 
-	MovableParameters(MovableBoidPtr m_leader);
+	MovableParameters(float maxSpeed, float maxForce, float angleView, float distViewSeparate, float distViewCohesion);
+
+	MovableParameters(float maxSpeed, float maxForce, float angleView, float distViewSeparate, float distViewCohesion, float distStartSlowingDown,float rCircleWander, float distToCircle);
+	
+	MovableParameters( const std::string & filename );
+
+	MovableParameters(BoidType type);
+
 	void initializeParameters(MovableBoidPtr thisBoid);
 
 	// TODO : add function isLow, isHigh or isHungry, ...
+	// TODO : getter are not quite useful here. TODO : to remove
 
 	float getStamina();
 	void staminaIncrease();
+	void staminaIncrease(float f);
 	void staminaDecrease();
+	void staminaDecrease(float f);
 
 	float getHunger();
 	void hungerIncrease();
@@ -48,6 +62,13 @@ public:
 	float getDistToCircleWander();
 	float getDistStartSlowingDown();
 
+	float getDistSeparate();
+	float getDistViewCohesion();
+
+	float getAngleView();
+
+	friend std::istream& operator>>(std::istream &in, MovableParameters &param);
+
 protected:
 	float m_stamina;
 	float m_hunger;
@@ -61,12 +82,18 @@ protected:
 	float m_highStaminaValue;
 
  private:
-  float m_maxSpeed = 3.5f;
-  float m_maxForce = 2.0f;
+  float m_maxSpeed;
+  float m_maxForce;
 
-  float m_rCircleWander = 9.0f;
-  float m_distToCircle = 3.0f;
-  float m_distStartSlowingDown = 5.0f;
+  float m_rCircleWander;
+  float m_distToCircle;
+  float m_distStartSlowingDown;
+
+  float m_distViewSeparate;
+  float m_distViewCohesion;
+
+  float m_angleView;
+
 };
 
 #endif

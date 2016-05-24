@@ -9,5 +9,6 @@ void initialize_boid_scene_test_separate( Viewer& viewer );
 void initialize_boid_scene_test_canSee( Viewer& viewer );
 void initialize_boid_scene_multiple_pop( Viewer& viewer );
 void initialize_boid_scene_test_machine_state( Viewer& viewer );
+void test_create_MovableParameters_from_file();
 
 #endif 
