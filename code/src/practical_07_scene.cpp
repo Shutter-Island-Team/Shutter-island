@@ -496,3 +496,100 @@ void test_create_MovableParameters_from_file() {
 
     std::cout << "MaxSpeed lu (3.5 attendu) : " << parameters->getMaxSpeed() << std::endl;
 }
+
+void initialize_boid_scene_walkstate( Viewer& viewer)    
+{
+    //Position the camera
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 0, 50 ), glm::vec3(0, 0, 0), glm::vec3( 0, 1, 0 ) ) );
+
+    //Default shader
+    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/flatVertex.vert", 
+        "../shaders/flatFragment.frag"});
+    viewer.addShaderProgram( flatShader );
+
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
+    ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/textureVertex.vert",
+        "../shaders/textureFragment.frag"});
+    viewer.addShaderProgram( texShader );
+
+    std::string filename = "./../textures/grass_texture.png";
+    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+    texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(50.0,50.0,50.0)), glm::vec3(0.0, 0.0, -0.1)));
+    texPlane->setMaterial(pearl);
+    viewer.addRenderable(texPlane);
+    
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>();
+
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
+    SolverBoidPtr solver = std::make_shared<SolverBoid>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+    system->setBoidsManager(boidsManager);
+
+    //Create a renderable associated to the dynamic system
+    //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
+    //It is also responsible for some of the key/mouse events
+    DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
+
+    
+    BoidRenderablePtr br;
+    MovableParameters* parameters;
+/*
+    RabbitPtr rabbitBoid;
+    for (int i = 0; i < 10; ++i) {
+        parameters = new MovableParameters();
+        rabbitBoid = std::make_shared<Rabbit>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
+        rabbitBoid->initializeParameters(rabbitBoid);
+        boidsManager->addMovableBoid(rabbitBoid);
+        br = std::make_shared<BoidRenderable>(texShader, rabbitBoid);
+        br->setMaterial(pearl);
+        HierarchicalRenderable::addChild( systemRenderable, br );
+    }
+*/
+    std::vector< WolfPtr > wolfBoids;
+    for(int i = 0; i < 10; ++i)
+    {
+        parameters = new MovableParameters();
+        wolfBoids.push_back(std::make_shared<Wolf>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters));
+        wolfBoids[i]->initializeParameters(wolfBoids[i]);
+        wolfBoids[i]->getParameters().setNewLeader(wolfBoids[0]);
+        boidsManager->addMovableBoid(wolfBoids[i]);
+        br = std::make_shared<BoidRenderable>(texShader, wolfBoids[i]);
+        br->setMaterial(pearl);
+        HierarchicalRenderable::addChild( systemRenderable, br );
+    }
+/*
+    CarrotPtr carrotBoid;
+    for (int i = 0; i < 10; ++i) {
+        carrotBoid = std::make_shared<Carrot>(glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addRootedBoid(carrotBoid);
+        br = std::make_shared<BoidRenderable>(texShader, carrotBoid);
+        br->setMaterial(pearl);
+        HierarchicalRenderable::addChild( systemRenderable, br );
+    }
+
+    TreePtr treeBoid;
+    for (int i = 0; i < 10; ++i) {
+        treeBoid = std::make_shared<Tree>(glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addRootedBoid(treeBoid);
+        br = std::make_shared<BoidRenderable>(texShader, treeBoid);
+        br->setMaterial(pearl);
+        HierarchicalRenderable::addChild( systemRenderable, br );
+    }
+*/
+    viewer.addRenderable(systemRenderable);
+    viewer.startAnimation();
+}

@@ -67,7 +67,7 @@ glm::vec3 MovableState::stayWithinWalls(MovableBoid& b) {
 }
 
 glm::vec3 MovableState::separate(MovableBoid& b, std::vector<MovableBoidPtr> mvB){
-	glm::vec3 sum;
+	glm::vec3 sum(0,0,0);
 	int count = 0;
 	for(MovableBoidPtr m : mvB) {
 		float d = glm::distance(b.getLocation(), m->getLocation());
@@ -82,41 +82,48 @@ glm::vec3 MovableState::separate(MovableBoid& b, std::vector<MovableBoidPtr> mvB
 		sum /= count;
 		sum = glm::normalize(sum) * b.getParameters().getMaxForce();
 		glm::vec3 steer = sum - b.getVelocity();
-		return limitVec3(steer, b.getParameters().getMaxForce());
+		sum = limitVec3(steer, b.getParameters().getMaxForce());
 	}
-	return glm::vec3(0, 0, 0);
+	return sum;
 }
 
 glm::vec3 MovableState::align (MovableBoid& b, std::vector<MovableBoidPtr> mvB) {
 	glm::vec3 sum(0,0,0);
 	int count = 0;
 	for (MovableBoidPtr other : mvB) {
-		float d = glm::distance(b.getLocation(), other->getLocation());
-		if ((d > 0) && (d < b.getParameters().getDistViewCohesion()) && b.canSee(*other, b.getParameters().getAngleView())) {
-			sum += other->getVelocity();
-			// For an average, we need to keep track of
-			// how many boids are within the distance.
-			count++;
+		if(b.sameSpecies(*other)) 
+		{
+			float d = glm::distance(b.getLocation(), other->getLocation());
+			if ((d > 0) && (d < b.getParameters().getDistViewCohesion()) && b.canSee(*other, b.getParameters().getAngleView())) 
+			{
+				sum += other->getVelocity();
+				// For an average, we need to keep track of
+				// how many boids are within the distance.
+				count++;
+			}
 		}
 	}
 	if (count > 0) {
 		sum = sum / (float) count;
 		// sum.normalize();
 		// sum.mult(maxspeed);
-		return glm::normalize(limitVec3(sum - b.getVelocity(), b.getParameters().getMaxForce()));
+		sum = glm::normalize(limitVec3(sum - b.getVelocity(), b.getParameters().getMaxForce()));
 	}
-	return glm::vec3(0,0,0);
+	return sum;
 }
 
 glm::vec3 MovableState::cohesion (MovableBoid& b, std::vector<MovableBoidPtr> mvB) {
     glm::vec3 sum(0,0,0);
     int count = 0;
     for (MovableBoidPtr other : mvB) {
-		float d = glm::distance(b.getLocation(), other->getLocation());
-		if ((d > 0) && (d < b.getParameters().getDistViewCohesion()) && b.canSee(*other, b.getParameters().getAngleView())) {
-			// Adding up all the others’ locations
-			sum += other->getLocation();
-			count++;
+    	if(b.sameSpecies(*other)) 
+		{
+			float d = glm::distance(b.getLocation(), other->getLocation());
+			if ((d > 0) && (d < b.getParameters().getDistViewCohesion()) && b.canSee(*other, b.getParameters().getAngleView())) {
+				// Adding up all the others’ locations
+				sum += other->getLocation();
+				count++;
+			}
 		}
     }
     if (count > 0) {
@@ -125,11 +132,9 @@ glm::vec3 MovableState::cohesion (MovableBoid& b, std::vector<MovableBoidPtr> mv
 		// wrote in Example 6.8.  The target
 		// we seek is the average location of
 		// our neighbors.
-		// return arrive(sum);
-        return glm::vec3(0,0,0);
     }
 
-    return glm::vec3(0,0,0);
+    return sum;
 }
 /* ==================================== Boid State Value ====================================
  * Each States update stamina, hunger, thrist, danger and affinity
@@ -154,9 +159,41 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
+	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) + 4.0f * align(b, mvB) + 16.0f * stayWithinWalls(b);;
+	switch(b.getBoidType()) 
+	{
+		case RABBIT:
+		break;
+		case WOLF:
+			if(b.getParameters().getLeader() != nullptr)
+			{
+				newForces += 8.0f * arrive(b, b.getParameters().getLeader()->getLocation());
+			}
+			/*
+			if(b.canSee(*b.getParameters().getLeader(), b.getParameters().getDistViewMax()))
+			{
+				// follow leader
+				
+			} 
+			else
+			{
+				// wander
+				// nothing to do
+			}
+			*/
+		break;
+	}
+
+/*
+	std::cout << "Leader : (" << b.getParameters().getLeader()->getLocation().x 
+		<< ", " << b.getParameters().getLeader()->getLocation().y
+		<< ", " << b.getParameters().getLeader()->getLocation().z << ")" << std::endl;
+*/
+
 	b.getParameters().staminaDecrease(0.5f);
 	b.getParameters().hungerDecrease();
-	return 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) + 4.0f * align(b, mvB) + 16.0f * stayWithinWalls(b);
+
+	return newForces;
 }
 
 glm::vec3 StayState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
