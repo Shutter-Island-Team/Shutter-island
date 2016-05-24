@@ -43,23 +43,28 @@ void MovableBoid::associateBoid(MovableBoidPtr boidPtr)
 	m_parameters->associateBoid(boidPtr);
 }
 
-glm::vec3 MovableBoid::getVelocity(){
+glm::vec3 MovableBoid::getVelocity() const
+{
 	return m_velocity;
 }
 
-float MovableBoid::getMass() {
+float MovableBoid::getMass() const
+{
 	return m_mass;
 }
 
-MovableParameters & MovableBoid::getParameters() const {
+MovableParameters & MovableBoid::getParameters() const
+{
 	return *m_parameters;
 }
 
-void MovableBoid::resetAcceleration() {
+void MovableBoid::resetAcceleration()
+{
 	m_acceleration = glm::vec3(0, 0, 0);
 }
 
-void MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
+void MovableBoid::computeAcceleration (const std::vector<MovableBoidPtr> & mvB)
+{
 	switch (m_stateType) {
 		case WALK_STATE:
 			walkStateHandler();
@@ -77,26 +82,30 @@ void MovableBoid::computeAcceleration (std::vector<MovableBoidPtr> mvB) {
 	m_acceleration = m_currentState->computeAcceleration(*this, mvB);
 }
 
-void MovableBoid::computeNextStep(float dt) {
+void MovableBoid::computeNextStep(const float & dt)
+{
     m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters().getMaxForce()), getParameters().getMaxSpeed());
 	setAngle(atan2(m_velocity.y, m_velocity.x));
     m_location += dt * m_velocity;
 }
 
-bool MovableBoid::canSee(Boid other, float distView) const {
+bool MovableBoid::canSee(const Boid & other, const float & distView) const
+{
 	return (distVision(other, distView)) && (angleVision(other));
 }
 
-bool MovableBoid::distVision (Boid other, float distView) const {
+bool MovableBoid::distVision (const Boid & other, const float & distView) const
+{
 	return (glm::distance(m_location, other.getLocation()) < distView);
 }
 
-bool MovableBoid::sameSpecies(Boid other)
+bool MovableBoid::sameSpecies(const Boid & other) const
 {
 	return other.getBoidType() == getBoidType();
 }
 
-bool MovableBoid::angleVision (Boid other) const {
+bool MovableBoid::angleVision (const Boid & other) const
+{
 	glm::vec3 diffPos = other.getLocation() - m_location;
 	float comparativeValue = acos(glm::dot(glm::normalize(m_velocity), glm::normalize(diffPos)));
 
@@ -138,10 +147,12 @@ void MovableBoid::findFoodStateHandler() {
 
 }
 
-bool operator==(const MovableBoid& b1, const MovableBoid& b2) {
+bool operator==(const MovableBoid& b1, const MovableBoid& b2)
+{
 	return b1.getLocation() == b2.getLocation();
 }
 
-bool operator!=(const MovableBoid& b1, const MovableBoid& b2){
+bool operator!=(const MovableBoid& b1, const MovableBoid& b2)
+{
 	return !(b1 == b2);
 }

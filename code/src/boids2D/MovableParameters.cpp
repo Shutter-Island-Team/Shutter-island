@@ -1,8 +1,11 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 #include <cmath>
 #include <iostream>
-#include <fstream>
 #include "../../include/Utils.hpp"
+
+#include "../../include/rapidjson/document.h"
+
+using namespace rapidjson;
 
 MovableParameters::MovableParameters()
 	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f)
@@ -32,26 +35,20 @@ MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 
 MovableParameters::MovableParameters( const std::string & filename )
 {
-	// file >> m_maxSpeed;
-	// file >> m_maxForce;
-	// file >> m_angleView;
-	// file >> m_distViewSeparate;
-	// file >> m_distViewCohesion;
-	// file >> m_distStartSlowingDown;
-	// file >> m_rCircleWander;
-	// file >> m_distToCircle;
+    Document d;
+    // d.Parse(filename);
 }
 
-MovableParameters::MovableParameters(BoidType type)
+MovableParameters::MovableParameters(const BoidType & type)
 {
 	switch (type) {
 		case RABBIT:
 			std::cerr << "Implementation rabbit" << std::endl;
-			*this = MovableParameters( "../../XML_data/RabbitParameters.xml" ); 
+			*this = MovableParameters( "../../boidData/RabbitParameters.json" ); 
 			break;
 		case WOLF:
 			std::cerr << "Implementation wolf" << std::endl;
-			*this = MovableParameters( "../../XML_data/WolfParameters.xml" );
+			*this = MovableParameters( "../../boidData/WolfParameters.json" );
 			break;
 		default:
 			std::cerr << "Unknown animal" << std::endl;
@@ -74,7 +71,7 @@ void MovableParameters::staminaIncrease()
 	return staminaIncrease(0.5f);
 }
 
-void MovableParameters::staminaIncrease(float f)
+void MovableParameters::staminaIncrease(const float & f)
 {
 	m_stamina = fmin(m_stamina + f, 100.0f);
 }
@@ -84,7 +81,7 @@ void MovableParameters::staminaDecrease()
 	return staminaDecrease(0.5f);
 }
 
-void MovableParameters::staminaDecrease(float f)
+void MovableParameters::staminaDecrease(const float & f)
 {
 	m_stamina = fmax(m_stamina - f, 0.0f);
 }

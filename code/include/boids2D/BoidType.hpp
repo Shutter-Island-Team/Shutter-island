@@ -8,7 +8,6 @@
  *  @version	0.5
  *  @date		05/24/16
  */
-
 #ifndef BOID_TYPE_HPP
 #define BOID_TYPE_HPP
 

@@ -16,17 +16,47 @@ class MovableParameters;
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
+/**
+ * @class MovableBoid
+ * @brief Describe a movable boid
+ * A MovaBoid has a velocity, an acceleration and is treated as
+ * a boid which has behavior
+ */
 class MovableBoid : public Boid
 {
  public:
+  /**
+   * @brief Constructor of a MovableBoid
+   * @param[in] location    Initial location of the boid
+   * @param[in] t           Type of the boid
+   * @param[in] parameters  Parameter of the boid
+   */
 	MovableBoid(glm::vec3 location, BoidType t, MovableParameters* parameters);
 
+  /**
+   * @brief Constructor of a MovableBoid
+   * @param[in] location    Initial location of the boid
+   * @param[in] velocity    Initial velocity of the boid
+   * @param[in] t           Type of the boid
+   * @param[in] parameters  Parameter of the boid
+   */
   MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t,
               MovableParameters* parameters);
 
+  /**
+   * @brief Constructor of a MovableBoid
+   * @param[in] location    Initial location of the boid
+   * @param[in] velocity    Initial velocity of the boid
+   * @param[in] mass        Mass of the boid
+   * @param[in] t           Type of the boid
+   * @param[in] parameters  Parameter of the boid
+   */
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
               MovableParameters* parameters);
 
+  /**
+   * @brief Destructor of MovableBoid
+   */
   ~MovableBoid();
 
   /**
@@ -39,12 +69,12 @@ class MovableBoid : public Boid
   /**
    * @brief Getter for the velocity of the object
    */
-  glm::vec3 getVelocity();
+  glm::vec3 getVelocity() const;
 
   /**
    * @brief Getter for the mass of the object
    */
-  float getMass();
+  float getMass() const;
 
   /**
    * @brief   Getter for the parameter of the object
@@ -62,20 +92,20 @@ class MovableBoid : public Boid
    *            in the acceleration field of the class
    * @param[in] mvB Other movable boid the object is aware of
    */
-  void computeAcceleration(std::vector<MovableBoidPtr> mvB);
+  void computeAcceleration(const std::vector<MovableBoidPtr> & mvB);
 
   /**
    * @brief     Update the position and the velocity for the next step in the simulation 
    * @param[in] dt Value of the time step
    */
-  void computeNextStep(float dt);
+  void computeNextStep(const float & dt);
 
   /**
    * @brief     Check if the other boid is in the cone of vision of this
    * @param[in] other     The other boid to check if in range
    * @param[in] distView  The maximum distance viewable by this
    */
-	bool canSee(Boid other, float distView) const;
+	bool canSee(const Boid & other, const float & distView) const;
 
   /**
    * @brief     Check if the other boid is in the circle of center of the
@@ -84,14 +114,14 @@ class MovableBoid : public Boid
    * @param[in] distView  The radius of the circle
    * @return    true if in the circle, false otherwise
    */
-  bool distVision (Boid other, float distView) const;
+  bool distVision (const Boid & other, const float & distView) const;
 
   /**
    * @brief     Check if the other boid is the same type of this
    * @param[in] other The other boid
    * @return    true if the other boid is the same type of the, false otherwise
    */
-  bool sameSpecies(Boid other);
+  bool sameSpecies(const Boid & other) const;
 
   /**
    * @brief     Check if the other boid is in the angle of view of this (distance don't matter)
@@ -99,23 +129,32 @@ class MovableBoid : public Boid
    * @return    true if the other boid is in the angle of view of this, false otherwise
    * @warning   If the angle of view of the object is equal to PI, this function might not work
    */
-  bool angleVision (Boid other) const;
+  bool angleVision (const Boid & other) const;
 
  private:
-  glm::vec3 m_velocity;
-  glm::vec3 m_acceleration;
-  float m_mass;
+  glm::vec3 m_velocity; ///< Velocity of the boid
+  glm::vec3 m_acceleration; ///< Acceleration of the boid
+  float m_mass; ///< Mass of the boid
 
-  MovableState* m_currentState;
-  MovableParameters* m_parameters;
+  MovableState* m_currentState; ///< State of the boid. @seeMovableState
+  MovableParameters* m_parameters; ///< Parameter of the boid
 
+  /**
+   * @brief Contain the rules for a walking boid
+   */
   void walkStateHandler();
 
+  /**
+   * @brief Contain the rules for a staying boid
+   */
   void stayStateHandler();
 
+  /**
+   * @brief Contain the rules for a boid finding food
+   */
   void findFoodStateHandler();
 
-  StateType m_stateType;
+  StateType m_stateType; ///< Save the current state of a boid
 };
 
 /**

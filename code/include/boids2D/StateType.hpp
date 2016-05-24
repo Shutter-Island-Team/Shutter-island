@@ -1,6 +1,20 @@
+/**
+ *  @file		StateType.hpp
+ *  @brief		Contain the enumerate for the state of the boids
+ *  @author		HAMMEN Maxence
+ *	@author		KACHER Ilyes
+ *  @author		LY Mickael
+ *	@author		STOFFEL Mathieu
+ *  @version	0.5
+ *  @date		05/24/16
+ */
 #ifndef STATE_TYPE_HPP
 #define STATE_TYPE_HPP
 
+/**
+ * @enum StateType
+ * @brief Record the different type of behavior
+ */
 enum StateType {
 	WALK_STATE,
 	STAY_STATE,
