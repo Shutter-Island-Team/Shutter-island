@@ -14,9 +14,9 @@ public:
 	// TODO : Constructor with parameter
 	MovableParameters();
 
-	MovableParameters(float maxSpeed, float maxForce, float angleView, float distViewSeparate, float distViewCohesion);
+	MovableParameters(float maxSpeed, float maxForce, float angleView, float distViewSeparate, float distViewCohesion, float distViewMax);
 
-	MovableParameters(float maxSpeed, float maxForce, float angleView, float distViewSeparate, float distViewCohesion, float distStartSlowingDown,float rCircleWander, float distToCircle);
+	MovableParameters(float maxSpeed, float maxForce, float angleView, float distViewSeparate, float distViewCohesion, float distViewMax, float distStartSlowingDown,float rCircleWander, float distToCircle);
 	
 	MovableParameters( const std::string & filename );
 
@@ -56,6 +56,8 @@ public:
 	bool isLowStamina();
 	bool isHighStamina();
 
+	bool isLowHunger();
+
 	float getMaxSpeed();
 	float getMaxForce();
 	float getRadiusCircleWander();
@@ -66,6 +68,8 @@ public:
 	float getDistViewCohesion();
 
 	float getAngleView();
+
+	float getDistViewMax();
 
 	friend std::istream& operator>>(std::istream &in, MovableParameters &param);
 
@@ -81,6 +85,8 @@ protected:
 	float m_lowStaminaValue;
 	float m_highStaminaValue;
 
+	float m_lowHungerValue;
+
  private:
   float m_maxSpeed;
   float m_maxForce;
@@ -93,6 +99,8 @@ protected:
   float m_distViewCohesion;
 
   float m_angleView;
+
+  float m_distViewMax;
 
 };
 

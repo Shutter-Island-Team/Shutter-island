@@ -5,27 +5,27 @@
 #include "../../include/Utils.hpp"
 
 MovableParameters::MovableParameters()
-	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 5.0f)
+	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
-	float angleView, float distViewSeparate, float distViewCohesion) : 
-	MovableParameters(maxSpeed, maxForce, angleView, distViewSeparate, distViewCohesion,
+	float angleView, float distViewSeparate, float distViewCohesion, float distViewMax) : 
+	MovableParameters(maxSpeed, maxForce, angleView, distViewSeparate, distViewCohesion, distViewMax,
 		5.0f, 9.0f, 3.0f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
-	float angleView, float distViewSeparate, float distViewCohesion,
+	float angleView, float distViewSeparate, float distViewCohesion, float distViewMax,
 	float distStartSlowingDown,float rCircleWander, float distToCircle) :
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce), m_angleView(angleView),
 	m_distViewSeparate(distViewSeparate), m_distViewCohesion(distViewCohesion),
-	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
+	m_distViewMax(distViewMax),	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
 	m_distToCircle(distToCircle), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
-	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f)
+	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f), m_lowHungerValue(10.0f) 
 {
 	m_stamina = random(1, 99);
 }
@@ -180,6 +180,10 @@ bool MovableParameters::isHighStamina() {
 	return m_stamina >= m_highStaminaValue;
 }
 
+bool MovableParameters::isLowHunger() {
+	return m_hunger <= m_lowHungerValue;
+}
+
 float MovableParameters::getMaxSpeed() {
 	return m_maxSpeed;
 }
@@ -207,3 +211,8 @@ float MovableParameters::getDistViewCohesion() {
 float MovableParameters::getAngleView() {
 	return m_angleView;
 }
+
+float MovableParameters::getDistViewMax() {
+	return m_distViewMax;
+}
+
