@@ -14,17 +14,26 @@
  * @param mapSize The size of the map
  * This set must be sorted by the distance to the center of the map
  */
-
-void computeCoast(std::vector<Seed>& seeds, float mapSize);
-
+void computeLand(std::vector<Seed>& seeds, float mapSize);
 
 
 
+/**
+ * @brief Split the water biomes in sea and lakes, also create the beachs
+ * 
+ * @param seeds Set of seeds
+ * This set must be sorted by the distance to the center of the map
+ */
+void splitWater(std::vector<Seed>& seeds, float mapSize);
 
 
- /**
- * @brief Whittaker phase to attribute the biomes on the seeds
- * that have been defined as a land
+/**
+ * @brief Raise the moutains on the land
+ *
+ * @param seeds Set of seeds
+ * @param p     Parameter of the geometric law (between 0 and 1) to control
+ *              the number of mountains (~1/p)
+ * This set must be sorted by the distance to the center of the map
  */
 
-// TODO
+void raiseMountains(std::vector<Seed>& seeds, float p);

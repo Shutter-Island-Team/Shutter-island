@@ -10,6 +10,8 @@
 #define DEFAULT_NB_SEEDS_MAX_SUBDIV (  5)
 #define DEFAULT_DIST_MIN            ( 10)
 
+#define PROB_MOUNTAIN (0.7)
+
 #include "../../include/terrain/Seed.hpp"
 #include "../../include/terrain/MapGenerator.hpp"
 #include "../../include/terrain/BiomeRepartition.hpp"
@@ -86,10 +88,10 @@ void MapGenerator::compute() {
     }
 
     // Repartition land/sea
-    computeCoast(seeds, mapSize);
+    computeLand(seeds, mapSize);
 
-    // Whittaker step
-    
+    // Mountain repartition
+    raiseMountains(seeds, PROB_MOUNTAIN);
 
     // HeightTree step
 
