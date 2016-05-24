@@ -30,7 +30,11 @@ MapGenerator::MapGenerator(float size) :
 		   1)
 {}
 
-#include <iostream>
+MapGenerator::~MapGenerator() {
+    if (heightTree)
+	heightTree->freeHeightTree();
+}
+
 void MapGenerator::compute() {
 
     // Position Generation
@@ -94,9 +98,16 @@ void MapGenerator::compute() {
     raiseMountains(seeds, PROB_MOUNTAIN);
 
     // HeightTree step
-
-    // Gg wp
-
+    // Creating the initial map : a deep dark sea
+    HeightBlob tlCorner(Vertex2D(0.0f,    mapSize), biomeHeight(Sea), 1.0f, Sea);
+    HeightBlob trCorner(Vertex2D(mapSize, mapSize), biomeHeight(Sea), 1.0f, Sea);
+    HeightBlob blCorner(Vertex2D(0.0f,    0.0f)   , biomeHeight(Sea), 1.0f, Sea);
+    HeightBlob brCorner(Vertex2D(mapSize, 0.0f)   , biomeHeight(Sea), 1.0f, Sea);
+    heightTree = new HeightTree(HeightNode(mapSize,
+					   tlCorner, trCorner,
+					   blCorner, brCorner));
+    // Computing the tree
+    heightTree->computeTree(seedsContainer, seeds);
 
 }
 
