@@ -28,7 +28,7 @@ public :
      *
      * @return The position of the blob
      */
-    Vertex2D getPosition();
+    Vertex2D& getPosition();
 
     /**
      * @brief Getter on the height
@@ -50,6 +50,17 @@ public :
      * @return The biome of the blob
      */
     Biome getBiome();
+
+
+    /**
+     * @brief Evaluate the height of a point affected by the blob
+     *
+     * @param pos   The point
+     * @param size  The size of the influence zone of the blob
+     *
+     * @return The height of the point
+     */
+    float evalHeight(Vertex2D pos, float size);
 
 
 private :

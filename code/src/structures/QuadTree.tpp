@@ -4,10 +4,10 @@
  * @see QuadTree.tpp
  */
 
-template <typename T>
-QuadTree<T>::QuadTree(T newContent,
-		      QuadTree<T> *newTLChild, QuadTree<T> *newTRChild,
-		      QuadTree<T> *newBLChild, QuadTree<T> *newBRChild) :
+template <typename T, typename S>
+QuadTree<T, S>::QuadTree(T newContent,
+		      S *newTLChild, S *newTRChild,
+		      S *newBLChild, S *newBRChild) :
     content{newContent},
     topLeftChild{newTLChild},    topRightChild{newTRChild},
     bottomLeftChild{newBLChild}, bottomRightChild{newBRChild}
@@ -16,20 +16,20 @@ QuadTree<T>::QuadTree(T newContent,
 
 
 
-template <typename T>
-T QuadTree<T>::getContent() {
+template <typename T, typename S>
+T QuadTree<T, S>::getContent() {
     return content;
 }
 
-template <typename T>
-void QuadTree<T>::setContent(T newContent) {
+template <typename T, typename S>
+void QuadTree<T, S>::setContent(T newContent) {
     content = newContent;
 }
 
 
 
-template<typename T>
-QuadTree<T>* QuadTree<T>::getChild(QuadPosition position) {
+template <typename T, typename S>
+S* QuadTree<T, S>::getChild(QuadPosition position) {
     switch(position) {
     case TopLeft:
 	return topLeftChild;
@@ -46,8 +46,8 @@ QuadTree<T>* QuadTree<T>::getChild(QuadPosition position) {
     }
 }
 
-template <typename T>
-void QuadTree<T>::setChild(QuadPosition position, QuadTree<T>* newChild) {
+template <typename T, typename S>
+void QuadTree<T, S>::setChild(QuadPosition position, S* newChild) {
     switch(position) {
     case TopLeft:
 	topLeftChild = newChild;

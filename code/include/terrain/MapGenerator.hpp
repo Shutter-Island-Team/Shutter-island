@@ -9,6 +9,7 @@
 #define MAPGENERATOR_HPP
 
 #include "VoronoiSeedsGenerator.hpp"
+#include "HeightTree.hpp"
 
 class MapGenerator {
 
@@ -26,6 +27,11 @@ public :
      */
     void compute();
 
+    /**
+     * @brief Destructor
+     */
+    ~MapGenerator();
+
 private :
 
     /// @brief Size of the map
@@ -37,6 +43,8 @@ private :
     /// @brief The seeds container
     voro::container seedsContainer;
 
+    /// @brief The height tree
+    HeightTree *heightTree = NULL;
 
 };
 

@@ -6,8 +6,10 @@
 
 #include "../../include/terrain/HeightNode.hpp"
 
-HeightNode::HeightNode(HeightBlob tlBlob, HeightBlob trBlob, 
+HeightNode::HeightNode(float newSize,
+		       HeightBlob tlBlob, HeightBlob trBlob, 
 		       HeightBlob blBlob, HeightBlob brBlob) :
+    size(newSize),
     topLeftBlob{tlBlob}   , topRightBlob{trBlob},
     bottomLeftBlob{blBlob}, bottomRightBlob{brBlob}
 {}
@@ -29,4 +31,10 @@ HeightBlob HeightNode::getBlob(QuadPosition position) {
 	return bottomRightBlob;
 	break;
     }
+}
+
+
+float HeightNode::evalHeight(Vertex2D pos) {
+    return (topLeftBlob.evalHeight(pos, size)    + topRightBlob.evalHeight(pos, size) +
+	    bottomLeftBlob.evalHeight(pos, size) + bottomRightBlob.evalHeight(pos, size));
 }

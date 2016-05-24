@@ -4,6 +4,9 @@
  * @see HeibhtBlob.hpp
  */
 
+#include <iostream>
+#include "../../include/terrain/MapUtils.hpp"
+#include "../../include/terrain/BlobFunctions.hpp"
 #include "../../include/terrain/HeightBlob.hpp"
 
 HeightBlob::HeightBlob(Vertex2D newPos, float newHeight, 
@@ -15,7 +18,7 @@ HeightBlob::HeightBlob(Vertex2D newPos, float newHeight,
 
 
 
-Vertex2D HeightBlob::getPosition() {
+Vertex2D& HeightBlob::getPosition() {
     return position;
 }
 
@@ -32,4 +35,24 @@ float HeightBlob::getScale() {
 
 Biome HeightBlob::getBiome() {
     return biome;
+}
+
+
+float HeightBlob::evalHeight(Vertex2D pos, float size) {
+    
+    float dist = distanceV2D(this->position, pos);
+
+    switch (biome) {
+
+    case Undefined :
+	std::cerr << "Error : trying to evaluate an undefined blob" << std::endl;
+	exit(1);
+	
+    case Mountain :
+	return height*blobSharp(dist, size, scale);
+
+    default :
+	return height*blobSmooth6(dist, size, scale);
+
+    }
 }

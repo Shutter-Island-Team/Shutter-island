@@ -17,9 +17,10 @@ enum QuadPosition {
 };
 
 
-template <typename T>
+template <typename T, typename S>
 class QuadTree {
 
+public:
     /**
      * @brief Constructor
      *
@@ -30,8 +31,8 @@ class QuadTree {
      * @param newBRChild The bottom right child
      */
     QuadTree(T newContent,
-	     QuadTree<T> *newTLChild = NULL, QuadTree<T> *newTRChild = NULL,
-	     QuadTree<T> *newBLChild = NULL, QuadTree<T> *newBRChild = NULL);
+	     S *newTLChild = NULL, S *newTRChild = NULL,
+	     S *newBLChild = NULL, S *newBRChild = NULL);
 
     /**
      * @brief Getter on the content of the node
@@ -57,7 +58,7 @@ class QuadTree {
      *
      * @return The selected child
      */
-    QuadTree<T>* getChild(QuadPosition position);
+    S* getChild(QuadPosition position);
 
     /**
      * @brief Getter on one of the child of the node
@@ -65,7 +66,7 @@ class QuadTree {
      * @param position Position of the selected child
      * @param newChild Value of the selected child
      */
-    void setChild(QuadPosition position, QuadTree<T>* newChild);
+    void setChild(QuadPosition position, S *newChild);
 
 
 
@@ -75,10 +76,10 @@ private :
     T content;
 
     /// @brief The four children
-    QuadTree<T> *topLeftChild;
-    QuadTree<T> *topRightChild;
-    QuadTree<T> *bottomLeftChild;
-    QuadTree<T> *bottomRightChild;
+    S *topLeftChild;
+    S *topRightChild;
+    S *bottomLeftChild;
+    S *bottomRightChild;
 
 
 };

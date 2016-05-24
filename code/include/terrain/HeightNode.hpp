@@ -12,6 +12,7 @@
 
 class HeightNode {
 
+public:
     /**
      * @brief Constructor
      *
@@ -20,7 +21,8 @@ class HeightNode {
      * @param blBlob The bottom left  blob
      * @param brBlob The bottom right blob
      */
-    HeightNode(HeightBlob tlBlob, HeightBlob trBlob, 
+    HeightNode(float newSize,
+	       HeightBlob tlBlob, HeightBlob trBlob, 
 	       HeightBlob blBlob, HeightBlob brBlob);
 
     /**
@@ -33,9 +35,21 @@ class HeightNode {
     HeightBlob getBlob(QuadPosition position);
     
 
+    /**
+     * @brief Evaluate the height of a point inside the square
+     *
+     * @param pos The position of the point
+     * 
+     * @return The height of the point
+     */
+    float evalHeight(Vertex2D pos);
+
 
 private :
     
+    /// @brief The size of the square
+    float size;
+
     /// @brief The four blobs defining the square
     HeightBlob topLeftBlob;
     HeightBlob topRightBlob;
