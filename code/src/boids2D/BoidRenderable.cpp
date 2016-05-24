@@ -6,46 +6,80 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
-
+#include <SFML/Graphics/Image.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-
 BoidRenderable::BoidRenderable(ShaderProgramPtr shaderProgram, BoidPtr boid)
-  : HierarchicalRenderable(shaderProgram),
-    m_pBuffer(0), m_cBuffer(0), m_nBuffer(0), boid(boid)
+    : HierarchicalRenderable(shaderProgram),
+      m_pBuffer(0), m_cBuffer(0), m_nBuffer(0), m_tBuffer(0), m_boid(boid)
 {
-	m_positions.push_back(glm::vec3(0.5,0,0));
-	m_positions.push_back(glm::vec3(-0.2,0.2,0));
-	m_positions.push_back(glm::vec3(-0.2,-0.2,0));
+    //Initialize geometry
+    m_positions.push_back(glm::vec3(-0.5,-0.5,0.0));
+    m_positions.push_back(glm::vec3(0.5,-0.5,0.0));
+    m_positions.push_back(glm::vec3(0.5,0.5,0.0));
 
+    m_texCoords.push_back(glm::vec2(0.0,0.0));
+    m_texCoords.push_back(glm::vec2(1.0,0.0));
+    m_texCoords.push_back(glm::vec2(1.0,1.0));
+
+    m_positions.push_back(glm::vec3(-0.5,-0.5,0.0));
+    m_positions.push_back(glm::vec3(0.5,0.5,0.0));
+    m_positions.push_back(glm::vec3(-0.5,0.5,0.0));
+
+    m_texCoords.push_back(glm::vec2(0.0,0.0));
+    m_texCoords.push_back(glm::vec2(1.0,1.0));
+    m_texCoords.push_back(glm::vec2(0.0,1.0));
+
+
+    m_normals.resize(m_positions.size(), glm::vec3(0.0,0.0,1.0));
+    m_colors.resize(m_positions.size(), glm::vec4(1.0,1.0,1.0,1.0));
+
+    //Create texture
+    glGenTextures(1, &m_texId);
+
+    //Bind the texture
+    glBindTexture(GL_TEXTURE_2D, m_texId);
+
+    //Textured options
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+    sf::Image image;
     switch(boid->getBoidType()) {
         case RABBIT:
-            m_colors.push_back(glm::vec4(0,1,0,1));
-            m_colors.push_back(glm::vec4(0,1,0,1));
-            m_colors.push_back(glm::vec4(0,1,0,1));
+            image.loadFromFile("./../textures/rabbit.png");
             break;
 
         case WOLF:
-            m_colors.push_back(glm::vec4(1,0,0,1));
-            m_colors.push_back(glm::vec4(1,0,0,1));
-            m_colors.push_back(glm::vec4(1,0,0,1));
+            image.loadFromFile("./../textures/wolf.png");
+            break;
+
+        case TREE:
+            image.loadFromFile("./../textures/tree.png");
+            break;
+
+        case CARROT:
+            image.loadFromFile("./../textures/carrot.png");
             break;
 
         default:
-            m_colors.push_back(randomColor());
-            m_colors.push_back(randomColor());
-            m_colors.push_back(randomColor());
+            image.loadFromFile("./../textures/question-mark.png");
             break;
     }
+    
+    image.flipVertically(); // sfml inverts the v axis... put the image in OpenGL convention: lower left corner is (0,0)
+    glcheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, image.getSize().x, image.getSize().y, 0, GL_RGBA, GL_UNSIGNED_BYTE, (const GLvoid*)image.getPixelsPtr()));
 
-    m_normals.push_back(glm::vec3(0,0,1));
-    m_normals.push_back(glm::vec3(0,0,1));
-    m_normals.push_back(glm::vec3(0,0,1));
+    //Release the texture
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     //Create buffers
     glGenBuffers(1, &m_pBuffer); //vertices
     glGenBuffers(1, &m_cBuffer); //colors
     glGenBuffers(1, &m_nBuffer); //normals
+    glGenBuffers(1, &m_tBuffer); //texture coords
 
     //Activate buffer and send data to the graphics card
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
@@ -54,6 +88,8 @@ BoidRenderable::BoidRenderable(ShaderProgramPtr shaderProgram, BoidPtr boid)
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_STATIC_DRAW));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
+    glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_tBuffer));
+    glcheck(glBufferData(GL_ARRAY_BUFFER, m_texCoords.size()*sizeof(glm::vec2), m_texCoords.data(), GL_STATIC_DRAW));
 }
 
 void BoidRenderable::do_draw()
@@ -63,11 +99,23 @@ void BoidRenderable::do_draw()
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
     int normalLocation = m_shaderProgram->getAttributeLocation("vNormal");
     int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
+    int nitLocation = m_shaderProgram->getUniformLocation("NIT");
+    int textureLocation = m_shaderProgram->getAttributeLocation("vTexCoord");
+    int texSampleLoc = m_shaderProgram->getUniformLocation("texSampler");
 
-    //Send data to GPU
+    //Send material uniform to GPU
+    Material::sendToGPU(m_shaderProgram, m_material);
+
+    //Send uniform to the graphics card
     if(modelLocation != ShaderProgram::null_location)
     {
         glcheck(glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(getModelMatrix())));
+    }
+
+    if( nitLocation != ShaderProgram::null_location )
+    {
+        glcheck(glUniformMatrix3fv( nitLocation, 1, GL_FALSE,
+                                    glm::value_ptr(glm::transpose(glm::inverse(glm::mat3(getModelMatrix()))))));
     }
 
     if(positionLocation != ShaderProgram::null_location)
@@ -94,13 +142,25 @@ void BoidRenderable::do_draw()
         glcheck(glVertexAttribPointer(normalLocation, 3, GL_FLOAT, GL_FALSE, 0, (void*)0));
     }
 
+    //Bind texture in Textured Unit 0
+    if(textureLocation != ShaderProgram::null_location)
+    {
+        glcheck(glActiveTexture(GL_TEXTURE0));
+        glcheck(glBindTexture(GL_TEXTURE_2D, m_texId));
+        //Send "texSampler" to Textured Unit 0
+        glcheck(glUniform1i(texSampleLoc, 0));
+        glcheck(glEnableVertexAttribArray(textureLocation));
+        glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_tBuffer));
+        glcheck(glVertexAttribPointer(textureLocation, 2, GL_FLOAT, GL_FALSE, 0, (void*)0));
+    }
+
     glm::mat4 transformation(1.0);
     glm::mat4 model = getModelMatrix();
 
-    float c = cos(boid->getAngle());
-    float s = sin(boid->getAngle());
+    float c = cos(m_boid->getAngle());
+    float s = sin(m_boid->getAngle());
 
-    glm::vec3 position = boid->getLocation();
+    glm::vec3 position = m_boid->getLocation();
     transformation[0][0] = c;
     transformation[1][1] = c;
     transformation[1][0] = -s;
@@ -116,6 +176,8 @@ void BoidRenderable::do_draw()
     //Draw triangles elements
     glcheck(glDrawArrays(GL_TRIANGLES,0, m_positions.size()));
 
+    //Release texture
+    glcheck(glBindTexture(GL_TEXTURE_2D, 0));
     if(positionLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(positionLocation));
@@ -128,14 +190,25 @@ void BoidRenderable::do_draw()
     {
         glcheck(glDisableVertexAttribArray(normalLocation));
     }
+    if(textureLocation != ShaderProgram::null_location)
+    {
+        glcheck(glDisableVertexAttribArray(textureLocation));
+    }
 }
 
 void BoidRenderable::do_animate(float time) {
+}
+
+void BoidRenderable::setMaterial(const MaterialPtr& material)
+{
+    m_material = material;
 }
 
 BoidRenderable::~BoidRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));
+    glcheck(glDeleteBuffers(1, &m_tBuffer));
     glcheck(glDeleteBuffers(1, &m_nBuffer));
+    glcheck(glDeleteTextures(1, &m_texId));
 }

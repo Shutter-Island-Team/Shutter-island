@@ -5,6 +5,12 @@
 
 #include "../../include/Utils.hpp"
 
+MovableBoid::~MovableBoid()
+{
+	delete m_currentState;
+	delete m_parameters;
+}
+
 MovableBoid::MovableBoid(glm::vec3 location, BoidType t, MovableParameters* parameters) 
 	: MovableBoid(location, glm::vec3(0,0,0), t, parameters)
 {

@@ -11,6 +11,8 @@
 
 #include "../include/boids2D/Rabbit.hpp"
 #include "../include/boids2D/Wolf.hpp"
+#include "../include/boids2D/Carrot.hpp"
+#include "../include/boids2D/Tree.hpp"
 #include "../include/boids2D/BoidRenderable.hpp"
 #include "../include/boids2D/BoidsManager.hpp"
 #include "../include/boids2D/MovableParameters.hpp"
@@ -49,12 +51,7 @@ void initialize_practical_07_scene( Viewer& viewer )
     glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
     DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
     //Add a renderable to display the light and control it via mouse/key event
-    glm::vec3 lightPosition(0.0,0.0,5.0);
-    DirectionalLightRenderablePtr directionalLightRenderable = std::make_shared<DirectionalLightRenderable>(flatShader, directionalLight, lightPosition);
-    localTransformation = glm::scale(glm::mat4(1.0), glm::vec3(0.5,0.5,0.5));
-    directionalLightRenderable->setLocalTransform(localTransformation);
     viewer.setDirectionalLight(directionalLight);
-    viewer.addRenderable(directionalLightRenderable);
 
     //Textured shader
     ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
@@ -129,8 +126,17 @@ void initialize_boid_scene( Viewer& viewer )
         "../shaders/flatFragment.frag"});
     viewer.addShaderProgram( flatShader );
 
-    //Textured plane
-        //Textured shader
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
     ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
         "../shaders/textureVertex.vert",
         "../shaders/textureFragment.frag"});
@@ -165,7 +171,8 @@ void initialize_boid_scene( Viewer& viewer )
         mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), RABBIT, parameters);
         mvb->initializeParameters(mvb);
         boidsManager->addMovableBoid(mvb);
-        br = std::make_shared<BoidRenderable>(flatShader, mvb);
+        br = std::make_shared<BoidRenderable>(texShader, mvb);
+        br->setMaterial(pearl);
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 
@@ -174,7 +181,8 @@ void initialize_boid_scene( Viewer& viewer )
         mvb = std::make_shared<MovableBoid>(glm::vec3(random(-15, 15), random(-15, 15), 2), WOLF, parameters);
         mvb->initializeParameters(mvb);
         boidsManager->addMovableBoid(mvb);
-        br = std::make_shared<BoidRenderable>(flatShader, mvb);
+        br = std::make_shared<BoidRenderable>(texShader, mvb);
+        br->setMaterial(pearl);
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 
@@ -193,8 +201,17 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
         "../shaders/flatFragment.frag"});
     viewer.addShaderProgram( flatShader );
 
-    //Textured plane
-        //Textured shader
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
     ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
         "../shaders/textureVertex.vert",
         "../shaders/textureFragment.frag"});
@@ -203,9 +220,9 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     std::string filename = "./../textures/grass_texture.png";
     TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
     texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(50.0,50.0,50.0)), glm::vec3(0.0, 0.0, -0.1)));
-    texPlane->setMaterial(Material::Pearl());
+    texPlane->setMaterial(pearl);
     viewer.addRenderable(texPlane);
-
+    
     BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>();
 
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
@@ -220,26 +237,46 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    RabbitPtr rbb;
+    RabbitPtr rabbitBoid;
+    WolfPtr wolfBoid;
+    CarrotPtr carrotBoid;
+    TreePtr treeBoid;
     BoidRenderablePtr br;
     MovableParameters* parameters;
 
-    for (int i = 0; i < 50; ++i) {
+    for (int i = 0; i < 10; ++i) {
         parameters = new MovableParameters(nullptr);
-        rbb = std::make_shared<Rabbit>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
-        rbb->initializeParameters(rbb);
-        boidsManager->addMovableBoid(rbb);
-        br = std::make_shared<BoidRenderable>(flatShader, rbb);
+        rabbitBoid = std::make_shared<Rabbit>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
+        rabbitBoid->initializeParameters(rabbitBoid);
+        boidsManager->addMovableBoid(rabbitBoid);
+        br = std::make_shared<BoidRenderable>(texShader, rabbitBoid);
+        br->setMaterial(pearl);
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 
-    WolfPtr wbb;
     for (int i = 0; i < 10; ++i) {
         parameters = new MovableParameters(nullptr);
-        wbb = std::make_shared<Wolf>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
-        wbb->initializeParameters(wbb);
-        boidsManager->addMovableBoid(wbb);
-        br = std::make_shared<BoidRenderable>(flatShader, wbb);
+        wolfBoid = std::make_shared<Wolf>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters);
+        wolfBoid->initializeParameters(wolfBoid);
+        boidsManager->addMovableBoid(wolfBoid);
+        br = std::make_shared<BoidRenderable>(texShader, wolfBoid);
+        br->setMaterial(pearl);
+        HierarchicalRenderable::addChild( systemRenderable, br );
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        carrotBoid = std::make_shared<Carrot>(glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addRootedBoid(carrotBoid);
+        br = std::make_shared<BoidRenderable>(texShader, carrotBoid);
+        br->setMaterial(pearl);
+        HierarchicalRenderable::addChild( systemRenderable, br );
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        treeBoid = std::make_shared<Tree>(glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addRootedBoid(treeBoid);
+        br = std::make_shared<BoidRenderable>(texShader, treeBoid);
+        br->setMaterial(pearl);
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 
@@ -258,8 +295,17 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
         "../shaders/flatFragment.frag"});
     viewer.addShaderProgram( flatShader );
 
-    //Textured plane
-        //Textured shader
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
     ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
         "../shaders/textureVertex.vert",
         "../shaders/textureFragment.frag"});
@@ -299,8 +345,10 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
     mvb2->initializeParameters(mvb2);
     boidsManager->addMovableBoid(mvb2);
 
-    BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(flatShader, mvb1);
-    BoidRenderablePtr br2 = std::make_shared<BoidRenderable>(flatShader, mvb2);
+    BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(texShader, mvb1);
+    br1->setMaterial(pearl);
+    BoidRenderablePtr br2 = std::make_shared<BoidRenderable>(texShader, mvb2);
+    br2->setMaterial(pearl);
 
     HierarchicalRenderable::addChild( systemRenderable, br1 );
     HierarchicalRenderable::addChild( systemRenderable, br2 );
@@ -320,8 +368,18 @@ void initialize_boid_scene_test_canSee( Viewer& viewer )
         "../shaders/flatFragment.frag"});
     viewer.addShaderProgram( flatShader );
 
-    //Textured plane
-        //Textured shader
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    glm::vec3 lightPosition(0.0,0.0,20.0);
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
     ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
         "../shaders/textureVertex.vert",
         "../shaders/textureFragment.frag"});
@@ -361,8 +419,10 @@ void initialize_boid_scene_test_canSee( Viewer& viewer )
     mvb2->initializeParameters(mvb2);
     boidsManager->addMovableBoid(mvb2);
 
-    BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(flatShader, mvb1);
-    BoidRenderablePtr br2 = std::make_shared<BoidRenderable>(flatShader, mvb2);
+    BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(texShader, mvb1);
+    br1->setMaterial(pearl);
+    BoidRenderablePtr br2 = std::make_shared<BoidRenderable>(texShader, mvb2);
+    br2->setMaterial(pearl);
 
     HierarchicalRenderable::addChild( systemRenderable, br1 );
     HierarchicalRenderable::addChild( systemRenderable, br2 );
@@ -382,8 +442,17 @@ void initialize_boid_scene_test_machine_state( Viewer& viewer )
         "../shaders/flatFragment.frag"});
     viewer.addShaderProgram( flatShader );
 
-    //Textured plane
-        //Textured shader
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
     ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
         "../shaders/textureVertex.vert",
         "../shaders/textureFragment.frag"});
@@ -414,8 +483,8 @@ void initialize_boid_scene_test_machine_state( Viewer& viewer )
     mvb->initializeParameters(mvb);
     boidsManager->addMovableBoid(mvb);
 
-    BoidRenderablePtr br = std::make_shared<BoidRenderable>(flatShader, mvb);
-
+    BoidRenderablePtr br = std::make_shared<BoidRenderable>(texShader, mvb);
+    br->setMaterial(pearl);
     HierarchicalRenderable::addChild( systemRenderable, br );
 
     viewer.addRenderable(systemRenderable);

@@ -4,8 +4,8 @@
 #include <vector>
 
 #include "MovableBoid.hpp"
+#include "RootedBoid.hpp"
 #include "BoidType.hpp"
-
 
 class BoidsManager
 {
@@ -13,11 +13,15 @@ class BoidsManager
 	BoidsManager(void);
 
 	void addMovableBoid(MovableBoidPtr b);
+	void addRootedBoid(RootedBoidPtr r);
 
-	std::vector<MovableBoidPtr> & getMovableBoids();
+	std::vector<MovableBoidPtr>& getMovableBoids();
+
+	std::vector<RootedBoidPtr>& getRootedBoids();
 
  private:
  	std::vector<MovableBoidPtr> m_movableBoids;
+ 	std::vector<RootedBoidPtr> m_rootedBoids;
 };
 
 typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;

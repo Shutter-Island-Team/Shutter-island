@@ -19,6 +19,8 @@ typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 class MovableBoid : public Boid
 {
  public:
+  ~MovableBoid();
+
 	MovableBoid(glm::vec3 location, BoidType t, MovableParameters* parameters);
 
   MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, MovableParameters* parameters);

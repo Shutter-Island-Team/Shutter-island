@@ -124,5 +124,7 @@ target_link_libraries(${EXECUTABLE_NAME} ${SFML_SYSTEM_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_WINDOW_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_GRAPHICS_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${TINYOBJLOADER_LIBRARIES})
+
+set(CMAKE_BUILD_TYPE "Debug")
  
 #message( "The build type is set to " ${CMAKE_BUILD_TYPE})
