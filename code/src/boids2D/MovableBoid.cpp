@@ -97,10 +97,9 @@ bool MovableBoid::distVision (Boid b, float distView) const {
 	return (glm::distance(m_location, b.getLocation()) < distView);
 }
 
-
 bool MovableBoid::sameSpecies(Boid b)
 {
-	return b.getBoidType() == m_boidType;
+	return b.getBoidType() == getBoidType();
 }
 
 bool MovableBoid::angleVision (Boid b) const {
