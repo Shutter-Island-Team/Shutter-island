@@ -10,35 +10,51 @@ glm::vec3 MovableState::computeAcceleration(MovableBoid& b, std::vector<MovableB
 	return computeNewForces(b, mvB);
 }
 
+glm::vec3 MovableState::seek(MovableBoid& b, glm::vec3 target)
+{
+	glm::vec3 desiredVelocity = target - b.getLocation();
+	desiredVelocity = glm::normalize(desiredVelocity);
+	desiredVelocity *= b.getParameters().getMaxSpeed();
+	glm::vec3 steer = desiredVelocity - b.getVelocity();
+
+	return steer;
+}
+
 glm::vec3 MovableState::wander(MovableBoid& b)
 {
+
 	float randomVal = random(0.0f, 2*M_PI);
+
 	glm::vec3 randomVec3(cos(randomVal), sin(randomVal), 0);
-    glm::vec3 desiredTarget = b.getLocation() + b.getParameters().getRadiusCircleWander()*b.getVelocity() + b.getParameters().getRadiusCircleWander()*randomVec3;
+
+    glm::vec3 desiredTarget = b.getLocation() 
+    	+ b.getParameters().getRadiusCircleWander()*b.getVelocity() 
+    	+ b.getParameters().getRadiusCircleWander()*randomVec3;
+
     return arrive(b, desiredTarget);
 }
 
 glm::vec3 MovableState::arrive(MovableBoid& b, glm::vec3 target)
 {
-	glm::vec3 desired = target - b.getLocation();
 
-	float d = glm::length(desired);
-	glm::normalize(desired);
-	if (d < b.getParameters().getDistStartSlowingDown()) {
-	  // Set the magnitude according to how close we are.
-	  float m = d*b.getParameters().getMaxSpeed()/b.getParameters().getDistStartSlowingDown();
-	  desired *= m;
+	glm::vec3 desiredVelocity = target - b.getLocation();
+
+	float distance = glm::length(desiredVelocity);
+	glm::normalize(desiredVelocity);
+	if (distance < b.getParameters().getDistStartSlowingDown()) {
+		// Set the magnitude according to how close we are.
+		// Linear computation of the magnitude
+	  	float magnitude = distance * b.getParameters().getMaxSpeed()
+	  		/ b.getParameters().getDistStartSlowingDown();
+	  desiredVelocity *= magnitude;
 	} else {
 	  // Otherwise, proceed at maximum speed.
-	  desired *= b.getParameters().getMaxSpeed();
+	  desiredVelocity *= b.getParameters().getMaxSpeed();
 	}
 
-	// The usual steering = desired - velocity
-	glm::vec3 steer = desired - b.getVelocity();
-	if (glm::length(steer) > b.getParameters().getMaxForce()) {
-		steer = glm::normalize(steer)*b.getParameters().getMaxForce();
-	}
-
+	// The usual steering = desiredVelocity - velocity
+	glm::vec3 steer = desiredVelocity - b.getVelocity();
+	limitVec3(steer, b.getParameters().getMaxForce());
 	return steer;
 }
 
@@ -68,6 +84,7 @@ glm::vec3 MovableState::stayWithinWalls(MovableBoid& b) {
 
 glm::vec3 MovableState::separate(MovableBoid& b, std::vector<MovableBoidPtr> mvB){
 	glm::vec3 sum(0,0,0);
+	glm::vec3 steer(0,0,0);
 	int count = 0;
 	for(MovableBoidPtr m : mvB) {
 		float d = glm::distance(b.getLocation(), m->getLocation());
@@ -80,15 +97,16 @@ glm::vec3 MovableState::separate(MovableBoid& b, std::vector<MovableBoidPtr> mvB
 	}
 	if (count > 0) {
 		sum /= count;
-		sum = glm::normalize(sum) * b.getParameters().getMaxForce();
-		glm::vec3 steer = sum - b.getVelocity();
-		sum = limitVec3(steer, b.getParameters().getMaxForce());
+		sum = glm::normalize(sum) * b.getParameters().getMaxSpeed();
+		steer = sum - b.getVelocity();
+		steer = limitVec3(steer, b.getParameters().getMaxForce());
 	}
-	return sum;
+	return steer;
 }
 
 glm::vec3 MovableState::align (MovableBoid& b, std::vector<MovableBoidPtr> mvB) {
 	glm::vec3 sum(0,0,0);
+	glm::vec3 steer;
 	int count = 0;
 	for (MovableBoidPtr other : mvB) {
 		if(b.sameSpecies(*other)) 
@@ -103,17 +121,23 @@ glm::vec3 MovableState::align (MovableBoid& b, std::vector<MovableBoidPtr> mvB) 
 			}
 		}
 	}
+
 	if (count > 0) {
 		sum = sum / (float) count;
-		// sum.normalize();
-		// sum.mult(maxspeed);
-		sum = glm::normalize(limitVec3(sum - b.getVelocity(), b.getParameters().getMaxForce()));
+		sum = glm::normalize(sum);
+		sum *= b.getParameters().getMaxForce();
+		steer = sum - b.getVelocity();
+		steer = limitVec3(steer, b.getParameters().getMaxForce());
+	} else {
+		steer = glm::vec3(0,0,0);
 	}
-	return sum;
+
+	return steer;
 }
 
 glm::vec3 MovableState::cohesion (MovableBoid& b, std::vector<MovableBoidPtr> mvB) {
     glm::vec3 sum(0,0,0);
+    glm::vec3 steer;
     int count = 0;
     for (MovableBoidPtr other : mvB) {
     	if(b.sameSpecies(*other)) 
@@ -128,13 +152,12 @@ glm::vec3 MovableState::cohesion (MovableBoid& b, std::vector<MovableBoidPtr> mv
     }
     if (count > 0) {
 		sum /= (float) count;
-		// Here we make use of the seek() function we
-		// wrote in Example 6.8.  The target
-		// we seek is the average location of
-		// our neighbors.
+		steer = seek(b, sum);
+    } else {
+    	steer = glm::vec3(0,0,0);
     }
 
-    return sum;
+    return steer;
 }
 /* ==================================== Boid State Value ====================================
  * Each States update stamina, hunger, thrist, danger and affinity
@@ -159,40 +182,38 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) + 4.0f * align(b, mvB) + 16.0f * stayWithinWalls(b);;
+	/*
+	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) + 4.0f * align(b, mvB) + 16.0f * stayWithinWalls(b);
 	switch(b.getBoidType()) 
 	{
 		case RABBIT:
 		break;
 		case WOLF:
-			if(b.getParameters().getLeader() != nullptr)
-			{
-				newForces += 8.0f * arrive(b, b.getParameters().getLeader()->getLocation());
-			}
-			/*
 			if(b.canSee(*b.getParameters().getLeader(), b.getParameters().getDistViewMax()))
 			{
 				// follow leader
-				
+				newForces += 8.0f * arrive(b, b.getParameters().getLeader()->getLocation());
 			} 
 			else
 			{
 				// wander
 				// nothing to do
 			}
-			*/
+			
 		break;
 	}
-
+	*/
 /*
 	std::cout << "Leader : (" << b.getParameters().getLeader()->getLocation().x 
 		<< ", " << b.getParameters().getLeader()->getLocation().y
 		<< ", " << b.getParameters().getLeader()->getLocation().z << ")" << std::endl;
 */
 
-	b.getParameters().staminaDecrease(0.5f);
-	b.getParameters().hungerDecrease();
-
+	b.getParameters().staminaDecrease(0.01f);
+	//b.getParameters().hungerDecrease();
+	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) + 4.0f * align(b, mvB) + 160.0f * stayWithinWalls(b);
+	newForces.z = 0.0f;
+	//newForces /= 29.0f;
 	return newForces;
 }
 
@@ -205,7 +226,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	b.getParameters().staminaIncrease(3.0f);
+	b.getParameters().staminaIncrease(0.5f);
 	return arrive(b, b.getLocation());
 }
 

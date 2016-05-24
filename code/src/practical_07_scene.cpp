@@ -560,7 +560,7 @@ void initialize_boid_scene_walkstate( Viewer& viewer)
     }
 */
     std::vector< WolfPtr > wolfBoids;
-    for(int i = 0; i < 10; ++i)
+    for(int i = 0; i < 1; ++i)
     {
         parameters = new MovableParameters();
         wolfBoids.push_back(std::make_shared<Wolf>(glm::vec3(random(-15, 15), random(-15, 15), 2), parameters));
