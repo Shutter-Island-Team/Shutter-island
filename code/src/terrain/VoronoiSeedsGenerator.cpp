@@ -125,6 +125,7 @@ void VoronoiSeedsGenerator::generateSeeds(
      * Freeing the allocated memory zone related to seeds' repartition.
      */
     for (int i = 0; i < m_nbOfHeightSubdivisions; i++) {
+      seedsBySub[i]->clear();
         delete [] seedsBySub[i];
     }
     delete [] seedsBySub;

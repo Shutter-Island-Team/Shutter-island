@@ -11,12 +11,14 @@
 #include "Biome.hpp"
 #include "../../lib/voro++/src/voro++.hh"
 #include <utility>
+#include <memory>
 
 
 typedef std::pair<float, float> Vertex2D;
 
+typedef std::shared_ptr<voro::voronoicell_neighbor> voroNeighborPtr;
 
-class Seed : public voro::voronoicell_neighbor {
+class Seed {
 
 public:
     /**
@@ -28,7 +30,13 @@ public:
      */
     Seed(float x, float y, Biome biome = Undefined);
 
-
+    /**
+     * @brief Copy constructor
+     * 
+     * @param seed The Seed to copy in order to initialize the
+     *  current Seed.
+     */
+    Seed(const Seed& seed);
 
     /**
      * @brief Setter on the abscissa of the seed
@@ -42,7 +50,7 @@ public:
      *
      * @return The abscissa
      */
-    float getX();
+    float getX() const;
 
 
     /**
@@ -57,7 +65,7 @@ public:
      *
      * @return The ordinna
      */
-    float getY();
+    float getY() const;
 
 
 
@@ -73,8 +81,35 @@ public:
      *
      * @return The biome
      */
-    Biome getBiome();
+    Biome getBiome() const;
 
+
+    /**
+     * @brief Setter for the cell of the seed
+     * 
+     * @parm newCell The new cell
+     */
+    void setCell(voroNeighborPtr newCell);
+
+    /**
+     * @brief Getter on the cell of the seed
+     *
+     * @return A copy of the cell
+     */
+     voroNeighborPtr getCell() const;
+
+    /**
+     * @brief Overrides the assignment operator.
+     *
+     * @param seed The Seed to assign to the calling Seed.
+     * @return The assigned seed.
+     */
+    Seed& operator = (const Seed& seed);
+
+    /**
+     * @brief Destroyer
+     */
+    ~Seed();
 
 private:
 
@@ -83,6 +118,9 @@ private:
 
     /// @brief The type of the biome of the seed
     Biome biomeType;
+
+    /// @brief The cell
+    voroNeighborPtr cell;
 };
 
 #endif

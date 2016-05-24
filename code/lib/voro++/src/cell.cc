@@ -90,7 +90,7 @@ void voronoicell_neighbor::operator=(voronoicell &c) {
 /** Copies the information from another voronoicell_neighbor class into this
  * class, extending memory allocation if necessary.
  * \param[in] c the class to copy. */
-void voronoicell_neighbor::operator=(voronoicell_neighbor &c) {
+voronoicell_neighbor& voronoicell_neighbor::operator=(const voronoicell_neighbor &c) {
 	voronoicell_base *vb=((voronoicell_base*) &c);
 	check_memory_for_copy(*this,vb);copy(vb);
 	int i,j;
@@ -98,6 +98,7 @@ void voronoicell_neighbor::operator=(voronoicell_neighbor &c) {
 		for(j=0;j<c.mec[i]*i;j++) mne[i][j]=c.mne[i][j];
 		for(j=0;j<c.mec[i];j++) ne[c.mep[i][(2*i+1)*j+2*i]]=mne[i]+(j*i);
 	}
+    return *this;
 }
 
 /** Translates the vertices of the Voronoi cell by a given vector.

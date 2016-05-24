@@ -10,6 +10,7 @@
 #define DEFAULT_NB_SEEDS_MAX_SUBDIV (  5)
 #define DEFAULT_DIST_MIN            ( 10)
 
+#include "../../include/terrain/Seed.hpp"
 #include "../../include/terrain/MapGenerator.hpp"
 #include "../../include/terrain/BiomeRepartition.hpp"
 
@@ -27,13 +28,14 @@ MapGenerator::MapGenerator(float size) :
 		   1)
 {}
 
-
+#include <iostream>
 void MapGenerator::compute() {
 
     // Position Generation
     /*
-     * Note that the seeds are ordered by their distance to the center of the map
-     * This will be useful for the Whittaker step
+     * Note that the seeds are ordered by their distance to the center of 
+     * the map.
+     * This will be useful for the "Whittaker Step".
      */
     std::vector<Seed> seeds;
     voronoiSeedsGenerator.generateSeeds(seeds);
@@ -55,33 +57,34 @@ void MapGenerator::compute() {
     voro::particle_order seedsOrder;
     int ID = 0;
     for (
-	 auto iterator = seeds.begin(); 
-	 iterator != seeds.end();
-	 iterator++, ID++
-    )
-    {
-	seedsContainer.put(
-	    seedsOrder,
-	    ID,
-	    iterator->getX(),
+        auto iterator = seeds.begin(); 
+        iterator != seeds.end();
+        iterator++, ID++
+    ) {
+        seedsContainer.put(
+            seedsOrder,
+            ID,
+            iterator->getX(),
             iterator->getY(),
-	    0.0
-	);
+            0.0
+        );
     }
 
-    voro::c_loop_all loopAll(seedsContainer);
-    loopAll.start();
+    voro::c_loop_order loopOrder(seedsContainer, seedsOrder);
+    loopOrder.start();
     for (
-	 auto iterator = seeds.begin();
-	 iterator != seeds.end();
-	 iterator++, loopAll.inc()
-    )
-    {
-	voro::voronoicell_neighbor currentCell = *iterator;
-	seedsContainer.compute_cell(currentCell, 
-				    loopAll);
+        auto iterator = seeds.begin();
+        iterator != seeds.end();
+        iterator++, loopOrder.inc()
+    ) {
+        voroNeighborPtr currentCellPtr = std::make_shared<voro::voronoicell_neighbor>();
+        seedsContainer.compute_cell(
+            *currentCellPtr, 
+            loopOrder
+        );
+        iterator->setCell(currentCellPtr);
     }
-    
+
     // Repartition land/sea
     computeCoast(seeds, mapSize);
 

@@ -418,7 +418,7 @@ class voronoicell_neighbor : public voronoicell_base {
 		voronoicell_neighbor();
 		~voronoicell_neighbor();
 		void operator=(voronoicell &c);
-		void operator=(voronoicell_neighbor &c);
+		voronoicell_neighbor& operator=(const voronoicell_neighbor &c);
 		/** Cuts the Voronoi cell by a particle whose center is at a
 		 * separation of (x,y,z) from the cell center. The value of rsq
 		 * should be initially set to \f$x^2+y^2+z^2\f$.

@@ -15,7 +15,7 @@
  * This set must be sorted by the distance to the center of the map
  */
 
-void computeCoast(std::vector<Seed> seeds, float mapSize);
+void computeCoast(std::vector<Seed>& seeds, float mapSize);
 
 
 
