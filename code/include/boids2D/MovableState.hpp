@@ -80,6 +80,19 @@ class MateState : public MovableState
   glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB);
 };
 
+class AttackState : public MovableState
+{
+ private:
+  glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB);
+};
+
+class LostState : public MovableState
+{
+ private:
+  glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB);
+};
+
+
 // Return the closest animal of b of the good type in the vector.
 // Need to be seen too.
 MovableBoidPtr closestAnimal(const MovableBoid & b, const BoidType & type, const std::vector<MovableBoidPtr> & mvB);

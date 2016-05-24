@@ -139,6 +139,8 @@ class MovableBoid : public Boid
   MovableState* m_currentState; ///< State of the boid. @seeMovableState
   MovableParameters* m_parameters; ///< Parameter of the boid
 
+  void switchToState(const StateType & stateType);
+
   /**
    * @brief Contain the rules for a walking boid
    */
@@ -154,7 +156,50 @@ class MovableBoid : public Boid
    */
   void findFoodStateHandler();
 
+  /**
+   * @brief Contain the rules for a boid to attack
+   */
+  void attackStateHandler();
+
+  /**
+   * @brief Contain the rules for a boid to eat
+   */
+  void eatStateHandler();
+
+  /**
+   * @brief Contain the rules for a boid when he is lost
+   */
+  void lostStateHandler();
+
+  void sleepStateHandler();
+
+  void fleeStateHandler();
+
+  void findWaterStateHandler();
+
+  void drinkStateHandler();
+
+  void mateStateHandler();
+
   StateType m_stateType; ///< Save the current state of a boid
+
+  bool hasPrey() const;
+
+  bool closeToPrey() const;
+
+  bool isInGroup() const;
+
+  bool hasLeader() const;
+
+  bool nextToWater() const;
+
+  bool hasASoulMate() const;
+
+  bool isNoLongerMating() const;
+
+  bool preyIsDead() const;
+
+  bool isNight() const;
 };
 
 /**

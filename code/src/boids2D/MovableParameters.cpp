@@ -61,7 +61,7 @@ void MovableParameters::associateBoid(MovableBoidPtr thisBoid)
 	m_thisBoid = thisBoid;
 }
 
-float MovableParameters::getStamina()
+float MovableParameters::getStamina() const
 {
 	return m_stamina;
 }
@@ -86,7 +86,7 @@ void MovableParameters::staminaDecrease(const float & f)
 	m_stamina = fmax(m_stamina - f, 0.0f);
 }
 
-float MovableParameters::getHunger()
+float MovableParameters::getHunger() const
 {
 	return m_hunger;
 }
@@ -103,7 +103,7 @@ void MovableParameters::hungerDecrease()
 	m_hunger = fmax(m_hunger - 1.0f, 0.0f);
 }
 
-float MovableParameters::getThirst()
+float MovableParameters::getThirst() const
 {
 	return m_thirst;
 }
@@ -120,7 +120,7 @@ void MovableParameters::thirstDecrease()
 	m_thirst = fmax(m_thirst - 1.0f, 0.0f);
 }
 
-float MovableParameters::getDanger()
+float MovableParameters::getDanger() const
 {
 	return m_danger;
 }
@@ -137,7 +137,7 @@ void MovableParameters::dangerDecrease()
 	m_danger = fmax(m_danger - 1.0f, 0.0f);
 }
 
-float MovableParameters::getAffinity()
+float MovableParameters::getAffinity() const
 {
 	return m_affinity;
 }
@@ -154,12 +154,12 @@ void MovableParameters::affinityDecrease()
 	m_affinity = fmax(m_affinity - 1.0f, 0.0f);
 }
 
-bool MovableParameters::isLeader()
+bool MovableParameters::isLeader() const
 {
 	return m_leader == m_thisBoid;
 }
 
-MovableBoidPtr MovableParameters::getLeader()
+MovableBoidPtr MovableParameters::getLeader() const
 {
 	return m_leader;
 }
@@ -169,47 +169,88 @@ void MovableParameters::setNewLeader(MovableBoidPtr newLeader)
 	m_leader = newLeader;
 }
 
-bool MovableParameters::isLowStamina() {
+bool MovableParameters::isTired() const
+{
 	return m_stamina <= m_lowStaminaValue;
 }
 
-bool MovableParameters::isHighStamina() {
+bool MovableParameters::isHighStamina() const
+{
 	return m_stamina >= m_highStaminaValue;
 }
 
-bool MovableParameters::isLowHunger() {
+bool MovableParameters::isHungry() const
+{
 	return m_hunger <= m_lowHungerValue;
 }
 
-float MovableParameters::getMaxSpeed() {
+float MovableParameters::getMaxSpeed() const
+{
 	return m_maxSpeed;
 }
-float MovableParameters::getMaxForce() {
+float MovableParameters::getMaxForce() const
+{
 	return m_maxForce;
 }
-float MovableParameters::getRadiusCircleWander() {
+float MovableParameters::getRadiusCircleWander() const
+{
 	return m_rCircleWander;
 }
-float MovableParameters::getDistToCircleWander() {
+float MovableParameters::getDistToCircleWander() const
+{
 	return m_distToCircle;
 }
-float MovableParameters::getDistStartSlowingDown() {
+float MovableParameters::getDistStartSlowingDown() const
+{
 	return m_distStartSlowingDown;
 }
 
-float MovableParameters::getDistSeparate() {
+float MovableParameters::getDistSeparate() const
+{
 	return m_distViewSeparate;
 }
 
-float MovableParameters::getDistViewCohesion() {
+float MovableParameters::getDistViewCohesion() const
+{
 	return m_distViewCohesion;
 }
 
-float MovableParameters::getAngleView() {
+float MovableParameters::getAngleView() const
+{
 	return m_angleView;
 }
 
-float MovableParameters::getDistViewMax() {
+float MovableParameters::getDistViewMax() const
+{
 	return m_distViewMax;
 }
 
+bool MovableParameters::isInDanger() const
+{
+	// TODO : A faire
+	return false;
+}
+
+bool MovableParameters::isThursty() const
+{
+	// TODO : A faire
+	return false;
+}
+
+bool MovableParameters::isNotThursty() const
+{
+	// TODO : A faire
+	return false;	
+}
+
+bool MovableParameters::isNotTired() const
+{
+	// TODO : A faire
+	return false;	
+}
+
+bool MovableParameters::isNotInDanger() const
+{
+	// TODO : A faire
+	return false;	
+}

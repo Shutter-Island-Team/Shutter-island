@@ -75,6 +75,30 @@ void MovableBoid::computeAcceleration (const std::vector<MovableBoidPtr> & mvB)
 		case FIND_FOOD_STATE:
 			findFoodStateHandler();
 			break;
+		case ATTACK_STATE:
+			attackStateHandler();
+			break;
+		case EAT_STATE:
+			eatStateHandler();
+			break;
+		case LOST_STATE:
+			lostStateHandler();
+			break;
+		case SLEEP_STATE:
+			sleepStateHandler();
+			break;
+		case FLEE_STATE:
+			fleeStateHandler();
+			break;
+		case FIND_WATER_STATE:
+			findWaterStateHandler();
+			break;
+		case DRINK_STATE:
+			drinkStateHandler();
+			break;
+		case MATE_STATE:
+			mateStateHandler();
+			break;
 		default:
 			std::cerr << "Unknown state" << std::endl;
 			break;
@@ -118,33 +142,202 @@ bool MovableBoid::angleVision (const Boid & other) const
     }
 }
 
-void MovableBoid::walkStateHandler() {
-	/*
-	if (m_parameters->isLowStamina()) {
-		delete m_currentState;
-		m_currentState = new StayState();
-		m_stateType = STAY_STATE;
-	} 
-	*/
-	if (m_parameters->isLowHunger()) {
-		delete m_currentState;
-		m_currentState = new FindFoodState();
-		m_stateType = FIND_FOOD_STATE;
+void MovableBoid::switchToState(const StateType & stateType) 
+{
+	delete m_currentState;
+	switch(stateType) {
+		case WALK_STATE:
+			m_currentState = new WalkState();
+			break;
+		case STAY_STATE:
+			m_currentState = new StayState();
+			break;
+		case SLEEP_STATE:
+			m_currentState = new SleepState();
+			break;
+		case FLEE_STATE:
+			m_currentState = new FleeState();
+			break;
+		case FIND_FOOD_STATE:
+			m_currentState = new FindFoodState();
+			break;
+		case ATTACK_STATE:
+			m_currentState = new AttackState();
+			break;
+		case EAT_STATE:
+			m_currentState = new EatState();
+			break;
+		case FIND_WATER_STATE:
+			m_currentState = new FindWaterState();
+			break;
+		case DRINK_STATE:
+			m_currentState = new DrinkState();
+			break;
+		case MATE_STATE:
+			m_currentState = new MateState();
+			break;
+		case LOST_STATE:
+			m_currentState = new LostState();
+			break;
+		default:
+			std::cerr << "Unknown state : " << stateType << std::endl;
+			break;
+	}
+	m_stateType = stateType;
+}
+
+void MovableBoid::walkStateHandler()
+{
+	if (m_parameters->isInDanger()) {
+		switchToState(FLEE_STATE);
+	} else if (m_parameters->isThursty()) {
+		switchToState(FIND_WATER_STATE);
+	} else if (m_parameters->isHungry()) {
+		switchToState(FIND_FOOD_STATE);
+	} else if (m_parameters->isTired()) {
+		switchToState(STAY_STATE);
 	}
 }
 
-void MovableBoid::stayStateHandler() {
-	if (m_parameters->isHighStamina()) {
-		delete m_currentState;
-		m_currentState = new WalkState();
-		m_stateType = WALK_STATE;
-	} else {
-
+void MovableBoid::stayStateHandler()
+{
+	if (m_parameters->isInDanger()) {
+		switchToState(FLEE_STATE);
+	} else if (m_parameters->isThursty()) {
+		switchToState(FIND_WATER_STATE);
+	} else if (m_parameters->isHungry()) {
+		switchToState(FIND_FOOD_STATE);
+	} else if (isNight()) {
+		switchToState(SLEEP_STATE);
+	} else if (hasASoulMate()) {
+		switchToState(MATE_STATE);
+	} else if (hasLeader() && m_parameters->isHighStamina()) {
+		switchToState(WALK_STATE);
+	} else if (!hasLeader()) {
+		switchToState(LOST_STATE);
 	}
 }
 
-void MovableBoid::findFoodStateHandler() {
+void MovableBoid::findFoodStateHandler()
+{
+	if (hasPrey()) {
+		switchToState(ATTACK_STATE);
+	} else if (hasPrey() && preyIsDead()) {
+		switchToState(EAT_STATE);
+	}
+}
 
+void MovableBoid::attackStateHandler()
+{
+	if (closeToPrey()) {
+		// TODO : Kill prey
+		switchToState(EAT_STATE);
+	}
+}
+
+void MovableBoid::eatStateHandler()
+{
+	// TODO : wait to finish to eat
+	switchToState(LOST_STATE);
+}
+
+
+void MovableBoid::lostStateHandler()
+{
+	if (isInGroup()) {
+		switchToState(WALK_STATE);
+	} else if (isNight()) {
+		switchToState(SLEEP_STATE);
+	}
+}
+
+void MovableBoid::sleepStateHandler()
+{
+	if (m_parameters->isNotTired()) {
+		switchToState(WALK_STATE);
+	}
+}
+
+void MovableBoid::fleeStateHandler()
+{
+	if (m_parameters->isNotInDanger()) {
+		switchToState(LOST_STATE);
+	}
+}
+
+void MovableBoid::findWaterStateHandler()
+{
+	if (m_parameters->isInDanger()) {
+		switchToState(FLEE_STATE);
+	} else if (nextToWater()) {
+		switchToState(DRINK_STATE);
+	}
+}
+
+void MovableBoid::drinkStateHandler()
+{
+	if (m_parameters->isNotThursty()) {
+		switchToState(LOST_STATE);
+	}
+}
+
+void MovableBoid::mateStateHandler()
+{
+	if (isNoLongerMating()) {
+		switchToState(SLEEP_STATE);
+	}
+}
+
+
+bool MovableBoid::hasPrey() const
+{
+	// TODO : a implementer
+	return false;
+}
+
+bool MovableBoid::closeToPrey() const
+{
+	// TODO : a implementer
+	return false;
+}
+
+bool MovableBoid::nextToWater() const
+{
+	// TODO : a implemener
+	return false;
+}
+
+bool MovableBoid::hasASoulMate() const {
+	// TODO : a implemener
+	return false;
+}
+
+bool MovableBoid::isNoLongerMating() const
+{
+	// TODO : a implemener
+	return false;
+}
+
+bool MovableBoid::preyIsDead() const
+{
+	// TODO : a implemener
+	return false;
+}
+
+bool MovableBoid::isNight() const
+{
+	// TODO : a implemener
+	return false;
+}
+
+bool MovableBoid::hasLeader() const
+{
+	return m_parameters->getLeader() == (MovableBoidPtr) nullptr;
+}
+
+bool MovableBoid::isInGroup() const
+{
+	return !(m_parameters->getLeader() == nullptr);
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2)

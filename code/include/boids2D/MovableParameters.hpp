@@ -24,50 +24,56 @@ public:
   MovableParameters(const BoidType & type);
 
   // Stamina functions
-  float getStamina();
+  float getStamina() const;
   void staminaIncrease();
   void staminaIncrease(const float & f);
   void staminaDecrease();
   void staminaDecrease(const float & f);
-  bool isLowStamina();
-  bool isHighStamina();
+  bool isHighStamina() const;
 
   // Hunger functions
-  float getHunger();
+  float getHunger() const;
   void hungerIncrease();
   void hungerDecrease();
-  bool isLowHunger();
+  bool isHungry() const;
 
   // Thirst functions
-  float getThirst();
+  float getThirst() const;
   void thirstIncrease();
   void thirstDecrease();
 
   // Danger functions
-  float getDanger();
+  float getDanger() const;
   void dangerIncrease();
   void dangerDecrease();
 
   // Affinity functions
-  float getAffinity();
+  float getAffinity() const;
   void affinityIncrease();
   void affinityDecrease();
 
   // Leader functions
-  bool isLeader();
-  MovableBoidPtr getLeader();
+  bool isLeader() const;
+  MovableBoidPtr getLeader() const;
   void setNewLeader(MovableBoidPtr newLeader);
 
   // Getter of parameters
-  float getMaxSpeed();
-  float getMaxForce();
-  float getRadiusCircleWander();
-  float getDistToCircleWander();
-  float getDistStartSlowingDown();
-  float getDistSeparate();
-  float getDistViewCohesion();
-  float getAngleView();
-  float getDistViewMax();
+  float getMaxSpeed() const;
+  float getMaxForce() const;
+  float getRadiusCircleWander() const;
+  float getDistToCircleWander() const;
+  float getDistStartSlowingDown() const;
+  float getDistSeparate() const;
+  float getDistViewCohesion() const;
+  float getAngleView() const;
+  float getDistViewMax() const;
+
+  bool isInDanger() const;
+  bool isNotInDanger() const;
+  bool isThursty() const;
+  bool isTired() const;
+  bool isNotTired() const;
+  bool isNotThursty() const;
 
 protected:
   float m_stamina;

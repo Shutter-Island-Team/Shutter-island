@@ -9,7 +9,6 @@ int main( int argc, char* argv[] )
 {
     Viewer viewer(1280,720);
 
-
     initialize_boid_scene_walkstate( viewer );
     //initialize_boid_scene_multiple_pop( viewer );
     //initialize_boid_scene_test_machine_state( viewer );

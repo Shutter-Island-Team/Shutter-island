@@ -19,9 +19,14 @@ class BoidsManager
 
 	std::vector<RootedBoidPtr>& getRootedBoids();
 
+	bool isNight() const;
+
+	void setTimeDay(bool state);
+
  private:
  	std::vector<MovableBoidPtr> m_movableBoids;
  	std::vector<RootedBoidPtr> m_rootedBoids;
+ 	bool isNightTime;
 };
 
 typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;

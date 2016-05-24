@@ -20,3 +20,14 @@ std::vector<MovableBoidPtr>& BoidsManager::getMovableBoids() {
 std::vector<RootedBoidPtr>& BoidsManager::getRootedBoids() {
 	return m_rootedBoids;
 }
+
+bool BoidsManager::isNight() const
+{
+	return isNightTime;
+}
+
+void BoidsManager::setTimeDay(bool state)
+{
+	isNightTime = state;
+}
+

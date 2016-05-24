@@ -336,3 +336,20 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	// if alone affinity <- ad(affinity)
 	return glm::vec3(0,0,0);
 }
+
+glm::vec3 AttackState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
+{
+	// TODO : velocity <- max velocity to taget
+	// stamina <- decrease
+	// hunger <- decrease
+	// thirst <- decrease
+	// if predator is near danger <- di(danger) else danger <- dd(danger)
+	// if alone affinity <- ad(affinity)
+	return glm::vec3(0,0,0);
+}
+
+glm::vec3 LostState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
+{
+	// TODO Think about it
+	return glm::vec3(0,0,0);
+}
