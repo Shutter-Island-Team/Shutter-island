@@ -11,5 +11,6 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer );
 void initialize_boid_scene_test_machine_state( Viewer& viewer );
 void test_create_MovableParameters_from_file();
 void initialize_boid_scene_walkstate( Viewer& viewer);
+void initialize_test_sight( Viewer& viewer);
 
 #endif 

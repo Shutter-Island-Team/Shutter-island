@@ -90,7 +90,7 @@ glm::vec3 MovableState::separate(MovableBoid& b, std::vector<MovableBoidPtr> mvB
 		float d = glm::distance(b.getLocation(), m->getLocation());
 		if ((d > 0) && b.distVision(*m, b.getParameters().getDistSeparate())) {
 			glm::vec3 diff = b.getLocation() - m->getLocation();
-			diff = glm::normalize(diff) / d;
+			diff = glm::normalize(diff);
 			sum += diff;
 			count++;
 		}
@@ -170,7 +170,11 @@ glm::vec3 MovableState::cohesion (MovableBoid& b, std::vector<MovableBoidPtr> mv
  * State priority : FleeState, FindFood, Eat, Stay, Walk, ...
  * 
  */
-
+glm::vec3 TestState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
+{
+	glm::vec3 newForces = 0.01f * wander(b) + 0.35f * separate(b, mvB) + 0.64f * stayWithinWalls(b);
+	return newForces;
+}
 
 glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB)
 {
@@ -214,7 +218,6 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr
 	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) 
 		+ 4.0f * align(b, mvB) + 160.0f * stayWithinWalls(b);
 	newForces.z = 0.0f;
-	//newForces /= 29.0f;
 	return newForces;
 }
 

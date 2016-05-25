@@ -27,6 +27,12 @@ class MovableState
   glm::vec3 cohesion (MovableBoid& b, std::vector<MovableBoidPtr> mvB);
 };
 
+class TestState : public MovableState 
+{
+ private:
+  glm::vec3 computeNewForces(MovableBoid& b, std::vector<MovableBoidPtr> mvB);
+};
+
 class WalkState : public MovableState 
 {
  private:

@@ -46,6 +46,10 @@ BoidRenderable::BoidRenderable(ShaderProgramPtr shaderProgram, BoidPtr boid)
     glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
+    std::vector<glm::vec3> positions;
+    std::vector<glm::vec3> normals;
+    std::vector<glm::vec2> texCoords;
+
     sf::Image image;
     switch(boid->getBoidType()) {
         case RABBIT:
