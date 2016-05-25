@@ -1,19 +1,21 @@
-#include "./../../include/boids2D/SightRenderable.hpp"
+#include "./../../include/boids2D/StateRenderable.hpp"
 #include "./../../include/gl_helper.hpp"
 #include "./../../include/log.hpp"
 #include "./../../include/Utils.hpp"
-#include "./../../include/boids2D/MovableBoid.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-
-SightRenderable::SightRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr boid)
-  : HierarchicalRenderable(shaderProgram), m_boid(boid), m_display(false),
+StateRenderable::StateRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr boid) :
+    HierarchicalRenderable(shaderProgram), m_display(false),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
-    double startAngle = boid->getAngle() - boid->getParameters().getAngleView() / 2.0;
-    double endAngle = boid->getAngle() + boid->getParameters().getAngleView() / 2.0;
+    m_boid = boid;
+    m_state = boid->getStateType();
+    glm::vec4 color = stateColor();
+    
+    double startAngle = 0.0;
+    double endAngle = 2.0 * M_PI;
 
     double numberFace = 16;
     double incr = M_PI/numberFace;
@@ -29,13 +31,13 @@ SightRenderable::SightRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr 
         ncos = cos(ntheta);
         nsin = sin(ntheta);
 
-        m_positions.push_back( glm::vec3(pcos, psin, 0.0) );
-        m_positions.push_back( glm::vec3(ncos, nsin, 0.0) );
-        m_positions.push_back( glm::vec3(0.0, 0.0, 0.0) );
+        m_positions.push_back( glm::vec3(pcos, psin, -0.2) );
+        m_positions.push_back( glm::vec3(ncos, nsin, -0.2) );
+        m_positions.push_back( glm::vec3(0.0, 0.0, -0.2) );
 
         for(int i = 0; i < 3; i++) {
             m_normals.push_back( glm::vec3(0.0, 0.0, 1.0) );
-            m_colors.push_back(glm::vec4(1.0, 0.0, 0.0, 1.0));
+            m_colors.push_back(color);
         }
 
         ptheta = ntheta;
@@ -53,17 +55,34 @@ SightRenderable::SightRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr 
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_positions.size()*sizeof(glm::vec3), m_positions.data(), GL_STATIC_DRAW));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_cBuffer));
-    glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_STATIC_DRAW));
+    glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_DYNAMIC_DRAW));
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_nBuffer));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_normals.size()*sizeof(glm::vec3), m_normals.data(), GL_STATIC_DRAW));
 }
 
-void SightRenderable::do_draw()
+void StateRenderable::do_draw()
 {
-    if(!m_display) 
+    if (!m_display) 
     {
         return;
     }
+
+    if (m_state != m_boid->getStateType()) 
+    {
+        m_state = m_boid->getStateType();
+
+        glm::vec4 color = stateColor();
+
+        for (size_t i = 0; i<m_colors.size(); ++i)
+        {
+            m_colors[i] = color;
+        }
+
+        //Update color buffer and send data to the graphics card
+        glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_cBuffer));
+        glcheck(glBufferData(GL_ARRAY_BUFFER, m_colors.size()*sizeof(glm::vec4), m_colors.data(), GL_DYNAMIC_DRAW));
+    }
+
     //Location
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
@@ -103,21 +122,13 @@ void SightRenderable::do_draw()
     glm::mat4 transformation(1.0);
     glm::mat4 model = getModelMatrix();
 
-    float c = cos(m_boid->getAngle());
-    float s = sin(m_boid->getAngle());
-    float scale = m_boid->getParameters().getDistViewMax();
-
     glm::vec3 position = m_boid->getLocation();
-    transformation[0][0] = scale * c;
-    transformation[0][1] = scale * s;
-
-    transformation[1][1] = scale * c;
-    transformation[1][0] = scale * -s;
-    
-    transformation[2][2] = scale;
+    transformation[0][0] = 1;
+    transformation[1][1] = 1;
+    transformation[2][2] = 0.1f;
     transformation[3][0] = position.x;
     transformation[3][1] = position.y;
-    transformation[3][2] = position.z - 0.1f;
+    transformation[3][2] = position.z - 0.05f;
     transformation[3][3] = 1;
 
     glcheck(glUniformMatrix4fv( modelLocation, 1, GL_FALSE, glm::value_ptr(model * transformation)));
@@ -139,19 +150,75 @@ void SightRenderable::do_draw()
     }
 }
 
-void SightRenderable::do_animate(float time) {}
+void StateRenderable::do_animate(float time) {}
 
-void SightRenderable::do_keyPressedEvent( sf::Event& e)
-{
-    if(e.key.code == sf::Keyboard::O)
-    {
-        m_display = !m_display;
-    }
-}
-
-SightRenderable::~SightRenderable()
+StateRenderable::~StateRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_pBuffer));
     glcheck(glDeleteBuffers(1, &m_cBuffer));
     glcheck(glDeleteBuffers(1, &m_nBuffer));
+}
+
+void StateRenderable::do_keyPressedEvent( sf::Event& e )
+{
+    if(e.key.code == sf::Keyboard::P) {
+        m_display = !m_display;
+    }
+}
+
+glm::vec4 StateRenderable::stateColor()
+{
+    glm::vec4 color;
+    switch (m_state) {
+        case WALK_STATE:
+            // Red
+            color = glm::vec4(0.95, 0.26, 0.21, 1.0);
+            break;
+        case STAY_STATE:
+            // Indigo
+            color = glm::vec4(0.24, 0.31, 0.70, 1.0);
+            break;
+        case FIND_FOOD_STATE:
+            // Green
+            color = glm::vec4(0.29, 0.68, 0.31, 1.0);
+            break;
+        case ATTACK_STATE:
+            // Orange
+            color = glm::vec4(1.0, 0.59, 0.0, 1.0);
+            break;
+        case EAT_STATE:
+            // Brown
+            color = glm::vec4(0.47, 0.33, 0.28, 1.0);
+            break;
+        case LOST_STATE:
+            // Gray
+            color = glm::vec4(0.61, 0.61, 0.61, 1.0);
+            break;
+        case SLEEP_STATE:
+            // Yellow
+            color = glm::vec4(1.0, 0.92, 0.23, 1.0);
+            break;
+        case FLEE_STATE:
+            // Deep Purple
+            color = glm::vec4(0.40, 0.22, 0.71, 1.0);
+            break;
+        case FIND_WATER_STATE:
+            // Teal
+            color = glm::vec4(0.0, 0.58, 0.53, 1.0);
+            break;
+        case DRINK_STATE:
+            // Light Blue
+            color = glm::vec4(0.01, 0.66, 0.95, 1.0);
+            break;
+        case MATE_STATE:
+            // Pink
+            color = glm::vec4(0.91, 0.11, 0.38, 1.0);
+            break;
+        default:
+            // Black
+            color = glm::vec4(0.0, 0.0, 0.0, 1.0);
+            break;
+    }
+
+    return color;
 }

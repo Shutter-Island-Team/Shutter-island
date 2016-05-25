@@ -17,7 +17,7 @@
 #include "../include/boids2D/BoidsManager.hpp"
 #include "../include/boids2D/MovableParameters.hpp"
 #include "../include/boids2D/SightRenderable.hpp"
-#include "../include/boids2D/AuraRenderable.hpp"
+#include "../include/boids2D/StateRenderable.hpp"
 
 #include <cstdlib>
 #include <ctime>
@@ -669,8 +669,10 @@ void initialize_test_sight( Viewer& viewer )
         boidsManager->addMovableBoid(rabbitBoid);
         br = std::make_shared<BoidRenderable>(texShader, rabbitBoid);
         br->setMaterial(pearl);
-        AuraRenderablePtr aura = std::make_shared<AuraRenderable>(texShader, rabbitBoid);
-        viewer.addRenderable( aura );
+        StateRenderablePtr state = std::make_shared<StateRenderable>(flatShader, rabbitBoid);
+        viewer.addRenderable( state );
+        SightRenderablePtr sight = std::make_shared<SightRenderable>(flatShader, rabbitBoid);
+        viewer.addRenderable(sight);
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 

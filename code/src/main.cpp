@@ -11,7 +11,8 @@ int main( int argc, char* argv[] )
 
     //initialize_boid_scene_multiple_pop( viewer );
     //initialize_boid_scene_test_separate( viewer );
-    initialize_boid_scene_test_machine_state( viewer );
+    //initialize_boid_scene_test_machine_state( viewer );
+    initialize_test_sight( viewer );
 
     while( viewer.isRunning() )
     {

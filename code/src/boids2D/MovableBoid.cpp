@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include "../../include/Utils.hpp"
+#include "../../include/boids2D/StateType.hpp"
 #include "../../include/boids2D/MovableBoid.hpp"
 
 MovableBoid::~MovableBoid()
@@ -25,7 +26,7 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     BoidType t, MovableParameters* parameters)
 	: Boid(location, t), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
-	m_parameters(parameters), m_stateType(TEST_STATE)
+	m_parameters(parameters), m_stateType(WALK_STATE)
 {
 	switch(m_stateType) {
 		case TEST_STATE:
@@ -59,6 +60,11 @@ float MovableBoid::getMass() const
 MovableParameters & MovableBoid::getParameters() const
 {
 	return *m_parameters;
+}
+
+StateType MovableBoid::getStateType() const
+{
+	return m_stateType;
 }
 
 void MovableBoid::resetAcceleration()

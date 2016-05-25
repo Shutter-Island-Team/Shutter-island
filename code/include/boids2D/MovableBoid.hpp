@@ -83,6 +83,12 @@ class MovableBoid : public Boid
   MovableParameters & getParameters() const;
 
   /**
+   * @brief Getter for the state type of the object
+   * @return State Type of the object
+   */
+  StateType getStateType() const;
+
+  /**
    * @brief Set the acceleration field of the class to 0
    */
   void resetAcceleration();
