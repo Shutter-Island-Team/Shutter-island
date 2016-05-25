@@ -568,7 +568,8 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  =	../src/boids2D/ \
+INPUT                  =	mainPage.md \
+							../src/boids2D/ \
 							../include/boids2D/ \
 							../include/terrain/ \
 							../src/terrain/
