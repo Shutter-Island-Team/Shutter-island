@@ -653,10 +653,9 @@ void initialize_boid_scene_bebug( Viewer& viewer)
         boidsManager->addMovableBoid(rabbitBoid);
         br = std::make_shared<BoidRenderable>(texShader, rabbitBoid);
         br->setMaterial(pearl);
-        HierarchicalRenderable::addChild( systemRenderable, br );
-
         AuraRenderablePtr aura = std::make_shared<AuraRenderable>(texShader, rabbitBoid);
-        HierarchicalRenderable::addChild ( br, aura );
+        viewer.addRenderable( aura );
+        HierarchicalRenderable::addChild( systemRenderable, br );
     }
 
     viewer.addRenderable(systemRenderable);

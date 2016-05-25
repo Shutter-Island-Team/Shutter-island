@@ -113,7 +113,9 @@ AuraRenderable::~AuraRenderable()
 }
 
 // Not working yet
-void AuraRenderable::do_keyPressedEvent(sf::Event& e)
+void AuraRenderable::do_keyPressedEvent( sf::Event& e )
 {
-    m_display = !m_display;
+    if(e.key.code == sf::Keyboard::P) {
+        m_display = !m_display;
+    }
 }

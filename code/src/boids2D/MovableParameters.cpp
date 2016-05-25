@@ -49,18 +49,11 @@ MovableParameters::MovableParameters( const std::string & filename )
 
 	d.Parse(str.c_str());
 
-	float maxSpeed = d["maxSpeed"].GetDouble();
-	float maxForce = d["maxForce"].GetDouble();
-	float angleView = d["angleView"].GetDouble();
-	float distViewSeparate = d["distViewSeparate"].GetDouble();
-	float distViewCohesion = d["distViewCohesion"].GetDouble();
-	float distViewMax = d["distViewMax"].GetDouble();
-	float distStartSlowingDown = d["distStartSlowingDown"].GetDouble();
-	float rCircleWander = d["rCircleWander"].GetDouble();
-	float distToCircle = d["distToCircle"].GetDouble();
-
-	*this = MovableParameters(maxSpeed, maxForce, angleView, distViewSeparate, distViewCohesion,
-		distViewMax, distStartSlowingDown, rCircleWander, distToCircle);
+	*this = MovableParameters(d["maxSpeed"].GetDouble(),
+		d["maxForce"].GetDouble(), d["angleView"].GetDouble(),
+		d["distViewSeparate"].GetDouble(), d["distViewCohesion"].GetDouble(),
+		d["distViewMax"].GetDouble(), d["distStartSlowingDown"].GetDouble(),
+		d["rCircleWander"].GetDouble(), d["distToCircle"].GetDouble());
 }
 
 MovableParameters::MovableParameters(const BoidType & type)

@@ -16,7 +16,7 @@ class AuraRenderable : public HierarchicalRenderable
         void do_draw();
         void do_animate( float time );
 
-        void do_keyPressedEvent(sf::Event& e);
+        void do_keyPressedEvent( sf::Event& e );
 
         bool m_display = true;
         BoidPtr m_boid;
