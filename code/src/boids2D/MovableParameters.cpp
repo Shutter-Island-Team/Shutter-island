@@ -8,25 +8,28 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 
 MovableParameters::MovableParameters()
-	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f)
+	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f, 1.0f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
-	float angleView, float distViewSeparate, float distViewCohesion, float distViewMax) : 
-	MovableParameters(maxSpeed, maxForce, angleView, distViewSeparate, distViewCohesion, distViewMax,
-		5.0f, 9.0f, 3.0f)
+		float angleView, float distViewSeparate, float distViewCohesion,
+		float distViewMax, float distToLeader) : 
+	MovableParameters(maxSpeed, maxForce, angleView, distViewSeparate,
+						distViewCohesion, distViewMax, distToLeader,
+						5.0f, 9.0f, 3.0f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 	float angleView, float distViewSeparate, float distViewCohesion, float distViewMax,
-	float distStartSlowingDown,float rCircleWander, float distToCircle) :
+	float distToLeader, float distStartSlowingDown,float rCircleWander, float distToCircle) :
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce), m_angleView(angleView),
 	m_distViewSeparate(distViewSeparate), m_distViewCohesion(distViewCohesion),
-	m_distViewMax(distViewMax),	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
+	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
+	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
 	m_distToCircle(distToCircle), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
 	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f), m_lowHungerValue(10.0f) 
 {
@@ -52,7 +55,8 @@ MovableParameters::MovableParameters( const std::string & filename )
 	*this = MovableParameters(d["maxSpeed"].GetDouble(),
 		d["maxForce"].GetDouble(), d["angleView"].GetDouble(),
 		d["distViewSeparate"].GetDouble(), d["distViewCohesion"].GetDouble(),
-		d["distViewMax"].GetDouble(), d["distStartSlowingDown"].GetDouble(),
+		d["distViewMax"].GetDouble(), d["distToLeader"].GetDouble(),
+		d["distStartSlowingDown"].GetDouble(),
 		d["rCircleWander"].GetDouble(), d["distToCircle"].GetDouble());
 }
 
@@ -270,4 +274,9 @@ bool MovableParameters::isNotInDanger() const
 {
 	// TODO : A faire
 	return false;	
+}
+
+float MovableParameters::getDistToLeader() const
+{
+	return m_distToLeader;
 }

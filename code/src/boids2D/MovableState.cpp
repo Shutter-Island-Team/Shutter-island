@@ -190,6 +190,24 @@ glm::vec3 MovableState::evade(const MovableBoid & prey, const MovableBoid & hunt
 	return flee(prey, positionForecast(hunter, dt, val));
 }
 
+// Precondition b.hasLeader() == true
+glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const
+{
+	if (!b.hasLeader()) {
+		throw std::invalid_argument("The requested boid can't follow a leader when it has none");
+	}
+	glm::vec3 steer(0,0,0);
+	MovableBoidPtr leader = b.getParameters().getLeader();
+	glm::vec3 positionBehindLeader = leader->getLocation() + glm::normalize(-1.0f * leader->getVelocity()) * b.getParameters().getDistToLeader();
+	steer = arrive(b, positionBehindLeader);
+	steer += separate(b, mvB);
+	if (leader->canSee(b, 3.0f * leader->getParameters().getDistSeparate())) { // Can be modify
+		steer += evade(b, *leader, dt);
+	}
+	limitVec3(steer, b.getParameters().getMaxForce());
+	return steer;	
+}
+
 
 /* ==================================== Boid State Value ====================================
  * Each States update stamina, hunger, thrist, danger and affinity

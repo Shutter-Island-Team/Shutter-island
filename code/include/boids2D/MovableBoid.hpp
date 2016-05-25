@@ -137,6 +137,8 @@ class MovableBoid : public Boid
    */
   bool angleVision (const Boid & other) const;
 
+  bool hasLeader() const;
+
  private:
   glm::vec3 m_velocity; ///< Velocity of the boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
@@ -194,8 +196,6 @@ class MovableBoid : public Boid
   bool closeToPrey() const;
 
   bool isInGroup() const;
-
-  bool hasLeader() const;
 
   bool nextToWater() const;
 

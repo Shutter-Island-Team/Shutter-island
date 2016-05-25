@@ -124,6 +124,14 @@ class MovableState
   glm::vec3 evade(const MovableBoid & prey, const MovableBoid & hunter, const float & dt) const;
 
   /**
+   * @brief     Computes the force for a boid b to follow its leader
+   * @param[in] b The concerned boid
+   * @param[in] mvB Vector of boids which b have should be aware
+   * @return    Returns the force required for the boid to follow its leader
+   */
+  glm::vec3 followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+
+  /**
    * @brief Forecast of the position of a boid
    * @param[in] b The boid to forecast the position
    * @param[in] dt Step of time
