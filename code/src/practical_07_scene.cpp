@@ -343,7 +343,7 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
     BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(texShader, mvb1);
     br1->setMaterial(pearl);
     SightRenderablePtr sight1 = std::make_shared<SightRenderable>(flatShader, mvb1);
-    HierarchicalRenderable::addChild( br1, sight1 );
+    viewer.addRenderable(sight1);
 
     parameters = new MovableParameters();
     MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(0, -1, 2), glm::vec3(0, -1, 0), RABBIT, parameters);
@@ -353,7 +353,7 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
     BoidRenderablePtr br2 = std::make_shared<BoidRenderable>(texShader, mvb2);
     br2->setMaterial(pearl);
     SightRenderablePtr sight2 = std::make_shared<SightRenderable>(flatShader, mvb2);
-    HierarchicalRenderable::addChild( br2, sight2 );
+    viewer.addRenderable(sight2);
 
     HierarchicalRenderable::addChild( systemRenderable, br1 );
     HierarchicalRenderable::addChild( systemRenderable, br2 );
@@ -420,7 +420,7 @@ void initialize_boid_scene_test_canSee( Viewer& viewer )
     BoidRenderablePtr br1 = std::make_shared<BoidRenderable>(texShader, mvb1);
     br1->setMaterial(pearl);
     SightRenderablePtr sight1 = std::make_shared<SightRenderable>(flatShader, mvb1);
-    HierarchicalRenderable::addChild( br1, sight1 );
+    viewer.addRenderable(sight1);
 
     parameters = new MovableParameters();
     MovableBoidPtr mvb2 = std::make_shared<MovableBoid>(glm::vec3(0, -1, 2), glm::vec3(0, -1, 0), RABBIT, parameters);
@@ -430,7 +430,7 @@ void initialize_boid_scene_test_canSee( Viewer& viewer )
     BoidRenderablePtr br2 = std::make_shared<BoidRenderable>(texShader, mvb2);
     br2->setMaterial(pearl);
     SightRenderablePtr sight2 = std::make_shared<SightRenderable>(flatShader, mvb2);
-    HierarchicalRenderable::addChild( br2, sight2 );
+    viewer.addRenderable(sight2);
 
     HierarchicalRenderable::addChild( systemRenderable, br1 );
     HierarchicalRenderable::addChild( systemRenderable, br2 );
@@ -500,7 +500,7 @@ void initialize_boid_scene_test_machine_state( Viewer& viewer )
         br->setMaterial(pearl);
         HierarchicalRenderable::addChild( systemRenderable, br );
         sight = std::make_shared<SightRenderable>(flatShader, rabbitBoid);
-        HierarchicalRenderable::addChild( br, sight );
+        viewer.addRenderable(sight);
     }
 
     viewer.addRenderable(systemRenderable);
@@ -737,7 +737,7 @@ void initialize_boid_scene_debug( Viewer& viewer)
     br->setMaterial(pearl);
 
     SightRenderablePtr sight = std::make_shared<SightRenderable>(flatShader, mvb);
-    HierarchicalRenderable::addChild( br, sight );
+    viewer.addRenderable(sight);
     HierarchicalRenderable::addChild( systemRenderable, br );
 
     viewer.addRenderable(systemRenderable);

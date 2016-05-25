@@ -9,7 +9,7 @@
 
 
 SightRenderable::SightRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr boid)
-  : HierarchicalRenderable(shaderProgram), m_boid(boid),
+  : HierarchicalRenderable(shaderProgram), m_boid(boid), m_display(false),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
     double startAngle = boid->getAngle() - boid->getParameters().getAngleView() / 2.0;
@@ -60,6 +60,10 @@ SightRenderable::SightRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr 
 
 void SightRenderable::do_draw()
 {
+    if(!m_display) 
+    {
+        return;
+    }
     //Location
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
@@ -136,6 +140,14 @@ void SightRenderable::do_draw()
 }
 
 void SightRenderable::do_animate(float time) {}
+
+void SightRenderable::do_keyPressedEvent( sf::Event& e)
+{
+    if(e.key.code == sf::Keyboard::O)
+    {
+        m_display = !m_display;
+    }
+}
 
 SightRenderable::~SightRenderable()
 {

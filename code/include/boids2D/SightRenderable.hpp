@@ -16,12 +16,14 @@ class SightRenderable : public HierarchicalRenderable
     private:
         void do_draw();
         void do_animate( float time );
+        void do_keyPressedEvent( sf::Event& e);
 
         std::vector< glm::vec3 > m_positions;
         std::vector< glm::vec4 > m_colors;
         std::vector< glm::vec3 > m_normals;
 
         MovableBoidPtr m_boid;
+        bool m_display;
 
         unsigned int m_pBuffer;
         unsigned int m_cBuffer;
