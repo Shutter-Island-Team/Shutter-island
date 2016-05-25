@@ -33,7 +33,7 @@ MapGenerator::MapGenerator(float size) :
 
 MapGenerator::~MapGenerator() {
     if (heightTree)
-	heightTree->freeHeightTree();
+        heightTree->freeHeightTree();
 }
 
 void MapGenerator::compute() {
@@ -94,8 +94,14 @@ void MapGenerator::compute() {
     // Repartition land/sea
     computeLand(seeds, mapSize);
 
+    // Computing the beaches depending on the seas
+    computeBeach(seeds, mapSize);
+
+    // Adding the lakes
+    computeLake(seeds);
+
     // Mountain repartition
-    raiseMountains(seeds, PROB_MOUNTAIN);
+    computeMountains(seeds, PROB_MOUNTAIN);
 
     // HeightTree step
     // Creating the initial map : a deep dark sea

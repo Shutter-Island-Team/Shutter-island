@@ -17,14 +17,22 @@
 void computeLand(std::vector<Seed>& seeds, float mapSize);
 
 
+/**
+ * @brief Add lakes within the lands
+ *
+ * @param seeds   Set of seeds
+ * This set must be sorted by the distance to the center of the map
+ */
+void computeLake(std::vector<Seed>& seeds);
+
 
 /**
- * @brief Split the water biomes in sea and lakes, also create the beachs
+ * @brief Transform the plains that touch the sea into beach
  * 
  * @param seeds Set of seeds
  * This set must be sorted by the distance to the center of the map
  */
-void splitWater(std::vector<Seed>& seeds, float mapSize);
+void computeBeach(std::vector<Seed>& seeds, float mapSize);
 
 
 /**
@@ -36,4 +44,4 @@ void splitWater(std::vector<Seed>& seeds, float mapSize);
  * This set must be sorted by the distance to the center of the map
  */
 
-void raiseMountains(std::vector<Seed>& seeds, float p);
+void computeMountains(std::vector<Seed>& seeds, float p);
