@@ -17,8 +17,6 @@ cmake_minimum_required(VERSION 2.8)
 #==========================================
 project(3DCG)
 
-
-
 #==========================================
 #Building options
 #==========================================
@@ -26,7 +24,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fopenmp -Wno-deprecated")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
 
 #==========================================
-#Libraries path : glm, sfml, glew, opengl, freetype
+#Libraries path : glm, sfml, glew, opengl, freetype, voro++
 #==========================================
 
 #GLM Libraries
@@ -79,6 +77,16 @@ elseif(WIN32)
     message("WINDOWS platform not handled")
 endif()
 
+#Voro++ Libraries
+set(VOROPP_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/lib/voro++/" CACHE PATH "voro")
+include_directories(${VOROPP_INCLUDE_DIRS})
+if(UNIX)
+    set(VOROPP_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/lib/voro++/src/libvoro++.a" CACHE FILEPATH "voro")
+elseif(APPLE)
+    message("Compile different.")
+elseif(WIN32)
+    message("I have always loved blue. But not on my screen.")
+endif()
 
 find_package(OpenGL REQUIRED)
 
@@ -89,6 +97,12 @@ file(
     GLOB_RECURSE
     HEADER_FILES
     include/*.hpp
+    )
+
+file(
+    GLOB_RECURSE
+    VORO_FILES
+    lib/voro++/src/*.hpp
     )
 
 file(
@@ -108,7 +122,7 @@ set(EXECUTABLE_NAME main)
 #==============================================
 #Project executable definition
 #==============================================
-add_executable(${EXECUTABLE_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${SHADER_FILES})
+add_executable(${EXECUTABLE_NAME} ${HEADER_FILES} ${VORO_FILES} ${SOURCE_FILES} ${SHADER_FILES})
 
 #==============================================
 #Linking with libraries
@@ -124,7 +138,8 @@ target_link_libraries(${EXECUTABLE_NAME} ${SFML_SYSTEM_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_WINDOW_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${SFML_GRAPHICS_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${TINYOBJLOADER_LIBRARIES})
+target_link_libraries(${EXECUTABLE_NAME} ${VOROPP_LIBRARIES})
+ 
 
 set(CMAKE_BUILD_TYPE "Debug")
- 
 #message( "The build type is set to " ${CMAKE_BUILD_TYPE})

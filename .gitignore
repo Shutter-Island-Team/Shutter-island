@@ -9,7 +9,13 @@
 **/*.o
 **/*.bbl
 **/*.blg
+**/*.swp
 code/extlib
 code/build
 code/archives
 code/doc/html
+code/lib/voro++/examples/*
+code/lib/voro++/src/libvoro++.a
+code/lib/voro++/src/voro++
+**/tumeur*
+**/oedeme*
