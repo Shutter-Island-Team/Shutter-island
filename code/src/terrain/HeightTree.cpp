@@ -128,7 +128,7 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     Biome brBiome = findClosestBiome(brBlob.getPosition(), container, seeds);
 
     // Check the current level must be build or not
-    if(!checkSubdibision(depth, tlBiome, trBiome, blBiome, brBiome)) return;
+    if(!checkSubdibision(depth)) return;
 
 
     // Building now the 5 new blobs required to cut the square

@@ -58,21 +58,6 @@ float computeBlobScale(Biome biome, Biome biomeNeighbour1, Biome biomeNeighbour2
 
 
 
-bool checkSubdibision(int currentDepth,
-		      Biome biomeTL, Biome biomeTR,
-		      Biome biomeBL, Biome biomeBR) {
-
-    return ( // Not going to deep in the tree
-	    (currentDepth <= BIOME_DEPTH_MAX)
-	    && ( // But still deep enough
-		(currentDepth <= BIOME_DEPTH_MIN)
-		// Or if the we are not in a homogeneous area
-		|| (not ((biomeTL == biomeTR) && (biomeTR == biomeBL) && (biomeBL == biomeBR)))
-		// Or if we are, go only for the detail depth of the area type
-		|| (((biomeTL == Sea) || (biomeTL == Beach) || (biomeTL == Lake)) 
-		    && (currentDepth <= BIOME_DEPTH_FLAT))
-		|| ((biomeTL == Plains)                     
-		    && (currentDepth <= BIOME_DEPTH_MEDIUM))
-		|| ((biomeTL == Mountain)
-		    && (currentDepth <= BIOME_DEPTH_SHARP))));
+bool checkSubdibision(int currentDepth) {
+    return (currentDepth <= BIOME_DEPTH_MAX);
 }

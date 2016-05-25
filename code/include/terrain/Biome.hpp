@@ -20,10 +20,7 @@
 #define BLOB_SCALE_LARGE  (1.0f)
 
 #define BIOME_DEPTH_MIN    (2)
-#define BIOME_DEPTH_MAX    (9)
-#define BIOME_DEPTH_FLAT   (4)
-#define BIOME_DEPTH_MEDIUM (5)
-#define BIOME_DEPTH_SHARP  (9)
+#define BIOME_DEPTH_MAX    (8)
 
 /**
  * @brief This enum defines the biomes that
@@ -74,8 +71,6 @@ float computeBlobScale(Biome biome, Biome biomeNeighbour1, Biome biomeNeighbour2
  * @return Whether there must be a subdivision or not
  */
 
-bool checkSubdibision(int currentDepth,
-		      Biome biomeTL, Biome biomeTR,
-		      Biome biomeBL, Biome biomeBR);
+bool checkSubdibision(int currentDepth);
 
 #endif

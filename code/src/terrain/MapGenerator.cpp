@@ -16,7 +16,7 @@
 #include "../../include/terrain/MapGenerator.hpp"
 #include "../../include/terrain/MapUtils.hpp"
 #include "../../include/terrain/BiomeRepartition.hpp"
-
+#include <iostream>
 MapGenerator::MapGenerator(float size) :
     mapSize{size},
     voronoiSeedsGenerator{VoronoiSeedsGenerator(size, size,
@@ -25,7 +25,7 @@ MapGenerator::MapGenerator(float size) :
 						DEFAULT_NB_SUBDIVISION,
 						DEFAULT_NB_SEEDS_MAX_SUBDIV,
 						DEFAULT_DIST_MIN)},
-    seedsContainer(0.0, size, 0.0, size, -10.0, 10.0,
+    seedsContainer(0.0, size+1, 0.0, size+1, -10.0, 10.0,
 		   DEFAULT_NB_SUBDIVISION, DEFAULT_NB_SUBDIVISION, 1,
 		   false, false, false,
 		   1)
