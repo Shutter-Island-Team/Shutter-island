@@ -16,11 +16,11 @@ class SolverBoid
 public:
   SolverBoid();
 
-  /**@brief Solve the dynamic system of particles.
+  /**@brief Solve the dynamic system of boids.
    *
-   * Solve the dynamic system of particles for a specified time step.
+   * Solve the dynamic system of boids for a specified time step.
    * @param dt The time step for the integration.
-   * @param particles The collection of particles.
+   * @param boids The collection of boids.
    */
   void solve( const float& dt, std::vector<MovableBoidPtr>& boids );
 };

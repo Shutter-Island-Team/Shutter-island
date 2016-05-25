@@ -137,6 +137,10 @@ class MovableBoid : public Boid
    */
   bool angleVision (const Boid & other) const;
 
+  /**
+   * @brief   Check if the boid has a leader
+   * @return  true if the boid has a leader, false otherwise
+   */
   bool hasLeader() const;
 
  private:
@@ -147,6 +151,10 @@ class MovableBoid : public Boid
   MovableState* m_currentState; ///< State of the boid. @seeMovableState
   MovableParameters* m_parameters; ///< Parameter of the boid
 
+  /**
+   * @brief     Make all the change when a boid get to the new state stateType
+   * @param[in] stateType The state the boid change to
+   */
   void switchToState(const StateType & stateType);
 
   /**
@@ -179,32 +187,79 @@ class MovableBoid : public Boid
    */
   void lostStateHandler();
 
+  /**
+   * @brief Contain the rules for a boid when he sleeps
+   */
   void sleepStateHandler();
 
+  /**
+   * @brief Contain the rules for a boid when he flees
+   */
   void fleeStateHandler();
 
+  /**
+   * @brief Contain the rules for a boid when he is looking for water
+   */
   void findWaterStateHandler();
 
+  /**
+   * @brief Contain the rules for a boid when he drinks
+   */
   void drinkStateHandler();
 
+  /**
+   * @brief Contain the rules for a boid when he mates
+   */
   void mateStateHandler();
 
   StateType m_stateType; ///< Save the current state of a boid
 
+  /**
+   * @brief   Check if the boid has a prey
+   * @return  true if the boid has a prey, false otherwise
+   */
   bool hasPrey() const;
 
+  /**
+   * @brief   Check if the boid is close to its prey (can touch it)
+   * @return  true if the boid is close to the prey, false otherwise
+   */
   bool closeToPrey() const;
 
+  /**
+   * @brief   Check if the boid is in a group
+   * @return  true if the boid is in a group, false otherwise
+   */
   bool isInGroup() const;
 
+  /**
+   * @brief   Check if the boid is next to a source of water (can touch it)
+   * @return  true if the boid is next to a source of water, false otherwise
+   */
   bool nextToWater() const;
 
+  /**
+   * @brief   Check if the boid has a soulmate
+   * @return  true if the boid has a soulmate, false otherwise
+   */
   bool hasASoulMate() const;
 
+  /**
+   * @brief   Check if the boid is not mating
+   * @return  true if the boid is not mating, false otherwise
+   */
   bool isNoLongerMating() const;
 
+  /**
+   * @brief   Check if the prey of the boid is dead
+   * @return  true if the its prey is dead, false otherwise
+   */
   bool preyIsDead() const;
 
+  /**
+   * @brief   Check if it is night time
+   * @return  true if is night time, false otherwise
+   */
   bool isNight() const;
 };
 

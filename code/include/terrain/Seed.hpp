@@ -98,7 +98,7 @@ public:
     /**
      * @brief Setter on the biome of the seed
      *
-     * @param newX The new biome
+     * @param newBiome The new biome
      */
     void setBiome(Biome newBiome);
 
@@ -113,7 +113,7 @@ public:
     /**
      * @brief Setter for the cell of the seed
      * 
-     * @parm newCell The new cell
+     * @param newCell The new cell
      */
     void setCell(voroNeighborPtr newCell);
 

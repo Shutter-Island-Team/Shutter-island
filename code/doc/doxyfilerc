@@ -569,7 +569,9 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  =	../src/boids2D/ \
-							../include/boids2D/
+							../include/boids2D/ \
+							../include/terrain/ \
+							../src/terrain/
 
 
 # This tag can be used to specify the character encoding of the source files

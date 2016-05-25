@@ -200,7 +200,7 @@ void MovableBoid::walkStateHandler()
 {
 	if (m_parameters->isInDanger()) {
 		switchToState(FLEE_STATE);
-	} else if (m_parameters->isThursty()) {
+	} else if (m_parameters->isThirsty()) {
 		switchToState(FIND_WATER_STATE);
 	} else if (m_parameters->isHungry()) {
 		switchToState(FIND_FOOD_STATE);
@@ -213,7 +213,7 @@ void MovableBoid::stayStateHandler()
 {
 	if (m_parameters->isInDanger()) {
 		switchToState(FLEE_STATE);
-	} else if (m_parameters->isThursty()) {
+	} else if (m_parameters->isThirsty()) {
 		switchToState(FIND_WATER_STATE);
 	} else if (m_parameters->isHungry()) {
 		switchToState(FIND_FOOD_STATE);
@@ -240,14 +240,14 @@ void MovableBoid::findFoodStateHandler()
 void MovableBoid::attackStateHandler()
 {
 	if (closeToPrey()) {
-		// TODO : Kill prey
+		///< @todo : Kill prey
 		switchToState(EAT_STATE);
 	}
 }
 
 void MovableBoid::eatStateHandler()
 {
-	// TODO : wait to finish to eat
+	///< @todo : wait to finish to eat
 	switchToState(LOST_STATE);
 }
 
@@ -286,7 +286,7 @@ void MovableBoid::findWaterStateHandler()
 
 void MovableBoid::drinkStateHandler()
 {
-	if (m_parameters->isNotThursty()) {
+	if (m_parameters->isNotThirsty()) {
 		switchToState(LOST_STATE);
 	}
 }
@@ -298,45 +298,45 @@ void MovableBoid::mateStateHandler()
 	}
 }
 
-
 bool MovableBoid::hasPrey() const
 {
-	// TODO : a implementer
+	///< @todo
 	return false;
 }
 
 bool MovableBoid::closeToPrey() const
 {
-	// TODO : a implementer
+	///< @todo
 	return false;
 }
 
 bool MovableBoid::nextToWater() const
 {
-	// TODO : a implemener
+	///< @todo
 	return false;
 }
 
-bool MovableBoid::hasASoulMate() const {
-	// TODO : a implemener
+bool MovableBoid::hasASoulMate() const
+{
+	///< @todo
 	return false;
 }
 
 bool MovableBoid::isNoLongerMating() const
 {
-	// TODO : a implemener
+	///< @todo
 	return false;
 }
 
 bool MovableBoid::preyIsDead() const
 {
-	// TODO : a implemener
+	///< @todo
 	return false;
 }
 
 bool MovableBoid::isNight() const
 {
-	// TODO : a implemener
+	///< @todo
 	return false;
 }
 

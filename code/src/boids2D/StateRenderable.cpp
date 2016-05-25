@@ -11,8 +11,8 @@ StateRenderable::StateRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr 
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
     m_boid = boid;
-    m_state = boid->getStateType();
-    glm::vec4 color = stateColor();
+    m_savedState = boid->getStateType();
+    glm::vec4 color = getColorFromState();
     
     double startAngle = 0.0;
     double endAngle = 2.0 * M_PI;
@@ -67,11 +67,11 @@ void StateRenderable::do_draw()
         return;
     }
 
-    if (m_state != m_boid->getStateType()) 
+    if (m_savedState != m_boid->getStateType()) 
     {
-        m_state = m_boid->getStateType();
+        m_savedState = m_boid->getStateType();
 
-        glm::vec4 color = stateColor();
+        glm::vec4 color = getColorFromState();
 
         for (size_t i = 0; i<m_colors.size(); ++i)
         {
@@ -166,10 +166,10 @@ void StateRenderable::do_keyPressedEvent( sf::Event& e )
     }
 }
 
-glm::vec4 StateRenderable::stateColor()
+glm::vec4 StateRenderable::getColorFromState()
 {
     glm::vec4 color;
-    switch (m_state) {
+    switch (m_savedState) {
         case WALK_STATE:
             // Red
             color = glm::vec4(0.95, 0.26, 0.21, 1.0);

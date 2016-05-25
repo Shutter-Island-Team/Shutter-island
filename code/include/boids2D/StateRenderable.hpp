@@ -9,28 +9,55 @@
 
 class StateRenderable : public HierarchicalRenderable
 {
-    public:
-        ~StateRenderable();
-        StateRenderable( ShaderProgramPtr program, MovableBoidPtr boid );
+ public:
+  /**
+   * @brief       Constructor of StateRenderable
+   * @param[in]   program Shader of the Renderable
+   * @param[in]   boid    Boid associated with the renderable
+   */
+  StateRenderable( ShaderProgramPtr program, MovableBoidPtr boid );
+  /**
+   * @brief Destructor of StateRenderable
+   */
+  ~StateRenderable();
 
-    private:
-        void do_draw();
-        void do_animate( float time );
+ private:
+  bool m_display; ///< Boolean to check if the renderable needs to be displayed
+  MovableBoidPtr m_boid; ///< Link to the boid
+  StateType m_savedState; ///< Local known state. Useful to detect if
+                          ///< a state of a boid has changed
 
-        void do_keyPressedEvent( sf::Event& e );
-        glm::vec4 stateColor();
+  std::vector< glm::vec3 > m_positions; ///< Vector of the positions
+  std::vector< glm::vec4 > m_colors; ///< Vector of the colors
+  std::vector< glm::vec3 > m_normals; ///< Vector of the normals
 
-        bool m_display;
-        MovableBoidPtr m_boid;
-        StateType m_state;
+  unsigned int m_pBuffer; ///< Buffer of the position
+  unsigned int m_cBuffer; ///< Buffer of the color
+  unsigned int m_nBuffer; ///< Buffer of the normal
 
-        std::vector< glm::vec3 > m_positions;
-        std::vector< glm::vec4 > m_colors;
-        std::vector< glm::vec3 > m_normals;
+  /**
+   * @brief Implementation of do_draw to draw the renderable
+   */
+  void do_draw();
 
-        unsigned int m_pBuffer;
-        unsigned int m_cBuffer;
-        unsigned int m_nBuffer;
+  /**
+   * @brief     Implementation of do_animate. Does nothing
+   * @param[in] time Time since the beginning of the programm
+   */
+  void do_animate( float time );
+
+  /**
+   * @brief       Implementation of virtual function. Press 'P' to switch
+   *              from invisible to visible
+   * @param[in]   e The event received
+   */
+  void do_keyPressedEvent( sf::Event& e );
+
+  /**
+   * @brief   return the color associated with the saved state
+   * @return  the color associated with the saved state
+   */
+  glm::vec4 getColorFromState();
 };
 
 typedef std::shared_ptr<StateRenderable> StateRenderablePtr;

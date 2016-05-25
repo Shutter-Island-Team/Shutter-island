@@ -14,20 +14,20 @@ MovableParameters::MovableParameters()
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
-		float angleView, float distViewSeparate, float distViewCohesion,
+		float angleView, float distSeparate, float distCohesion,
 		float distViewMax, float distToLeader) : 
-	MovableParameters(maxSpeed, maxForce, angleView, distViewSeparate,
-						distViewCohesion, distViewMax, distToLeader,
+	MovableParameters(maxSpeed, maxForce, angleView, distSeparate,
+						distCohesion, distViewMax, distToLeader,
 						5.0f, 9.0f, 3.0f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
-	float angleView, float distViewSeparate, float distViewCohesion, float distViewMax,
+	float angleView, float distSeparate, float distCohesion, float distViewMax,
 	float distToLeader, float distStartSlowingDown,float rCircleWander, float distToCircle) :
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce), m_angleView(angleView),
-	m_distViewSeparate(distViewSeparate), m_distViewCohesion(distViewCohesion),
+	m_distSeparate(distSeparate), m_distCohesion(distCohesion),
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
 	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
 	m_distToCircle(distToCircle), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
@@ -54,7 +54,7 @@ MovableParameters::MovableParameters( const std::string & filename )
 
 	*this = MovableParameters(d["maxSpeed"].GetDouble(),
 		d["maxForce"].GetDouble(), d["angleView"].GetDouble(),
-		d["distViewSeparate"].GetDouble(), d["distViewCohesion"].GetDouble(),
+		d["distSeparate"].GetDouble(), d["distCohesion"].GetDouble(),
 		d["distViewMax"].GetDouble(), d["distToLeader"].GetDouble(),
 		d["distStartSlowingDown"].GetDouble(),
 		d["rCircleWander"].GetDouble(), d["distToCircle"].GetDouble());
@@ -114,13 +114,13 @@ float MovableParameters::getHunger() const
 
 void MovableParameters::hungerIncrease()
 {
-	// TODO : improve with maybe a better function
+	///< @todo : improve with maybe a better function
 	m_hunger = fmin(m_hunger + 1.0f, 100.0f);
 }
 
 void MovableParameters::hungerDecrease()
 {
-	// TODO : improve with maybe a better function
+	///< @todo : improve with maybe a better function
 	m_hunger = fmax(m_hunger - 1.0f, 0.0f);
 }
 
@@ -131,13 +131,13 @@ float MovableParameters::getThirst() const
 
 void MovableParameters::thirstIncrease()
 {
-	// TODO : improve with maybe a better function
+	///< @todo : improve with maybe a better function
 	m_thirst = fmin(m_thirst + 1.0f, 100.0f);
 }
 
 void MovableParameters::thirstDecrease()
 {
-	// TODO : improve with maybe a better function
+	///< @todo : improve with maybe a better function
 	m_thirst = fmax(m_thirst - 1.0f, 0.0f);
 }
 
@@ -148,13 +148,13 @@ float MovableParameters::getDanger() const
 
 void MovableParameters::dangerIncrease()
 {
-	// TODO !!!!!!!!! : improve with a better function
+	///< @todo : improve with maybe a better function
 	m_danger = fmin(m_danger + 1.0f, 100.0f);
 }
 
 void MovableParameters::dangerDecrease()
 {
-	// TODO !!!!!!!!! : improve with a better function
+	///< @todo : improve with maybe a better function
 	m_danger = fmax(m_danger - 1.0f, 0.0f);
 }
 
@@ -165,13 +165,13 @@ float MovableParameters::getAffinity() const
 
 void MovableParameters::affinityIncrease()
 {
-	// TODO : improve with maybe a better function
+	///< @todo : improve with maybe a better function
 	m_affinity = fmin(m_affinity + 1.0f, 100.0f);
 }
 
 void MovableParameters::affinityDecrease()
 {
-	// TODO : improve with maybe a better function
+	///< @todo : improve with maybe a better function
 	m_affinity = fmax(m_affinity - 1.0f, 0.0f);
 }
 
@@ -228,12 +228,12 @@ float MovableParameters::getDistStartSlowingDown() const
 
 float MovableParameters::getDistSeparate() const
 {
-	return m_distViewSeparate;
+	return m_distSeparate;
 }
 
 float MovableParameters::getDistViewCohesion() const
 {
-	return m_distViewCohesion;
+	return m_distCohesion;
 }
 
 float MovableParameters::getAngleView() const
@@ -248,31 +248,31 @@ float MovableParameters::getDistViewMax() const
 
 bool MovableParameters::isInDanger() const
 {
-	// TODO : A faire
+	///< @todo
 	return false;
 }
 
-bool MovableParameters::isThursty() const
+bool MovableParameters::isThirsty() const
 {
-	// TODO : A faire
+	///< @todo
 	return false;
 }
 
-bool MovableParameters::isNotThursty() const
+bool MovableParameters::isNotThirsty() const
 {
-	// TODO : A faire
+	///< @todo
 	return false;	
 }
 
 bool MovableParameters::isNotTired() const
 {
-	// TODO : A faire
+	///< @todo
 	return false;	
 }
 
 bool MovableParameters::isNotInDanger() const
 {
-	// TODO : A faire
+	///< @todo
 	return false;	
 }
 
