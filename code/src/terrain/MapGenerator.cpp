@@ -130,4 +130,9 @@ Biome MapGenerator::getBiome(float x, float y) {
     return findClosestBiome(position, seedsContainer, seeds);
 }
 
-
+float MapGenerator::getHeight(float x, float y) {
+    Vertex2D position(x, y);
+    if (!heightTree) 
+	exit(EXIT_FAILURE);
+    return heightTree->evalHeight(position);
+}

@@ -4,22 +4,18 @@
 #include <sstream>
 
 #include "../include/practical_07_scene.hpp"
+#include "../include/terrain/MapGenerator.hpp"
 
 int main( int argc, char* argv[] )
 {
-    Viewer viewer(1280,720);
+    
+    MapGenerator map(500);
 
-    //initialize_boid_scene_multiple_pop( viewer );
-    //initialize_boid_scene_test_separate( viewer );
-    initialize_boid_scene_test_machine_state( viewer );
+    map.compute();
 
-    while( viewer.isRunning() )
-    {
-    	viewer.handleEvent();
-    	viewer.animate();
-    	viewer.draw();
-    	viewer.display();
-    }
+    for (int i = 0; i <= 500; i++)
+	for (int j = 0; j <= 500; j++)
+	    std::cout << i << "," << j << "," << map.getHeight(i,j) << std::endl;
 
     return EXIT_SUCCESS;
 }

@@ -30,11 +30,22 @@ public :
     /**
      * @brief Get the biome associated to a location
      * 
-     * @param position Desired position
+     * @param x Abscissa of the desired position
+     * @param y Ordinna  of the desired position 
      *
      * @return The biome of the position
      */
     Biome getBiome(float x, float y);
+    
+    /**
+     * @brief Get the height of a position
+     *
+     * @param x Abscissa of the desired position
+     * @param y Ordinna  of the desired position 
+     *
+     * @return The biome of the position
+     */
+    float getHeight(float x, float y);
 
     /**
      * @brief Destructor
