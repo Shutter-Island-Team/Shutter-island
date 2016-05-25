@@ -5,6 +5,7 @@
 	"distViewSeparate": 2.0,
 	"distViewCohesion": 5.0,
 	"distViewMax": 5.0,
+	"distToLeader": 1.0,
 	"distStartSlowingDown": 9.0,
 	"rCircleWander": 3.0,
 	"distToCircle": 3.0
