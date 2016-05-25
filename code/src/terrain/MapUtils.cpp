@@ -5,6 +5,7 @@
  */
 
 #include <cmath>
+#include <iostream>
 
 #include "../../include/terrain/MapUtils.hpp"
 
@@ -29,6 +30,7 @@ Biome findClosestBiome(
                 )
             )
     ) {
+        std::cerr << "Cell not found." << std::endl;
         exit(EXIT_FAILURE);
     }
 
