@@ -1,11 +1,11 @@
-#include "../../include/boids2D/MovableParameters.hpp"
 #include <cmath>
 #include <iostream>
-#include "../../include/Utils.hpp"
-
+#include <string>
+#include <fstream>
+#include <streambuf>
 #include "../../include/rapidjson/document.h"
-
-using namespace rapidjson;
+#include "../../include/Utils.hpp"
+#include "../../include/boids2D/MovableParameters.hpp"
 
 MovableParameters::MovableParameters()
 	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 4.0f, 4.0f, 5.0f)
@@ -35,20 +35,45 @@ MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 
 MovableParameters::MovableParameters( const std::string & filename )
 {
-    Document d;
-    // d.Parse(filename);
+	rapidjson::Document d;
+
+	std::ifstream t(filename); // TODO : not hard coded
+	std::string str;
+
+	t.seekg(0, std::ios::end);   
+	str.reserve(t.tellg());
+	t.seekg(0, std::ios::beg);
+
+	str.assign((std::istreambuf_iterator<char>(t)),
+	            std::istreambuf_iterator<char>());	
+
+	const char * cstr = str.c_str();
+	d.Parse(cstr);
+
+	float maxSpeed = d["maxSpeed"].GetDouble();
+	float maxForce = d["maxForce"].GetDouble();
+	float angleView = d["angleView"].GetDouble();
+	float distViewSeparate = d["distViewSeparate"].GetDouble();
+	float distViewCohesion = d["distViewCohesion"].GetDouble();
+	float distViewMax = d["distViewMax"].GetDouble();
+	float distStartSlowingDown = d["distStartSlowingDown"].GetDouble();
+	float rCircleWander = d["rCircleWander"].GetDouble();
+	float distToCircle = d["distToCircle"].GetDouble();
+
+	*this = MovableParameters(maxSpeed, maxForce, angleView, distViewSeparate, distViewCohesion,
+		distViewMax, distStartSlowingDown, rCircleWander, distToCircle);
 }
 
 MovableParameters::MovableParameters(const BoidType & type)
 {
 	switch (type) {
 		case RABBIT:
-			std::cerr << "Implementation rabbit" << std::endl;
-			*this = MovableParameters( "../../boidData/RabbitParameters.json" ); 
+			std::cerr << "Read rabbit data from file" << std::endl;
+			*this = MovableParameters( "../boidData/RabbitParameters.json" ); 
 			break;
 		case WOLF:
-			std::cerr << "Implementation wolf" << std::endl;
-			*this = MovableParameters( "../../boidData/WolfParameters.json" );
+			std::cerr << "Read wolf data from file" << std::endl;
+			*this = MovableParameters( "../boidData/WolfParameters.json" );
 			break;
 		default:
 			std::cerr << "Unknown animal" << std::endl;
