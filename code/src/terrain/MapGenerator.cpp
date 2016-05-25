@@ -14,6 +14,7 @@
 
 #include "../../include/terrain/Seed.hpp"
 #include "../../include/terrain/MapGenerator.hpp"
+#include "../../include/terrain/MapUtils.hpp"
 #include "../../include/terrain/BiomeRepartition.hpp"
 
 MapGenerator::MapGenerator(float size) :
@@ -41,9 +42,8 @@ void MapGenerator::compute() {
     /*
      * Note that the seeds are ordered by their distance to the center of 
      * the map.
-     * This will be useful for the "Whittaker Step".
+     * This will be useful for the biome repartition step.
      */
-    std::vector<Seed> seeds;
     voronoiSeedsGenerator.generateSeeds(seeds);
 
     // Voronoi step
@@ -109,6 +109,12 @@ void MapGenerator::compute() {
     // Computing the tree
     heightTree->computeTree(seedsContainer, seeds);
 
+}
+
+
+Biome MapGenerator::getBiome(float x, float y) {
+    Vertex2D position(x, y);
+    return findClosestBiome(position, seedsContainer, seeds);
 }
 
 

@@ -28,6 +28,15 @@ public :
     void compute();
 
     /**
+     * @brief Get the biome associated to a location
+     * 
+     * @param position Desired position
+     *
+     * @return The biome of the position
+     */
+    Biome getBiome(float x, float y);
+
+    /**
      * @brief Destructor
      */
     ~MapGenerator();
@@ -40,7 +49,10 @@ private :
     /// @brief The seed position generator
     VoronoiSeedsGenerator voronoiSeedsGenerator;
 
-    /// @brief The seeds container
+    /// @brief The seeds vector
+    std::vector<Seed> seeds;
+
+    /// @brief The voronoi seeds container
     voro::container seedsContainer;
 
     /// @brief The height tree
