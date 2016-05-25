@@ -89,6 +89,13 @@ void MapGenerator::compute() {
             loopOrder
         );
         iterator->setCell(currentCellPtr);
+        /*
+         * Setting the centroids coordinates into the seed.
+         */
+        double x, y, z;
+        currentCellPtr->centroid(x, y, z);
+        iterator->setCentroidX(x + iterator->getX());
+        iterator->setCentroidY(y + iterator->getY());
     }
 
     // Repartition land/sea

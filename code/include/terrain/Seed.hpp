@@ -67,7 +67,33 @@ public:
      */
     float getY() const;
 
+    /**
+     * @brief Setter on the abscissa of the centroid of the seed
+     *
+     * @param newX The new abscissa
+     */
+    void setCentroidX(float newX);
 
+    /**
+     * @brief Getter on the abscissa of the centroid of the seed
+     *
+     * @return The abscissa
+     */
+    float getCentroidX() const;
+
+    /**
+     * @brief Setter on the ordinna of the centroid of the seed
+     *
+     * @param newY The new ordinna
+     */
+    void setCentroidY(float newY);
+
+    /**
+     * @brief Getter on the ordinna of the centroid of the seed
+     *
+     * @return The ordinna
+     */
+    float getCentroidY() const;
 
     /**
      * @brief Setter on the biome of the seed
@@ -113,13 +139,16 @@ public:
 
 private:
 
-    /// @brief The position of the seed
+    /// @brief The position of the seed.
     Vertex2D position;
 
-    /// @brief The type of the biome of the seed
+    /// @brief The centroid associated with the seed.
+    Vertex2D centroid;
+
+    /// @brief The type of the biome of the seed.
     Biome biomeType;
 
-    /// @brief The cell
+    /// @brief The cell.
     voroNeighborPtr cell;
 };
 
