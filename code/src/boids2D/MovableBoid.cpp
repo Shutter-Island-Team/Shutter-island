@@ -25,9 +25,12 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     BoidType t, MovableParameters* parameters)
 	: Boid(location, t), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
-	m_parameters(parameters), m_stateType(WALK_STATE)
+	m_parameters(parameters), m_stateType(TEST_STATE)
 {
 	switch(m_stateType) {
+		case TEST_STATE:
+			m_currentState = new TestState();
+			break;
 		case WALK_STATE:
 			m_currentState = new WalkState();
 			break;
