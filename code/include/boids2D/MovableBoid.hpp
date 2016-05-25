@@ -92,7 +92,7 @@ class MovableBoid : public Boid
    *            in the acceleration field of the class
    * @param[in] mvB Other movable boid the object is aware of
    */
-  void computeAcceleration(const std::vector<MovableBoidPtr> & mvB);
+  void computeAcceleration(const std::vector<MovableBoidPtr> & mvB, const float & dt);
 
   /**
    * @brief     Update the position and the velocity for the next step in the simulation 

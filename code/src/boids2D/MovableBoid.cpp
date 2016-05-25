@@ -66,7 +66,7 @@ void MovableBoid::resetAcceleration()
 	m_acceleration = glm::vec3(0, 0, 0);
 }
 
-void MovableBoid::computeAcceleration (const std::vector<MovableBoidPtr> & mvB)
+void MovableBoid::computeAcceleration (const std::vector<MovableBoidPtr> & mvB, const float & dt)
 {
 	switch (m_stateType) {
 		case WALK_STATE:
@@ -106,9 +106,10 @@ void MovableBoid::computeAcceleration (const std::vector<MovableBoidPtr> & mvB)
 			std::cerr << "Unknown state" << std::endl;
 			break;
 	}
-	m_acceleration = m_currentState->computeAcceleration(*this, mvB);
+	m_acceleration = m_currentState->computeAcceleration(*this, mvB, dt);
 }
 
+// x(t + dt) = x(t) + v(t+dt) * dt
 void MovableBoid::computeNextStep(const float & dt)
 {
     m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters().getMaxForce()), getParameters().getMaxSpeed());
