@@ -37,7 +37,7 @@ MovableParameters::MovableParameters( const std::string & filename )
 {
 	rapidjson::Document d;
 
-	std::ifstream t(filename); // TODO : not hard coded
+	std::ifstream t(filename);
 	std::string str;
 
 	t.seekg(0, std::ios::end);   
@@ -47,8 +47,7 @@ MovableParameters::MovableParameters( const std::string & filename )
 	str.assign((std::istreambuf_iterator<char>(t)),
 	            std::istreambuf_iterator<char>());	
 
-	const char * cstr = str.c_str();
-	d.Parse(cstr);
+	d.Parse(str.c_str());
 
 	float maxSpeed = d["maxSpeed"].GetDouble();
 	float maxForce = d["maxForce"].GetDouble();
