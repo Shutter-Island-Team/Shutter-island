@@ -568,24 +568,8 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  =	../src/boids2D/Boid.cpp \
-							../include/boids2D/Boid.hpp \
-							../src/boids2D/MovableBoid.cpp \
-							../include/boids2D/MovableBoid.hpp \
-							../include/boids2D/BoidType.hpp \
-							../include/boids2D/StateType.hpp \
-							../include/boids2D/RootedBoid.hpp \
-							../src/boids2D/RootedBoid.cpp \
-							../include/boids2D/MovableState.hpp \
-							../src/boids2D/MovableState.cpp \
-							../include/boids2D/Carrot.hpp \
-							../src/boids2D/Carrot.cpp \
-							../include/boids2D/Rabbit.hpp \
-							../src/boids2D/Rabbit.cpp \
-							../include/boids2D/Wolf.hpp \
-							../src/boids2D/Wolf.cpp \
-							../include/boids2D/Tree.hpp \
-							../src/boids2D/Tree.cpp
+INPUT                  =	../src/boids2D/ \
+							../include/boids2D/
 
 
 # This tag can be used to specify the character encoding of the source files
