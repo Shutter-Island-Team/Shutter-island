@@ -58,6 +58,6 @@ float computeBlobScale(Biome biome, Biome biomeNeighbour1, Biome biomeNeighbour2
 
 
 
-bool checkSubdibision(int currentDepth) {
+bool checkSubdivision(int currentDepth) {
     return (currentDepth <= BIOME_DEPTH_MAX);
 }

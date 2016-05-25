@@ -71,6 +71,6 @@ float computeBlobScale(Biome biome, Biome biomeNeighbour1, Biome biomeNeighbour2
  * @return Whether there must be a subdivision or not
  */
 
-bool checkSubdibision(int currentDepth);
+bool checkSubdivision(int currentDepth);
 
 #endif

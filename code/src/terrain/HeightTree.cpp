@@ -69,10 +69,10 @@ HeightTree* HeightTree::locatePosition(Vertex2D & pos) {
 }
 
 // Try to find if the point is already in the tree
-bool HeightTree::findVertexHeight(Vertex2D & pos, float* height) {
+bool HeightTree::findVertexHeight(Vertex2D & pos, int depth, float* height) {
 
-    // Check the node
-    if (!(this->getChild(TopLeft))) { // Then all childs are NULL : it's a leaf
+    if (depth == 1) {
+	// Check the node
 	HeightNode content = this->getContent();
 	HeightBlob blob = content.getBlob(TopLeft);
 	if (distanceV2D(pos, blob.getPosition()) < DETECTION_THRESHOLD) {
@@ -97,10 +97,13 @@ bool HeightTree::findVertexHeight(Vertex2D & pos, float* height) {
 	    *height =  blob.getHeight();
 	    return true;
 	}
+	return false;	    
     } else {
 	// Else try to search deeper
 	HeightTree* child = this->locatePosition(pos);
-	return child->findVertexHeight(pos, height);
+	if (!child)
+	    return false;
+	return child->findVertexHeight(pos, depth-1, height);
     }
 }
 
@@ -114,6 +117,9 @@ void HeightTree::computeTree(voro::container & container, std::vector<Seed> seed
 void HeightTree::computeTreeInternal(voro::container & container, std::vector<Seed> seeds, 
 				     int depth, HeightTree* root) {
     
+    // Check the current level must be build or not
+    if(!checkSubdivision(depth)) return;
+
     // Recuperating all the needed informations
     HeightNode content = this->getContent();
 
@@ -126,9 +132,6 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     Biome trBiome = findClosestBiome(trBlob.getPosition(), container, seeds);
     Biome blBiome = findClosestBiome(blBlob.getPosition(), container, seeds);
     Biome brBiome = findClosestBiome(brBlob.getPosition(), container, seeds);
-
-    // Check the current level must be build or not
-    if(!checkSubdibision(depth)) return;
 
 
     // Building now the 5 new blobs required to cut the square
@@ -151,7 +154,7 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     Vertex2D northPos  = Vertex2D(centerX, tlY);
     Vertex2D southPos  = Vertex2D(centerX, brY);
     Vertex2D eastPos   = Vertex2D(brX,     centerY);
-    Vertex2D westPos   = Vertex2D(brY,     centerY);
+    Vertex2D westPos   = Vertex2D(tlX,     centerY);
 
     // Their biome
     Biome centerBiome = findClosestBiome(centerPos, container, seeds);
@@ -166,12 +169,12 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     // Thus we only search them
     float centerHeight = biomeHeight(centerBiome);
     float northHeight;
-    if (!(root->findVertexHeight(northPos, &northHeight)))
+    if (!(root->findVertexHeight(northPos, depth+1, &northHeight)))
 	northHeight = biomeHeight(northBiome);
     float southHeight = biomeHeight(southBiome);
     float eastHeight  = biomeHeight(eastBiome);
     float westHeight;
-    if (!(root->findVertexHeight(westPos, &westHeight)))
+    if (!(root->findVertexHeight(westPos, depth+1, &westHeight)))
 	westHeight = biomeHeight(westBiome);
     
     // Computing the scale

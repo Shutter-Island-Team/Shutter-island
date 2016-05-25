@@ -75,11 +75,12 @@ private :
      * This function is here to ensure the continuity between squares of the map
      *
      * @param pos    The vertex we'd like to check
+     * @parap depth  The depth of the vertex we'd like to check
      * @param height The height of the vertex if found
      *
      * @return if the vertex has been found
      */
-    bool findVertexHeight(Vertex2D & pos, float* height);
+    bool findVertexHeight(Vertex2D & pos, int depth, float* height);
 
     /**
      * @brief The internal function to create the height tree
