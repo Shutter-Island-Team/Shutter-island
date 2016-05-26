@@ -99,19 +99,19 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
     for (int i = 0; i < 10; ++i) {
-        boidsManager->addBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
     for (int i = 0; i < 10; ++i) {
-        boidsManager->addBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
     for (int i = 0; i < 10; ++i) {
-        boidsManager->addBoid(CARROT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addRootedBoid(CARROT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
     for (int i = 0; i < 10; ++i) {
-        boidsManager->addBoid(TREE, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addRootedBoid(TREE, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
@@ -167,8 +167,8 @@ void initialize_boid_scene_test_separate( Viewer& viewer )
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    boidsManager->addBoid(RABBIT, glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0));
-    boidsManager->addBoid(RABBIT, glm::vec3(0, -1, 2), glm::vec3(0, -1, 0));
+    boidsManager->addMovableBoid(RABBIT, glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0));
+    boidsManager->addMovableBoid(RABBIT, glm::vec3(0, -1, 2), glm::vec3(0, -1, 0));
 
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
 
@@ -224,8 +224,8 @@ void initialize_boid_scene_test_canSee( Viewer& viewer )
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    boidsManager->addBoid(RABBIT, glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0));
-    boidsManager->addBoid(RABBIT, glm::vec3(0, -1, 2), glm::vec3(0, -1, 0));
+    boidsManager->addMovableBoid(RABBIT, glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0));
+    boidsManager->addMovableBoid(RABBIT, glm::vec3(0, -1, 2), glm::vec3(0, -1, 0));
 
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
 
@@ -281,7 +281,7 @@ void initialize_boid_scene_test_machine_state( Viewer& viewer )
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
     for (int i = 0; i < 100; ++i) {
-        boidsManager->addBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
@@ -345,7 +345,7 @@ void initialize_test_sight( Viewer& viewer )
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
     for (int i = 0; i < 2; ++i) {
-        boidsManager->addBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
@@ -402,7 +402,7 @@ void initialize_boid_scene_debug( Viewer& viewer)
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    boidsManager->addBoid(RABBIT, glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0));
+    boidsManager->addMovableBoid(RABBIT, glm::vec3(-5, -5, 2), glm::vec3(1, 0, 0));
 
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
 

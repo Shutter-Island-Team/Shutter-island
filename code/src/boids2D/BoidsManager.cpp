@@ -5,8 +5,7 @@ BoidsManager::BoidsManager(void)
 	
 }
 
-// Warning : the shader has to be a texture shader
-void BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity) 
+MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity) 
 {
 	MovableBoidPtr movableBoid;
 	MovableParameters *parameters = new MovableParameters(boidType);
@@ -26,15 +25,11 @@ void BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 location, glm::ve
     
     movableBoid->associateBoid(movableBoid);
     m_movableBoids.push_back(movableBoid);
-    /*
-    BoidRenderablePtr boidRenderable = std::make_shared<BoidRenderable>(shader, movableBoid);
-    boidRenderable->setMaterial(Material::Pearl());
-    HierarchicalRenderable::addChild( systemRenderable, boidRenderable );
-    */
+    
+    return movableBoid;
 }
 
-// Warning : the shader has to be a texture shader
-void BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
+RootedBoidPtr BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 {
 	RootedBoidPtr rootedBoid;
 	switch(boidType)
@@ -51,39 +46,17 @@ void BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 	}
 
 	m_rootedBoids.push_back(rootedBoid);
-	/*
-    BoidRenderablePtr boidRenderable = std::make_shared<BoidRenderable>(shader, rootedBoid);
-    boidRenderable->setMaterial(Material::Pearl());
-    HierarchicalRenderable::addChild( systemRenderable, boidRenderable );
-	*/
-}
-
-// Warning : the shader has to be a texture shader
-void BoidsManager::addBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity)
-{
-	switch(boidType)
-	{
-		case WOLF:
-		case RABBIT:
-			addMovableBoid(boidType, location, velocity);
-			break;
-		case CARROT:
-		case TREE:
-			addRootedBoid(boidType, location);
-			break;
-		default:
-			throw std::invalid_argument("valid boidType required");
-			break;
-	}
+	
+	return rootedBoid;
 }
 
 
-std::vector<MovableBoidPtr>& BoidsManager::getMovableBoids() 
+std::vector<MovableBoidPtr>& BoidsManager::getMovableBoids()
 {
 	return m_movableBoids;
 }
 
-std::vector<RootedBoidPtr>& BoidsManager::getRootedBoids() 
+std::vector<RootedBoidPtr>& BoidsManager::getRootedBoids()
 {
 	return m_rootedBoids;
 }

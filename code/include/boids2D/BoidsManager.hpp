@@ -20,7 +20,9 @@ class BoidsManager
 
 	std::vector<RootedBoidPtr>& getRootedBoids();
 
-	void addBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity = glm::vec3(0,0,0));
+	RootedBoidPtr addRootedBoid(BoidType boidType, glm::vec3 location);
+
+ 	MovableBoidPtr addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity = glm::vec3(0,0,0));
 
 	bool isNight() const;
 
@@ -30,10 +32,6 @@ class BoidsManager
  	std::vector<MovableBoidPtr> m_movableBoids;
  	std::vector<RootedBoidPtr> m_rootedBoids;
  	bool isNightTime;
-
- 	void addRootedBoid(BoidType boidType, glm::vec3 location);
-
- 	void addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity = glm::vec3(0,0,0));
 };
 
 typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;
