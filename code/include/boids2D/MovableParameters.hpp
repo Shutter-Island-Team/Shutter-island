@@ -27,7 +27,7 @@ public:
    */
   MovableParameters(float maxSpeed, float maxForce, float angleView,
 		float distSeparate, float distCohesion, float distViewMax,
-    float distToLeader);
+    float distToLeader, float distSeeAhead);
 
   /**
    * @brief     Constructor for MovableParameters
@@ -44,7 +44,7 @@ public:
    */
   MovableParameters(float maxSpeed, float maxForce, float angleView,
 		float distSeparate, float distCohesion, float distViewMax,
-    float distToLeader, float distStartSlowingDown, float rCircleWander,
+    float distToLeader, float distSeeAhead, float distStartSlowingDown, float rCircleWander,
     float distToCircle);
 	
   /**
@@ -203,6 +203,9 @@ public:
   float getDistViewMax() const;
   float getDistToLeader() const;
 
+  float getDistSeeAhead() const;
+
+
 protected:
   float m_stamina; ///< Value in [0, 100] to describe the stamina of a boid
   float m_hunger; ///< Value in [0, 100] to describe the hunger of a boid
@@ -231,6 +234,8 @@ protected:
   float m_lowHungerValue;
 
   float m_distToLeader;
+
+  float m_distSeeAhead; ///< Distance to see ahead the obstacle
 };
 
 #endif

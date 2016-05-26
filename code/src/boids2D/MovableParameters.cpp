@@ -8,30 +8,31 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 
 MovableParameters::MovableParameters()
-	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f, 1.0f)
+	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f, 1.0f, 1.5f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 		float angleView, float distSeparate, float distCohesion,
-		float distViewMax, float distToLeader) : 
+		float distViewMax, float distToLeader, float distSeeAhead) : 
 	MovableParameters(maxSpeed, maxForce, angleView, distSeparate,
 						distCohesion, distViewMax, distToLeader,
-						5.0f, 9.0f, 3.0f)
+						distSeeAhead, 5.0f, 9.0f, 3.0f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 	float angleView, float distSeparate, float distCohesion, float distViewMax,
-	float distToLeader, float distStartSlowingDown,float rCircleWander, float distToCircle) :
+	float distToLeader, float distSeeAhead, float distStartSlowingDown,float rCircleWander, float distToCircle) :
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce), m_angleView(angleView),
 	m_distSeparate(distSeparate), m_distCohesion(distCohesion),
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
 	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
 	m_distToCircle(distToCircle), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
-	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f), m_lowHungerValue(10.0f)
+	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f), m_lowHungerValue(10.0f),
+	m_distSeeAhead(distSeeAhead)
 {
 	m_stamina = random(1, 99);
 }
@@ -56,7 +57,7 @@ MovableParameters::MovableParameters( const std::string & filename )
 		d["maxForce"].GetDouble(), d["angleView"].GetDouble(),
 		d["distSeparate"].GetDouble(), d["distCohesion"].GetDouble(),
 		d["distViewMax"].GetDouble(), d["distToLeader"].GetDouble(),
-		d["distStartSlowingDown"].GetDouble(),
+		d["distSeeAhead"].GetDouble(), d["distStartSlowingDown"].GetDouble(),
 		d["rCircleWander"].GetDouble(), d["distToCircle"].GetDouble());
 }
 
@@ -261,4 +262,9 @@ bool MovableParameters::isNotInDanger() const
 float MovableParameters::getDistToLeader() const
 {
 	return m_distToLeader;
+}
+
+float MovableParameters::getDistSeeAhead() const
+{
+	return m_distSeeAhead;
 }
