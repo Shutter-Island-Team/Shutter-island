@@ -39,5 +39,5 @@ float biomeHeight(Biome biome) {
 
 
 bool checkSubdivision(int currentDepth) {
-    return (currentDepth <= BIOME_DEPTH_MAX);
+    return (currentDepth < BIOME_DEPTH_MAX);
 }
