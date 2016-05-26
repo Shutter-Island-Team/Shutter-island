@@ -26,8 +26,15 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     BoidType t, MovableParameters* parameters)
 	: Boid(location, t), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
-	m_parameters(parameters), m_stateType(WALK_STATE)
+	m_parameters(parameters), m_prey((MovableBoidPtr) nullptr),
+	m_hunter((MovableBoidPtr) nullptr)
 {
+	#ifdef DEBUG 
+    	m_stateType = TEST_STATE;
+    #else
+    	m_stateType = WALK_STATE;
+    #endif
+
 	switch(m_stateType) {
 		case TEST_STATE:
 			m_currentState = new TestState();
@@ -75,6 +82,8 @@ void MovableBoid::resetAcceleration()
 void MovableBoid::computeAcceleration (const std::vector<MovableBoidPtr> & mvB, const float & dt)
 {
 	switch (m_stateType) {
+		case TEST_STATE:
+			break;
 		case WALK_STATE:
 			walkStateHandler();
 			break;
@@ -188,6 +197,8 @@ void MovableBoid::switchToState(const StateType & stateType)
 			break;
 		case LOST_STATE:
 			m_currentState = new LostState();
+			break;
+		case TEST_STATE:
 			break;
 		default:
 			std::cerr << "Unknown state : " << stateType << std::endl;
@@ -342,12 +353,32 @@ bool MovableBoid::isNight() const
 
 bool MovableBoid::hasLeader() const
 {
-	return m_parameters->getLeader() == (MovableBoidPtr) nullptr;
+	return m_parameters->getLeader() != (MovableBoidPtr) nullptr;
 }
 
 bool MovableBoid::isInGroup() const
 {
 	return !(m_parameters->getLeader() == nullptr);
+}
+
+void MovableBoid::setPrey(const MovableBoidPtr & boid)
+{
+	m_prey = boid;
+}
+
+MovableBoidPtr MovableBoid::getPrey() const
+{
+	return m_prey;
+}
+
+void MovableBoid::setHunter(const MovableBoidPtr & boid)
+{
+	m_hunter = boid;
+}
+
+MovableBoidPtr MovableBoid::getHunter() const
+{
+	return m_hunter;
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2)

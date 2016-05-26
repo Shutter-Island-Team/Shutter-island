@@ -45,5 +45,6 @@ void getUnitSphere(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& no
 void getTorus(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, const float& a, const float& c, const unsigned int& strips, const unsigned int& slices);
 void getUnitCone(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, const unsigned int &strips, const unsigned int& slices);
 glm::vec3 limitVec3(const glm::vec3 vec, const float val);
+void displayVec3(std::ostream & os, glm::vec3 vec);
 
 #endif //UTILS

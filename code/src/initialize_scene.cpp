@@ -409,3 +409,127 @@ void initialize_boid_scene_debug( Viewer& viewer)
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
 }
+
+void initialize_boid_scene_follow_leader( Viewer& viewer )
+{
+    //Position the camera
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 0, 50 ), glm::vec3(0, 0, 0), glm::vec3( 0, 1, 0 ) ) );
+
+    //Default shader
+    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/flatVertex.vert", 
+        "../shaders/flatFragment.frag"});
+    viewer.addShaderProgram( flatShader );
+
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
+    ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/textureVertex.vert",
+        "../shaders/textureFragment.frag"});
+    viewer.addShaderProgram( texShader );
+
+    std::string filename = "./../textures/grass_texture.png";
+    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+    texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(50.0,50.0,50.0)), glm::vec3(0.0, 0.0, -0.1)));
+    texPlane->setMaterial(Material::Pearl());
+    viewer.addRenderable(texPlane);
+
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>();
+
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
+    SolverBoidPtr solver = std::make_shared<SolverBoid>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+    system->setBoidsManager(boidsManager);
+
+    //Create a renderable associated to the dynamic system
+    //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
+    //It is also responsible for some of the key/mouse events
+    DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
+
+    MovableBoidPtr leader = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+    leader->getParameters().setNewLeader(leader);
+
+    MovableBoidPtr r;
+    for (int i = 0; i < 6; ++i) {
+        r = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        r->getParameters().setNewLeader(leader);
+    }
+
+    display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
+
+    viewer.addRenderable(systemRenderable);
+    viewer.startAnimation();
+}
+
+void initialize_boid_scene_hunt( Viewer& viewer )
+{
+    //Position the camera
+    viewer.getCamera().setViewMatrix( glm::lookAt( glm::vec3(0, 0, 50 ), glm::vec3(0, 0, 0), glm::vec3( 0, 1, 0 ) ) );
+
+    //Default shader
+    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/flatVertex.vert", 
+        "../shaders/flatFragment.frag"});
+    viewer.addShaderProgram( flatShader );
+
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
+    ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/textureVertex.vert",
+        "../shaders/textureFragment.frag"});
+    viewer.addShaderProgram( texShader );
+
+    std::string filename = "./../textures/grass_texture.png";
+    TexturedPlaneRenderablePtr texPlane = std::make_shared<TexturedPlaneRenderable>(texShader, filename);
+    texPlane->setParentTransform(glm::translate(glm::scale(glm::mat4(1.0), glm::vec3(50.0,50.0,50.0)), glm::vec3(0.0, 0.0, -0.1)));
+    texPlane->setMaterial(Material::Pearl());
+    viewer.addRenderable(texPlane);
+
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>();
+
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
+    SolverBoidPtr solver = std::make_shared<SolverBoid>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+    system->setBoidsManager(boidsManager);
+
+    //Create a renderable associated to the dynamic system
+    //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
+    //It is also responsible for some of the key/mouse events
+    DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
+
+    MovableBoidPtr wolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
+    MovableBoidPtr rabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+    MovableBoidPtr rabbit2 = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+    displayVec3(std::cerr, wolf->getLocation());
+    wolf->setPrey(rabbit);
+    displayVec3(std::cerr, wolf->getPrey()->getLocation());
+    rabbit->setHunter(wolf);
+    rabbit2->setHunter(wolf);
+
+    display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
+
+    viewer.addRenderable(systemRenderable);
+    viewer.startAnimation();
+}

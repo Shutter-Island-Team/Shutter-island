@@ -143,6 +143,17 @@ class MovableBoid : public Boid
    */
   bool hasLeader() const;
 
+  /**
+   *
+   */
+  void setPrey(const MovableBoidPtr & boid);
+
+  MovableBoidPtr getPrey() const;
+
+  void setHunter(const MovableBoidPtr & boid);
+
+  MovableBoidPtr getHunter() const;
+
  private:
   glm::vec3 m_velocity; ///< Velocity of the boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
@@ -150,6 +161,9 @@ class MovableBoid : public Boid
 
   MovableState* m_currentState; ///< State of the boid. @seeMovableState
   MovableParameters* m_parameters; ///< Parameter of the boid
+
+  MovableBoidPtr m_prey;
+  MovableBoidPtr m_hunter;
 
   /**
    * @brief     Make all the change when a boid get to the new state stateType

@@ -185,6 +185,12 @@ glm::vec3 MovableState::pursuit (const MovableBoid & hunter, const MovableBoid &
 
 glm::vec3 MovableState::evade(const MovableBoid & prey, const MovableBoid & hunter, const float & dt) const
 {
+	if (&prey == nullptr) {
+		throw std::invalid_argument("Prey is null in evade");
+	}
+	if (&hunter == nullptr) {
+		throw std::invalid_argument("Hunter is null in evade");
+	}
 	const float val = glm::distance(prey.getLocation(), hunter.getLocation())
 									/ (hunter.getParameters().getMaxSpeed());
 	return flee(prey, positionForecast(hunter, dt, val));
@@ -198,9 +204,12 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
 	}
 	glm::vec3 steer(0,0,0);
 	MovableBoidPtr leader = b.getParameters().getLeader();
+	if (leader->getVelocity() == glm::vec3(0,0,0)) { // Trick to avoid error with normalize when leader->getVelocity() == (0,0,0)
+		return glm::vec3(0, 0, 0); // Don't compute any force, it is fine
+	}
 	glm::vec3 positionBehindLeader = leader->getLocation() + glm::normalize(-1.0f * leader->getVelocity()) * b.getParameters().getDistToLeader();
 	steer = arrive(b, positionBehindLeader);
-	steer += separate(b, mvB);
+	steer += 3.0f * separate(b, mvB); // Coefficient can be modify
 	if (leader->canSee(b, 3.0f * leader->getParameters().getDistSeparate())) { // Can be modify
 		steer += evade(b, *leader, dt);
 	}
@@ -222,8 +231,11 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
  */
 glm::vec3 TestState::computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const
 {
-	glm::vec3 newForces = 1.0f * wander(b) + 35.0f * separate(b, mvB) + 64.0f * stayWithinWalls(b);
-	return newForces;
+	if(b.getBoidType() == WOLF) {
+		return pursuit(b, *(b.getPrey()), dt) + 10.0f * stayWithinWalls(b);
+	} else {
+		return evade(b, *(b.getHunter()), dt) + 0.5f * wander(b) + 10.0f * stayWithinWalls(b);
+	}
 }
 
 glm::vec3 WalkState::computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const
