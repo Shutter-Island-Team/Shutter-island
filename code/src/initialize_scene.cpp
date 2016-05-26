@@ -34,13 +34,15 @@ void display_boid( Viewer& viewer, BoidsManagerPtr boidsManager,
     {
         BoidRenderablePtr br = std::make_shared<BoidRenderable>(texShader, m);
         br->setMaterial(Material::Pearl());
+        
+        #ifdef DEBUG
+            SightRenderablePtr sight = std::make_shared<SightRenderable>(flatShader, m);
+            viewer.addRenderable(sight);
 
-        SightRenderablePtr sight = std::make_shared<SightRenderable>(flatShader, m);
-        viewer.addRenderable(sight);
-
-        StateRenderablePtr state = std::make_shared<StateRenderable>(flatShader, m);
-        viewer.addRenderable(state);
-
+            StateRenderablePtr state = std::make_shared<StateRenderable>(flatShader, m);
+            viewer.addRenderable(state);
+        #endif
+        
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 

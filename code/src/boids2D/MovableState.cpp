@@ -240,46 +240,35 @@ glm::vec3 TestState::computeNewForces(const MovableBoid& b, const std::vector<Mo
 
 glm::vec3 WalkState::computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const
 {
-	// TODO : compute new forces (depend on the species ex : wolf follow leader and leader wonder)
-	// use BoidType to determine species
+	// TODO : compute new forces
 	// stamina <- sd(stamina)
 	// hunger <- hd(hunger)
 	// thirst <- td(thirst)
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	/*
-	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) + 4.0f * align(b, mvB) + 16.0f * stayWithinWalls(b);
-	switch(b.getBoidType()) 
-	{
-		case RABBIT:
-		break;
-		case WOLF:
-			if(b.canSee(*b.getParameters().getLeader(), b.getParameters().getDistViewMax()))
-			{
-				// follow leader
-				newForces += 8.0f * arrive(b, b.getParameters().getLeader()->getLocation());
-			} 
-			else
-			{
-				// wander
-				// nothing to do
-			}
-			
-		break;
-	}
-	*/
-/*
-	std::cout << "Leader : (" << b.getParameters().getLeader()->getLocation().x 
-		<< ", " << b.getParameters().getLeader()->getLocation().y
-		<< ", " << b.getParameters().getLeader()->getLocation().z << ")" << std::endl;
-*/
 
-	b.getParameters().staminaDecrease(1.01f);
-	//b.getParameters().hungerDecrease();
-	glm::vec3 newForces = 1.0f * wander(b) + 4.0f * separate(b, mvB) + 4.0f * cohesion(b, mvB) 
-		+ 4.0f * align(b, mvB) + 160.0f * stayWithinWalls(b);
-	newForces.z = 0.0f;
+	b.getParameters().staminaDecrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+	b.getParameters().affinityIncrease();
+
+	// TODO danger test
+	// if cansee and hasHunter dangerIncrease else dangerDecrease? endif 
+
+	glm::vec3 newForces(0,0,0);
+	if(b.hasLeader() && b.canSee(*b.getParameters().getLeader(), b.getParameters().getDistViewMax())) 
+	{
+		newForces = 40.0f * followLeader(b, mvB, dt);
+	}
+	else
+	{
+		newForces = 1.0f * wander(b) + 4.0f * cohesion(b, mvB) +
+			4.0f * align(b, mvB) + 35.0f * separate(b, mvB);
+	}
+	newForces += 60.0f * stayWithinWalls(b);
+	
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
 	return newForces;
 }
 
@@ -292,7 +281,20 @@ glm::vec3 StayState::computeNewForces(const MovableBoid& b, const std::vector<Mo
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	b.getParameters().staminaIncrease(0.5f);
+	b.getParameters().staminaIncrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+
+	// if alone 
+	b.getParameters().affinityDecrease();
+	// else
+	b.getParameters().affinityIncrease();
+	//endif
+
+	// TODO danger test
+	// if cansee and hasHunter dangerIncrease else dangerDecrease? endif 
+
+
 	return arrive(b, b.getLocation());
 }
 
