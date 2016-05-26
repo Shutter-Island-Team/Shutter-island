@@ -15,6 +15,6 @@
  * @enum  BoidType
  * @brief Enumeration of the different type of boids
  */
-enum BoidType { RABBIT, WOLF, RANDOM, TREE, CARROT };
+enum BoidType { RABBIT, WOLF, RANDOM, TREE, CARROT, UNKNOWN };
 
 #endif

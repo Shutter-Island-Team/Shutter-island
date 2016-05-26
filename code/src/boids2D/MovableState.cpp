@@ -242,6 +242,44 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
 	return steer;	
 }
 
+void MovableState::detectDanger(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
+{
+	BoidType predator = b.getPredator();
+	bool predatorFound = false;
+
+	std::vector<MovableBoidPtr>::const_iterator it = mvB.begin();
+	while(!predatorFound && it != mvB.end()) {
+		if((*it)->getBoidType() == predator && b.canSee(**it, b.getParameters().getDistViewMax())) {
+			predatorFound = true;
+		}
+		++it;
+	}
+
+	if(predatorFound) {
+		b.getParameters().dangerIncrease();
+	} else {
+		b.getParameters().dangerDecrease();
+	}
+}
+
+bool MovableState::alone(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
+{
+	bool friendFound = false;
+
+	std::vector<MovableBoidPtr>::const_iterator it = mvB.begin();
+	while(!friendFound && it != mvB.end()) {
+		if(b != **it && (*it)->getBoidType() == b.getBoidType() && b.canSee(**it, b.getParameters().getDistViewMax())) {
+			friendFound = true;
+		}
+		++it;
+	}
+
+	if(friendFound) {
+		b.getParameters().affinityIncrease();
+	} else {
+		b.getParameters().affinityDecrease();
+	}
+}
 
 /* ==================================== Boid State Value ====================================
  * Each States update stamina, hunger, thrist, danger and affinity
@@ -263,15 +301,17 @@ glm::vec3 TestState::computeNewForces(const MovableBoid& b, const BoidsManager &
 		return evade(b, *(b.getHunter()), dt) + 0.5f * wander(b) + 10.0f * stayWithinWalls(b);
 	}
 	*/
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
 	b.getParameters().thirstDecrease();
-	b.getParameters().affinityIncrease();
 
-	// TODO danger test
-	// if cansee and hasHunter dangerIncrease else dangerDecrease? endif
+	// Detect danger and update danger parameter 
+	detectDanger(b, mvB);
 
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	// Detect if alone and update affinity
+	alone(b, mvB);
 
 	glm::vec3 newForces = wander(b) + 60.0f * stayWithinWalls(b) + 15.0f * collisionAvoid(b, boidsManager.getRootedBoids());
 	return newForces;
@@ -279,33 +319,32 @@ glm::vec3 TestState::computeNewForces(const MovableBoid& b, const BoidsManager &
 
 glm::vec3 WalkState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	// TODO : compute new forces
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
 	// stamina <- sd(stamina)
 	// hunger <- hd(hunger)
 	// thirst <- td(thirst)
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
 	b.getParameters().thirstDecrease();
-	b.getParameters().affinityIncrease();
 
-	// TODO danger test
-	// if cansee and hasHunter dangerIncrease else dangerDecrease? endif 
+	// Detect danger and update danger parameter 
+	detectDanger(b, mvB);
 
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	// Detect if alone and update affinity
+	alone(b, mvB);
 
 	glm::vec3 newForces(0,0,0);
-	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) 
-	{
+	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
 		newForces = 40.0f * followLeader(b, mvB, dt);
 	}
-	else
-	{
-		newForces = 1.0f * wander(b) + 4.0f * cohesion(b, mvB) +
-			4.0f * align(b, mvB) + 35.0f * separate(b, mvB);
+	else if (b.isLeader()) {
+		newForces = wander(b);
+	} else { // Can't see the leader
+		newForces = wander(b) + 20.0f * separate(b, mvB) + 1.0f * cohesion(b, mvB) + 3.0f * align(b, mvB); 
 	}
 	newForces += 60.0f * stayWithinWalls(b);
 	
@@ -315,41 +354,48 @@ glm::vec3 WalkState::computeNewForces(const MovableBoid& b, const BoidsManager &
 
 glm::vec3 StayState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	// TODO : velocity <- (0,0,0)
 	// stamina <- si(stamina)
 	// hunger <- hd(hunger)
 	// thirst <- td(thirst)
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
+
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
 	b.getParameters().thirstDecrease();
 
-	// if alone 
-	b.getParameters().affinityDecrease();
-	// else
-	b.getParameters().affinityIncrease();
-	//endif
+	// Detect danger and update danger parameter 
+	detectDanger(b, mvB);
 
-	// TODO danger test
-	// if cansee and hasHunter dangerIncrease else dangerDecrease? endif 
-
+	// Detect if alone and update affinity
+	alone(b, mvB);
 
 	return arrive(b, b.getLocation());
 }
 
 glm::vec3 SleepState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	// TODO : velocity <- (0,0,0)
-	// requirement : danger <= lowDanger
-	// stamina <- max(si(stamina) * cste, 100)
+	// /!\ requirement : danger <= lowDanger
+	// stamina <- si(stamina)
 	// hunger <- hd(hunger)
 	// thirst <- td(thirst)
-	// danger <- danger
+	// danger did'nt change the boid is not aware of his surronding
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	return glm::vec3(0,0,0);
+
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
+	b.getParameters().staminaIncrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+
+	// Detect if alone and update affinity
+	alone(b, mvB);
+
+	return arrive(b, b.getLocation());
 }
 
 glm::vec3 FleeState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
@@ -422,14 +468,26 @@ glm::vec3 FindFoodState::computeNewForces(const MovableBoid& b, const BoidsManag
 
 glm::vec3 EatState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	// TODO : velocity <- (0,0,0)
 	// stamina <- si(stamina)
 	// hunger <- hi(hunger)
 	// thirst <- td(thirst)
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	return glm::vec3(0,0,0);
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
+	b.getParameters().staminaIncrease();
+	b.getParameters().hungerIncrease();
+	b.getParameters().thirstDecrease();
+
+	// Detect danger and update danger parameter 
+	detectDanger(b, mvB);
+
+	// Detect if alone and update affinity
+	alone(b, mvB);
+
+	///< TODO maybe it better with the target ?
+	return arrive(b, b.getLocation());
 }
 
 glm::vec3 FindWaterState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
@@ -453,7 +511,20 @@ glm::vec3 DrinkState::computeNewForces(const MovableBoid& b, const BoidsManager 
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	return glm::vec3(0,0,0);
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	
+	b.getParameters().staminaIncrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstIncrease();
+
+	// Detect danger and update danger parameter 
+	detectDanger(b, mvB);
+
+	// Detect if alone and update affinity
+	alone(b, mvB);
+
+	///< TODO maybe it better with the target ?
+	return arrive(b, b.getLocation());
 }
 
 glm::vec3 MateState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const

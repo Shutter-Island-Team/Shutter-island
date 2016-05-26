@@ -103,27 +103,26 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     leaderRabbit->setNewLeader(leaderRabbit);
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 6; ++i) {
         MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
         rabbitFellow->setNewLeader(leaderRabbit);
     }
 
     MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
     leaderWolf->setNewLeader(leaderWolf);
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 4; ++i) {
         MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
         wolfFellow->setNewLeader(leaderWolf);
     }
 
-    /*
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 6; ++i) {
         boidsManager->addRootedBoid(CARROT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 4; ++i) {
         boidsManager->addRootedBoid(TREE, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
-    */
+
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
 
     viewer.addRenderable(systemRenderable);

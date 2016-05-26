@@ -149,6 +149,10 @@ class MovableState
    */
   glm::vec3 positionForecast(const MovableBoid & b, const float & dt, const float & cst) const;
 
+  void detectDanger(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+
+  bool alone(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+
 };
 
 /**

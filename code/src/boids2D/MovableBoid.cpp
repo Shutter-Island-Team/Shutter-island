@@ -47,6 +47,18 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 			m_currentState = new WalkState();
 			break;
 	}
+
+	switch(t) {
+		case RABBIT:
+			m_predator = WOLF;
+			break;
+		case WOLF:
+			m_predator = UNKNOWN;
+			break;
+		default:
+			m_predator = UNKNOWN;
+			break;
+	}
 }
 
 glm::vec3 MovableBoid::getVelocity() const
@@ -392,6 +404,16 @@ void MovableBoid::setHunter(const MovableBoidPtr & boid)
 MovableBoidPtr MovableBoid::getHunter() const
 {
 	return m_hunter;
+}
+
+BoidType MovableBoid::getPredator() const
+{
+	return m_predator;
+}
+  
+void MovableBoid::setPredator(const BoidType & predator)
+{
+	m_predator = predator;
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2)
