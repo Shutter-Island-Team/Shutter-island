@@ -4,7 +4,6 @@
 #include "../../include/HierarchicalRenderable.hpp"
 #include "DynamicSystemBoid.hpp"
 
-
 /**@brief A little hack to incorporate the dynamic system.
  *
  * This class is mostly a hack we use to deal with the dynamic system components

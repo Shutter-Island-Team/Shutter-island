@@ -6,18 +6,21 @@
 #include "MovableBoid.hpp"
 #include "RootedBoid.hpp"
 #include "BoidType.hpp"
+#include "Wolf.hpp"
+#include "Rabbit.hpp"
+#include "Carrot.hpp"
+#include "Tree.hpp"
 
 class BoidsManager
 {
  public:
 	BoidsManager(void);
-
-	void addMovableBoid(MovableBoidPtr b);
-	void addRootedBoid(RootedBoidPtr r);
-
+	
 	std::vector<MovableBoidPtr>& getMovableBoids();
 
 	std::vector<RootedBoidPtr>& getRootedBoids();
+
+	void addBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity = glm::vec3(0,0,0));
 
 	bool isNight() const;
 
@@ -27,6 +30,10 @@ class BoidsManager
  	std::vector<MovableBoidPtr> m_movableBoids;
  	std::vector<RootedBoidPtr> m_rootedBoids;
  	bool isNightTime;
+
+ 	void addRootedBoid(BoidType boidType, glm::vec3 location);
+
+ 	void addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity = glm::vec3(0,0,0));
 };
 
 typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;

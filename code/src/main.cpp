@@ -3,16 +3,16 @@
 
 #include <sstream>
 
-#include "../include/practical_07_scene.hpp"
+#include "../include/initialize_scene.hpp"
 
 int main( int argc, char* argv[] )
 {
     Viewer viewer(1280,720);
 
-    //initialize_boid_scene_multiple_pop( viewer );
+    initialize_boid_scene_multiple_pop( viewer );
     //initialize_boid_scene_test_separate( viewer );
     //initialize_boid_scene_test_machine_state( viewer );
-    initialize_test_sight( viewer );
+    //initialize_test_sight( viewer );
 
     while( viewer.isRunning() )
     {
