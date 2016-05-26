@@ -114,7 +114,29 @@ glm::vec3 MovableState::separate(const MovableBoid& b, const std::vector<Movable
 
 glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::vector<RootedBoidPtr> & rootB) const
 {
-	return glm::vec3(0,0,0);
+	float coeff = glm::length(b.getVelocity()) / b.getParameters().getMaxSpeed();
+	glm::vec3 posAdhead = b.getLocation() + coeff * cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
+	glm::vec3 posAdhead2 = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead() * 0.5f;
+	std::vector<RootedBoidPtr>::const_iterator it = rootB.begin();
+	RootedBoidPtr eltFar = (RootedBoidPtr) nullptr;
+	RootedBoidPtr eltClose = (RootedBoidPtr) nullptr;
+	RootedBoidPtr elt;
+	while (it != rootB.end() && eltClose == (RootedBoidPtr) nullptr) {
+		elt = *it;
+		if (glm::distance(elt->getLocation(), posAdhead) <= elt->getRadius()) {
+			eltFar = elt;
+		} else if (glm::distance(elt->getLocation(), posAdhead2) <= elt->getRadius()) {
+			eltClose = elt;
+		}
+		it++;
+	}
+	if (!(eltClose == (RootedBoidPtr) nullptr)) {
+		return glm::normalize(posAdhead - eltClose->getLocation()) * b.getParameters().getMaxForce();
+	} else if (!(eltFar == (RootedBoidPtr) nullptr)) {
+		return glm::normalize(posAdhead - eltFar->getLocation()) * b.getParameters().getMaxForce();
+	} else {
+		return glm::vec3(0,0,0);
+	}
 }
 
 glm::vec3 MovableState::align (const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
@@ -167,12 +189,10 @@ glm::vec3 MovableState::cohesion (const MovableBoid & b, const std::vector<Movab
     }
     if (count > 0) {
 		sum /= (float) count;
-		steer = seek(b, sum);
+		return seek(b, sum);
     } else {
-    	steer = glm::vec3(0,0,0);
+    	return glm::vec3(0,0,0);
     }
-
-    return steer;
 }
 
 // xForecast(t) = x(t) + v(t) * dt
@@ -253,18 +273,7 @@ glm::vec3 TestState::computeNewForces(const MovableBoid& b, const BoidsManager &
 
 	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
 
-	glm::vec3 newForces(0,0,0);
-	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
-		newForces = 40.0f * followLeader(b, mvB, dt);
-	}
-	else if (b.isLeader()) {
-		newForces = wander(b);
-	} else { // Can't see the leader
-		newForces = wander(b) + 20.0f * separate(b, mvB) + 1.0f * cohesion(b, mvB) + 3.0f * align(b, mvB); 
-	}
-	newForces += 60.0f * stayWithinWalls(b);
-	
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	glm::vec3 newForces = wander(b) + 60.0f * stayWithinWalls(b) + 15.0f * collisionAvoid(b, boidsManager.getRootedBoids());
 	return newForces;
 }
 
