@@ -8,12 +8,12 @@
 
 #define HEIGHT_MIN_WATER   (- 15.0f)
 #define HEIGHT_MAX_WATER   (-  2.0f)
-#define HEIGHT_MIN_BEACH   (   0.0f)
-#define HEIGHT_MAX_BEACH   (  15.0f)
+#define HEIGHT_MIN_BEACH   (   5.0f)
+#define HEIGHT_MAX_BEACH   (  10.0f)
 #define HEIGHT_MIN_PLAINS  (  10.0f)
-#define HEIGHT_MAX_PLAINS  (  30.0f)
+#define HEIGHT_MAX_PLAINS  (  20.0f)
 #define HEIGHT_MIN_MOUTAIN (  20.0f)
-#define HEIGHT_MAX_MOUTAIN ( 100.0f)
+#define HEIGHT_MAX_MOUTAIN (  80.0f)
 
 #define BLOB_SCALE_SMALL  (0.2f)
 #define BLOB_SCALE_MEDIUM (0.8f)

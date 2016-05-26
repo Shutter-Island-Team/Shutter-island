@@ -10,7 +10,7 @@
 #define DEFAULT_NB_SEEDS_MAX_SUBDIV (  5)
 #define DEFAULT_DIST_MIN            ( 10)
 
-#define PROB_MOUNTAIN (0.7)
+#define PROB_MOUNTAIN (0.8)
 
 #include "../../include/terrain/Seed.hpp"
 #include "../../include/terrain/MapGenerator.hpp"
@@ -31,10 +31,13 @@ MapGenerator::MapGenerator(float size) :
 		   1)
 {}
 
-MapGenerator::~MapGenerator() {
-    if (heightTree)
+MapGenerator::~MapGenerator() { 
+    if (heightTree) {
         heightTree->freeHeightTree();
+        heightTree = NULL;
+    }
 }
+ 
 
 void MapGenerator::compute() {
 

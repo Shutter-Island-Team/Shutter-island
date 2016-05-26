@@ -6,9 +6,6 @@
 #include "../../include/terrain/MapUtils.hpp"
 #include "../../include/terrain/HeightTree.hpp"
 
-
-
-
 HeightTree::HeightTree(HeightNode content,
 		       HeightTree *tlChild, HeightTree *trChild,
 		       HeightTree *blChild, HeightTree *brChild) :
@@ -21,22 +18,30 @@ HeightTree::HeightTree(HeightNode content,
 void HeightTree::freeHeightTree() {
 
     HeightTree *tlTree = this->getChild(TopLeft);
-    if (tlTree)
-	tlTree->freeHeightTree();
+    if (tlTree) {
+        tlTree->freeHeightTree();
+        tlTree = NULL;
+    }
 
     HeightTree *trTree = this->getChild(TopRight);
-    if (trTree)
-	trTree->freeHeightTree();
+    if (trTree) {
+        trTree->freeHeightTree();
+        trTree = NULL;
+    }
 
     HeightTree *blTree = this->getChild(BottomLeft);
-    if (blTree)
-	blTree->freeHeightTree();
+    if (blTree) {
+        blTree->freeHeightTree();
+        blTree = NULL;
+    }
 
     HeightTree *brTree = this->getChild(BottomRight);
-    if (brTree)
-	brTree->freeHeightTree();
+    if (brTree) {
+        brTree->freeHeightTree();
+        brTree = NULL;
+    }
 
-    free(this);
+    delete this;
 }
 
 // Simply test in wich subsquare the point is
