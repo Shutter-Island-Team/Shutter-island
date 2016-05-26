@@ -3,8 +3,7 @@
 
 #include <vector>
 
-#include "Boid.hpp"
-#include "../../include/boids2D/MovableBoid.hpp"
+#include "BoidsManager.hpp"
 
 
 /**@brief Dynamic system solver interface for boids.
@@ -19,10 +18,10 @@ public:
   /**@brief Solve the dynamic system of boids.
    *
    * Solve the dynamic system of boids for a specified time step.
-   * @param dt The time step for the integration.
-   * @param boids The collection of boids.
+   * @param dt 				The time step for the integration.
+   * @param boidsManager 	The manager of boids.
    */
-  void solve( const float& dt, std::vector<MovableBoidPtr>& boids );
+  void solve( const float& dt, BoidsManagerPtr boidsManager );
 };
 
 typedef std::shared_ptr<SolverBoid> SolverBoidPtr;

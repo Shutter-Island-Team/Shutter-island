@@ -8,9 +8,11 @@
 
 #include "MovableState.hpp"
 #include "MovableParameters.hpp"
+#include "BoidsManager.hpp"
+
+class BoidsManager;
 
 class MovableState;
-class TestState;
 class MovableParameters;
 
 class MovableBoid;
@@ -60,13 +62,6 @@ class MovableBoid : public Boid
   ~MovableBoid();
 
   /**
-   * @brief     This function is used for a MovableBoidPtr to be
-   *            linked with its parameter
-   * @param[in] boidPtr The boid to get the parameter from
-   */
-  void associateBoid(MovableBoidPtr boidPtr);
-
-  /**
    * @brief Getter for the velocity of the object
    */
   glm::vec3 getVelocity() const;
@@ -96,9 +91,9 @@ class MovableBoid : public Boid
   /**
    * @brief     Update the acceleration of the boid. Save the value
    *            in the acceleration field of the class
-   * @param[in] mvB Other movable boid the object is aware of
+   * @param[in] boidsManager The boid's manager
    */
-  void computeAcceleration(const std::vector<MovableBoidPtr> & mvB, const float & dt);
+  void computeAcceleration(const BoidsManager & boidsManager, const float & dt);
 
   /**
    * @brief     Update the position and the velocity for the next step in the simulation 
@@ -137,11 +132,21 @@ class MovableBoid : public Boid
    */
   bool angleVision (const Boid & other) const;
 
+  /**********************************
+          Leader methods
+  ***********************************/
+  // Leader functions
+  bool isLeader() const;
+  MovableBoidPtr getLeader() const;
+  void setNewLeader(MovableBoidPtr newLeader);
+
   /**
    * @brief   Check if the boid has a leader
    * @return  true if the boid has a leader, false otherwise
    */
   bool hasLeader() const;
+
+
 
   /**
    *
@@ -164,6 +169,7 @@ class MovableBoid : public Boid
 
   MovableBoidPtr m_prey;
   MovableBoidPtr m_hunter;
+  MovableBoidPtr m_leader;
 
   /**
    * @brief     Make all the change when a boid get to the new state stateType

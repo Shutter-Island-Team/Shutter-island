@@ -6,19 +6,18 @@
 #include "MovableBoid.hpp"
 #include "RootedBoid.hpp"
 #include "BoidType.hpp"
-#include "Wolf.hpp"
-#include "Rabbit.hpp"
-#include "Carrot.hpp"
-#include "Tree.hpp"
+
+class MovableBoid;
+typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
 class BoidsManager
 {
  public:
 	BoidsManager(void);
 	
-	std::vector<MovableBoidPtr>& getMovableBoids();
+	const std::vector<MovableBoidPtr>& getMovableBoids() const;
 
-	std::vector<RootedBoidPtr>& getRootedBoids();
+	const std::vector<RootedBoidPtr>& getRootedBoids() const;
 
 	RootedBoidPtr addRootedBoid(BoidType boidType, glm::vec3 location);
 

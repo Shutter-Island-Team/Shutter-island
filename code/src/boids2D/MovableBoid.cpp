@@ -49,11 +49,6 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 	}
 }
 
-void MovableBoid::associateBoid(MovableBoidPtr boidPtr)
-{
-	m_parameters->associateBoid(boidPtr);
-}
-
 glm::vec3 MovableBoid::getVelocity() const
 {
 	return m_velocity;
@@ -79,7 +74,7 @@ void MovableBoid::resetAcceleration()
 	m_acceleration = glm::vec3(0, 0, 0);
 }
 
-void MovableBoid::computeAcceleration (const std::vector<MovableBoidPtr> & mvB, const float & dt)
+void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const float & dt)
 {
 	switch (m_stateType) {
 		case TEST_STATE:
@@ -121,7 +116,7 @@ void MovableBoid::computeAcceleration (const std::vector<MovableBoidPtr> & mvB, 
 			std::cerr << "Unknown state" << std::endl;
 			break;
 	}
-	m_acceleration = m_currentState->computeAcceleration(*this, mvB, dt);
+	m_acceleration = m_currentState->computeAcceleration(*this, boidsManager, dt);
 }
 
 // x(t + dt) = x(t) + v(t+dt) * dt
@@ -351,15 +346,32 @@ bool MovableBoid::isNight() const
 	return false;
 }
 
+bool MovableBoid::isLeader() const
+{
+	return *m_leader == *this;
+}
+
+MovableBoidPtr MovableBoid::getLeader() const
+{
+	return m_leader;
+}
+
+void MovableBoid::setNewLeader(MovableBoidPtr newLeader)
+{
+	float scale = (*newLeader == *this) ? 2.0f : 1.0f;
+	setScale(scale);
+	m_leader = newLeader;
+}
+
 bool MovableBoid::hasLeader() const
 {
-	return m_parameters->getLeader() != (MovableBoidPtr) nullptr 
-			&& !m_parameters->isLeader();
+	return getLeader() != (MovableBoidPtr) nullptr 
+			&& !isLeader();
 }
 
 bool MovableBoid::isInGroup() const
 {
-	return !(m_parameters->getLeader() == nullptr);
+	return !(getLeader() == nullptr);
 }
 
 void MovableBoid::setPrey(const MovableBoidPtr & boid)

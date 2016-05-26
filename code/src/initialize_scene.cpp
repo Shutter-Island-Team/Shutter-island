@@ -99,20 +99,20 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
-/*
+
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
-    leaderRabbit->getParameters().setNewLeader(leaderRabbit);
+    leaderRabbit->setNewLeader(leaderRabbit);
 
     for (int i = 0; i < 10; ++i) {
         MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
-        rabbitFellow->getParameters().setNewLeader(leaderRabbit);
+        rabbitFellow->setNewLeader(leaderRabbit);
     }
-*/
+
     MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
-    leaderWolf->getParameters().setNewLeader(leaderWolf);
+    leaderWolf->setNewLeader(leaderWolf);
     for (int i = 0; i < 10; ++i) {
         MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
-        wolfFellow->getParameters().setNewLeader(leaderWolf);
+        wolfFellow->setNewLeader(leaderWolf);
     }
 
     /*
@@ -468,12 +468,12 @@ void initialize_boid_scene_follow_leader( Viewer& viewer )
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
     MovableBoidPtr leader = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
-    leader->getParameters().setNewLeader(leader);
+    leader->setNewLeader(leader);
 
     MovableBoidPtr r;
     for (int i = 0; i < 6; ++i) {
         r = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
-        r->getParameters().setNewLeader(leader);
+        r->setNewLeader(leader);
     }
 
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);

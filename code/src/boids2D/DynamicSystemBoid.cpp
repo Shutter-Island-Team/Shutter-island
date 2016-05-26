@@ -37,10 +37,10 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
 void DynamicSystemBoid::computeSimulationStep()
 {
     for(MovableBoidPtr b : m_boidsManager->getMovableBoids()) {
-        b->computeAcceleration(m_boidsManager->getMovableBoids(), m_dt);
+        b->computeAcceleration(*m_boidsManager, m_dt);
     }
 
     //Integrate position and velocity of particles
-    m_solver->solve(m_dt, m_boidsManager->getMovableBoids());
+    m_solver->solve(m_dt, m_boidsManager);
 
 }

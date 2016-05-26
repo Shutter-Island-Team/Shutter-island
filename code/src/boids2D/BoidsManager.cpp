@@ -13,17 +13,15 @@ MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 locatio
 	switch(boidType)
 	{
 		case WOLF:
-			movableBoid = std::make_shared<Wolf>(location, velocity, parameters);
+			movableBoid = std::make_shared<MovableBoid>(location, velocity, WOLF, parameters);
 			break;
 		case RABBIT:
-			movableBoid = std::make_shared<Rabbit>(location, velocity, parameters);
+			movableBoid = std::make_shared<MovableBoid>(location, velocity, RABBIT, parameters);
 			break;
 		default:
 			throw std::invalid_argument("valid boidType required");
 			break;
 	}
-    
-    movableBoid->associateBoid(movableBoid);
     m_movableBoids.push_back(movableBoid);
     
     return movableBoid;
@@ -35,28 +33,27 @@ RootedBoidPtr BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 	switch(boidType)
 	{
 		case CARROT:
-			rootedBoid = std::make_shared<Carrot>(location);
+			rootedBoid = std::make_shared<RootedBoid>(location, CARROT);
 			break;
 		case TREE:
-			rootedBoid = std::make_shared<Tree>(location);
+			rootedBoid = std::make_shared<RootedBoid>(location, TREE);
 			break;
 		default:
 			throw std::invalid_argument("valid boidType required");
 			break;
 	}
-
 	m_rootedBoids.push_back(rootedBoid);
 	
 	return rootedBoid;
 }
 
 
-std::vector<MovableBoidPtr>& BoidsManager::getMovableBoids()
+const std::vector<MovableBoidPtr>& BoidsManager::getMovableBoids() const
 {
 	return m_movableBoids;
 }
 
-std::vector<RootedBoidPtr>& BoidsManager::getRootedBoids()
+const std::vector<RootedBoidPtr>& BoidsManager::getRootedBoids() const
 {
 	return m_rootedBoids;
 }

@@ -31,8 +31,7 @@ MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
 	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
 	m_distToCircle(distToCircle), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
-	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f), m_lowHungerValue(10.0f) ,
-	m_leader((MovableBoidPtr) nullptr)
+	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f), m_lowHungerValue(10.0f)
 {
 	m_stamina = random(1, 99);
 }
@@ -76,11 +75,6 @@ MovableParameters::MovableParameters(const BoidType & type)
 			std::cerr << "Unknown animal" << std::endl;
 			break;
 	}
-}
-
-void MovableParameters::associateBoid(MovableBoidPtr thisBoid)
-{
-	m_thisBoid = thisBoid;
 }
 
 float MovableParameters::getStamina() const
@@ -174,23 +168,6 @@ void MovableParameters::affinityDecrease()
 {
 	///< @todo : improve with maybe a better function
 	m_affinity = fmax(m_affinity - 1.0f, 0.0f);
-}
-
-bool MovableParameters::isLeader() const
-{
-	return m_leader == m_thisBoid;
-}
-
-MovableBoidPtr MovableParameters::getLeader() const
-{
-	return m_leader;
-}
-
-void MovableParameters::setNewLeader(MovableBoidPtr newLeader)
-{
-	float scale = (newLeader == m_thisBoid) ? 2.0f : 1.0f;
-	m_thisBoid->setScale(scale);
-	m_leader = newLeader;
 }
 
 bool MovableParameters::isTired() const

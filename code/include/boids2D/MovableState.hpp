@@ -4,7 +4,9 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <cmath>
-#include "MovableBoid.hpp"
+#include "BoidsManager.hpp"
+
+class BoidsManager;
 
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
@@ -26,7 +28,7 @@ class MovableState
    * @return    The new acceleration of the boid
    */
   glm::vec3 computeAcceleration(MovableBoid& b,
-              const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+              const BoidsManager & boidsManager, const float & dt) const;
 
  private:
   /**
@@ -38,7 +40,7 @@ class MovableState
    * @return    The acceleration (decision) of the boid
    */
   virtual glm::vec3 computeNewForces(const MovableBoid& b,
-          const std::vector<MovableBoidPtr> & mvB, const float & dt) const = 0;
+          const BoidsManager & boidsManager, const float & dt) const = 0;
 
  protected:
   /**
@@ -86,7 +88,7 @@ class MovableState
    * @param[in] mvB Vector of boids which b should be awared of
    * @return    Returns the force required for the b to separate
    */
-  glm::vec3 separate(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+  glm::vec3 separate(const MovableBoid& b, const std::vector<MovableBoidPtr> & bVec) const;
   
   /**
    * @brief     Computes the force for a boid b to align with other boids
@@ -148,7 +150,7 @@ class MovableState
 class TestState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -158,7 +160,7 @@ class TestState : public MovableState
 class WalkState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -168,7 +170,7 @@ class WalkState : public MovableState
 class StayState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -178,7 +180,7 @@ class StayState : public MovableState
 class SleepState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -188,7 +190,7 @@ class SleepState : public MovableState
 class FleeState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -198,7 +200,7 @@ class FleeState : public MovableState
 class FindFoodState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -208,7 +210,7 @@ class FindFoodState : public MovableState
 class EatState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -218,7 +220,7 @@ class EatState : public MovableState
 class FindWaterState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -228,7 +230,7 @@ class FindWaterState : public MovableState
 class DrinkState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -238,7 +240,7 @@ class DrinkState : public MovableState
 class MateState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -248,7 +250,7 @@ class MateState : public MovableState
 class AttackState : public MovableState
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 /**
@@ -258,7 +260,7 @@ class AttackState : public MovableState
 class LostState : public MovableState
 {
  private:
-  glm::vec3 computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
 

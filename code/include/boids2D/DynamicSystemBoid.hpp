@@ -1,8 +1,8 @@
 #ifndef DYNAMIC_SYSTEM_BOID_HPP
 #define DYNAMIC_SYSTEM_BOID_HPP
 
-#include "BoidsManager.hpp"
 #include "SolverBoid.hpp"
+#include "BoidsManager.hpp"
 
 // TODO : Now the class take all the boids. In reality only movable boids
 // can compute a next position

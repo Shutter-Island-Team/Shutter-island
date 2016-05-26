@@ -1,4 +1,5 @@
 #include "../../include/boids2D/SolverBoid.hpp"
+#include "../../include/boids2D/MovableBoid.hpp"
 
 #include <iostream>
 
@@ -6,8 +7,8 @@ SolverBoid::SolverBoid() {
 
 }
 
-void SolverBoid::solve( const float& dt, std::vector<MovableBoidPtr>& boids ) {
-	for(MovableBoidPtr b : boids) {
+void SolverBoid::solve( const float& dt, BoidsManagerPtr boidsManager) {
+	for(MovableBoidPtr b : boidsManager->getMovableBoids()) {
     	b->computeNextStep(dt);
     }
 }

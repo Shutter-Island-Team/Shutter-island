@@ -1,11 +1,7 @@
 #ifndef MOVABLE_PARAMETERS_HPP
 #define MOVABLE_PARAMETERS_HPP
 
-#include <sstream>
-
-#include "MovableBoid.hpp"
-class MovableBoid;
-typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
+#include "BoidType.hpp"
 
 /**
  * @class MovableParameters
@@ -193,14 +189,6 @@ public:
   void affinityDecrease();
 
   /**********************************
-          Leader methods
-  ***********************************/
-  // Leader functions
-  bool isLeader() const;
-  MovableBoidPtr getLeader() const;
-  void setNewLeader(MovableBoidPtr newLeader);
-
-  /**********************************
           Getter methods
   ***********************************/
   // Getter of parameters
@@ -221,8 +209,6 @@ protected:
   float m_thirst; ///< Value in [0, 100] to describe the thirst of a boid
   float m_danger; ///< Value in [0, 100] to describe the feel of danger of a boid
   float m_affinity; ///< Value in [0, 100] to describe the affinity of a boid
-  MovableBoidPtr m_thisBoid;
-  MovableBoidPtr m_leader;
 
  private:
   float m_maxSpeed; ///< Maximum speed of the boid
@@ -245,10 +231,6 @@ protected:
   float m_lowHungerValue;
 
   float m_distToLeader;
-
-  // Only allow MovableBoid to use associateBoid
-  friend class MovableBoid;
-  void associateBoid(MovableBoidPtr thisBoid);
 };
 
 #endif
