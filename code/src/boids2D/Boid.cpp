@@ -1,7 +1,7 @@
 #include "../../include/boids2D/Boid.hpp"
 
 Boid::Boid(glm::vec3 location, BoidType t) 
-	: m_location(location), m_boidType(t), m_angle(0.0f)
+	: m_location(location), m_boidType(t), m_angle(0.0f), m_scale(1.0f)
 {
 
 }
@@ -29,4 +29,14 @@ void Boid::setAngle(const float & angle)
 BoidType Boid::getBoidType() const
 {
 	return m_boidType;
+}
+
+float Boid::getScale() const
+{
+	return m_scale;
+}
+
+void Boid::setScale(const float & scale)
+{
+	m_scale = scale;
 }

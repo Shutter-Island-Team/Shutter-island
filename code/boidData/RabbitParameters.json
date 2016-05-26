@@ -1,6 +1,6 @@
 {
-	"maxSpeed": 25.5,
-	"maxForce": 25.0,
+	"maxSpeed": 4.0,
+	"maxForce": 2.0,
 	"angleView": 2.35619449019,
 	"distSeparate": 2.0,
 	"distCohesion": 5.0,

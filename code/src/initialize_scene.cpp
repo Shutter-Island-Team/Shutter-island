@@ -99,15 +99,23 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
+/*
+    MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+    leaderRabbit->getParameters().setNewLeader(leaderRabbit);
 
     for (int i = 0; i < 10; ++i) {
-        boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        rabbitFellow->getParameters().setNewLeader(leaderRabbit);
     }
-
+*/
+    MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
+    leaderWolf->getParameters().setNewLeader(leaderWolf);
     for (int i = 0; i < 10; ++i) {
-        boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
+        wolfFellow->getParameters().setNewLeader(leaderWolf);
     }
 
+    /*
     for (int i = 0; i < 10; ++i) {
         boidsManager->addRootedBoid(CARROT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
@@ -115,7 +123,7 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
     for (int i = 0; i < 10; ++i) {
         boidsManager->addRootedBoid(TREE, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
-
+    */
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
 
     viewer.addRenderable(systemRenderable);

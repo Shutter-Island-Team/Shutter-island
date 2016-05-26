@@ -163,13 +163,16 @@ void BoidRenderable::do_draw()
 
     float c = cos(m_boid->getAngle());
     float s = sin(m_boid->getAngle());
+    float scale = m_boid->getScale();
 
     glm::vec3 position = m_boid->getLocation();
-    transformation[0][0] = c;
-    transformation[1][1] = c;
-    transformation[1][0] = -s;
-    transformation[0][1] = s;
-    transformation[2][2] = 1;
+    transformation[0][0] = scale * c;
+    transformation[0][1] = scale * s;
+
+    transformation[1][1] = scale * c;
+    transformation[1][0] = scale * -s;
+    
+    transformation[2][2] = scale;
     transformation[3][0] = position.x;
     transformation[3][1] = position.y;
     transformation[3][2] = position.z;

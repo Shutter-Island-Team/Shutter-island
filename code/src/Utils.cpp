@@ -506,7 +506,21 @@ glm::vec3 limitVec3(const glm::vec3 vec, const float val)
     }
 }
 
-void displayVec3(std::ostream & os, glm::vec3 vec)
+void displayVec3(const glm::vec3 & vec)
+{
+    displayVec3(std::cerr, vec);
+}
+
+void displayVec3(std::ostream & os, const glm::vec3 & vec)
 {
     os << vec.x << " " << vec.y << " " << vec.z << std::endl;
 }
+
+glm::vec3 cNormalize(const glm::vec3 & vec)
+{
+    if (vec == glm::vec3(0,0,0)) {
+        return glm::vec3(0,0,0);
+    }
+    return glm::normalize(vec);
+}
+

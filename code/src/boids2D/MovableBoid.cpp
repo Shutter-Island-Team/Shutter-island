@@ -353,7 +353,8 @@ bool MovableBoid::isNight() const
 
 bool MovableBoid::hasLeader() const
 {
-	return m_parameters->getLeader() != (MovableBoidPtr) nullptr;
+	return m_parameters->getLeader() != (MovableBoidPtr) nullptr 
+			&& !m_parameters->isLeader();
 }
 
 bool MovableBoid::isInGroup() const

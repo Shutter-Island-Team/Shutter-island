@@ -188,6 +188,8 @@ MovableBoidPtr MovableParameters::getLeader() const
 
 void MovableParameters::setNewLeader(MovableBoidPtr newLeader)
 {
+	float scale = (newLeader == m_thisBoid) ? 2.0f : 1.0f;
+	m_thisBoid->setScale(scale);
 	m_leader = newLeader;
 }
 

@@ -133,7 +133,7 @@ glm::vec3 MovableState::align (const MovableBoid& b, const std::vector<MovableBo
 
 	if (count > 0) {
 		sum = sum / (float) count;
-		sum = glm::normalize(sum);
+		sum = cNormalize(sum);
 		sum *= b.getParameters().getMaxForce();
 		steer = sum - b.getVelocity();
 		steer = limitVec3(steer, b.getParameters().getMaxForce());
@@ -209,9 +209,9 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
 	}
 	glm::vec3 positionBehindLeader = leader->getLocation() + glm::normalize(-1.0f * leader->getVelocity()) * b.getParameters().getDistToLeader();
 	steer = arrive(b, positionBehindLeader);
-	steer += 3.0f * separate(b, mvB); // Coefficient can be modify
-	if (leader->canSee(b, 3.0f * leader->getParameters().getDistSeparate())) { // Can be modify
-		steer += evade(b, *leader, dt);
+	steer += 20.0f * separate(b, mvB); // Coefficient can be modify
+	if (leader->canSee(b, 1.4f * leader->getParameters().getDistSeparate())) { // Can be modify
+		steer += 20.0f * evade(b, *leader, dt);
 	}
 	limitVec3(steer, b.getParameters().getMaxForce());
 	return steer;	
@@ -231,11 +231,34 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
  */
 glm::vec3 TestState::computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const
 {
+	/*
 	if(b.getBoidType() == WOLF) {
 		return pursuit(b, *(b.getPrey()), dt) + 10.0f * stayWithinWalls(b);
 	} else {
 		return evade(b, *(b.getHunter()), dt) + 0.5f * wander(b) + 10.0f * stayWithinWalls(b);
 	}
+	*/
+	b.getParameters().staminaDecrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+	b.getParameters().affinityIncrease();
+
+	// TODO danger test
+	// if cansee and hasHunter dangerIncrease else dangerDecrease? endif 
+
+	glm::vec3 newForces(0,0,0);
+	if(b.hasLeader() && b.canSee(*b.getParameters().getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
+		newForces = 40.0f * followLeader(b, mvB, dt);
+	}
+	else if (b.getParameters().isLeader()) {
+		newForces = wander(b);
+	} else { // Can't see the leader
+		newForces = wander(b) + 20.0f * separate(b, mvB) + 1.0f * cohesion(b, mvB) + 3.0f * align(b, mvB); 
+	}
+	newForces += 60.0f * stayWithinWalls(b);
+	
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	return newForces;
 }
 
 glm::vec3 WalkState::computeNewForces(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const
