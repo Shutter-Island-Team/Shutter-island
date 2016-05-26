@@ -49,8 +49,8 @@ HeightTree* HeightTree::locatePosition(Vertex2D & pos) {
 
     HeightNode content = this->getContent();
 
-    Vertex2D posTL = content.getBlob(TopLeft).getPosition();
-    Vertex2D posBR = content.getBlob(BottomRight).getPosition();
+    Vertex2D posTL = content.getData(TopLeft).getPosition();
+    Vertex2D posBR = content.getData(BottomRight).getPosition();
 
     float centerX = (posTL.first  + posBR.first)/2.0f;
     float centerY = (posTL.second + posBR.second)/2.0f;
@@ -79,27 +79,27 @@ bool HeightTree::findVertexHeight(Vertex2D & pos, int depth, float* height) {
     if (depth == 1) {
 	// Check the node
 	HeightNode content = this->getContent();
-	HeightBlob blob = content.getBlob(TopLeft);
-	if (distanceV2D(pos, blob.getPosition()) < DETECTION_THRESHOLD) {
-	    *height =  blob.getHeight();
+	HeightData data = content.getData(TopLeft);
+	if (distanceV2D(pos, data.getPosition()) < DETECTION_THRESHOLD) {
+	    *height =  data.getHeight();
 	    return true;
 	}
 
-	blob = content.getBlob(TopRight);
-	if (distanceV2D(pos, blob.getPosition()) < DETECTION_THRESHOLD) {
-	    *height =  blob.getHeight();
+	data = content.getData(TopRight);
+	if (distanceV2D(pos, data.getPosition()) < DETECTION_THRESHOLD) {
+	    *height =  data.getHeight();
 	    return true;
 	}
 
-	blob = content.getBlob(BottomLeft);
-	if (distanceV2D(pos, blob.getPosition()) < DETECTION_THRESHOLD) {
-	    *height =  blob.getHeight();
+	data = content.getData(BottomLeft);
+	if (distanceV2D(pos, data.getPosition()) < DETECTION_THRESHOLD) {
+	    *height =  data.getHeight();
 	    return true;
 	}
 
-	blob = content.getBlob(BottomRight);
-	if (distanceV2D(pos, blob.getPosition()) < DETECTION_THRESHOLD) {
-	    *height =  blob.getHeight();
+	data = content.getData(BottomRight);
+	if (distanceV2D(pos, data.getPosition()) < DETECTION_THRESHOLD) {
+	    *height =  data.getHeight();
 	    return true;
 	}
 	return false;	    
@@ -128,21 +128,21 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     // Recuperating all the needed informations
     HeightNode content = this->getContent();
 
-    HeightBlob tlBlob = content.getBlob(TopLeft);
-    HeightBlob trBlob = content.getBlob(TopRight);
-    HeightBlob blBlob = content.getBlob(BottomLeft);
-    HeightBlob brBlob = content.getBlob(BottomRight);
+    HeightData tlData = content.getData(TopLeft);
+    HeightData trData = content.getData(TopRight);
+    HeightData blData = content.getData(BottomLeft);
+    HeightData brData = content.getData(BottomRight);
 
-    Biome tlBiome = findClosestBiome(tlBlob.getPosition(), container, seeds);
-    Biome trBiome = findClosestBiome(trBlob.getPosition(), container, seeds);
-    Biome blBiome = findClosestBiome(blBlob.getPosition(), container, seeds);
-    Biome brBiome = findClosestBiome(brBlob.getPosition(), container, seeds);
+    Biome tlBiome = findClosestBiome(tlData.getPosition(), container, seeds);
+    Biome trBiome = findClosestBiome(trData.getPosition(), container, seeds);
+    Biome blBiome = findClosestBiome(blData.getPosition(), container, seeds);
+    Biome brBiome = findClosestBiome(brData.getPosition(), container, seeds);
 
 
-    // Building now the 5 new blobs required to cut the square
+    // Building now the 5 new heightData required to cut the square
 
-    Vertex2D tlPos = tlBlob.getPosition();
-    Vertex2D brPos = brBlob.getPosition();
+    Vertex2D tlPos = tlData.getPosition();
+    Vertex2D brPos = brData.getPosition();
 
     float tlX = tlPos.first;
     float tlY = tlPos.second;
@@ -154,7 +154,7 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     float centerX = (tlX + brX)/2.0f;
     float centerY = (tlY + brY)/2.0f;
 
-    // Position of the blobs
+    // Position of the peaks
     Vertex2D centerPos = Vertex2D(centerX, centerY);
     Vertex2D northPos  = Vertex2D(centerX, tlY);
     Vertex2D southPos  = Vertex2D(centerX, brY);
@@ -168,7 +168,7 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     Biome eastBiome   = findClosestBiome(eastPos,   container, seeds);
     Biome westBiome   = findClosestBiome(westPos,   container, seeds);
 
-    // Computing the height of the blobs
+    // Computing the height
     // NB : Because the search is done in this order : TL -> TR -> BL -> BR
     // Only the norh and the west might have been already computed
     // Thus we only search them
@@ -182,34 +182,28 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     if (!(root->findVertexHeight(westPos, depth+1, &westHeight)))
 	westHeight = biomeHeight(westBiome);
     
-    // Computing the scale
-    float centerScale = computeBlobScale(centerBiome, eastBiome, westBiome);
-    float northScale  = computeBlobScale(northBiome,  tlBiome,   trBiome);
-    float southScale  = computeBlobScale(southBiome,  blBiome,   brBiome);
-    float eastScale   = computeBlobScale(eastBiome,   trBiome,   brBiome);
-    float westScale   = computeBlobScale(westBiome,   tlBiome,   blBiome);
 
     // Finally the 5 blobs
-    HeightBlob centerBlob = HeightBlob(centerPos, centerHeight, centerScale, centerBiome);
-    HeightBlob northBlob  = HeightBlob(northPos,  northHeight,  northScale,  northBiome);
-    HeightBlob southBlob  = HeightBlob(southPos,  southHeight,  southScale,  southBiome);
-    HeightBlob eastBlob   = HeightBlob(eastPos,   eastHeight,   eastScale,   eastBiome);
-    HeightBlob westBlob   = HeightBlob(westPos,   westHeight,   westScale,   westBiome);
+    HeightData centerData = HeightData(centerPos, centerHeight, centerBiome);
+    HeightData northData  = HeightData(northPos,  northHeight,  northBiome);
+    HeightData southData  = HeightData(southPos,  southHeight,  southBiome);
+    HeightData eastData   = HeightData(eastPos,   eastHeight,   eastBiome);
+    HeightData westData   = HeightData(westPos,   westHeight,   westBiome);
 
     // Building now the 4 children of the current node
     float subSize = size/2.0f; 
     HeightTree *tlTree = new HeightTree(HeightNode(subSize,
-						   tlBlob,     northBlob,
-						   westBlob,   centerBlob));
+						   tlData,     northData,
+						   westData,   centerData));
     HeightTree *trTree = new HeightTree(HeightNode(subSize,
-						   northBlob,  trBlob,
-						   centerBlob, eastBlob));
+						   northData,  trData,
+						   centerData, eastData));
     HeightTree *blTree = new HeightTree(HeightNode(subSize,
-						   westBlob,   centerBlob,
-						   blBlob,     southBlob));
+						   westData,   centerData,
+						   blData,     southData));
     HeightTree *brTree = new HeightTree(HeightNode(subSize,
-						   centerBlob, eastBlob,
-						   southBlob,  brBlob));    
+						   centerData, eastData,
+						   southData,  brData));    
 
     // Setting them
     this->setChild(TopLeft,     tlTree);

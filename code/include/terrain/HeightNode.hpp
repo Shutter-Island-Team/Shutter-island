@@ -7,7 +7,7 @@
 #ifndef HEIGHTNODE_HPP
 #define HEIGHTNODE_HPP
 
-#include "HeightBlob.hpp"
+#include "HeightData.hpp"
 #include "../structures/QuadTree.hpp"
 
 class HeightNode {
@@ -16,14 +16,14 @@ public:
     /**
      * @brief Constructor
      *
-     * @param tlBlob The top    left  blob
-     * @param trBlob The top    right blob
-     * @param blBlob The bottom left  blob
-     * @param brBlob The bottom right blob
+     * @param tlData The top    left  blob
+     * @param trData The top    right blob
+     * @param blData The bottom left  blob
+     * @param brData The bottom right blob
      */
     HeightNode(float newSize,
-	       HeightBlob tlBlob, HeightBlob trBlob, 
-	       HeightBlob blBlob, HeightBlob brBlob);
+	       HeightData tlData, HeightData trData, 
+	       HeightData blData, HeightData brData);
 
     /**
      * @brief Getter on one of the blob of the node
@@ -32,7 +32,7 @@ public:
      *
      * @return The selected blob
      */
-    HeightBlob getBlob(QuadPosition position);
+    HeightData getData(QuadPosition position);
     
 
     /**
@@ -51,10 +51,10 @@ private :
     float size;
 
     /// @brief The four blobs defining the square
-    HeightBlob topLeftBlob;
-    HeightBlob topRightBlob;
-    HeightBlob bottomLeftBlob;
-    HeightBlob bottomRightBlob;
+    HeightData topLeftData;
+    HeightData topRightData;
+    HeightData bottomLeftData;
+    HeightData bottomRightData;
 
 };
 

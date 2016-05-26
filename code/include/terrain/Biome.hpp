@@ -48,16 +48,6 @@ enum Biome {
 
 float biomeHeight(Biome biome);
 
-/**
- * @brief Compute the scale of a blob depending on its biome and neighbours
- *
- * @param biome           The biome of the blob
- * @param biomeNeighbour1 The first neighbour
- * @param biomeNeighbour2 The second neighbour
- *
- * @return The scale of the blob
- */
-float computeBlobScale(Biome biome, Biome biomeNeighbour1, Biome biomeNeighbour2);
 
 /**
  * @brief Compute if the square defined by its four biomes should be subdivised or not

@@ -7,7 +7,7 @@
 #include <cmath>
 
 #include "../../include/Utils.hpp"
-#include "../../include/terrain/BlobFunctions.hpp"
+#include "../../include/math/InterpolationFunctions.hpp"
 #include "../../include/terrain/BiomeRepartition.hpp"
 
 #define MAX(a,b) (((a)<(b))?(b):(a))
@@ -21,7 +21,7 @@
 #define MOUNTAIN_MAX_TRY            (10)
 
 float landRepartitionProbability(float distance, float size){
-    return 1.1f*blobSmooth6(distance, size, 1.0);
+    return 1.1f*smooth6Interpolation(distance, size);
 }
 
 void computeLand(std::vector<Seed>& seeds, float mapSize) {
@@ -99,12 +99,14 @@ void computeLand(std::vector<Seed>& seeds, float mapSize) {
             float dx = currentSeedIt->getX() - mapSize/2.0f;
             float dy = currentSeedIt->getY() - mapSize/2.0f;
             float distance = sqrt(dx*dx + dy*dy);
-            float probBlob = landRepartitionProbability(distance, mapSize);
+	    // Nb : In the next call, it's mapSize and not mapSize/2.0f
+	    // To make sure that the land will be big enough
+            float prob = landRepartitionProbability(distance, mapSize);
             if (neighbourFound) {
-                pLand = LAND_BLENDING_COEFFICIENT*probBlob
+                pLand = LAND_BLENDING_COEFFICIENT*prob
                     + (1 - LAND_BLENDING_COEFFICIENT)*(landVolume/neighboursVolume);
             } else {
-                pLand = probBlob;
+                pLand = prob;
             }
         
 	    // Picking if it's a land

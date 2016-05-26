@@ -36,26 +36,6 @@ float biomeHeight(Biome biome) {
     }
 }
 
-float computeBlobScale(Biome biome, Biome biomeNeighbour1, Biome biomeNeighbour2) {
-
-    if ((biome = biomeNeighbour1) && (biome = biomeNeighbour2)) {
-	// Neighbours are of the same type, we can assume that we are within
-	// a large area of this kind
-	return BLOB_SCALE_LARGE;
-    } else {
-	// Else, the influence zone should be smaller
-	switch (biome) {
-	    
-	case Mountain :
-	    // Even smaller for moutains
-	    return BLOB_SCALE_SMALL;
-
-	default :
-	    return BLOB_SCALE_MEDIUM;
-	}
-    }
-}
-
 
 
 bool checkSubdivision(int currentDepth) {

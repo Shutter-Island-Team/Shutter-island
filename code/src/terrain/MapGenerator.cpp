@@ -116,10 +116,10 @@ void MapGenerator::compute() {
 
     // HeightTree step
     // Creating the initial map : a deep dark sea
-    HeightBlob tlCorner(Vertex2D(0.0f,    mapSize), biomeHeight(Sea), 1.0f, Sea);
-    HeightBlob trCorner(Vertex2D(mapSize, mapSize), biomeHeight(Sea), 1.0f, Sea);
-    HeightBlob blCorner(Vertex2D(0.0f,    0.0f)   , biomeHeight(Sea), 1.0f, Sea);
-    HeightBlob brCorner(Vertex2D(mapSize, 0.0f)   , biomeHeight(Sea), 1.0f, Sea);
+    HeightData tlCorner(Vertex2D(0.0f,    mapSize), biomeHeight(Sea), Sea);
+    HeightData trCorner(Vertex2D(mapSize, mapSize), biomeHeight(Sea), Sea);
+    HeightData blCorner(Vertex2D(0.0f,    0.0f)   , biomeHeight(Sea), Sea);
+    HeightData brCorner(Vertex2D(mapSize, 0.0f)   , biomeHeight(Sea), Sea);
     heightTree = new HeightTree(HeightNode(mapSize,
 					   tlCorner, trCorner,
 					   blCorner, brCorner));
