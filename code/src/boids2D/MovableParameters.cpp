@@ -144,13 +144,15 @@ float MovableParameters::getDanger() const
 void MovableParameters::dangerIncrease()
 {
 	///< @todo : improve with maybe a better function
-	m_danger = fmin(m_danger + 1.0f, 100.0f);
+	//m_danger = fmin(m_danger + 1.0f, 100.0f);
+	m_danger = 100.0f;
 }
 
 void MovableParameters::dangerDecrease()
 {
 	///< @todo : improve with maybe a better function
-	m_danger = fmax(m_danger - 1.0f, 0.0f);
+	//m_danger = fmax(m_danger - 1.0f, 0.0f);
+	m_danger = 0.0f;
 }
 
 float MovableParameters::getAffinity() const
@@ -229,7 +231,7 @@ float MovableParameters::getDistViewMax() const
 bool MovableParameters::isInDanger() const
 {
 	///< @todo
-	return false;
+	return m_danger == 100.0f;
 }
 
 bool MovableParameters::isThirsty() const
@@ -253,7 +255,7 @@ bool MovableParameters::isNotTired() const
 bool MovableParameters::isNotInDanger() const
 {
 	///< @todo
-	return false;	
+	return m_danger == 0.0f;	
 }
 
 float MovableParameters::getDistToLeader() const

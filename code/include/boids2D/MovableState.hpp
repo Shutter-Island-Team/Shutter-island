@@ -11,6 +11,9 @@ class BoidsManager;
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
+class RootedBoid;
+typedef std::shared_ptr<RootedBoid> RootedBoidPtr;
+
 /**
  * @class MovableState
  * @brief Virtual class to describe a state of boid. Contain some methods
@@ -93,7 +96,7 @@ class MovableState
   /**
    * @todo
    */
-  glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::vector<RootedBoidPtr> & rootB) const
+  glm::vec3 collisionAvoid (const MovableBoid& b, const std::vector<RootedBoidPtr> & rootB) const;
   
   /**
    * @brief     Computes the force for a boid b to align with other boids
