@@ -107,6 +107,12 @@ file(
 
 file(
     GLOB_RECURSE
+    BITMAP_FILES
+    lib/bitmap/*.hpp
+    )
+
+file(
+    GLOB_RECURSE
     SOURCE_FILES
     src/*.cpp
     )
@@ -122,7 +128,7 @@ set(EXECUTABLE_NAME main)
 #==============================================
 #Project executable definition
 #==============================================
-add_executable(${EXECUTABLE_NAME} ${HEADER_FILES} ${VORO_FILES} ${SOURCE_FILES} ${SHADER_FILES})
+add_executable(${EXECUTABLE_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${SHADER_FILES} ${VORO_FILES} ${BITMAP_FILES})
 
 #==============================================
 #Linking with libraries
