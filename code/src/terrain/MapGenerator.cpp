@@ -16,6 +16,7 @@
 #include "../../include/terrain/MapGenerator.hpp"
 #include "../../include/terrain/MapUtils.hpp"
 #include "../../include/terrain/BiomeRepartition.hpp"
+#include <iostream>
 
 MapGenerator::MapGenerator(float size) :
     mapSize{size},
