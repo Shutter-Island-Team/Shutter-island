@@ -112,6 +112,11 @@ glm::vec3 MovableState::separate(const MovableBoid& b, const std::vector<Movable
 	return steer;
 }
 
+glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::vector<RootedBoidPtr> & rootB) const
+{
+	return glm::vec3(0,0,0);
+}
+
 glm::vec3 MovableState::align (const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
 {
 	glm::vec3 sum(0,0,0);

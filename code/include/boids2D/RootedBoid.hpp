@@ -9,13 +9,18 @@
  */
 class RootedBoid : public Boid
 {
-public:
+ public:
 	/**
 	 * @brief Constructor for a RootedBoid
 	 * @param[in] location Location of the object
 	 * @param[in] t Type of the RootedBoid
 	 */
 	RootedBoid(glm::vec3 location, BoidType t);
+
+  float getRadius() const;
+
+ private:
+  float m_radius;
 };
 
 

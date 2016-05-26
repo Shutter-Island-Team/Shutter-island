@@ -89,6 +89,11 @@ class MovableState
    * @return    Returns the force required for the b to separate
    */
   glm::vec3 separate(const MovableBoid& b, const std::vector<MovableBoidPtr> & bVec) const;
+
+  /**
+   * @todo
+   */
+  glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::vector<RootedBoidPtr> & rootB) const
   
   /**
    * @brief     Computes the force for a boid b to align with other boids
