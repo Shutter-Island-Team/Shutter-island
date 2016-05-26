@@ -294,39 +294,8 @@ bool MovableState::alone(const MovableBoid& b, const std::vector<MovableBoidPtr>
  */
 glm::vec3 TestState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	/*
-	if(b.getBoidType() == WOLF) {
-		return pursuit(b, *(b.getPrey()), dt) + 10.0f * stayWithinWalls(b);
-	} else {
-		return evade(b, *(b.getHunter()), dt) + 0.5f * wander(b) + 10.0f * stayWithinWalls(b);
-	}
-	*/
 	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
-
-	b.getParameters().staminaDecrease();
-	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
-
-	// Detect danger and update danger parameter 
-	detectDanger(b, mvB);
-
-	// Detect if alone and update affinity
-	alone(b, mvB);
-
-	glm::vec3 newForces = wander(b) + 60.0f * stayWithinWalls(b) + 15.0f * collisionAvoid(b, boidsManager.getRootedBoids());
-	return newForces;
-}
-
-glm::vec3 WalkState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
-{
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
-
-	// stamina <- sd(stamina)
-	// hunger <- hd(hunger)
-	// thirst <- td(thirst)
-	// if predator is near danger <- di(danger) else danger <- dd(danger)
-	// if in a group of same species affinity <- ai(affinity)
-	// if alone affinity <- ad(affinity)
+	
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
 	b.getParameters().thirstDecrease();
@@ -347,6 +316,43 @@ glm::vec3 WalkState::computeNewForces(const MovableBoid& b, const BoidsManager &
 		newForces = wander(b) + 20.0f * separate(b, mvB) + 1.0f * cohesion(b, mvB) + 3.0f * align(b, mvB); 
 	}
 	newForces += 60.0f * stayWithinWalls(b);
+	newForces += 1000.0f * collisionAvoid(b, boidsManager.getRootedBoids());
+	
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	return newForces;
+}
+
+glm::vec3 WalkState::computeNewForces(const MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+{
+	// stamina <- sd(stamina)
+	// hunger <- hd(hunger)
+	// thirst <- td(thirst)
+	// if predator is near danger <- di(danger) else danger <- dd(danger)
+	// if in a group of same species affinity <- ai(affinity)
+	// if alone affinity <- ad(affinity)
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
+	b.getParameters().staminaDecrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+
+	// Detect danger and update danger parameter 
+	detectDanger(b, mvB);
+
+	// Detect if alone and update affinity
+	alone(b, mvB);
+
+	glm::vec3 newForces(0,0,0);
+	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
+		newForces = 40.0f * followLeader(b, mvB, dt);
+	}
+	else if (b.isLeader()) {
+		newForces = wander(b);
+	} else { // Can't see the leader
+		newForces = wander(b) + 20.0f * separate(b, mvB) + 1.0f * cohesion(b, mvB) + 3.0f * align(b, mvB); 
+	}
+	newForces += 60.0f * stayWithinWalls(b);
+	newForces += 1000.0f * collisionAvoid(b, boidsManager.getRootedBoids());
 	
 	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
 	return newForces;

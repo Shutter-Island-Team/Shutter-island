@@ -115,11 +115,11 @@ void initialize_boid_scene_multiple_pop( Viewer& viewer)
         wolfFellow->setNewLeader(leaderWolf);
     }
 
-    for (int i = 0; i < 6; ++i) {
+    for (int i = 0; i < 10; ++i) {
         boidsManager->addRootedBoid(CARROT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 10; ++i) {
         boidsManager->addRootedBoid(TREE, glm::vec3(random(-15, 15), random(-15, 15), 2));
     }
 
