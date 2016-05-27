@@ -46,6 +46,13 @@ MapGenerator::MapGenerator(float size) :
 						DEFAULT_NB_SUBDIVISION,
 						DEFAULT_NB_SEEDS_MAX_SUBDIV,
 						DEFAULT_DIST_MIN)},
+    /**
+     * @brief
+     * Voronoi diagram's cells container Constructor, define in the voro++
+     * library.
+     *
+     * @see voro++ library.
+     */
     seedsContainer(0.0, size+1, 0.0, size+1, -10.0, 10.0,
 		   DEFAULT_NB_SUBDIVISION, DEFAULT_NB_SUBDIVISION, 1,
 		   false, false, false,

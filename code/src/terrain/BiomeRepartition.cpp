@@ -10,22 +10,80 @@
 #include "../../include/math/InterpolationFunctions.hpp"
 #include "../../include/terrain/BiomeRepartition.hpp"
 
+/**
+ * @brief
+ * Defines the mathematical function "maximum of two numbers".
+ *
+ * @param a First number.
+ * @param b Second number.
+ */
 #define MAX(a,b) (((a)<(b))?(b):(a))
 
+/**
+ * @brief
+ * When deciding if a biome is going to be a land biome, we take into account 
+ * both its distance to the center of the map and the proportion of its
+ * neighbours being land biomes.
+ * Defines the coefficient used to ponderate the importance of the former in
+ * comparison with the latter.
+ */
 #define LAND_BLENDING_COEFFICIENT (0.7f)
 
+/**
+ * @brief
+ * Defines the parameter of the geometric law used to generate Lake biomes.
+ */
 #define LAKE_GEOMETRIC_PICKING  (0.8)
+
+/**
+ * @brief
+ * Defines the probability that a Lake-eligible biome is effectively
+ * transformed into a Lake biome.
+ */
 #define LAKE_PROB_TRANSFORM     (0.1)
+
+/**
+ * @brief
+ * When a biome is transformed into a Lake, it has a special influence on its
+ * neighbours. As a matter of fact, it fosters the fact that its Lake-eligible
+ * neighbours are transformed into Lake too.
+ * Concretely, it defines the "bonus" probability added to the initial one when
+ * the previously described situation occurs.
+ */
 #define LAKE_POSITIVE_INFLUENCE (0.15f)
 
+/**
+ * @brief
+ * Defines the parameter of the geometric law used to generate Mountain biomes.
+ */
 #define MOUNTAIN_GEOMETRIC_PICKING (0.7)
+
+/**
+ * @brief
+ * Defines the probability that a Mountain-eligible biome is effectively
+ * transformed into a Mountain biome.
+ */
 #define MOUNTAIN_PROB_TRANSFORM    (0.9)
+
+/**
+ * @brief
+ * Defines the maximum number of iterations of the geometric law used
+ * to generate Mountain biomes.
+ * If this maximum is reached, then we stop trying to generate mountains.
+ */
 #define MOUNTAIN_MAX_TRY            (10)
 
 
-// This function defines a pseudo-probability law
-// It's use to pick if a biome is a land biome or a water biome
-// With a higher probability of being a land at the center of the map
+/**
+ * @brief
+ * This function defines a pseudo-probability law.
+ * It's used to pick if a biome is a land biome or a water biome,
+ * with a higher probability of being a land at the center of the map.
+ *
+ * @param distance The distance to the center of the map of the Voronoi cell.
+ * @param size The size of the map.
+ * @return The pseudo-probability of the biome being a Land biome.
+ */
 float landRepartitionProbability(float distance, float size){
     return 1.1f*smooth6Interpolation(distance, size);
 }

@@ -23,6 +23,8 @@ public:
     /**
      * @brief Constructor
      *
+     * @param newSize The size of the newly created quad(geometrically
+     * speaking, a square).
      * @param tlData The top    left  blob
      * @param trData The top    right blob
      * @param blData The bottom left  blob
@@ -57,13 +59,30 @@ private :
     /// @brief The size of the square
     float size;
 
-    /// @brief The four blobs defining the square
+    /**
+     * @brief
+     * The "blob" defining the top left vertex of the square.
+     */
     HeightData topLeftData;
+
+    /**
+     * @brief
+     * The "blob" defining the top right vertex of the square.
+     */
     HeightData topRightData;
+
+    /**
+     * @brief
+     * The "blob" defining the bottom left vertex of the square.
+     */
     HeightData bottomLeftData;
+
+    /**
+     * @brief
+     * The "blob" defining the bottom right vertex of the square.
+     */
     HeightData bottomRightData;
 
 };
-
 
 #endif
