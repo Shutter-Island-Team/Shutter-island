@@ -9,6 +9,14 @@
 
 #include "Seed.hpp"
 
+/**
+ * @brief
+ * The HeightData class encapsulate the data associated with a blob
+ * of a HeightNode.
+ * Namely, the data regroups the position of the blob, the type of 
+ * biome he is included into, and the height associated with the
+ * blob.
+ */
 class HeightData {
 
 public :

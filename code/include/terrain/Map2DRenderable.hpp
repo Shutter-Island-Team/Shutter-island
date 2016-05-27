@@ -17,6 +17,11 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+/**
+ * @brief
+ * The class Map2DRenderable implements the rendering step of the
+ * bi-dimensional map.
+ */
 class Map2DRenderable : public Renderable
 {
 public:
@@ -25,7 +30,7 @@ public:
      * Construct the map renderable thanks to the data generated
      * by the map generator given as parameter.
      *
-     * @param program Shader program used to render the map.
+     * @param shaderProgram Shader program used to render the map.
      * @param mapGenerator Reference on the MapGenerator which generated
      * the map data.
      */
@@ -37,11 +42,20 @@ public:
      */
     ~Map2DRenderable();
 private:
-    /*
-     * Inherited functions.
-     * Their specifications are in the Renderable class header.
+    /**
+     * @brief 
+     * Implementation of the private inherited function do_draw.
+     *
+     * @see Renderable.hpp
      */
     void do_draw();
+
+    /**
+     * @brief 
+     * Implementation of the private inherited function do_animate.
+     *
+     * @see Renderable.hpp
+     */
     void do_animate(float time);
 
     /**

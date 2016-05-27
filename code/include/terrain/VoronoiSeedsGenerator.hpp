@@ -12,24 +12,64 @@
 #include <list>
 #include <vector>
 
-/*
- * Defining the default parameters of the generator.
+/**
+ * @brief
+ * Default width of the constrained plane in which the seeds are generated.
  */
 #define VSG_WIDTH 				500.0
+
+/**
+ * @brief
+ * Default height of the constrained plane in which the seeds are generated.
+ */
 #define VSG_HEIGHT 				500.0
+
+/**
+ * @brief
+ * Default number of seeds to generate.
+ */
 #define VSG_NB_SEEDS 			250
+
+/**
+ * @brief
+ * Default width of a subdivision of the grid used to tessellate the
+ * constrained plane the seeds generation takes place within.
+ */
 #define VSG_WIDTH_SUB 			10
+
+/**
+ * @brief
+ * Default height of a subdivision of the grid used to tessellate the
+ * constrained plane the seeds generation takes place within.
+ */
 #define VSG_HEIGHT_SUB 			10
+
+/**
+ * @brief
+ * Default maximum of the number of seeds by subdivision of the grid
+ * used to tessellate the constrained plane the seeds generation takes
+ * place within.
+ */
 #define VSG_MAX_SEEDS_BY_SUB 	5
+
+/**
+ * @brief
+ * Default minimum distance between two generated seeds.
+ */
 #define VSG_MIN_DIST            10.0
 
-/*
+/**
+ * @brief
  * Defining a useful macro to compute the distance between two points.
+ * 
+ * @param x First point.
+ * @param y Second point.
  */
 #define DISTANCE(x,y) sqrt(     ((x).getX()-(y).getX())*((x).getX()-(y).getX()) \
                             +   ((x).getY()-(y).getY())*((x).getY()-(y).getY()))
 
-/*
+/**
+ * @brief
  * Defining a useful macro to compute the "distance" from a point to the
  * center.
  * As a matter of fact, we just need this macro to sort the seeds according

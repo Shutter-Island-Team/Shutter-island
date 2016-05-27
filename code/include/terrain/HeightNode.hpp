@@ -10,6 +10,13 @@
 #include "HeightData.hpp"
 #include "../structures/QuadTree.hpp"
 
+/**
+ * @brief
+ * The HeightNode class represents a node of the QuadTree.
+ * Consequently, it encapsulates the data associated with
+ * the four "blobs", one per vertex of the quad (a
+ * constrained plane).
+ */
 class HeightNode {
 
 public:

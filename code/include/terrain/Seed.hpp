@@ -13,11 +13,26 @@
 #include <utility>
 #include <memory>
 
-
+/**
+ * @brief
+ * Representing a bi-dimensional vertex by a pair of float.
+ */
 typedef std::pair<float, float> Vertex2D;
 
+/**
+ * @brief
+ * Typedef of the shared_pointers onto the "voronoicell_neighbor"
+ * class defined in "voro++".
+ */
 typedef std::shared_ptr<voro::voronoicell_neighbor> voroNeighborPtr;
 
+/**
+ * @brief
+ * The Seed class represents a point of the considered constrained plane
+ * used to generate a Voronoi diagram.
+ * In other word, from a seed will blossom a Voronoi cell in the generated 
+ * Voronoi diagram.
+ */
 class Seed {
 
 public:

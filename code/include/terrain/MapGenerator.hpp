@@ -17,7 +17,12 @@
  */
 class Map2DRenderable;
 
-
+/**
+ * @brief
+ * The class MapGenerator encapsulates the generation of the seeds, the
+ * computation of the associated Voronoi diagram and the computation of
+ * the HeightMap.
+ */
 class MapGenerator {
 
 /**
