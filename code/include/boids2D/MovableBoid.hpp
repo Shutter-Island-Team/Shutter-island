@@ -168,10 +168,20 @@ class MovableBoid : public Boid
 
   void setPredator(const BoidType & predator);
 
+  bool isDead();
+
+  void kill();
+
+  void updateDeadStatus();
+
  private:
   glm::vec3 m_velocity; ///< Velocity of the boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
   float m_mass; ///< Mass of the boid
+
+  bool m_isDead;
+
+  float m_distanceToEat;
 
   MovableState* m_currentState; ///< State of the boid. @seeMovableState
   MovableParameters* m_parameters; ///< Parameter of the boid

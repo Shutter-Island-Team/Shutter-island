@@ -142,6 +142,7 @@ public:
    * @return true if the boid is hungry, false otherwise
    */
   bool isHungry() const;
+  bool isNotHungry() const;
 
   /**********************************
           Thirst methods
@@ -232,6 +233,10 @@ protected:
   float m_highStaminaValue;
 
   float m_lowHungerValue;
+  float m_highHungerValue;
+
+  float m_lowThirstValue;
+  float m_highThirstValue;
 
   float m_distToLeader;
 

@@ -506,6 +506,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 			newForces += glm::vec3(0,0,0);
 			break;
 	}
+	// TODO use the deplacement function
 	newForces += 16.0f * stayWithinWalls(b) + 4.0f * separate(b, mvB);
 	return newForces;
 }
@@ -592,11 +593,44 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	// thirst <- decrease
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if alone affinity <- ad(affinity)
-	return glm::vec3(0,0,0);
+	glm::vec3 newForces(0,0,0);
+	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
+	b.getParameters().staminaDecrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+
+	// Detect danger and update danger parameter 
+	detectDanger(b, mvB);
+
+	// Detect if alone and update affinity
+	alone(b, mvB);
+
+	switch (b.getBoidType()) {
+		case WOLF:
+			newForces += pursuit(b, *b.getMovablePrey(), dt);
+			break;
+		case RABBIT:
+			newForces += arrive(b, b.getRootedPrey()->getLocation());
+			break;
+		default:
+			std::cerr << "Unknown animal looking for food" << std::endl;
+			newForces += glm::vec3(0,0,0);
+			break;
+	}
+	// TODO use the deplacement function
+	newForces += 16.0f * stayWithinWalls(b) + 4.0f * separate(b, mvB);
+	return newForces;
 }
 
 glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
 	// TODO Think about it
 	return glm::vec3(0,0,0);
+}
+
+glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+{
+	// Don't move because the boid is dead
+	return arrive(b, b.getLocation());
 }

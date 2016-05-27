@@ -279,6 +279,16 @@ class LostState : public MovableState
   glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
 };
 
+/**
+ * @class DeadState
+ * @brief State of a dead boid
+ */
+class DeadState : public MovableState
+{
+ private:
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+};
+
 
 // Return the closest animal of b of the good type in the vector.
 // Need to be seen too.

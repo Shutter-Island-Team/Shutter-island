@@ -27,7 +27,8 @@ enum StateType {
 	LOST_STATE,
 	FIND_WATER_STATE,
 	DRINK_STATE,
-	MATE_STATE
+	MATE_STATE,
+	DEAD_STATE
 };
 
 #endif

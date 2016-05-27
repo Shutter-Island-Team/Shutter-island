@@ -25,7 +25,7 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, Mov
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     BoidType t, MovableParameters* parameters)
 	: Boid(location, t), m_velocity(velocity), 
-	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
+	m_acceleration(glm::vec3(0,0,0)), m_mass(mass), m_distanceToEat(0.2f),
 	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
 	m_rootedPrey((RootedBoidPtr) nullptr), m_hunter((MovableBoidPtr) nullptr)
 {
@@ -88,6 +88,10 @@ void MovableBoid::resetAcceleration()
 
 void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const float & dt)
 {
+	updateDeadStatus();
+	if(isDead()) {
+		switchToState(DEAD_STATE);
+	}
 	switch (m_stateType) {
 		case TEST_STATE:
 			break;
@@ -123,6 +127,8 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 			break;
 		case MATE_STATE:
 			mateStateHandler();
+			break;
+		case DEAD_STATE:
 			break;
 		default:
 			std::cerr << "Unknown state" << std::endl;
@@ -205,6 +211,8 @@ void MovableBoid::switchToState(const StateType & stateType)
 		case LOST_STATE:
 			m_currentState = new LostState();
 			break;
+		case DEAD_STATE:
+			m_currentState = new DeadState(); 
 		case TEST_STATE:
 			break;
 		default:
@@ -229,6 +237,7 @@ void MovableBoid::walkStateHandler()
 
 void MovableBoid::stayStateHandler()
 {
+
 	if (m_parameters->isInDanger()) {
 		switchToState(FLEE_STATE);
 	} else if (m_parameters->isThirsty()) {
@@ -258,15 +267,17 @@ void MovableBoid::findFoodStateHandler()
 void MovableBoid::attackStateHandler()
 {
 	if (closeToPrey()) {
-		///< @todo : Kill prey
+		m_movablePrey->kill();
 		switchToState(EAT_STATE);
 	}
 }
 
 void MovableBoid::eatStateHandler()
 {
-	///< @todo : wait to finish to eat
-	switchToState(LOST_STATE);
+	///< @todo : wait to finish to eat predator has eaten 
+	{
+		switchToState(LOST_STATE);
+	}
 }
 
 
@@ -326,9 +337,9 @@ bool MovableBoid::closeToPrey() const
 	///< @todo configure distance
 	bool res = false;
 	if(m_movablePrey != (MovableBoidPtr) nullptr) {
-		res = glm::distance(getLocation(), getMovablePrey()->getLocation()) < 0.2f;
+		res = glm::distance(getLocation(), getMovablePrey()->getLocation()) <= m_distanceToEat;
 	} else if (m_rootedPrey != (RootedBoidPtr) nullptr) {
-		res = glm::distance(getLocation(), getRootedPrey()->getLocation()) < 0.2f;
+		res = glm::distance(getLocation(), getRootedPrey()->getLocation()) <= m_distanceToEat;
 	} 
 	return res;
 }
@@ -353,8 +364,7 @@ bool MovableBoid::isNoLongerMating() const
 
 bool MovableBoid::preyIsDead() const
 {
-	///< @todo
-	return false;
+	return (m_movablePrey != (MovableBoidPtr) nullptr) && m_movablePrey->isDead();
 }
 
 bool MovableBoid::isNight() const
@@ -429,6 +439,23 @@ BoidType MovableBoid::getPredator() const
 void MovableBoid::setPredator(const BoidType & predator)
 {
 	m_predator = predator;
+}
+
+bool MovableBoid::isDead()
+{
+	return m_isDead;
+}
+
+void MovableBoid::kill()
+{
+	m_isDead = true;
+}
+
+void MovableBoid::updateDeadStatus()
+{
+	m_isDead = m_parameters->getStamina() == 0.0f 
+		&& m_parameters->getHunger() == 0.0f 
+		&& m_parameters->getThirst() == 0.0f;
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2)

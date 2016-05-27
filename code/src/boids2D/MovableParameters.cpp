@@ -30,11 +30,14 @@ MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 	m_distSeparate(distSeparate), m_distCohesion(distCohesion),
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
 	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
-	m_distToCircle(distToCircle), m_hunger(100.0f), m_thirst(100.0f), m_danger(0.0f),
-	m_affinity(0.0f), m_lowStaminaValue(10.0f), m_highStaminaValue(90.0f), m_lowHungerValue(10.0f),
-	m_distSeeAhead(distSeeAhead)
+	m_distToCircle(distToCircle), m_danger(0.0f), m_affinity(0.0f), 
+	m_lowStaminaValue(25.0f), m_highStaminaValue(80.0f), m_lowHungerValue(35.0f), m_highHungerValue(80.0f),
+	m_lowThirstValue(35.0f), m_highThirstValue(80.0f), m_distSeeAhead(distSeeAhead)
 {
 	m_stamina = random(1, 99);
+	m_hunger = random(1, 99);
+	m_thirst = random(1, 99);
+
 }
 
 MovableParameters::MovableParameters( const std::string & filename )
@@ -188,6 +191,11 @@ bool MovableParameters::isHungry() const
 	return m_hunger <= m_lowHungerValue;
 }
 
+bool MovableParameters::isNotHungry() const
+{
+	return m_hunger >= m_highHungerValue;
+}
+
 float MovableParameters::getMaxSpeed() const
 {
 	return m_maxSpeed;
@@ -237,20 +245,17 @@ bool MovableParameters::isInDanger() const
 
 bool MovableParameters::isThirsty() const
 {
-	///< @todo
-	return false;
+	return m_thirst <= m_lowThirstValue;
 }
 
 bool MovableParameters::isNotThirsty() const
 {
-	///< @todo
-	return false;	
+	return m_thirst >= m_highThirstValue;	
 }
 
 bool MovableParameters::isNotTired() const
 {
-	///< @todo
-	return false;	
+	return m_stamina >= m_highStaminaValue;	
 }
 
 bool MovableParameters::isNotInDanger() const
