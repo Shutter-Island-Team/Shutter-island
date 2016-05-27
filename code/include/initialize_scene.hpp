@@ -12,6 +12,6 @@ void initialize_test_sight( Viewer& viewer);
 void initialize_boid_scene_debug( Viewer& viewer);
 void initialize_boid_scene_follow_leader( Viewer& viewer );
 void initialize_boid_scene_hunt( Viewer& viewer );
-
+void initialize_map2D(Viewer& viewer);
 
 #endif 

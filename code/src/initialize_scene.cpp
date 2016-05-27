@@ -19,6 +19,11 @@
 #include "../include/boids2D/SightRenderable.hpp"
 #include "../include/boids2D/StateRenderable.hpp"
 
+#include "../include/terrain/MapGenerator.hpp"
+#include "../include/terrain/Map2DRenderable.hpp"
+
+#define MAP_SIZE 500.0
+
 #include <cstdlib>
 #include <ctime>
 
@@ -539,4 +544,40 @@ void initialize_boid_scene_hunt( Viewer& viewer )
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
+}
+
+void initialize_map2D(Viewer& viewer)
+{
+    /*
+     * Positionning the camera.
+     */
+    viewer.getCamera().setViewMatrix(glm::lookAt( 
+                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 1.50*MAP_SIZE/2.0), 
+                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 0), 
+                                        glm::vec3( 0, 1, 0) 
+                                    ) 
+    );
+
+    /*
+     * Loading default shaders.
+     */
+    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(
+            std::list<std::string>{
+                "../shaders/flatVertex.vert", 
+                "../shaders/flatFragment.frag"
+            }
+    );
+    viewer.addShaderProgram(flatShader);
+
+    /*
+     * Creating the map generator and generating the map.
+     */
+    MapGenerator mapGenerator(MAP_SIZE);
+    mapGenerator.compute();
+
+    /*
+     * Creating the map renderable and adding it to the system.
+     */
+    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(flatShader, mapGenerator);
+    viewer.addRenderable(mapRenderable);
 }

@@ -9,7 +9,7 @@ using namespace std;
 
 Camera::Camera()
     : m_view{ glm::lookAt( glm::vec3{0, 0, -5}, glm::vec3{}, glm::vec3{0,1,0}) },
-      m_fov{ 1.04f }, m_ratio{ 1.0f }, m_znear{ 1.0f }, m_zfar{ 150.0f },
+      m_fov{ 1.04f }, m_ratio{ 1.0f }, m_znear{ 1.0f }, m_zfar{ 500.0f },
       m_mouseBehavior{ ARCBALL_BEHAVIOR }
 {}
 
@@ -170,14 +170,14 @@ void Camera::update( float dx, float dy )
     {
     case ARCBALL_BEHAVIOR:
     {
-        glm::mat4 rotation = glm::rotate( glm::mat4( glm::mat3(m_view) ), dx, getUp() );
-        rotation = glm::rotate( rotation, dy, getRight() );
+        glm::mat4 rotation = glm::rotate( glm::mat4( glm::mat3(m_view) ), dx, getUp());
+        rotation = glm::rotate( rotation, dy, getRight());
 
         m_view[0] = rotation[0];
         m_view[1] = rotation[1];
         m_view[2] = rotation[2];
 
-        setPosition( -glm::vec3(m_view[3]) * glm::mat3(rotation) );
+        setPosition(-glm::vec3(m_view[3]) * glm::mat3(rotation));
     }
         break;
 
