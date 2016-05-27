@@ -435,11 +435,6 @@ BoidType MovableBoid::getPredator() const
 {
 	return m_predator;
 }
-  
-void MovableBoid::setPredator(const BoidType & predator)
-{
-	m_predator = predator;
-}
 
 bool MovableBoid::isDead()
 {

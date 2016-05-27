@@ -272,7 +272,7 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
 	return steer;	
 }
 
-void MovableState::detectDanger(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
+void MovableState::updateDanger(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
 {
 	BoidType predator = b.getPredator();
 	bool predatorFound = false;
@@ -292,7 +292,7 @@ void MovableState::detectDanger(const MovableBoid& b, const std::vector<MovableB
 	}
 }
 
-bool MovableState::alone(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
+bool MovableState::updateAffinity(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
 {
 	bool friendFound = false;
 
@@ -311,14 +311,14 @@ bool MovableState::alone(const MovableBoid& b, const std::vector<MovableBoidPtr>
 	}
 }
 
-glm::vec3 MovableState::normalWalk(const MovableBoid & b, const BoidsManager & boidsManager) const
+glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
 	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
 	return 20.0f * separate(b, mvB) + 1.0f * cohesion(b, mvB) + 3.0f * align(b, mvB) 
-		+ globalAvoid(b, boidsManager);
+		+ avoidEnvironment(b, boidsManager);
 }
 
-glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager) const
+glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
 	return 1000.0f * stayWithinWalls(b) + 1000.0f * collisionAvoid(b, boidsManager.getRootedBoids());
 }
@@ -343,19 +343,19 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
-	detectDanger(b, mvB);
+	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
-	alone(b, mvB);
+	updateAffinity(b, mvB);
 
 	glm::vec3 newForces(0,0,0);
 	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
-		newForces = 40.0f * followLeader(b, mvB, dt) + globalAvoid(b, boidsManager);
+		newForces = 40.0f * followLeader(b, mvB, dt) + avoidEnvironment(b, boidsManager);
 	}
 	else if (b.isLeader()) {
-		newForces = wander(b) + globalAvoid(b, boidsManager);
+		newForces = wander(b) + avoidEnvironment(b, boidsManager);
 	} else { // Can't see the leader
-		newForces = wander(b) + normalWalk(b, boidsManager); 
+		newForces = wander(b) + globalAvoid(b, boidsManager); 
 	}
 
 	
@@ -378,19 +378,19 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
-	detectDanger(b, mvB);
+	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
-	alone(b, mvB);
+	updateAffinity(b, mvB);
 
 	glm::vec3 newForces(0,0,0);
 	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
-		newForces = 40.0f * followLeader(b, mvB, dt) + globalAvoid(b, boidsManager);
+		newForces = 40.0f * followLeader(b, mvB, dt) + avoidEnvironment(b, boidsManager);
 	}
 	else if (b.isLeader()) {
-		newForces = wander(b) + globalAvoid(b, boidsManager);
+		newForces = wander(b) + avoidEnvironment(b, boidsManager);
 	} else { // Can't see the leader
-		newForces = wander(b) + normalWalk(b, boidsManager); 
+		newForces = wander(b) + globalAvoid(b, boidsManager); 
 	}
 
 	
@@ -415,10 +415,10 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
-	detectDanger(b, mvB);
+	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
-	alone(b, mvB);
+	updateAffinity(b, mvB);
 
 	return arrive(b, b.getLocation());
 }
@@ -440,7 +440,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	b.getParameters().thirstDecrease();
 
 	// Detect if alone and update affinity
-	alone(b, mvB);
+	updateAffinity(b, mvB);
 
 	return arrive(b, b.getLocation());
 }
@@ -475,10 +475,10 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
-	detectDanger(b, mvB);
+	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
-	alone(b, mvB);
+	updateAffinity(b, mvB);
 
 	MovableBoidPtr movableTarget;
 	RootedBoidPtr rootedTarget;
@@ -526,10 +526,10 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
-	detectDanger(b, mvB);
+	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
-	alone(b, mvB);
+	updateAffinity(b, mvB);
 
 	///< TODO maybe it better with the target ?
 	return arrive(b, b.getLocation());
@@ -563,10 +563,10 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	b.getParameters().thirstIncrease();
 
 	// Detect danger and update danger parameter 
-	detectDanger(b, mvB);
+	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
-	alone(b, mvB);
+	updateAffinity(b, mvB);
 
 	///< TODO maybe it better with the target ?
 	return arrive(b, b.getLocation());
@@ -601,10 +601,10 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
-	detectDanger(b, mvB);
+	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
-	alone(b, mvB);
+	updateAffinity(b, mvB);
 
 	switch (b.getBoidType()) {
 		case WOLF:

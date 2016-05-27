@@ -24,10 +24,10 @@ class MovableState
  public:
   /**
    * @brief     Returns the acceleration and reset the acceleration of the boid
-   * @param[in] b   The boid which has its acceleration reset and computed.
-   *                It is this thing which knows what it should do
-   * @param[in] mvB Vector of boids which b should be awared of
-   * @param[in] dt  Time step useful to compute some forces
+   * @param[in] b             The boid which has its acceleration reset and computed.
+   *                          It is this thing which knows what it should do
+   * @param[in] boidsManager  Allow the access to all boids to compute the adapted force
+   * @param[in] dt            Time step useful to compute some forces
    * @return    The new acceleration of the boid
    */
   glm::vec3 computeAcceleration(MovableBoid& b,
@@ -37,9 +37,9 @@ class MovableState
   /**
    * @brief     Pure virtual function to compute the force of the boid
    *            @see computeAcceleration
-   * @param[in] b   The boid which knows what do to
-   * @param[in] mvB Vector of boids which b should be awared of
-   * @param[in] dt  Time step useful to compute some forces
+   * @param[in] b             The boid which knows what do to
+   * @param[in] boidsManager  Allow the access to all boids to compute the adapted force
+   * @param[in] dt            Time step useful to compute some forces
    * @return    The acceleration (decision) of the boid
    */
   virtual glm::vec3 computeNewForces(MovableBoid& b,
@@ -87,8 +87,8 @@ class MovableState
   
   /**
    * @brief     Computes the force for a boid b separate from others boids
-   * @param[in] b   The concerned boid
-   * @param[in] mvB Vector of boids which b should be awared of
+   * @param[in] b     The concerned boid
+   * @param[in] bVec  Vector of boids which b should be awared of
    * @return    Returns the force required for the b to separate
    */
   glm::vec3 separate(const MovableBoid& b, const std::vector<MovableBoidPtr> & bVec) const;
@@ -137,6 +137,7 @@ class MovableState
    * @brief     Computes the force for a boid b to follow its leader
    * @param[in] b The concerned boid
    * @param[in] mvB Vector of boids which b have should be aware
+   * @param[in] dt Time step
    * @return    Returns the force required for the boid to follow its leader
    */
   glm::vec3 followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
@@ -149,13 +150,37 @@ class MovableState
    */
   glm::vec3 positionForecast(const MovableBoid & b, const float & dt, const float & cst) const;
 
-  glm::vec3 normalWalk(const MovableBoid & b, const BoidsManager & boidsManager) const;
-
+  /**
+   * @brief Compute the resulting force to avoid boids in normal behavior
+   * @param[in] b           The concerned boid
+   * @param[in] boidsManager The boid manager needed to be awared of the environment
+   * @return Return the resulting force to feel it avoids boids enough
+   */
   glm::vec3 globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager) const;
 
-  void detectDanger(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+  /**
+   * @brief Compute the resulting force to avoid the environment in normal behavior
+   * @param[in] b           The concerned boid
+   * @param[in] boidsManager The boid manager needed to be awared of the environment
+   * @return Return the resulting force to avoid the environment
+   */
+  glm::vec3 avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const;
 
-  bool alone(const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+  /**
+   * @brief Detect if the boid is in danger with its environment. If it is the case
+   *        update the danger, it means increase or decrease it.
+   * @param[in] b   The concerned boid
+   * @param[in] mvB Others boids
+   */
+  void updateDanger(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+
+  /**
+   * @brief Detect if the boid is in a pleasant environment. If it is the case
+   *        update the affinity, it means increase or decrease it.
+   * @param[in] b   The concerned boid
+   * @param[in] mvB Others boids
+   */
+  bool updateAffinity(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
 
 };
 

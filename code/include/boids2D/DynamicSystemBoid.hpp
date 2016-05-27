@@ -4,9 +4,10 @@
 #include "SolverBoid.hpp"
 #include "BoidsManager.hpp"
 
-// TODO : Now the class take all the boids. In reality only movable boids
-// can compute a next position
-
+/**
+ * @class DynamicSystemBoid 
+ * @brief Dynamic handler for the boidManager
+ */
 class DynamicSystemBoid
 {
 private:
@@ -59,10 +60,10 @@ public:
      */
     void setSolver(SolverBoidPtr solver);
 
-    /**@brief Set the particles of this system.
+    /**@brief Set the boid manager of this system.
      *
-     * Define a new set of particles for this dynamic system.
-     * @param particles The new set of particles of this system.
+     * Define a new set of boid manager for this dynamic system.
+     * @param boidsManager The new set of boid manager of this system.
      */
     void setBoidsManager(BoidsManagerPtr boidsManager);
 

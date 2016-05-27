@@ -24,6 +24,8 @@ public:
    * @param[in] distCohesion  Distance of cohesion
    * @param[in] distViewMax   Distance of maximum view
    * @param[in] distToLeader  Distance to keep with the leader of the group
+   * @param[in] distSeeAhead  Distance to see ahead the obstacles
+   * @param[in] distToLeader  Distance to keep with the leader of the group
    */
   MovableParameters(float maxSpeed, float maxForce, float angleView,
 		float distSeparate, float distCohesion, float distViewMax,
@@ -38,6 +40,7 @@ public:
    * @param[in] distCohesion          Distance of cohesion
    * @param[in] distViewMax           Distance of maximum view
    * @param[in] distToLeader          Distance to keep with the leader of the group
+   * @param[in] distSeeAhead          Distance to see ahead the obstacles
    * @param[in] distStartSlowingDown  Distance before slowing down for arrive behavior
    * @param[in] rCircleWander         Radius of the circle for wander behavior
    * @param[in] distToCircle          Distance between the boid and the wander circle   
@@ -153,7 +156,7 @@ public:
   float getThirst() const;
 
   /**
-   * @brief Increase the thirsst value
+   * @brief Increase the thirst value
    * @todo  Review it
    */
   void thirstIncrease();
@@ -174,71 +177,156 @@ public:
   /**********************************
           Danger methods
   ***********************************/
-  // Danger functions
+  /**
+   * @brief Getter for the danger value
+   * @return Returns the value of danger
+   * @todo Check if it is still useful
+   */
   float getDanger() const;
+
+  /**
+   * @brief Increment the danger
+   */
   void dangerIncrease();
+
+  /**
+   * @brief Decrement the danger
+   */
   void dangerDecrease();
+
+  /**
+   * @brief Check if the boid is in danger
+   * @return True if the boid is in danger, false otherwise
+   */
   bool isInDanger() const;
+
+  /**
+   * @brief Check if the boid is not in danger
+   * @return True if the boid is not in danger, false otherwise
+   */
   bool isNotInDanger() const;
 
   /**********************************
           Affinity methods
   ***********************************/
-  // Affinity functions
+  /**
+   * @brief Getter for the affinity value
+   * @return Returns the value of affinity
+   * @todo Check if it is still useful
+   */
   float getAffinity() const;
+
+  /**
+   * @brief Increment the affinity
+   */
   void affinityIncrease();
+
+  /**
+   * @brief Decrement the affinity
+   */
   void affinityDecrease();
 
   /**********************************
           Getter methods
   ***********************************/
-  // Getter of parameters
+  /**
+   * @brief Getter for the maximum speed value
+   * @return Returns the maximum speed value
+   */
   float getMaxSpeed() const;
+
+  /**
+   * @brief Getter for the maximum force value
+   * @return Returns the maximum force value
+   */
   float getMaxForce() const;
+
+  /**
+   * @brief Getter for the radius circle wander
+   * @return Returns the radius circle wander
+   */
   float getRadiusCircleWander() const;
+
+  /**
+   * @brief Getter for the maximum speed value
+   * @return Returns the maximum speed value
+   */
   float getDistToCircleWander() const;
+
+  /**
+   * @brief Getter for the distance before slowing down for arrive behavior
+   * @return Returns the distance before slowing down for arrive behavior
+   */
   float getDistStartSlowingDown() const;
+
+  /**
+   * @brief Getter for the distance of separation
+   * @return Returns the distance of separation
+   */
   float getDistSeparate() const;
+
+  /**
+   * @brief Getter for the distance of cohesion
+   * @return Returns the distance of cohesion
+   */
   float getDistViewCohesion() const;
+
+  /**
+   * @brief Getter for the angle of vision
+   * @return Returns the angle of vision
+   */
   float getAngleView() const;
+
+  /**
+   * @brief Getter for the maximum distance of view
+   * @return Returns the maximum distance of view
+   */
   float getDistViewMax() const;
+
+  /**
+   * @brief Getter for the dist to leader to respect
+   * @return Returns the dist to leader to respect
+   */
   float getDistToLeader() const;
 
+  /**
+   * @brief Getter for the vision of ahead for obstacles
+   * @return Returns the vision of ahead for obstacles
+   */
   float getDistSeeAhead() const;
 
 
-protected:
+ private:
   float m_stamina; ///< Value in [0, 100] to describe the stamina of a boid
   float m_hunger; ///< Value in [0, 100] to describe the hunger of a boid
   float m_thirst; ///< Value in [0, 100] to describe the thirst of a boid
   float m_danger; ///< Value in [0, 100] to describe the feel of danger of a boid
   float m_affinity; ///< Value in [0, 100] to describe the affinity of a boid
 
- private:
   float m_maxSpeed; ///< Maximum speed of the boid
   float m_maxForce; ///< Maximum force of the boid
 
-  float m_rCircleWander;
-  float m_distToCircle;
-  float m_distStartSlowingDown;
+  float m_rCircleWander; ///< Radius of the wander circle 
+  float m_distToCircle; ///< Distance between the boid and the center of the wander circle
+  float m_distStartSlowingDown; ///< Distance before start slowing down
 
-  float m_distSeparate;
-  float m_distCohesion;
+  float m_distSeparate; ///< Distance of separation
+  float m_distCohesion; ///< Distance of cohesion
 
-  float m_angleView;
+  float m_angleView; ///< Angle of vision
 
-  float m_distViewMax;
+  float m_distViewMax; ///< Distance of the maximum view
 
-  float m_lowStaminaValue;
-  float m_highStaminaValue;
+  float m_lowStaminaValue; ///< Value of the low stamina
+  float m_highStaminaValue; ///< Value of the high stamina
 
-  float m_lowHungerValue;
-  float m_highHungerValue;
+  float m_lowHungerValue; ///< Value of the low hunger
+  float m_highHungerValue; ///< Value of the high hunger
 
-  float m_lowThirstValue;
-  float m_highThirstValue;
+  float m_lowThirstValue; ///< Value of the low thirst
+  float m_highThirstValue; ///< Value of the low thirst
 
-  float m_distToLeader;
+  float m_distToLeader; ///< Distance to respect behind the leader
 
   float m_distSeeAhead; ///< Distance to see ahead the obstacle
 };

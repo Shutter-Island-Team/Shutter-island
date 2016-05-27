@@ -33,7 +33,10 @@ public:
     void setDynamicSystem(const DynamicSystemBoidPtr &system);
     
 private:
+    /**@brief Implementation of do_draw. Does nothing.
+     */
     void do_draw();
+    
     /**@brief Update the dynamic system.
      *
      * This function will update the managed dynamic system, i.e. compute the
@@ -57,8 +60,6 @@ private:
      * keep updating the dynamic system at the specified time interval.
      */
     float m_lastUpdateTime;
-
-    int choice = 0;
 };
 
 typedef std::shared_ptr<DynamicSystemBoidRenderable> DynamicSystemBoidRenderablePtr;

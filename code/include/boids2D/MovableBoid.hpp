@@ -93,6 +93,7 @@ class MovableBoid : public Boid
    * @brief     Update the acceleration of the boid. Save the value
    *            in the acceleration field of the class
    * @param[in] boidsManager The boid's manager
+   * @param[in] dt Time step
    */
   void computeAcceleration(const BoidsManager & boidsManager, const float & dt);
 
@@ -136,9 +137,22 @@ class MovableBoid : public Boid
   /**********************************
           Leader methods
   ***********************************/
-  // Leader functions
+  /**
+   * @brief Check if the current boid is a leader
+   * @return True if the current boid is a leader, false otherwise
+   */
   bool isLeader() const;
+
+  /**
+   * @brief Getter for the leader of the boid
+   * @return Return the leader of the boid
+   */
   MovableBoidPtr getLeader() const;
+
+  /**
+   * @brief Setter for the leader of the boid
+   * @param[in] newLeader The new leader of the boid
+   */
   void setNewLeader(MovableBoidPtr newLeader);
 
   /**
@@ -147,23 +161,46 @@ class MovableBoid : public Boid
    */
   bool hasLeader() const;
 
-
-
   /**
-   *
+   * @brief Setter for the movable prey of the boid
+   * @param[in] boid The movable prey of the boid
    */
   void setMovablePrey(const MovableBoidPtr & boid);
 
+  /**
+   * @brief Getter for the movable prey of the boid
+   * @return Returns the movable prey of the boid
+   */
   MovableBoidPtr getMovablePrey() const;
 
+  /**
+   * @brief Setter for the rooted prey of the boid
+   * @param[in] boid The rooted prey of the boid
+   */
   void setRootedPrey(const RootedBoidPtr & boid);
 
+  /**
+   * @brief Getter for the rooted prey of the boid
+   * @return Returns the rooted prey of the boid
+   */
   RootedBoidPtr getRootedPrey() const;
 
+  /**
+   * @brief Setter for the hunter of the boid
+   * @param[in] boid The hunter of the boid
+   */
   void setHunter(const MovableBoidPtr & boid);
 
+  /**
+   * @brief Getter for the hunter of the boid
+   * @return Returns the hunter
+   */
   MovableBoidPtr getHunter() const;
 
+  /**
+   * @brief Getter for the type of boid which are predator of the current boid
+   * @return Returns the type of the predator
+   */
   BoidType getPredator() const;
 
   void setPredator(const BoidType & predator);
@@ -179,21 +216,21 @@ class MovableBoid : public Boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
   float m_mass; ///< Mass of the boid
 
-  bool m_isDead;
+  bool m_isDead; ///< Boolean to know if the boid is dead
 
-  float m_distanceToEat;
+  float m_distanceToEat; ///< Distance between the boid and its target to eat
 
-  MovableState* m_currentState; ///< State of the boid. @seeMovableState
+  MovableState* m_currentState; ///< State of the boid
   MovableParameters* m_parameters; ///< Parameter of the boid
 
 
   RootedBoidPtr m_rootedPrey; ///< Rooted prey of the boid. (If exist cannot have a movable prey)
   MovableBoidPtr m_movablePrey; ///< Movable prey of the boid. (If exist cannot have a rooted prey)
 
-  MovableBoidPtr m_hunter;
-  MovableBoidPtr m_leader;
+  MovableBoidPtr m_hunter; ///< Hunter of the boid
+  MovableBoidPtr m_leader; ///< Leader of the boid
 
-  BoidType m_predator;
+  BoidType m_predator; ///< Type of the predator
 
   /**
    * @brief     Make all the change when a boid get to the new state stateType

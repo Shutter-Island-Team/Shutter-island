@@ -7,6 +7,10 @@
 #include <vector>
 #include <glm/glm.hpp>
 
+/**
+ * @class StateRenderable 
+ * @brief Renderable for a circle under the boid to see its state
+ */
 class StateRenderable : public HierarchicalRenderable
 {
  public:
