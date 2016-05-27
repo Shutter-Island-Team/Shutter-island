@@ -44,4 +44,4 @@ void computeBeach(std::vector<Seed>& seeds, float mapSize);
  * This set must be sorted by the distance to the center of the map
  */
 
-void computeMountains(std::vector<Seed>& seeds, float p);
+void computeMountains(std::vector<Seed>& seeds);

@@ -14,12 +14,18 @@
 
 #define LAND_BLENDING_COEFFICIENT (0.7f)
 
-#define LAKE_GEOMETRIC_PICKING (0.7)
-#define LAKE_PROB_TRANSFORM    (0.2)
+#define LAKE_GEOMETRIC_PICKING  (0.8)
+#define LAKE_PROB_TRANSFORM     (0.1)
+#define LAKE_POSITIVE_INFLUENCE (0.15f)
 
 #define MOUNTAIN_GEOMETRIC_PICKING (0.7)
+#define MOUNTAIN_PROB_TRANSFORM    (0.9)
 #define MOUNTAIN_MAX_TRY            (10)
 
+
+// This function defines a pseudo-probability law
+// It's use to pick if a biome is a land biome or a water biome
+// With a higher probability of being a land at the center of the map
 float landRepartitionProbability(float distance, float size){
     return 1.1f*smooth6Interpolation(distance, size);
 }
@@ -52,68 +58,76 @@ void computeLand(std::vector<Seed>& seeds, float mapSize) {
         double neighboursVolume = 0.0;
         bool   neighbourFound   = false;
 
-        // Computing the influence of the neighbours
+        // Computing the influence of the neighbours, weighted by their volume
         for (
             auto currentIndexIt = neighbours.begin();
             currentIndexIt != neighbours.end();
             currentIndexIt++
         ) {
 
-            /*
-             * If the index of the neighbour is negative, then it is a
-             * wall and not a cell (according to Voro++ specifications).
-             */
-            if (*currentIndexIt >= 0) {
-                Seed currentNeighbour = seeds[*currentIndexIt];
-                Biome neighbourBiome = currentNeighbour.getBiome();
+	    
+	    // If we are on the edge of the map,  then it must be a sea
 
-                // If the neighbour has been computed, 
-                // Then it should influence the current biome
-                if (neighbourBiome != Undefined) {
-                    neighbourFound = true;
-                    double volume = currentNeighbour.getCell()->volume();
-                    neighboursVolume += volume;
-                    // Positive influence if it's a land 
-                    // (here representated by Plains)
-                    if (neighbourBiome == Plains)
-                        landVolume += volume;
-                }
-            }
-        }
-
-        // Computing the probability of being a land
-        // If we are on the edge of the map,  then it must be a sea
-        // Getting the needed informations
-	float seedX = currentSeedIt->getX();
-	float seedY = currentSeedIt->getY();
-	// Testing with each edges
-	bool touchTop    = currentCell->plane_intersects( 0.0,  1.0, 0.0, yMax  - seedY);
-	bool touchBottom = currentCell->plane_intersects( 0.0, -1.0, 0.0, seedY - yMin);
-	bool touchRight  = currentCell->plane_intersects( 1.0,  0.0, 0.0, xMax  - seedX);
-	bool touchLeft   = currentCell->plane_intersects(-1.0,  0.0, 0.0, seedX - xMin);
-	// If the seed touches one of the edges, then it is a sea biome
-	if (touchTop || touchBottom || touchRight || touchLeft) {
-	    currentSeedIt->setBiome(Sea);
-        } else {
-            // else picking the type
-            float dx = currentSeedIt->getX() - mapSize/2.0f;
-            float dy = currentSeedIt->getY() - mapSize/2.0f;
-            float distance = sqrt(dx*dx + dy*dy);
-	    // Nb : In the next call, it's mapSize and not mapSize/2.0f
-	    // To make sure that the land will be big enough
-            float prob = landRepartitionProbability(distance, mapSize);
-            if (neighbourFound) {
-                pLand = LAND_BLENDING_COEFFICIENT*prob
-                    + (1 - LAND_BLENDING_COEFFICIENT)*(landVolume/neighboursVolume);
-            } else {
-                pLand = prob;
-            }
-        
-	    // Picking if it's a land
-	    if ((random(0,1)) <= pLand) {
-	        currentSeedIt->setBiome(Plains);
+	    // Getting the needed informations
+	    float seedX = currentSeedIt->getX();
+	    float seedY = currentSeedIt->getY();
+	    // Testing with each edges
+	    bool touchTop    = currentCell->plane_intersects( 0.0,  1.0, 0.0, 
+							      yMax  - seedY);
+	    bool touchBottom = currentCell->plane_intersects( 0.0, -1.0, 0.0, 
+							      seedY - yMin);
+	    bool touchRight  = currentCell->plane_intersects( 1.0,  0.0, 0.0, 
+							      xMax  - seedX);
+	    bool touchLeft   = currentCell->plane_intersects(-1.0,  0.0, 0.0, 
+							     seedX - xMin);
+	    // If the seed touches one of the edges, then it is a sea biome
+	    if (touchTop || touchBottom || touchRight || touchLeft) {
+		currentSeedIt->setBiome(Sea);
 	    } else {
-	        currentSeedIt->setBiome(Sea);
+		// else computing the probability of being a land
+
+		// If the index of the neighbour is negative, then it is a
+		// wall and not a cell (according to Voro++ specifications).
+		if (*currentIndexIt >= 0) {
+		    Seed currentNeighbour = seeds[*currentIndexIt];
+		    Biome neighbourBiome = currentNeighbour.getBiome();
+
+		    // If the neighbour has been computed, 
+		    // Then it should influence the current biome
+		    if (neighbourBiome != Undefined) {
+			neighbourFound = true;
+			double volume = currentNeighbour.getCell()->volume();
+			neighboursVolume += volume;
+			// Positive influence if it's a land 
+			// (here representated by Plains)
+			if (neighbourBiome == Plains)
+			    landVolume += volume;
+		    }
+		}
+	    
+
+		// Computing the probability dependinf on the distance
+		float dx = currentSeedIt->getX() - mapSize/2.0f;
+		float dy = currentSeedIt->getY() - mapSize/2.0f;
+		float distance = sqrt(dx*dx + dy*dy);
+		// Nb : In the next call, it's mapSize and not mapSize/2.0f
+		// To make sure that the land will be big enough
+		float prob = landRepartitionProbability(distance, mapSize);
+
+		// Computing the blended 'probability'
+		if (neighbourFound) {
+		    pLand = LAND_BLENDING_COEFFICIENT*prob
+			+ (1 - LAND_BLENDING_COEFFICIENT)*(landVolume/neighboursVolume);
+		} else {
+		    pLand = prob;
+		}
+        
+		// Picking if it's a land
+		if ((random(0,1)) <= pLand) {
+		    currentSeedIt->setBiome(Plains);
+		} else {
+		    currentSeedIt->setBiome(Sea);
+		}
 	    }
 	}
     }
@@ -124,8 +138,8 @@ void computeLake(std::vector<Seed>& seeds) {
     // Plains that are surrounded by land can turn into a lake
 
     // Skipping some biomes at the beginning    
-    bool   startPick = false;
-    bool   probStart = 1.0;
+    bool  startPick = false;
+    float probStart = 1.0;
 
     for (auto currentSeedIt = seeds.begin();
             currentSeedIt != seeds.end();
@@ -134,20 +148,19 @@ void computeLake(std::vector<Seed>& seeds) {
         // Skipping bloc 
         if (!startPick) {
             probStart *= LAKE_GEOMETRIC_PICKING;
-            startPick = (random(0.0, 1.0) < probStart);
+            startPick = ((random(0.0, 1.0)) > probStart);
             if (!startPick)
                 continue;
         }
 
         // Starting to put lakes
         Biome currentBiome = currentSeedIt->getBiome();
-        // If we are close a sea, we are too far from the center
-        // No more lakes
-        if ((currentBiome == Sea) || (currentBiome == Beach))
-            break;
+	
+	// If it's not a land, it cannot turn into a lake
+	if (currentBiome != Plains) continue;
 
         // Otherwise, if the seed is deep in the land, 
-        // it might become a sea
+        // it might become a lake
 
         // Computing the neighbours
         std::vector<int> neighbours;
@@ -155,19 +168,24 @@ void computeLake(std::vector<Seed>& seeds) {
         
         // Searching if it is a correct neighbourhood
         bool validNeighbourhood = true;
+	float probOffset = 0.0f;
         for (auto currentNeighbourIt = neighbours.begin();
                 (currentNeighbourIt != neighbours.end()) && validNeighbourhood;
                 currentNeighbourIt++ ) {
             int neighbourIndex = *currentNeighbourIt;
             if (neighbourIndex >= 0) {
                 Biome neighbourBiome = seeds[neighbourIndex].getBiome();
-                validNeighbourhood = ((neighbourBiome == Plains) 
-                                        || (neighbourBiome == Mountain));
+                validNeighbourhood = ((neighbourBiome == Plains)
+				      || (neighbourBiome == Lake));
+		// Positive influence
+		if (neighbourBiome == Lake)
+		    probOffset += LAKE_POSITIVE_INFLUENCE;
             }
         }
 
         // If the neighbourhood is valid, then picking if it becomes a lake
-        if ((validNeighbourhood) && ((random(0.0, 1.0)) <= LAKE_PROB_TRANSFORM))
+        if ((validNeighbourhood) 
+	    && ((random(0.0, 1.0)) <= (LAKE_PROB_TRANSFORM + probOffset)))
             currentSeedIt->setBiome(Lake);   
     }
 
@@ -178,16 +196,13 @@ void computeLake(std::vector<Seed>& seeds) {
 void computeBeach(std::vector<Seed>& seeds, float mapSize){
 
     // The sea type must be propagated towards the interior of the map
-    // Land type  becomes beach if one of their neighbor is a sea
+    // Land type becomes beach if one of their neighbor is a sea
+    // Small inner seas are erased
     for (auto currentSeedIt = seeds.rbegin(); 
 	 currentSeedIt != seeds.rend();
 	 currentSeedIt++) {
 	
 	Biome currentBiome = currentSeedIt->getBiome();
-
-	// Nothing to do if it's a sea
-	if (currentBiome == Sea) 
-	    continue;
 
 	bool seaFound = false;
 
@@ -205,23 +220,35 @@ void computeBeach(std::vector<Seed>& seeds, float mapSize){
 		seaFound = ((seeds[currentIndex].getBiome()) == Sea);
 	}
 	// Setting the new biome
-	if (seaFound)
+	if (seaFound) {
 	    switch (currentBiome) {
 		
 	    case Plains :
-		// Default land type
+		// Default land type turn into a beach
 		currentSeedIt->setBiome(Beach);
 		break;
 		
 	    default:
 		break;
 	    }
+	} else {
+	    switch (currentBiome) {
+		
+	    case Sea :
+		// Inner sea are erased
+		currentSeedIt->setBiome(Plains);
+		break;
+
+	    default :
+		break;
+	    }
+	}
     }
 }
 
 
 
-void computeMountains(std::vector<Seed>& seeds, float p){
+void computeMountains(std::vector<Seed>& seeds){
 
     int nbBiomes = seeds.size();
 
@@ -240,11 +267,11 @@ void computeMountains(std::vector<Seed>& seeds, float p){
     
     // Second step : propagating the mountain
     int nbMountain = 1;
-    probPick = p;
+    probPick = 1.0;
     // First picking if a new mountain is created
     while ((random(0.0, 1.0) <= probPick) && (nbMountain < nbBiomes-1)) {
 	nbMountain++;
-	probPick *= p;
+	probPick *= MOUNTAIN_PROB_TRANSFORM;
 	// Computing the neighbours
 	auto currentCell = seeds[mountainIndex].getCell();
 	std::vector<int> neighbours;

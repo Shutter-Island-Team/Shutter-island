@@ -5,12 +5,11 @@
  */
 
 
-#define DEFAULT_NB_SEEDS            (100)      
+#define DEFAULT_NB_SEEDS            (300)      
 #define DEFAULT_NB_SUBDIVISION      ( 25)
 #define DEFAULT_NB_SEEDS_MAX_SUBDIV (  5)
 #define DEFAULT_DIST_MIN            ( 10)
 
-#define PROB_MOUNTAIN (0.8)
 
 #include "../../include/terrain/Seed.hpp"
 #include "../../include/terrain/MapGenerator.hpp"
@@ -108,11 +107,11 @@ void MapGenerator::compute() {
     // Computing the beaches depending on the seas
     computeBeach(seeds, mapSize);
 
+    // Mountain repartition
+    computeMountains(seeds);
+
     // Adding the lakes
     computeLake(seeds);
-
-    // Mountain repartition
-    computeMountains(seeds, PROB_MOUNTAIN);
 
     // HeightTree step
     // Creating the initial map : a deep dark sea
