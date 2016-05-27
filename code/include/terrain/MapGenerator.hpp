@@ -11,7 +11,21 @@
 #include "VoronoiSeedsGenerator.hpp"
 #include "HeightTree.hpp"
 
+/**
+ * @brief 
+ * Promise of definition of the friend class.
+ */
+class Map2DRenderable;
+
+
 class MapGenerator {
+
+/**
+ * @brief
+ * Friend class definition, in order to access the MapGenerator's attributes
+ * without using getters.
+ */
+friend class Map2DRenderable;
 
 public :
 
