@@ -26,8 +26,8 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     BoidType t, MovableParameters* parameters)
 	: Boid(location, t), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
-	m_parameters(parameters), m_prey((MovableBoidPtr) nullptr),
-	m_hunter((MovableBoidPtr) nullptr)
+	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
+	m_rootedPrey((RootedBoidPtr) nullptr), m_hunter((MovableBoidPtr) nullptr)
 {
 	#ifdef DEBUG 
     	m_stateType = TEST_STATE;
@@ -141,7 +141,7 @@ void MovableBoid::computeNextStep(const float & dt)
 
 bool MovableBoid::canSee(const Boid & other, const float & distView) const
 {
-	return (distVision(other, distView)) && (angleVision(other));
+	return (distVision(other, distView)) && (angleVision(other) && &other != this);
 }
 
 bool MovableBoid::distVision (const Boid & other, const float & distView) const
@@ -318,14 +318,19 @@ void MovableBoid::mateStateHandler()
 
 bool MovableBoid::hasPrey() const
 {
-	///< @todo
-	return false;
+	return m_movablePrey != (MovableBoidPtr) nullptr || m_rootedPrey != (RootedBoidPtr) nullptr;
 }
 
 bool MovableBoid::closeToPrey() const
 {
-	///< @todo
-	return false;
+	///< @todo configure distance
+	bool res = false;
+	if(m_movablePrey != (MovableBoidPtr) nullptr) {
+		res = glm::distance(getLocation(), getMovablePrey()->getLocation()) < 0.2f;
+	} else if (m_rootedPrey != (RootedBoidPtr) nullptr) {
+		res = glm::distance(getLocation(), getRootedPrey()->getLocation()) < 0.2f;
+	} 
+	return res;
 }
 
 bool MovableBoid::nextToWater() const
@@ -386,14 +391,24 @@ bool MovableBoid::isInGroup() const
 	return !(getLeader() == nullptr);
 }
 
-void MovableBoid::setPrey(const MovableBoidPtr & boid)
+void MovableBoid::setMovablePrey(const MovableBoidPtr & boid)
 {
-	m_prey = boid;
+	m_movablePrey = boid;
 }
 
-MovableBoidPtr MovableBoid::getPrey() const
+MovableBoidPtr MovableBoid::getMovablePrey() const
 {
-	return m_prey;
+	return m_movablePrey;
+}
+
+void MovableBoid::setRootedPrey(const RootedBoidPtr & boid)
+{
+	m_rootedPrey = boid;
+}
+
+RootedBoidPtr MovableBoid::getRootedPrey() const
+{
+	return m_rootedPrey;
 }
 
 void MovableBoid::setHunter(const MovableBoidPtr & boid)

@@ -9,6 +9,7 @@
 #include "MovableState.hpp"
 #include "MovableParameters.hpp"
 #include "BoidsManager.hpp"
+#include "RootedBoid.hpp"
 
 class BoidsManager;
 
@@ -151,9 +152,13 @@ class MovableBoid : public Boid
   /**
    *
    */
-  void setPrey(const MovableBoidPtr & boid);
+  void setMovablePrey(const MovableBoidPtr & boid);
 
-  MovableBoidPtr getPrey() const;
+  MovableBoidPtr getMovablePrey() const;
+
+  void setRootedPrey(const RootedBoidPtr & boid);
+
+  RootedBoidPtr getRootedPrey() const;
 
   void setHunter(const MovableBoidPtr & boid);
 
@@ -171,7 +176,10 @@ class MovableBoid : public Boid
   MovableState* m_currentState; ///< State of the boid. @seeMovableState
   MovableParameters* m_parameters; ///< Parameter of the boid
 
-  MovableBoidPtr m_prey;
+
+  RootedBoidPtr m_rootedPrey; ///< Rooted prey of the boid. (If exist cannot have a movable prey)
+  MovableBoidPtr m_movablePrey; ///< Movable prey of the boid. (If exist cannot have a rooted prey)
+
   MovableBoidPtr m_hunter;
   MovableBoidPtr m_leader;
 
@@ -241,7 +249,7 @@ class MovableBoid : public Boid
   StateType m_stateType; ///< Save the current state of a boid
 
   /**
-   * @brief   Check if the boid has a prey
+   * @brief   Check if the boid has a movable prey or a rooted prey 
    * @return  true if the boid has a prey, false otherwise
    */
   bool hasPrey() const;

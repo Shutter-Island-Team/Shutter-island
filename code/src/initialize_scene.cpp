@@ -531,9 +531,7 @@ void initialize_boid_scene_hunt( Viewer& viewer )
     MovableBoidPtr wolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(-15, 15), random(-15, 15), 2));
     MovableBoidPtr rabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
     MovableBoidPtr rabbit2 = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(-15, 15), random(-15, 15), 2));
-    displayVec3(std::cerr, wolf->getLocation());
-    wolf->setPrey(rabbit);
-    displayVec3(std::cerr, wolf->getPrey()->getLocation());
+    wolf->setMovablePrey(rabbit);
     rabbit->setHunter(wolf);
     rabbit2->setHunter(wolf);
 
