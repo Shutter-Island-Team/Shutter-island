@@ -5,6 +5,7 @@
 # include "./../include/gl_helper.hpp"
 # include "./../include/log.hpp"
 # include <GL/glew.h>
+#include <string>
 
 void
 check_previous_gl_errors()

@@ -2,7 +2,6 @@
 #include "./../include/gl_helper.hpp"
 #include "./../include/log.hpp"
 
-#include <unistd.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 #include <iostream>

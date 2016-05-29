@@ -59,7 +59,10 @@ void VoronoiSeedsGenerator::generateSeeds(
 	 * In order to retain the current number of seeds by subdivision of the
 	 * grid, we use a bi-dimensional array.
 	 */
-	int nbSeedsBySub[m_nbOfHeightSubdivisions][m_nbOfWidthSubdivisions] = {};
+	int** nbSeedsBySub = new int* [m_nbOfHeightSubdivisions];
+	for (int i = 0; i < m_nbOfHeightSubdivisions; i++) {
+		nbSeedsBySub[i] = new int[m_nbOfWidthSubdivisions];
+	}
 
     /*
      * So as to retain the repartition of the inserted seeds, we need to allocate another array.
@@ -125,10 +128,13 @@ void VoronoiSeedsGenerator::generateSeeds(
      * Freeing the allocated memory zone related to seeds' repartition.
      */
     for (int i = 0; i < m_nbOfHeightSubdivisions; i++) {
-      seedsBySub[i]->clear();
+		seedsBySub[i]->clear();
         delete [] seedsBySub[i];
+		delete[] nbSeedsBySub[i];
     }
     delete [] seedsBySub;
+	delete[] nbSeedsBySub;
+
 
     /*
      * Finally, we just have to insert the content of the list into the

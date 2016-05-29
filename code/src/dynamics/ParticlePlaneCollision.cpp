@@ -15,7 +15,7 @@ ParticlePlaneCollision::ParticlePlaneCollision(ParticlePtr particle, PlanePtr pl
 void ParticlePlaneCollision::do_solveCollision()
 {
     //Don't process fixed particles (Let's assume that the ground plane is fixed)
-    if (m_particle->isFixed() and (not(m_particle->isDragged()))) return;
+    if (m_particle->isFixed() && (!(m_particle->isDragged()))) return;
 
     //TODO: Solve ParticlePlane collisions, update particle position and velocity after collision
     //Functions to use:
@@ -171,7 +171,7 @@ bool testParticlePlane(const ParticlePtr &particle, const PlanePtr &plane)
 	((glm::dot(p6, plane->normal()) - plane->distanceToOrigin()) > 0)?(pos++):(neg++);
 	((glm::dot(p7, plane->normal()) - plane->distanceToOrigin()) > 0)?(pos++):(neg++);
 	((glm::dot(p8, plane->normal()) - plane->distanceToOrigin()) > 0)?(pos++):(neg++);
-	return ((pos > 0) and (neg > 0));
+	return ((pos > 0) && (neg > 0));
     }
     return false;
 }

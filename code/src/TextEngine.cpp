@@ -12,6 +12,13 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+/**
+ * @brief
+ * Defines the mathematical function "maximum of two numbers" in a
+ * portable way.
+ */
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
 // Whenever a line in the text atlas require more than this number of pixel,
 // another line is started.
 static const int max_texture_width = 1024;
@@ -54,17 +61,17 @@ struct TextAtlas {
           }
         if ( roww + g->bitmap.width + 1 >= max_texture_width )
           {
-            textureWidth = std::max(textureWidth, roww);
+            textureWidth = MAX(textureWidth, roww);
             textureHeight += rowh;
             roww = 0;
             rowh = 0;
           }
       roww += g->bitmap.width + 1;
-      rowh = std::max(rowh, (unsigned int)g->bitmap.rows);
-      maxCharacterHeight = std::max( maxCharacterHeight, rowh );
+      rowh = MAX(rowh, (unsigned int)g->bitmap.rows);
+      maxCharacterHeight = MAX( maxCharacterHeight, rowh );
     }
 
-    textureWidth = std::max(textureWidth, roww);
+    textureWidth = MAX(textureWidth, roww);
     textureHeight += rowh;
 
     /* Create a texture that will be used to hold all ASCII glyphs */
@@ -113,7 +120,7 @@ struct TextAtlas {
         characterInformation[i].tx = float(ox) * invTextureWidth;
         characterInformation[i].ty = float(oy) * invTextureHeight;
 
-        rowh = std::max(rowh, (unsigned int)g->bitmap.rows);
+        rowh = MAX(rowh, (unsigned int)g->bitmap.rows);
         ox += g->bitmap.width + 1;
       }
     LOG( info, "generated a " << textureWidth << " x " << textureHeight << " (" << textureWidth * textureHeight / 1024 << " kb) texture atlas" );

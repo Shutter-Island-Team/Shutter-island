@@ -19,7 +19,7 @@ void ParticleParticleCollision::do_solveCollision()
     if (m_p1->isFixed() && m_p2->isFixed()) return;
 
 
-    if (m_p1->isRounded() and m_p2->isRounded()) {
+    if (m_p1->isRounded() && m_p2->isRounded()) {
 
 	RoundedParticlePtr ball1Ptr = (RoundedParticlePtr) std::static_pointer_cast<RoundedParticle, Particle>(m_p1);
 	RoundedParticlePtr ball2Ptr = (RoundedParticlePtr) std::static_pointer_cast<RoundedParticle, Particle>(m_p2);
@@ -75,7 +75,7 @@ bool testParticleParticle(const ParticlePtr &p1, const ParticlePtr &p2)
     //Vector between sphere centers
     if(p1==p2) return false;
 
-    if (p1->isRounded() and p2->isRounded()) {
+    if (p1->isRounded() && p2->isRounded()) {
 
 	RoundedParticlePtr ball1Ptr = (RoundedParticlePtr) std::static_pointer_cast<RoundedParticle, Particle>(p1);
 	RoundedParticlePtr ball2Ptr = (RoundedParticlePtr) std::static_pointer_cast<RoundedParticle, Particle>(p2);
