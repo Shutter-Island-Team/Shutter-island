@@ -163,10 +163,10 @@ void VoronoiSeedsGenerator::insertIntoList(std::list<Seed>& list, Seed& seed)
         while ((current != last) && (distance > DIST_TO_CENTER(*current))) {
             current++;   
         }
-        if (distance <= DIST_TO_CENTER(*current)) {
-            list.insert(current, seed);
-        } else {
-            list.push_back(seed);
+		if (current != last) {
+			list.insert(current, seed);
+		} else {
+			list.push_back(seed);
         }
     }
 }
