@@ -252,7 +252,8 @@ glm::vec3 MovableState::evade(const MovableBoid & prey, const MovableBoid & hunt
 }
 
 // Precondition b.hasLeader() == true
-glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const
+glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt,
+	const float & separateCoeff, const float & evadeCoeff) const
 {
 	if (!b.hasLeader()) {
 		throw std::invalid_argument("The requested boid can't follow a leader when it has none");
@@ -264,9 +265,9 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
 	}
 	glm::vec3 positionBehindLeader = leader->getLocation() + glm::normalize(-1.0f * leader->getVelocity()) * b.getParameters().getDistToLeader();
 	steer = arrive(b, positionBehindLeader);
-	steer += 20.0f * separate(b, mvB); // Coefficient can be modify
+	steer += separateCoeff * separate(b, mvB); // Coefficient can be modify
 	if (leader->canSee(b, 1.4f * leader->getParameters().getDistSeparate())) { // Can be modify
-		steer += 20.0f * evade(b, *leader, dt);
+		steer += evadeCoeff * evade(b, *leader, dt);
 	}
 	limitVec3(steer, b.getParameters().getMaxForce());
 	return steer;	
@@ -316,13 +317,16 @@ bool MovableState::updateAffinity(MovableBoid& b, const std::vector<MovableBoidP
 glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
 	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
-	return 20.0f * separate(b, mvB) + 1.0f * cohesion(b, mvB) + 3.0f * align(b, mvB) 
+	return boidsManager.m_forceController.getSeparate() * separate(b, mvB)
+		+ boidsManager.m_forceController.getCohesion() * cohesion(b, mvB)
+		+ boidsManager.m_forceController.getAlign() * align(b, mvB) 
 		+ avoidEnvironment(b, boidsManager);
 }
 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	return 1000.0f * stayWithinWalls(b) + 1000.0f * collisionAvoid(b, boidsManager.getRootedBoids());
+	return boidsManager.m_forceController.getStayWithinWalls() * stayWithinWalls(b)
+			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids());
 }
 
 /* ==================================== Boid State Value ====================================
@@ -352,7 +356,10 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	glm::vec3 newForces(0,0,0);
 	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
-		newForces = 40.0f * followLeader(b, mvB, dt) + avoidEnvironment(b, boidsManager);
+		newForces = boidsManager.m_forceController.getFollowLeader() * followLeader(b, mvB, dt,
+		boidsManager.m_forceController.getSeparate(),
+		boidsManager.m_forceController.getEvade())
+		+ avoidEnvironment(b, boidsManager);
 	}
 	else if (b.isLeader()) {
 		newForces = wander(b) + avoidEnvironment(b, boidsManager);
@@ -387,7 +394,10 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	glm::vec3 newForces(0,0,0);
 	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
-		newForces = 40.0f * followLeader(b, mvB, dt) + avoidEnvironment(b, boidsManager);
+		newForces = boidsManager.m_forceController.getFollowLeader() * followLeader(b, mvB, dt,
+			boidsManager.m_forceController.getSeparate(),
+			boidsManager.m_forceController.getEvade())
+			+ avoidEnvironment(b, boidsManager);
 	}
 	else if (b.isLeader()) {
 		newForces = wander(b) + avoidEnvironment(b, boidsManager);

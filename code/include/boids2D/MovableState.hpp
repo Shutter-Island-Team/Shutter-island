@@ -138,9 +138,12 @@ class MovableState
    * @param[in] b The concerned boid
    * @param[in] mvB Vector of boids which b have should be aware
    * @param[in] dt Time step
+   * @param[in] separateCoeff Coefficient for separation behavior
+   * @param[in] evadeCoeff Coefficient for evade behavior
    * @return    Returns the force required for the boid to follow its leader
    */
-  glm::vec3 followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt) const;
+  glm::vec3 followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt,
+    const float & separateCoeff, const float & evadeCoeff) const;
 
   /**
    * @brief Forecast of the position of a boid

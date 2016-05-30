@@ -1,8 +1,8 @@
 #include "../../include/boids2D/BoidsManager.hpp"
 
-BoidsManager::BoidsManager(void) 
+BoidsManager::BoidsManager() 
 {
-	
+
 }
 
 MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity) 

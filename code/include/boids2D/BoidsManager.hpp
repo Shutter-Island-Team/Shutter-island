@@ -6,6 +6,7 @@
 #include "MovableBoid.hpp"
 #include "RootedBoid.hpp"
 #include "BoidType.hpp"
+#include "ForceController.hpp"
 
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
@@ -16,7 +17,7 @@ class BoidsManager
   /**
    * @brief Constructor for the BoidsManager
    */
-  BoidsManager(void);
+  BoidsManager();
 	
   /**
   * @brief Getter for the movable boids of the manager
@@ -59,6 +60,8 @@ class BoidsManager
    * @param[in] state If state is true, set timeday else night time
    */
   void setTimeDay(bool state);
+
+  ForceController m_forceController;
 
  private:
   std::vector<MovableBoidPtr> m_movableBoids; ///< Vector of the movable boids
