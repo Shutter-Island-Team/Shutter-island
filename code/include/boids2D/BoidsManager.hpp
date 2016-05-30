@@ -75,22 +75,20 @@ class BoidsManager
   /**
      * @brief Get the biome associated to a MovableBoid
      * 
-     * @param x Abscissa of the desired position
-     * @param y Ordinna  of the desired position 
+     * @param[in] movableBoid The concerned movableBoid
      *
      * @return The biome of the position
      */
-    Biome getBiome(const MovableBoid & movableBoid);
+    Biome getBiome(const MovableBoid & movableBoid) const;
     
     /**
      * @brief Get the height of a MovableBoid
      *
-     * @param x Abscissa of the desired position
-     * @param y Ordinna  of the desired position 
+     * @param[in] movableBoid The concerned movableBoid
      *
      * @return The biome of the position
      */
-    float getHeight(const MovableBoid & movableBoid);
+    float getHeight(const MovableBoid & movableBoid) const;
 
  private:
   MapGenerator& m_map;
