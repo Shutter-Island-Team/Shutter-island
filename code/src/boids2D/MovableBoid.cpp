@@ -25,12 +25,13 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, Mov
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     BoidType t, MovableParameters* parameters)
 	: Boid(location, t), m_velocity(velocity), 
-	m_acceleration(glm::vec3(0,0,0)), m_mass(mass), m_distanceToEat(0.2f),
+	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
 	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
-	m_rootedPrey((RootedBoidPtr) nullptr), m_hunter((MovableBoidPtr) nullptr)
+	m_rootedPrey((RootedBoidPtr) nullptr), m_hunter((MovableBoidPtr) nullptr),
+	m_isDead(false)
 {
 	#ifdef DEBUG 
-    	m_stateType = TEST_STATE;
+    	m_stateType = WALK_STATE;
     #else
     	m_stateType = WALK_STATE;
     #endif
@@ -88,9 +89,10 @@ void MovableBoid::resetAcceleration()
 
 void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const float & dt)
 {
-	updateDeadStatus();
 	if(isDead()) {
 		switchToState(DEAD_STATE);
+	} else {
+		updateDeadStatus();
 	}
 	switch (m_stateType) {
 		case TEST_STATE:
@@ -244,7 +246,9 @@ void MovableBoid::stayStateHandler()
 		switchToState(FIND_WATER_STATE);
 	} else if (m_parameters->isHungry()) {
 		switchToState(FIND_FOOD_STATE);
-	} else if (isNight()) {
+	} else if (!m_parameters->isNotTired()) {
+		return; // Stay in the state
+	}else if (isNight()) {
 		switchToState(SLEEP_STATE);
 	} else if (hasASoulMate()) {
 		switchToState(MATE_STATE);
@@ -257,6 +261,7 @@ void MovableBoid::stayStateHandler()
 
 void MovableBoid::findFoodStateHandler()
 {
+	///< @todo : A modifier
 	if (hasPrey()) {
 		switchToState(ATTACK_STATE);
 	} else if (hasPrey() && preyIsDead()) {
@@ -266,16 +271,24 @@ void MovableBoid::findFoodStateHandler()
 
 void MovableBoid::attackStateHandler()
 {
-	if (closeToPrey()) {
-		m_movablePrey->kill();
+	if (m_parameters->isInDanger()) {
+		switchToState(FLEE_STATE);
+	} else if (closeToPrey()) {
 		switchToState(EAT_STATE);
+		if(m_movablePrey != (MovableBoidPtr)nullptr) {
+			m_movablePrey->die();
+		}
 	}
 }
 
 void MovableBoid::eatStateHandler()
 {
-	if(m_parameters->isNotHungry())
-	{
+	if(m_parameters->isInDanger()) {
+		switchToState(FLEE_STATE);
+	} else if(m_parameters->isNotHungry()) {
+		if (m_rootedPrey != (RootedBoidPtr) nullptr) {
+			m_rootedPrey->disapear();
+		}		
 		switchToState(LOST_STATE);
 	}
 }
@@ -334,12 +347,11 @@ bool MovableBoid::hasPrey() const
 
 bool MovableBoid::closeToPrey() const
 {
-	///< @todo configure distance
 	bool res = false;
 	if(m_movablePrey != (MovableBoidPtr) nullptr) {
-		res = glm::distance(getLocation(), getMovablePrey()->getLocation()) <= m_distanceToEat;
+		res = glm::distance(getLocation(), getMovablePrey()->getLocation()) <= m_parameters->getDistAttack();
 	} else if (m_rootedPrey != (RootedBoidPtr) nullptr) {
-		res = glm::distance(getLocation(), getRootedPrey()->getLocation()) <= m_distanceToEat;
+		res = glm::distance(getLocation(), getRootedPrey()->getLocation()) <= m_parameters->getDistAttack();
 	} 
 	return res;
 }
@@ -441,16 +453,16 @@ bool MovableBoid::isDead()
 	return m_isDead;
 }
 
-void MovableBoid::kill()
+void MovableBoid::die()
 {
 	m_isDead = true;
 }
 
 void MovableBoid::updateDeadStatus()
 {
-	m_isDead = m_parameters->getStamina() == 0.0f 
+	m_isDead = (m_parameters->getStamina() == 0.0f 
 		&& m_parameters->getHunger() == 0.0f 
-		&& m_parameters->getThirst() == 0.0f;
+		&& m_parameters->getThirst() == 0.0f);
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2)

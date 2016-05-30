@@ -207,7 +207,7 @@ class MovableBoid : public Boid
 
   bool isDead();
 
-  void kill();
+  void die();
 
   void updateDeadStatus();
 
@@ -215,10 +215,6 @@ class MovableBoid : public Boid
   glm::vec3 m_velocity; ///< Velocity of the boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
   float m_mass; ///< Mass of the boid
-
-  bool m_isDead; ///< Boolean to know if the boid is dead
-
-  float m_distanceToEat; ///< Distance between the boid and its target to eat
 
   MovableState* m_currentState; ///< State of the boid
   MovableParameters* m_parameters; ///< Parameter of the boid
@@ -230,6 +226,8 @@ class MovableBoid : public Boid
   MovableBoidPtr m_leader; ///< Leader of the boid
 
   BoidType m_predator; ///< Type of the predator
+
+  bool m_isDead; ///< Boolean to know if the boid is dead
 
   /**
    * @brief     Make all the change when a boid get to the new state stateType

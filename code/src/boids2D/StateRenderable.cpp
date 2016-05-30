@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 
 StateRenderable::StateRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr boid) :
-    HierarchicalRenderable(shaderProgram), m_display(false),
+    HierarchicalRenderable(shaderProgram), m_display(true),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
     m_boid = boid;
@@ -122,13 +122,19 @@ void StateRenderable::do_draw()
     glm::mat4 transformation(1.0);
     glm::mat4 model = getModelMatrix();
 
+    float scale = m_boid->getScale();
+
     glm::vec3 position = m_boid->getLocation();
-    transformation[0][0] = 1;
-    transformation[1][1] = 1;
-    transformation[2][2] = 0.1f;
+    transformation[0][0] = scale;
+    transformation[0][1] = 0;
+
+    transformation[1][1] = scale;
+    transformation[1][0] = 0;
+    
+    transformation[2][2] = scale;
     transformation[3][0] = position.x;
     transformation[3][1] = position.y;
-    transformation[3][2] = position.z - 0.05f;
+    transformation[3][2] = position.z;
     transformation[3][3] = 1;
 
     glcheck(glUniformMatrix4fv( modelLocation, 1, GL_FALSE, glm::value_ptr(model * transformation)));

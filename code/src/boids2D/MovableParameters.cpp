@@ -8,30 +8,32 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 
 MovableParameters::MovableParameters()
-	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f, 1.0f, 1.5f)
+	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f, 1.0f, 1.5f, 0.8f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 		float angleView, float distSeparate, float distCohesion,
-		float distViewMax, float distToLeader, float distSeeAhead) : 
+		float distViewMax, float distToLeader, float distSeeAhead,
+		float distAttack) : 
 	MovableParameters(maxSpeed, maxForce, angleView, distSeparate,
 						distCohesion, distViewMax, distToLeader,
-						distSeeAhead, 5.0f, 9.0f, 3.0f)
+						distSeeAhead, distAttack, 5.0f, 9.0f, 3.0f)
 {
 
 }
 
 MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 	float angleView, float distSeparate, float distCohesion, float distViewMax,
-	float distToLeader, float distSeeAhead, float distStartSlowingDown,float rCircleWander, float distToCircle) :
+	float distToLeader, float distSeeAhead, float distAttack, float distStartSlowingDown, 
+	float rCircleWander, float distToCircle) :
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce), m_angleView(angleView),
 	m_distSeparate(distSeparate), m_distCohesion(distCohesion),
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
-	m_distStartSlowingDown(distStartSlowingDown), m_distSeeAhead(distSeeAhead),
+	m_distStartSlowingDown(distStartSlowingDown), m_distSeeAhead(distSeeAhead), m_distAttack(distAttack),
 	m_rCircleWander(rCircleWander), m_distToCircle(distToCircle), m_danger(0.0f), m_affinity(0.0f), 
-	m_stamina(random(1,99)), m_hunger(random(1,99)), m_thirst(random(1,99)),
+	m_stamina(random(55,99)), m_hunger(random(55,99)), m_thirst(random(55,99)),
 	m_lowStaminaValue(25.0f), m_highStaminaValue(80.0f), m_lowHungerValue(35.0f), m_highHungerValue(80.0f),
 	m_lowThirstValue(35.0f), m_highThirstValue(80.0f)
 {
@@ -58,7 +60,8 @@ MovableParameters::MovableParameters( const std::string & filename )
 		d["maxForce"].GetDouble(), d["angleView"].GetDouble(),
 		d["distSeparate"].GetDouble(), d["distCohesion"].GetDouble(),
 		d["distViewMax"].GetDouble(), d["distToLeader"].GetDouble(),
-		d["distSeeAhead"].GetDouble(), d["distStartSlowingDown"].GetDouble(),
+		d["distSeeAhead"].GetDouble(), d["distAttack"].GetDouble(),
+		d["distStartSlowingDown"].GetDouble(),
 		d["rCircleWander"].GetDouble(), d["distToCircle"].GetDouble());
 }
 
@@ -111,7 +114,7 @@ float MovableParameters::getHunger() const
 
 void MovableParameters::hungerIncrease()
 {
-	hungerIncrease(0.1f);
+	hungerIncrease(0.05f);
 }
 
 void MovableParameters::hungerIncrease(const float & f)
@@ -122,7 +125,7 @@ void MovableParameters::hungerIncrease(const float & f)
 
 void MovableParameters::hungerDecrease()
 {
-	hungerDecrease(0.1f);	
+	hungerDecrease(0.05f);	
 }
 
 void MovableParameters::hungerDecrease(const float & f)
@@ -300,4 +303,9 @@ float MovableParameters::getDistToLeader() const
 float MovableParameters::getDistSeeAhead() const
 {
 	return m_distSeeAhead;
+}
+
+float MovableParameters::getDistAttack() const
+{
+	return m_distAttack;
 }

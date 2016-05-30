@@ -23,6 +23,8 @@ class RootedBoid : public Boid
    */
   float getRadius() const;
 
+  void disapear();
+
  private:
   float m_radius; ///< Radius of the boid to have "place" to live
 };

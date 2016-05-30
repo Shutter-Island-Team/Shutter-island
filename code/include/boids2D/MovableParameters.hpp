@@ -29,7 +29,7 @@ public:
    */
   MovableParameters(float maxSpeed, float maxForce, float angleView,
 		float distSeparate, float distCohesion, float distViewMax,
-    float distToLeader, float distSeeAhead);
+    float distToLeader, float distSeeAhead, float distAttack);
 
   /**
    * @brief     Constructor for MovableParameters
@@ -47,7 +47,8 @@ public:
    */
   MovableParameters(float maxSpeed, float maxForce, float angleView,
 		float distSeparate, float distCohesion, float distViewMax,
-    float distToLeader, float distSeeAhead, float distStartSlowingDown, float rCircleWander,
+    float distToLeader, float distSeeAhead, float distAttack,
+    float distStartSlowingDown, float rCircleWander,
     float distToCircle);
 	
   /**
@@ -339,6 +340,11 @@ public:
    */
   float getDistSeeAhead() const;
 
+  /**
+   * @brief Getter for the distance of attack
+   * @return Returns the distance of attack
+   */
+  float getDistAttack() const;
 
  private:
   float m_maxSpeed; ///< Maximum speed of the boid
@@ -352,6 +358,7 @@ public:
   float m_distToLeader; ///< Distance to respect behind the leader
   float m_distStartSlowingDown; ///< Distance before start slowing down
   float m_distSeeAhead; ///< Distance to see ahead the obstacle
+  float m_distAttack;
 
   float m_rCircleWander; ///< Radius of the wander circle 
   float m_distToCircle; ///< Distance between the boid and the center of the wander circle

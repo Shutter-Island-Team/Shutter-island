@@ -334,7 +334,7 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	return boidsManager.m_forceController.getStayWithinWalls() * stayInIsland(b, boidsManager)
+	return boidsManager.m_forceController.getStayWithinWalls() * stayWithinWalls(b)
 			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids());
 }
 
@@ -355,7 +355,7 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -394,7 +394,7 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -432,7 +432,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -460,7 +460,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
@@ -485,7 +485,7 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -533,7 +533,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -574,6 +574,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 
 glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
+	std::cerr << "Arrive in EatState" << std::endl;
 	// stamina <- si(stamina)
 	// hunger <- hi(hunger)
 	// thirst <- td(thirst)
@@ -585,7 +586,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerIncrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -624,7 +625,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstIncrease();
+	// b.getParameters().thirstIncrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -665,7 +666,7 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -699,7 +700,7 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// Update boid status parameters
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	b.getParameters().thirstDecrease();
+	// b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
