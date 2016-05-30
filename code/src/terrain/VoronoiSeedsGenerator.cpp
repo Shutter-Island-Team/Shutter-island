@@ -62,6 +62,9 @@ void VoronoiSeedsGenerator::generateSeeds(
 	int** nbSeedsBySub = new int* [m_nbOfHeightSubdivisions];
 	for (int i = 0; i < m_nbOfHeightSubdivisions; i++) {
 		nbSeedsBySub[i] = new int[m_nbOfWidthSubdivisions];
+        for (int j = 0; j < m_nbOfWidthSubdivisions; j++) {
+            nbSeedsBySub[i][j] = 0;
+        }
 	}
 
     /*

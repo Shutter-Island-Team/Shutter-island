@@ -17,11 +17,12 @@ Biome findClosestBiome(
 ){
     double rx, ry, rz;
     int seedID;
+    std::cout << container.total_particles() << std::endl;
     if (
             !(
                 container.find_voronoi_cell(
-                    pos.first, 
-                    pos.second, 
+                    (double) pos.first, 
+                    (double) pos.second, 
                     0.0,
                     rx, 
                     ry, 

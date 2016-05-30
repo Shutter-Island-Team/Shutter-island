@@ -650,7 +650,24 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	return glm::vec3(0,0,0);
+	glm::vec3 newForces(0,0,0);
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
+	MovableBoidPtr mate = closestMovable(b, b.getBoidType(), mvB);
+	
+	b.getParameters().staminaDecrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+
+	// Detect danger and update danger parameter 
+	updateDanger(b, mvB);
+
+	// Set affinity to 0.0 to limit the number of birth
+
+
+	newForces += arrive(b, b.getLocation());
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	return newForces;
 }
 
 glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const

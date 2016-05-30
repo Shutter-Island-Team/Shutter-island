@@ -211,6 +211,10 @@ class MovableBoid : public Boid
 
   void updateDeadStatus();
 
+  MovableBoidPtr getMate() const;
+
+  void setMate(const MovableBoidPtr & mate);
+
  private:
   glm::vec3 m_velocity; ///< Velocity of the boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
@@ -224,6 +228,8 @@ class MovableBoid : public Boid
 
   MovableBoidPtr m_hunter; ///< Hunter of the boid
   MovableBoidPtr m_leader; ///< Leader of the boid
+
+  MovableBoidPtr m_mate; ///< Mate of the boid
 
   BoidType m_predator; ///< Type of the predator
 
@@ -320,7 +326,7 @@ class MovableBoid : public Boid
    * @brief   Check if the boid has a soulmate
    * @return  true if the boid has a soulmate, false otherwise
    */
-  bool hasASoulMate() const;
+  bool hasSoulMate() const;
 
   /**
    * @brief   Check if the boid is not mating

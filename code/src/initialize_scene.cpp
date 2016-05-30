@@ -23,8 +23,6 @@
 #include "../include/terrain/MapGenerator.hpp"
 #include "../include/terrain/Map2DRenderable.hpp"
 
-#define MAP_SIZE 500.0
-
 #include <cstdlib>
 #include <ctime>
 
@@ -570,14 +568,14 @@ void initialize_boid_scene_hunt( Viewer& viewer )
     viewer.startAnimation();
 }
 */
-void initialize_map2D(Viewer& viewer)
+void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
 {
     /*
      * Positionning the camera.
      */
     viewer.getCamera().setViewMatrix(glm::lookAt( 
-                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 1.50*MAP_SIZE/2.0), 
-                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 0), 
+                                        glm::vec3(mapSize/2.0, mapSize/2.0, 1.50*mapSize/2.0), 
+                                        glm::vec3(mapSize/2.0, mapSize/2.0, 0), 
                                         glm::vec3( 0, 1, 0) 
                                     ) 
     );
@@ -592,12 +590,6 @@ void initialize_map2D(Viewer& viewer)
             }
     );
     viewer.addShaderProgram(flatShader);
-
-    /*
-     * Creating the map generator and generating the map.
-     */
-    MapGenerator mapGenerator(MAP_SIZE);
-    mapGenerator.compute();
 
     /*
      * Creating the map renderable and adding it to the system.
@@ -611,22 +603,22 @@ void initialize_map2D(Viewer& viewer)
     PlaneRenderablePtr seaRenderable = std::make_shared<QuadRenderable>(
         flatShader,
         glm::vec3(0.0, 0.0, 0.0),
-        glm::vec3(MAP_SIZE, 0.0, 0.0),
-        glm::vec3(MAP_SIZE, MAP_SIZE, 0.0),
-        glm::vec3(0.0, MAP_SIZE, 0.0),
+        glm::vec3(mapSize, 0.0, 0.0),
+        glm::vec3(mapSize, mapSize, 0.0),
+        glm::vec3(0.0, mapSize, 0.0),
         glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
     );
     viewer.addRenderable(seaRenderable);
 }
 
-void initialize_test_scene( Viewer& viewer)    
+void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float mapSize)    
 {
     /*
      * Positionning the camera.
      */
     viewer.getCamera().setViewMatrix(glm::lookAt( 
-                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 1.50*MAP_SIZE/2.0), 
-                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 0), 
+                                        glm::vec3(mapSize/2.0, mapSize/2.0, 1.50*mapSize/2.0), 
+                                        glm::vec3(mapSize/2.0, mapSize/2.0, 0), 
                                         glm::vec3( 0, 1, 0) 
                                     ) 
     );
@@ -641,12 +633,6 @@ void initialize_test_scene( Viewer& viewer)
             }
     );
     viewer.addShaderProgram(flatShader);
-
-    /*
-     * Creating the map generator and generating the map.
-     */
-    MapGenerator mapGenerator(MAP_SIZE);
-    mapGenerator.compute();
 
     /*
      * Creating the map renderable and adding it to the system.
@@ -671,7 +657,7 @@ void initialize_test_scene( Viewer& viewer)
         "../shaders/textureVertex.vert",
         "../shaders/textureFragment.frag"});
     viewer.addShaderProgram( texShader );
-    
+
     BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator);
 
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
@@ -686,31 +672,32 @@ void initialize_test_scene( Viewer& viewer)
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(200, 350), random(200, 350), 2));
+    MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(250, 300), random(250, 300), 2));
     leaderRabbit->setNewLeader(leaderRabbit);
 
     for (int i = 0; i < 6; ++i) {
-        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(200, 350), random(200, 350), 2));
+        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(250, 300), random(250, 300), 2));
         rabbitFellow->setNewLeader(leaderRabbit);
     }
 
-    MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(200, 350), random(200, 350), 2));
+    MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(250, 300), random(250, 300), 2));
     leaderWolf->setNewLeader(leaderWolf);
     for (int i = 0; i < 4; ++i) {
-        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(random(200, 350), random(200, 350), 2));
+        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(random(250, 300), random(250, 300), 2));
         wolfFellow->setNewLeader(leaderWolf);
     }
 
     for (int i = 0; i < 10; ++i) {
-        boidsManager->addRootedBoid(CARROT, glm::vec3(random(200, 350), random(200, 350), 2));
+        boidsManager->addRootedBoid(CARROT, glm::vec3(random(250, 300), random(250, 300), 2));
     }
 
     for (int i = 0; i < 10; ++i) {
-        boidsManager->addRootedBoid(TREE, glm::vec3(random(200, 350), random(200, 350), 2));
+        boidsManager->addRootedBoid(TREE, glm::vec3(random(250, 300), random(250, 300), 2));
     }
 
     display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
+
 }

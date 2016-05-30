@@ -2,6 +2,7 @@
 #define INITIALIZE_SCENE_HPP
 
 #include "Viewer.hpp"
+#include "terrain/MapGenerator.hpp"
 /*
 void initialize_boid_scene_multiple_pop( Viewer& viewer );
 void initialize_boid_scene_test_separate( Viewer& viewer );
@@ -13,6 +14,10 @@ void initialize_boid_scene_follow_leader( Viewer& viewer );
 void initialize_boid_scene_hunt( Viewer& viewer );
 */
 void initialize_map2D(Viewer& viewer);
-void initialize_test_scene( Viewer& viewer);
+void initialize_test_scene(
+	Viewer& viewer, 
+	MapGenerator& mapGenerator, 
+	float mapSize
+);
 
 #endif 

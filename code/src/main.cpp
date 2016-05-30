@@ -5,12 +5,24 @@
 
 #include "../include/initialize_scene.hpp"
 
+/**
+ * @brief
+ * Defines the size of the map (constrained square plane).
+ */
+#define MAP_SIZE 500.0
+
 int main( int argc, char* argv[] )
 {
     Viewer viewer(1280,720);
 
-    //initialize_map2D(viewer);
-    initialize_test_scene(viewer);
+     /*
+      * Creating the map generator and generating the map.
+      */
+    MapGenerator mapGenerator(MAP_SIZE);
+    mapGenerator.compute();
+
+    //initialize_map2D(viewer, mapGenerator, MAP_SIZE);
+    initialize_test_scene(viewer, mapGenerator, MAP_SIZE);
 
     while( viewer.isRunning() )
     {

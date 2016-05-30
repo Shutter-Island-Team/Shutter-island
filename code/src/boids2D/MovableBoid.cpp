@@ -250,7 +250,7 @@ void MovableBoid::stayStateHandler()
 		return; // Stay in the state
 	}else if (isNight()) {
 		switchToState(SLEEP_STATE);
-	} else if (hasASoulMate()) {
+	} else if (hasSoulMate()) {
 		switchToState(MATE_STATE);
 	} else if (hasLeader() && m_parameters->isHighStamina()) {
 		switchToState(WALK_STATE);
@@ -362,7 +362,7 @@ bool MovableBoid::nextToWater() const
 	return false;
 }
 
-bool MovableBoid::hasASoulMate() const
+bool MovableBoid::hasSoulMate() const
 {
 	///< @todo
 	return false;
