@@ -56,6 +56,17 @@ public :
      */
     Biome getBiome(float x, float y);
     
+   /**
+     * @brief Get the centroid of a biome associated to a location
+     * 
+     * @param x Abscissa of the desired position
+     * @param y Ordinna  of the desired position 
+     *
+     * @param xCentroid The abscissa of the centroid
+     * @param yCentroid The ordinna of the centroid
+     */
+    void getCentroid(float x, float y, 
+		     float& xCentroid, float& yCentroid);
     /**
      * @brief Get the height of a position
      *

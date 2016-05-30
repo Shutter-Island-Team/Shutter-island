@@ -14,6 +14,25 @@
 
 
 /**
+ * @brief Find the centroid of the biome associated to a position
+ *
+ * @param pos   The desired position.
+ * @param seeds The vector containing the seeds used to generate the Voronoi
+ * diagram.
+ * @param container The container of the "voronoicell" defined by the library
+ * "voro++" and reprensenting a cell of the Voronoi diagram.
+ *
+ * @param xCentroid The abcissa of the centroid
+ * @param yCentroid The ordinna of the centroid
+ */
+
+void findClosestCentroid(Vertex2D & pos, 
+			 voro::container & container, 
+			 std::vector<Seed> & seeds,
+			 float & xCentroid, float & yCentroid) ;
+
+
+/**
  * @brief Find the biome associated to a position
  *
  * @param pos   The desired position.
@@ -26,7 +45,8 @@
  */
 
 Biome findClosestBiome(Vertex2D & pos, 
-		       voro::container & container, std::vector<Seed> & seeds);
+		       voro::container & container, 
+		       std::vector<Seed> & seeds);
 
 
 /**

@@ -161,6 +161,14 @@ Biome MapGenerator::getBiome(float x, float y) {
     return findClosestBiome(position, seedsContainer, seeds);
 }
 
+
+void MapGenerator::getCentroid(float x, float y, 
+			       float& xCentroid, float& yCentroid) {
+    Vertex2D position(x, y);
+    return findClosestCentroid(position, seedsContainer, seeds,
+			       xCentroid, yCentroid);
+}
+
 float MapGenerator::getHeight(float x, float y) {
     Vertex2D position(x, y);
     if (!heightTree) { 
