@@ -1,5 +1,5 @@
 #include "../../include/boids2D/MovableState.hpp"
-
+#include "../../include/terrain/Biome.hpp"
 #include "../../include/Utils.hpp"
 #include <iostream>
 
@@ -117,6 +117,15 @@ glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
     steer = limitVec3(steer, b.getParameters().getMaxForce());
 
     return steer;
+}
+
+glm::vec3 MovableState::stayInIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
+{
+	if (boidsManager.getBiome(b) == Sea || boidsManager.getBiome(b) == Lake) {
+		return glm::normalize(-b.getVelocity()) * b.getParameters().getMaxForce();
+	} else {
+		return glm::vec3(0,0,0);
+	}
 }
 
 glm::vec3 MovableState::separate(const MovableBoid& b, const std::vector<MovableBoidPtr> & bVec) const
@@ -325,7 +334,7 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	return boidsManager.m_forceController.getStayWithinWalls() * stayWithinWalls(b)
+	return boidsManager.m_forceController.getStayWithinWalls() * stayInIsland(b, boidsManager)
 			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids());
 }
 

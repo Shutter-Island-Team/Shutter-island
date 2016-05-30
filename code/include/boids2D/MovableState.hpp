@@ -92,6 +92,11 @@ class MovableState
   glm::vec3 stayWithinWalls(const MovableBoid& b) const;
   
   /**
+   * @brief Compute the force for a boid to stay in the island
+   */
+  glm::vec3 stayInIsland(const MovableBoid & b, const BoidsManager & boidsManager) const;
+
+  /**
    * @brief     Computes the force for a boid b separate from others boids
    * @param[in] b     The concerned boid
    * @param[in] bVec  Vector of boids which b should be awared of
