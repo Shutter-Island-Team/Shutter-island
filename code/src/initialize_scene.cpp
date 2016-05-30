@@ -19,6 +19,7 @@
 #include "../include/boids2D/SightRenderable.hpp"
 #include "../include/boids2D/StateRenderable.hpp"
 
+#include "../include/graphicPrimitives/QuadRenderable.hpp"
 #include "../include/terrain/MapGenerator.hpp"
 #include "../include/terrain/Map2DRenderable.hpp"
 
@@ -603,4 +604,17 @@ void initialize_map2D(Viewer& viewer)
      */
     Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(flatShader, mapGenerator);
     viewer.addRenderable(mapRenderable);
+
+    /*
+     * Creating a QuadRenderable at the altitude 0, so as to represent a calm sea.
+     */
+    PlaneRenderablePtr seaRenderable = std::make_shared<QuadRenderable>(
+        flatShader,
+        glm::vec3(0.0, 0.0, 0.0),
+        glm::vec3(MAP_SIZE, 0.0, 0.0),
+        glm::vec3(MAP_SIZE, MAP_SIZE, 0.0),
+        glm::vec3(0.0, MAP_SIZE, 0.0),
+        glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
+    );
+    viewer.addRenderable(seaRenderable);
 }
