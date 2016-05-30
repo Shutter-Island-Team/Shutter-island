@@ -7,6 +7,8 @@
 #include "RootedBoid.hpp"
 #include "BoidType.hpp"
 #include "ForceController.hpp"
+#include "../terrain/MapGenerator.hpp"
+#include "../terrain/Biome.hpp"
 
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
@@ -17,7 +19,12 @@ class BoidsManager
   /**
    * @brief Constructor for the BoidsManager
    */
-  BoidsManager();
+  BoidsManager(MapGenerator& map);
+
+  /**
+   * @briezf Destructor for the BoidsManager
+   */
+  ~BoidsManager();
 	
   /**
   * @brief Getter for the movable boids of the manager
@@ -65,7 +72,28 @@ class BoidsManager
 
   ForceController m_forceController; ///< Keep track of the coefficient forces
 
+  /**
+     * @brief Get the biome associated to a MovableBoid
+     * 
+     * @param x Abscissa of the desired position
+     * @param y Ordinna  of the desired position 
+     *
+     * @return The biome of the position
+     */
+    Biome getBiome(const MovableBoid & movableBoid);
+    
+    /**
+     * @brief Get the height of a MovableBoid
+     *
+     * @param x Abscissa of the desired position
+     * @param y Ordinna  of the desired position 
+     *
+     * @return The biome of the position
+     */
+    float getHeight(const MovableBoid & movableBoid);
+
  private:
+  MapGenerator& m_map;
   std::vector<MovableBoidPtr> m_movableBoids; ///< Vector of the movable boids
   std::vector<RootedBoidPtr> m_rootedBoids;  ///< Vector of the rooted boids
   bool isNightTime; ///< Boolean to check if it is night time

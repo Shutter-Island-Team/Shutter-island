@@ -58,7 +58,7 @@ void display_boid( Viewer& viewer, BoidsManagerPtr boidsManager,
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 }
-
+/*
 void initialize_boid_scene_multiple_pop( Viewer& viewer)    
 {
     //Position the camera
@@ -569,7 +569,7 @@ void initialize_boid_scene_hunt( Viewer& viewer )
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
 }
-
+*/
 void initialize_map2D(Viewer& viewer)
 {
     /*
@@ -617,4 +617,100 @@ void initialize_map2D(Viewer& viewer)
         glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
     );
     viewer.addRenderable(seaRenderable);
+}
+
+void initialize_test_scene( Viewer& viewer)    
+{
+    /*
+     * Positionning the camera.
+     */
+    viewer.getCamera().setViewMatrix(glm::lookAt( 
+                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 1.50*MAP_SIZE/2.0), 
+                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 0), 
+                                        glm::vec3( 0, 1, 0) 
+                                    ) 
+    );
+
+    /*
+     * Loading default shaders.
+     */
+    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(
+            std::list<std::string>{
+                "../shaders/flatVertex.vert", 
+                "../shaders/flatFragment.frag"
+            }
+    );
+    viewer.addShaderProgram(flatShader);
+
+    /*
+     * Creating the map generator and generating the map.
+     */
+    MapGenerator mapGenerator(MAP_SIZE);
+    mapGenerator.compute();
+
+    /*
+     * Creating the map renderable and adding it to the system.
+     */
+    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(flatShader, mapGenerator);
+    viewer.addRenderable(mapRenderable);
+
+    //Default shader
+
+    glm::mat4 parentTransformation(1.0), localTransformation(1.0);
+    MaterialPtr pearl = Material::Pearl();
+
+    //Define a directional light for the whole scene
+    glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
+    glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
+    DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
+    //Add a renderable to display the light and control it via mouse/key event
+    viewer.setDirectionalLight(directionalLight);
+
+    //Textured shader
+    ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+        "../shaders/textureVertex.vert",
+        "../shaders/textureFragment.frag"});
+    viewer.addShaderProgram( texShader );
+    
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator);
+
+    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
+    SolverBoidPtr solver = std::make_shared<SolverBoid>();
+    system->setSolver(solver);
+    system->setDt(0.01);
+    system->setBoidsManager(boidsManager);
+
+    //Create a renderable associated to the dynamic system
+    //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
+    //It is also responsible for some of the key/mouse events
+    DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
+
+    MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(200, 350), random(200, 350), 2));
+    leaderRabbit->setNewLeader(leaderRabbit);
+
+    for (int i = 0; i < 6; ++i) {
+        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(200, 350), random(200, 350), 2));
+        rabbitFellow->setNewLeader(leaderRabbit);
+    }
+
+    MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(200, 350), random(200, 350), 2));
+    leaderWolf->setNewLeader(leaderWolf);
+    for (int i = 0; i < 4; ++i) {
+        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(random(200, 350), random(200, 350), 2));
+        wolfFellow->setNewLeader(leaderWolf);
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        boidsManager->addRootedBoid(CARROT, glm::vec3(random(200, 350), random(200, 350), 2));
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        boidsManager->addRootedBoid(TREE, glm::vec3(random(200, 350), random(200, 350), 2));
+    }
+
+    display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
+
+    viewer.addRenderable(systemRenderable);
+    viewer.startAnimation();
 }
