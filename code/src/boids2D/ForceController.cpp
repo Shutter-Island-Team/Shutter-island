@@ -24,7 +24,7 @@ ForceController::ForceController()
 	m_evade = d["evade"].GetDouble();
 	m_cohesion = d["cohesion"].GetDouble();
 	m_align = d["align"].GetDouble();
-	m_stayWithinWalls = d["stayWithinWalls"].GetDouble();
+	m_stayOnIsland = d["stayOnIsland"].GetDouble();
 	m_collisionAvoidance = d["collisionAvoidance"].GetDouble();
 	m_followLeader = d["followLeader"].GetDouble();
 }
@@ -49,9 +49,9 @@ float ForceController::getAlign() const
 	return m_align;
 }
 
-float ForceController::getStayWithinWalls() const 
+float ForceController::getStayOnIsland() const 
 {
-	return m_stayWithinWalls;
+	return m_stayOnIsland;
 }
 
 float ForceController::getCollisionAvoidance() const 

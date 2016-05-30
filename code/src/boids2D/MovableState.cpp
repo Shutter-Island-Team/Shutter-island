@@ -119,10 +119,19 @@ glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
     return steer;
 }
 
-glm::vec3 MovableState::stayInIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
+glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	if (boidsManager.getBiome(b) == Sea || boidsManager.getBiome(b) == Lake) {
-		return glm::normalize(-b.getVelocity()) * b.getParameters().getMaxForce();
+
+	float coeff = glm::length(b.getVelocity()) / b.getParameters().getMaxSpeed();
+	glm::vec3 posAhead = b.getLocation() + coeff * cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
+	glm::vec3 posAhead2 = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead() * 0.5f;
+
+	if(boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
+		///< TODO move to the center of the map
+	} else if (boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
+		///< TODO move out of the lake
+	} else if (boidsManager.getBiome(posAhead2.x, posAhead2.y) == Sea || boidsManager.getBiome(posAhead2.x, posAhead2.y) == Lake) {
+		return cNormalize(b.getLocation() - posAhead2) * b.getParameters().getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);
 	}
@@ -154,25 +163,25 @@ glm::vec3 MovableState::separate(const MovableBoid& b, const std::vector<Movable
 glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::vector<RootedBoidPtr> & rootB) const
 {
 	float coeff = glm::length(b.getVelocity()) / b.getParameters().getMaxSpeed();
-	glm::vec3 posAdhead = b.getLocation() + coeff * cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
-	glm::vec3 posAdhead2 = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead() * 0.5f;
+	glm::vec3 posAhead = b.getLocation() + coeff * cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
+	glm::vec3 posAhead2 = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead() * 0.5f;
 	std::vector<RootedBoidPtr>::const_iterator it = rootB.begin();
 	RootedBoidPtr eltFar = (RootedBoidPtr) nullptr;
 	RootedBoidPtr eltClose = (RootedBoidPtr) nullptr;
 	RootedBoidPtr elt;
 	while (it != rootB.end() && eltClose == (RootedBoidPtr) nullptr) {
 		elt = *it;
-		if (glm::distance(elt->getLocation(), posAdhead) <= elt->getRadius()) {
+		if (glm::distance(elt->getLocation(), posAhead) <= elt->getRadius()) {
 			eltFar = elt;
-		} else if (glm::distance(elt->getLocation(), posAdhead2) <= elt->getRadius()) {
+		} else if (glm::distance(elt->getLocation(), posAhead2) <= elt->getRadius()) {
 			eltClose = elt;
 		}
 		it++;
 	}
 	if (!(eltClose == (RootedBoidPtr) nullptr)) {
-		return glm::normalize(posAdhead - eltClose->getLocation()) * b.getParameters().getMaxForce();
+		return glm::normalize(posAhead - eltClose->getLocation()) * b.getParameters().getMaxForce();
 	} else if (!(eltFar == (RootedBoidPtr) nullptr)) {
-		return glm::normalize(posAdhead - eltFar->getLocation()) * b.getParameters().getMaxForce();
+		return glm::normalize(posAhead - eltFar->getLocation()) * b.getParameters().getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);
 	}
@@ -334,7 +343,7 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	return boidsManager.m_forceController.getStayWithinWalls() * stayWithinWalls(b)
+	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager)
 			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids());
 }
 

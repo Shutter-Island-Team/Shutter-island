@@ -79,7 +79,7 @@ class BoidsManager
      *
      * @return The biome of the position
      */
-    Biome getBiome(const MovableBoid & movableBoid) const;
+    Biome getBiome(const float& x, const float& y) const;
     
     /**
      * @brief Get the height of a MovableBoid
@@ -88,7 +88,9 @@ class BoidsManager
      *
      * @return The biome of the position
      */
-    float getHeight(const MovableBoid & movableBoid) const;
+    float getHeight(const float& x, const float& y) const;
+
+    MapGenerator& getMap() const;
 
  private:
   MapGenerator& m_map;

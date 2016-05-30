@@ -79,13 +79,19 @@ const std::vector<MovableBoidPtr> & BoidsManager::getNeighbour(MovableBoid mvB) 
 	return m_movableBoids;
 }
 
-Biome BoidsManager::getBiome(const MovableBoid & movableBoid) const
+Biome BoidsManager::getBiome(const float& x, const float& y) const
 {
-	return m_map.getBiome(movableBoid.getLocation().x, movableBoid.getLocation().y);
+	return m_map.getBiome(x, y);
 }
     
 
-float BoidsManager::getHeight(const MovableBoid & movableBoid) const
+float BoidsManager::getHeight(const float& x, const float& y) const
 {
-	return m_map.getHeight(movableBoid.getLocation().x, movableBoid.getLocation().y);
+	return m_map.getHeight(x, y);
+}
+
+
+MapGenerator& BoidsManager::getMap() const
+{
+	return m_map;
 }

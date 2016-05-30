@@ -3,7 +3,7 @@
 	"evade" : 20.0,
 	"cohesion" : 1.0,
 	"align" : 3.0,
-	"stayWithinWalls" : 1000.0,
+	"stayOnIsland" : 1000.0,
 	"collisionAvoidance" : 1000.0,
 	"followLeader" : 40.0
 }
