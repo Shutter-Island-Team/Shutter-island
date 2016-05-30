@@ -8,27 +8,31 @@
 #include "../../include/math/InterpolationFunctions.hpp"
 
 
-float linearInterpolation(float x, float size) {
+float linearInterpolation(float x, float size, float scale) {
     
-    if (x >= size) {
+    float localSize = scale * size;
+
+    if (x >= localSize) {
 	return 0.f;
     } else {
-	return (1.0f - x/size);
+	return (1.0f - x/localSize);
     }
 }
 
-float smooth6Interpolation(float x, float size) {
+float smooth6Interpolation(float x, float size, float scale) {
     
-    if (x >= size) {
+    float localSize = scale * size;
+
+    if (x >= localSize) {
 	return 0.f;
     } else {
-	float size3 = size*size*size;
-	float size4 = size3*size;
-	float size5 = size4*size;
+	float localSize3 = localSize*localSize*localSize;
+	float localSize4 = localSize3*localSize;
+	float localSize5 = localSize4*localSize;
 
-	float a = - 6.0f/size5;
-	float b =  15.0f/size4;
-	float c = -10.0f/size3;
+	float a = - 6.0f/localSize5;
+	float b =  15.0f/localSize4;
+	float c = -10.0f/localSize3;
 	
 	return 1.0f + x*(x*(x*(c + x*(b + x*a))));
     }

@@ -8,71 +8,87 @@
 
 /**
  * @brief
- * Defines the minimal height associated with a biome of water (namely "Lake"
- * and "Sea").
+ * Defines the minimal height associated with a biome of sea
  */
-#define HEIGHT_MIN_WATER   (- 15.0f)
+#define HEIGHT_MIN_SEA     (-  2.0f)
 
 /**
  * @brief
- * Defines the maximal height associated with a biome of water (namely "Lake"
- * and "Sea").
+ * Defines the maximal height associated with a biome of sea 
  */
-#define HEIGHT_MAX_WATER   (-  2.0f)
+#define HEIGHT_MAX_SEA     (-  0.5f)
+
+/**
+ * @brief
+ * Defines the minimal height associated with a biome of lake
+ * The value is more important than the sea to make sure it carves the land
+ */
+#define HEIGHT_MIN_LAKE    (-  2.0f)
+
+/**
+ * @brief
+ * Defines the maximal height associated with a biome of lake
+ * The value is more important than the sea to make sure it carves the land
+ */
+#define HEIGHT_MAX_LAKE    (-  1.0f)
+
 
 /**
  * @brief
  * Defines the minimal height associated with a biome "Beach".
  */
-#define HEIGHT_MIN_BEACH   (   5.0f)
+#define HEIGHT_MIN_BEACH   (   1.0f)
 
 /**
  * @brief
  * Defines the maximal height associated with a biome "Beach".
  */
-#define HEIGHT_MAX_BEACH   (  10.0f)
+#define HEIGHT_MAX_BEACH   (   2.0f)
 /**
  * @brief
  * Defines the minimal height associated with a biome "Plains".
  */
-#define HEIGHT_MIN_PLAINS  (  10.0f)
+#define HEIGHT_MIN_PLAINS  (   2.0f)
 
 /**
  * @brief
  * Defines the maximal height associated with a biome "Plains".
  */
-#define HEIGHT_MAX_PLAINS  (  20.0f)
+#define HEIGHT_MAX_PLAINS  (   4.0f)
 
 /**
  * @brief
  * Defines the minimal height associated with a biome "Mountain".
+ * (actually a hill)
  */
-#define HEIGHT_MIN_MOUTAIN (  20.0f)
+#define HEIGHT_MIN_MOUTAIN (   5.0f)
 
 /**
  * @brief
  * Defines the maximal height associated with a biome "Mountain".
+ * (actually a hill)
  */
-#define HEIGHT_MAX_MOUTAIN (  80.0f)
+#define HEIGHT_MAX_MOUTAIN (   10.0f)
 
 /**
  * @brief
- * Define the range of a blob influence within its quad, for a close range blob.
+ * Defines the minimal height associated with a biome "Peak".
  */
-#define BLOB_SCALE_SMALL  (0.2f)
+#define HEIGHT_MIN_PEAK    (  20.0f)
 
 /**
  * @brief
- * Define the range of a blob influence within its quad, for a medium range 
- * blob.
+ * Defines the maximal height associated with a biome "Peak".
  */
-#define BLOB_SCALE_MEDIUM (0.8f)
+#define HEIGHT_MAX_PEAK    (  30.0f)
 
 /**
  * @brief
- * Define the range of a blob influence within its quad, for a large range blob.
+ * A scale parameter to limit the inluence of mountains on other biomes
  */
-#define BLOB_SCALE_LARGE  (1.0f)
+#define SCALE_MOUNTAIN     (   0.05f)
+
+
 
 /**
  * @brief
@@ -88,6 +104,8 @@
  */
 #define BIOME_DEPTH_MAX    (8)
 
+
+
 /**
  * @brief This enum defines the biomes that
  * will be used on the map.
@@ -98,7 +116,8 @@ enum Biome {
     Sea, 
     Beach, 
     Plains, 
-    Mountain
+    Mountain,
+    Peak
 };
 
 /**

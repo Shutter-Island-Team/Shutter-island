@@ -31,7 +31,7 @@
  * Each level contributes to the global height, but their contribution is
  * recursively reduced by applying the defined blending coefficient.
  */
-#define HEIGHT_BLENDING_COEFFICIENT (0.7f)
+#define HEIGHT_BLENDING_COEFFICIENT (1.f)
 
 /**
  * @brief

@@ -56,7 +56,7 @@
  * @brief
  * Defines the parameter of the geometric law used to generate Mountain biomes.
  */
-#define MOUNTAIN_GEOMETRIC_PICKING (0.7)
+#define MOUNTAIN_GEOMETRIC_PICKING (0.6)
 
 /**
  * @brief
@@ -306,48 +306,76 @@ void computeBeach(std::vector<Seed>& seeds, float mapSize){
 
 
 
+// Private function
+// Used here so a peak can raise its neighbours into mountains
+void raiseMountains(std::vector<Seed>& seeds, int peakIndex) {
+
+    // Get the cell corresponding to the peak
+    auto currentCell = seeds[peakIndex].getCell();
+
+    // Get its neighbours
+    std::vector<int> neighbours;
+    currentCell->neighbors(neighbours);
+
+    // Turn them into mountains
+    for (auto neighboursIdPtr = neighbours.begin();
+	 neighboursIdPtr != neighbours.end();
+	 neighboursIdPtr++) {
+	
+	int neighbourId = *neighboursIdPtr;
+	if ((neighbourId >= 0) && (seeds[neighbourId].getBiome() != Peak))
+	    seeds[neighbourId].setBiome(Mountain);
+    }
+}
+
+
 void computeMountains(std::vector<Seed>& seeds){
 
     int nbBiomes = seeds.size();
 
-    // First step : Picking the initial mountain
-    // Nb : The first biome might inconditionnaly become a mountain
-    int mountainIndex = 0;
+    // First step : Picking the initial peak
+    // Nb : The first biome might inconditionnaly become a peak
+    int peakIndex = 0;
     float probPick = 1.0;
-    while ((random(0.0, 1.0) <= probPick) && (mountainIndex < nbBiomes-1)) {
-	// Checking if the picked biome can be mountain
-	if (seeds[mountainIndex+1].getBiome() != Plains)
+    while ((random(0.0, 1.0) <= probPick) && (peakIndex < nbBiomes/2)) {
+	// Checking if the picked biome can be a peak
+	if (seeds[peakIndex+1].getBiome() != Plains)
 	    break;
-	mountainIndex++;
+	peakIndex++;
 	probPick *= MOUNTAIN_GEOMETRIC_PICKING;
     }
-    seeds[mountainIndex].setBiome(Mountain);
+    seeds[peakIndex].setBiome(Peak);
+    // Turning its neighbours into mountains (hills actually)
+    raiseMountains(seeds, peakIndex);
     
+
     // Second step : propagating the mountain
-    int nbMountain = 1;
+    int nbPeak = 1;
     probPick = 1.0;
-    // First picking if a new mountain is created
-    while ((random(0.0, 1.0) <= probPick) && (nbMountain < nbBiomes-1)) {
-	nbMountain++;
+    // First picking if a new peak is created
+    while ((random(0.0, 1.0) <= probPick) && (nbPeak < nbBiomes/2)) {
+	nbPeak++;
 	probPick *= MOUNTAIN_PROB_TRANSFORM;
 	// Computing the neighbours
-	auto currentCell = seeds[mountainIndex].getCell();
+	auto currentCell = seeds[peakIndex].getCell();
 	std::vector<int> neighbours;
 	currentCell->neighbors(neighbours);
 	int nbNeighbours = neighbours.size();
-	// Picking the neighbour that is going to be a Mountain
+	// Picking the neighbour that is going to be a Peak
 	int nbTry = 0;
 	bool invalidNeighbour;
 	do {
 	    nbTry++;
-	    mountainIndex = neighbours[rand() % nbNeighbours];
-	    invalidNeighbour = (mountainIndex < 0) || (seeds[mountainIndex].getBiome() != Plains);
+	    peakIndex = neighbours[rand() % nbNeighbours];
+	    // The neighbour, if the index is valid, is compulsorily a mountain
+	    invalidNeighbour = (peakIndex < 0);
 	} while (invalidNeighbour && (nbTry < MOUNTAIN_MAX_TRY));
 	// breaking if we cannot find a suitable neighbour
 	if (invalidNeighbour)
 	    break;
-	seeds[mountainIndex].setBiome(Mountain);
+	// Setting the peak
+	seeds[peakIndex].setBiome(Peak);
+	// Transforming its neighbours
+	raiseMountains(seeds, peakIndex);
     }
-	
-
 }

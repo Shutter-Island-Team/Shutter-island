@@ -416,7 +416,7 @@ void Map2DRenderable::insertIntoList(
 glm::vec4 Map2DRenderable::biomeColor(Biome biome)
 {
     switch (biome)
-    {
+	{
         case Sea:
             return glm::vec4(0.00f, 0.345f, 1.00f, 1.00f);
             break;
@@ -437,8 +437,12 @@ glm::vec4 Map2DRenderable::biomeColor(Biome biome)
             return glm::vec4(0.510f, 0.157f, 0.051f, 1.00f);
             break;
 
+	case Peak:
+            return glm::vec4(0.910f, 0.157f, 0.051f, 1.00f);
+            break;
+
         default:
             return glm::vec4(1.00f, 0.051f, 0.510f, 1.00f);
             break;
-    }
+	}
 }
