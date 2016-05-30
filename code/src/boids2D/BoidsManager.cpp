@@ -68,3 +68,7 @@ void BoidsManager::setTimeDay(bool state)
 	isNightTime = state;
 }
 
+const std::vector<MovableBoidPtr> & BoidsManager::getNeighbour(MovableBoid mvB) const
+{
+	return m_movableBoids;
+}

@@ -61,7 +61,9 @@ class BoidsManager
    */
   void setTimeDay(bool state);
 
-  ForceController m_forceController;
+  const std::vector<MovableBoidPtr> & getNeighbour(MovableBoid mvB) const;
+
+  ForceController m_forceController; ///< Keep track of the coefficient forces
 
  private:
   std::vector<MovableBoidPtr> m_movableBoids; ///< Vector of the movable boids
