@@ -29,14 +29,12 @@ MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 	m_maxSpeed(maxSpeed), m_maxForce(maxForce), m_angleView(angleView),
 	m_distSeparate(distSeparate), m_distCohesion(distCohesion),
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
-	m_distStartSlowingDown(distStartSlowingDown), m_rCircleWander(rCircleWander),
-	m_distToCircle(distToCircle), m_danger(0.0f), m_affinity(0.0f), 
+	m_distStartSlowingDown(distStartSlowingDown), m_distSeeAhead(distSeeAhead),
+	m_rCircleWander(rCircleWander), m_distToCircle(distToCircle), m_danger(0.0f), m_affinity(0.0f), 
+	m_stamina(random(1,99)), m_hunger(random(1,99)), m_thirst(random(1,99)),
 	m_lowStaminaValue(25.0f), m_highStaminaValue(80.0f), m_lowHungerValue(35.0f), m_highHungerValue(80.0f),
-	m_lowThirstValue(35.0f), m_highThirstValue(80.0f), m_distSeeAhead(distSeeAhead)
+	m_lowThirstValue(35.0f), m_highThirstValue(80.0f)
 {
-	m_stamina = random(1, 99);
-	m_hunger = random(1, 99);
-	m_thirst = random(1, 99);
 
 }
 

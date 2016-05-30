@@ -1,5 +1,15 @@
 #include "./../../include/dynamics/Particle.hpp"
 
+Particle::Particle(const glm::vec3 &position, 
+                 const glm::vec3 &velocity, 
+                 const float &mass)
+    : m_initialPosition( position ),
+      m_position(position),
+      m_initialVelocity( velocity ),
+      m_velocity(velocity),
+      m_force(glm::vec3(0.0,0.0,0.0)),
+      m_mass(mass)
+{}
 
 bool Particle::isFixed() const
 {
@@ -31,17 +41,6 @@ void Particle::setDragged(bool isDragged)
 {
     m_isDragged = isDragged;
 }
-
-Particle::Particle(const glm::vec3 &position, 
-				 const glm::vec3 &velocity, 
-				 const float &mass)
-    : m_initialPosition( position ),
-      m_position(position),
-      m_velocity(velocity),
-      m_initialVelocity( velocity ),
-      m_force(glm::vec3(0.0,0.0,0.0)),
-      m_mass(mass)
-{}
 
 Particle::~Particle()
 {}
@@ -117,13 +116,14 @@ void Particle::recomputeCamera() {
 	} else {
 	    this->m_oldPosition = (this->m_oldPosition * 0.5f) + (position * 0.5f);
 	}
-	if (glm::length(velocity) > 0.1)
+	if (glm::length(velocity) > 0.1) {
 	    if (!m_initCamera) { 
-		m_initCamera = true;
-		this->m_cameraDirection = glm::normalize(velocity);
+		  m_initCamera = true;
+		  this->m_cameraDirection = glm::normalize(velocity);
 	    } else {	
-		this->m_cameraDirection = (this->m_cameraDirection * 0.99f) + (glm::normalize(velocity) * 0.01f);
+		  this->m_cameraDirection = (this->m_cameraDirection * 0.99f) + (glm::normalize(velocity) * 0.01f);
 	    }
+    }
 
 	float scale_recoil = -20.0;//-10.0;
 	float z_offset = 10.0;

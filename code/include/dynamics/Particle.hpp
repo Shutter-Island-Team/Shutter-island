@@ -177,24 +177,23 @@ public:
     bool isABox();
     
 protected:
-
     /**@brief The initial particle's position.
      *
      * The initial position of this particle, stored to be set at restart.
      */
     const glm::vec3 m_initialPosition;
    
-    /**@brief The initial particle's velocity.
-     *
-     * The initial velocity of this particle, stored to be set at restart.
-     */
-    const glm::vec3 m_initialVelocity;
-
     /**@brief The particle's position.
      *
      * The position of this particle.
      */
     glm::vec3 m_position;
+
+    /**@brief The initial particle's velocity.
+     *
+     * The initial velocity of this particle, stored to be set at restart.
+     */
+    const glm::vec3 m_initialVelocity;
 
     /**@brief The particle's velocity.
      *

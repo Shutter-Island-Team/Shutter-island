@@ -317,9 +317,9 @@ void getUnitSphere(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& no
     positions.resize(vertexNumber);
     normals.resize(vertexNumber);
 
-    for(int i=0; i<slices; ++i)
+    for(unsigned int i=0; i<slices; ++i)
     {
-        for(int j=0; j<strips; ++j)
+        for(unsigned int j=0; j<strips; ++j)
         {
             double curr_theta = i*(2.0*M_PI/(double)slices);
             double curr_phi = j*(M_PI/(double)strips);
@@ -361,9 +361,9 @@ void getTorus(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals
     positions.resize(vertexNumber);
     normals.resize(vertexNumber);
 
-    for(int i=0; i<strips; ++i)
+    for(unsigned int i=0; i<strips; ++i)
     {
-        for(int j=0; j<slices; ++j)
+        for(unsigned int j=0; j<slices; ++j)
         {
             double curr_u = i*(2.0*M_PI/(double)strips);
             double curr_v = j*(2.0*M_PI/(double)slices);
@@ -424,9 +424,9 @@ void getUnitCone(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
     normals.resize(numberOfVertices);
 
     //Lateral surface
-    for(int i=0; i<slices; ++i)
+    for(unsigned int i=0; i<slices; ++i)
     {
-        for(int j=0; j<strips; ++j)
+        for(unsigned int j=0; j<strips; ++j)
         {
             double curr_theta = i*(2.0*M_PI/(double)slices);
             double curr_u = j*(height/(double)strips);
@@ -480,7 +480,7 @@ void getUnitCone(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
 
     //Bottom faces
     unsigned int counter = slices*strips*6;
-    for(int i=0; i<slices; ++i)
+    for(unsigned int i=0; i<slices; ++i)
     {
         double curr_theta = i*(2.0*M_PI/(double)slices);
         double next_theta = (i+1)*(2.0*M_PI/(double)slices);

@@ -63,8 +63,6 @@ void StickParticle::updateHierarchy() {
 	}
     } else {
 	if (m_controlChild2) {
-	    
-	    glm::vec3 p = this->getPosition();
 	    this->setPosition(m_p1->getPosition() - m_p1_pos);
 	    m_p2->setPosition(this->getPosition() + m_p2_pos);
 	    this->setVelocity(m_p1->getVelocity());

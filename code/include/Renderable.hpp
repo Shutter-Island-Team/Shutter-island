@@ -311,8 +311,8 @@ protected:
     /** @name Protected members.
      * We want those members to be accessible in the derived classes.
      */
-    glm::mat4 m_model; /*!< Model matrix of the renderable. */
     ShaderProgramPtr m_shaderProgram; /*!< Shader program of the renderable. */
+    glm::mat4 m_model; /*!< Model matrix of the renderable. */
 
     /* The viewer is declared as a friend to be able to set the field m_viewer
      * when a Renderable is added to a viewer. If we want to get rid of the

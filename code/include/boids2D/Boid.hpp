@@ -60,12 +60,12 @@ class Boid
   void setScale(const float & scale);
 
  protected:
- 	glm::vec3 m_location; ///< Position of the boid
+  glm::vec3 m_location; ///< Position of the boid
 
  private:
- 	float m_angle; ///< Angle of position of the boid
-  float m_scale; ///< Size of the boid
  	BoidType m_boidType; ///< Type of the boid @see BoidType.hpp
+  float m_angle; ///< Angle of position of the boid
+  float m_scale; ///< Size of the boid
 };
 
 typedef std::shared_ptr<Boid> BoidPtr;

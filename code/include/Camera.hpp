@@ -276,12 +276,12 @@ public:
 private:
 
     /** @name Private members */
-    CAMERA_MOUSE_BEHAVIOR m_mouseBehavior;
+    glm::mat4 m_view;
     float m_fov;
     float m_ratio;
     float m_znear;
     float m_zfar;
-    glm::mat4 m_view;
+    CAMERA_MOUSE_BEHAVIOR m_mouseBehavior;
     glm::mat4 m_projection;
 };
 

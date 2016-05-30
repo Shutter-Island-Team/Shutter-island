@@ -20,14 +20,6 @@
 class DynamicSystem
 {
 private:
-  /**@brief The set of particles managed by this system.
-   *
-   * The particles managed by this dynamic system. Their positions
-   * and velocities will be updated thanks to the solver, taking into
-   * account the force field applied to them.
-   */
-    std::vector<ParticlePtr> m_particles;
-
     /**@brief The set of force fields influencing particles of this system.
      *
      * The force fields that influence the particles of this system.
@@ -56,6 +48,20 @@ private:
      */
     float m_dt;
 
+    /**@brief Restitution factor of collisions.
+     *
+     * The factor of restitution after a collision between objects.
+     */
+    float m_restitution;
+
+    /**@brief The set of particles managed by this system.
+     *
+     * The particles managed by this dynamic system. Their positions
+     * and velocities will be updated thanks to the solver, taking into
+     * account the force field applied to them.
+     */
+    std::vector<ParticlePtr> m_particles;
+
     /**@brief The set of collision events detected during a simulation step.
      *
      * Set of collision events between dynamic components during a simulation
@@ -71,11 +77,6 @@ private:
      * and resolved.
      */
     bool m_handleCollisions;
-    /**@brief Restitution factor of collisions.
-     *
-     * The factor of restitution after a collision between objects.
-     */
-    float m_restitution;
 
 public:
     ~DynamicSystem();

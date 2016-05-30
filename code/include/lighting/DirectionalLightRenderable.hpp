@@ -19,6 +19,8 @@ private:
     void do_draw();
     void do_animate( float time );
 
+    DirectionalLightPtr m_light;
+
     glm::vec3 m_position;
 
     std::vector< glm::vec3 > m_positions;
@@ -28,8 +30,6 @@ private:
     unsigned int m_pBuffer;
     unsigned int m_cBuffer;
     unsigned int m_nBuffer;
-
-    DirectionalLightPtr m_light;
 };
 
 typedef std::shared_ptr<DirectionalLightRenderable> DirectionalLightRenderablePtr;

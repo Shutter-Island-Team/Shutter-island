@@ -192,7 +192,7 @@ void TextEngine::render( const std::string& msg, const glm::vec2& pixelCoordinat
     // 2) for N characters, each of the division are computer 3*N times
     const float invTextureWidth = float(1.0/m_atlas->textureWidth);
     const float invTextureHeight = float(1.0/m_atlas->textureHeight);
-    for( const char& c : msg )
+    for( const unsigned char& c : msg )
       {
         TextAtlas::CharacterInformation& charInfo = m_atlas->characterInformation[ c ];
 

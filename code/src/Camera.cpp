@@ -155,8 +155,6 @@ void Camera::setMouseBehavior( const CAMERA_MOUSE_BEHAVIOR& v )
     m_mouseBehavior = v;
     if( m_mouseBehavior == ARCBALL_BEHAVIOR )
       {
-        glm::vec3 pos = getPosition();
-        glm::vec3 up = getUp();
         m_view = glm::lookAt(
             getPosition(),
             glm::vec3{},

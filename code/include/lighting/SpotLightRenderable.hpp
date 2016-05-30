@@ -17,6 +17,8 @@ private:
     void do_draw();
     void do_animate( float time );
 
+    SpotLightPtr m_light;
+
     std::vector< glm::vec3 > m_positions;
     std::vector< glm::vec4 > m_colors;
     std::vector< glm::vec3 > m_normals;
@@ -24,8 +26,6 @@ private:
     unsigned int m_pBuffer;
     unsigned int m_cBuffer;
     unsigned int m_nBuffer;
-
-    SpotLightPtr m_light;
 };
 
 typedef std::shared_ptr<SpotLightRenderable> SpotLightRenderablePtr;

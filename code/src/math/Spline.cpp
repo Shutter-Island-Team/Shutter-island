@@ -125,7 +125,7 @@ void Spline::generate_spline(bool is_curve_closed)
         coefficients[step][3] = u3 - u2;
     }
 
-    for (int count = 1; count < (m_control_points.size() - 2); count ++) {
+    for (unsigned int count = 1; count < (m_control_points.size() - 2); count ++) {
         for (int step = 0; step < m_iteration_level; step++) {
             m_generated_points.push_back(
                 compute_spline_point(

@@ -22,6 +22,12 @@ typedef std::shared_ptr<RootedBoid> RootedBoidPtr;
 class MovableState 
 {
  public:
+
+  /**
+   * @brief Destructor
+   */
+  virtual ~MovableState() {};
+
   /**
    * @brief     Returns the acceleration and reset the acceleration of the boid
    * @param[in] b             The boid which has its acceleration reset and computed.

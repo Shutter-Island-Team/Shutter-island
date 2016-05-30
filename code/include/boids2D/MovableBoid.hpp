@@ -223,9 +223,8 @@ class MovableBoid : public Boid
   MovableState* m_currentState; ///< State of the boid
   MovableParameters* m_parameters; ///< Parameter of the boid
 
-
-  RootedBoidPtr m_rootedPrey; ///< Rooted prey of the boid. (If exist cannot have a movable prey)
   MovableBoidPtr m_movablePrey; ///< Movable prey of the boid. (If exist cannot have a rooted prey)
+  RootedBoidPtr m_rootedPrey; ///< Rooted prey of the boid. (If exist cannot have a movable prey)
 
   MovableBoidPtr m_hunter; ///< Hunter of the boid
   MovableBoidPtr m_leader; ///< Leader of the boid

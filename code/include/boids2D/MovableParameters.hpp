@@ -341,25 +341,27 @@ public:
 
 
  private:
-  float m_stamina; ///< Value in [0, 100] to describe the stamina of a boid
-  float m_hunger; ///< Value in [0, 100] to describe the hunger of a boid
-  float m_thirst; ///< Value in [0, 100] to describe the thirst of a boid
-  float m_danger; ///< Value in [0, 100] to describe the feel of danger of a boid
-  float m_affinity; ///< Value in [0, 100] to describe the affinity of a boid
-
   float m_maxSpeed; ///< Maximum speed of the boid
   float m_maxForce; ///< Maximum force of the boid
 
-  float m_rCircleWander; ///< Radius of the wander circle 
-  float m_distToCircle; ///< Distance between the boid and the center of the wander circle
-  float m_distStartSlowingDown; ///< Distance before start slowing down
+  float m_angleView; ///< Angle of vision
 
   float m_distSeparate; ///< Distance of separation
   float m_distCohesion; ///< Distance of cohesion
-
-  float m_angleView; ///< Angle of vision
-
   float m_distViewMax; ///< Distance of the maximum view
+  float m_distToLeader; ///< Distance to respect behind the leader
+  float m_distStartSlowingDown; ///< Distance before start slowing down
+  float m_distSeeAhead; ///< Distance to see ahead the obstacle
+
+  float m_rCircleWander; ///< Radius of the wander circle 
+  float m_distToCircle; ///< Distance between the boid and the center of the wander circle
+
+  float m_danger; ///< Value in [0, 100] to describe the feel of danger of a boid
+  float m_affinity; ///< Value in [0, 100] to describe the affinity of a boid
+
+  float m_stamina; ///< Value in [0, 100] to describe the stamina of a boid
+  float m_hunger; ///< Value in [0, 100] to describe the hunger of a boid
+  float m_thirst; ///< Value in [0, 100] to describe the thirst of a boid
 
   float m_lowStaminaValue; ///< Value of the low stamina
   float m_highStaminaValue; ///< Value of the high stamina
@@ -369,10 +371,6 @@ public:
 
   float m_lowThirstValue; ///< Value of the low thirst
   float m_highThirstValue; ///< Value of the low thirst
-
-  float m_distToLeader; ///< Distance to respect behind the leader
-
-  float m_distSeeAhead; ///< Distance to see ahead the obstacle
 };
 
 #endif

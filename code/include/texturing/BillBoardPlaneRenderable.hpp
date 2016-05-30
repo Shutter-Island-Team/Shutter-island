@@ -23,14 +23,14 @@ private:
     void do_keyPressedEvent( sf::Event& e );
     void updateTextureOption();
 
-    glm::vec2 m_billboardWorldDimension;
-    glm::vec3 m_billboardWorldPosition;
-    std::vector< glm::vec4 > m_colors;
-    std::vector< glm::vec2 > m_shift;
-
     unsigned int m_cBuffer;
     unsigned int m_tBuffer;
     unsigned int m_texId;
+
+    glm::vec3 m_billboardWorldPosition;
+    glm::vec2 m_billboardWorldDimension;
+    std::vector< glm::vec4 > m_colors;
+    std::vector< glm::vec2 > m_shift;
 
     MaterialPtr m_material;
 };

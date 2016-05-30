@@ -22,18 +22,18 @@ class BoidRenderable : public HierarchicalRenderable
         void do_draw();
         void do_animate( float time );
 
+        unsigned int m_pBuffer; ///< Buffer for the position of the boid
+        unsigned int m_cBuffer; ///< Buffer for the colors of the boid
+        unsigned int m_nBuffer; ///< Buffer for the normals of the boid
+        unsigned int m_tBuffer;
+        unsigned int m_texId;
+
         BoidPtr m_boid;
 
         std::vector< glm::vec3 > m_positions; ///< Positions of the boid
         std::vector< glm::vec4 > m_colors; ///< Colors of the boid
         std::vector< glm::vec3 > m_normals; ///< Normals of the boid
         std::vector< glm::vec2 > m_texCoords;
-
-        unsigned int m_pBuffer; ///< Buffer for the position of the boid
-        unsigned int m_cBuffer; ///< Buffer for the colors of the boid
-        unsigned int m_nBuffer; ///< Buffer for the normals of the boid
-        unsigned int m_tBuffer;
-        unsigned int m_texId;
 
         MaterialPtr m_material; ///< Material of the boid
 };

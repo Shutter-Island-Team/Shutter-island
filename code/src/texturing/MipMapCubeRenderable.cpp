@@ -40,7 +40,7 @@ MipMapCubeRenderable::MipMapCubeRenderable(ShaderProgramPtr shaderProgram, std::
     std::vector< sf::Image > images;
     sf::Vector2u imageSize(0,0);
     images.resize(filenames.size());
-    for(int i=0; i<images.size(); ++i)
+    for(unsigned int i=0; i<images.size(); ++i)
     {
         images[i].loadFromFile(filenames[i]);
         images[i].flipVertically(); // sfml inverts the v axis... put the image in OpenGL convention: lower left corner is (0,0)
@@ -49,7 +49,7 @@ MipMapCubeRenderable::MipMapCubeRenderable(ShaderProgramPtr shaderProgram, std::
 
     //Send the image to OpenGL as textures
     glTexStorage2D(GL_TEXTURE_2D, images.size(), GL_RGBA32F, imageSize.x, imageSize.y);
-    for(int i=0; i<images.size(); ++i)
+    for(unsigned int i=0; i<images.size(); ++i)
     {
         glTexSubImage2D(GL_TEXTURE_2D, i, 0, 0, images[i].getSize().x, images[i].getSize().y, GL_RGBA, GL_UNSIGNED_BYTE, (const GLvoid*)images[i].getPixelsPtr());
     }
