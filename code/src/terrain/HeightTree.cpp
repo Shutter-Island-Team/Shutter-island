@@ -133,12 +133,6 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     HeightData blData = content.getData(BottomLeft);
     HeightData brData = content.getData(BottomRight);
 
-    Biome tlBiome = findClosestBiome(tlData.getPosition(), container, seeds);
-    Biome trBiome = findClosestBiome(trData.getPosition(), container, seeds);
-    Biome blBiome = findClosestBiome(blData.getPosition(), container, seeds);
-    Biome brBiome = findClosestBiome(brData.getPosition(), container, seeds);
-
-
     // Building now the 5 new heightData required to cut the square
 
     Vertex2D tlPos = tlData.getPosition();

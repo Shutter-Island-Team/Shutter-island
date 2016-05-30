@@ -3,7 +3,7 @@
  *
  * @see HeightNode.hpp
  */
-
+#include <iostream>
 #include "../../include/math/InterpolationFunctions.hpp"
 #include "../../include/terrain/HeightNode.hpp"
 
@@ -31,6 +31,8 @@ HeightData HeightNode::getData(QuadPosition position) {
     case BottomRight:
 	return bottomRightData;
 	break;
+    default:
+	std::cerr << "Error : unknown QuadPosition type" << std::endl;
     }
 }
 

@@ -43,6 +43,9 @@ S* QuadTree<T, S>::getChild(QuadPosition position) {
     case BottomRight:
 	return bottomRightChild;
 	break;
+    default:
+	return NULL;
+	break;
     }
 }
 
