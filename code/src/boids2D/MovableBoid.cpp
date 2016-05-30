@@ -274,7 +274,7 @@ void MovableBoid::attackStateHandler()
 
 void MovableBoid::eatStateHandler()
 {
-	///< @todo : wait to finish to eat predator has eaten 
+	if(m_parameters->isNotHungry())
 	{
 		switchToState(LOST_STATE);
 	}
@@ -431,7 +431,7 @@ MovableBoidPtr MovableBoid::getHunter() const
 	return m_hunter;
 }
 
-BoidType MovableBoid::getPredator() const
+BoidType MovableBoid::getPredatorType() const
 {
 	return m_predator;
 }

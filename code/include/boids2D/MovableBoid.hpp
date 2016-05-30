@@ -201,9 +201,9 @@ class MovableBoid : public Boid
    * @brief Getter for the type of boid which are predator of the current boid
    * @return Returns the type of the predator
    */
-  BoidType getPredator() const;
+  BoidType getPredatorType() const;
 
-  void setPredator(const BoidType & predator);
+  void setPredatorType(const BoidType & predator);
 
   bool isDead();
 

@@ -275,7 +275,7 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
 
 void MovableState::updateDanger(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
 {
-	BoidType predator = b.getPredator();
+	BoidType predator = b.getPredatorType();
 	bool predatorFound = false;
 
 	std::vector<MovableBoidPtr>::const_iterator it = mvB.begin();
@@ -380,6 +380,7 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
+	glm::vec3 newForces(0,0,0);
 	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
 
 	b.getParameters().staminaDecrease();
@@ -392,14 +393,12 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	glm::vec3 newForces(0,0,0);
 	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
 		newForces = boidsManager.m_forceController.getFollowLeader() * followLeader(b, mvB, dt,
 			boidsManager.m_forceController.getSeparate(),
 			boidsManager.m_forceController.getEvade())
 			+ avoidEnvironment(b, boidsManager);
-	}
-	else if (b.isLeader()) {
+	} else if (b.isLeader()) {
 		newForces = wander(b) + avoidEnvironment(b, boidsManager);
 	} else { // Can't see the leader
 		newForces = wander(b) + globalAvoid(b, boidsManager); 
@@ -419,7 +418,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-
+	glm::vec3 newForces(0,0,0);
 	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
 
 	b.getParameters().staminaIncrease();
@@ -432,7 +431,10 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	return arrive(b, b.getLocation());
+	newForces += arrive(b, b.getLocation());
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+
+	return newForces;
 }
 
 glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
@@ -444,7 +446,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// danger did'nt change the boid is not aware of his surronding
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-
+	glm::vec3 newForces(0,0,0);
 	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
 
 	b.getParameters().staminaIncrease();
@@ -454,7 +456,10 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	return arrive(b, b.getLocation());
+	newForces += arrive(b, b.getLocation());
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+
+	return newForces;
 }
 
 glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
@@ -466,7 +471,42 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity) 
-	return glm::vec3(0,0,0);
+	glm::vec3 newForces(0,0,0);
+	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
+	b.getParameters().staminaDecrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+
+	// Detect danger and update danger parameter 
+	updateDanger(b, mvB);
+
+	// Detect if alone and update affinity
+	updateAffinity(b, mvB);
+
+	MovableBoidPtr rabbitPredator;
+	switch (b.getBoidType()) {
+		case WOLF:
+			// nothing to do has no predator
+		break;
+		case RABBIT:
+			rabbitPredator = closestMovable(b, b.getPredatorType(), mvB);
+			if (rabbitPredator == (MovableBoidPtr) nullptr) {
+				newForces += wander(b);
+			} else {
+				b.setHunter(rabbitPredator);
+				newForces += evade(b, *b.getHunter(), dt);
+			}
+			break;
+		default:
+			std::cerr << "Unknown animal looking for food" << std::endl;
+			newForces += glm::vec3(0,0,0);
+			break;
+	}
+
+	newForces += globalAvoid(b, boidsManager);
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	return newForces;
 }
 
 glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
@@ -518,8 +558,8 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 			newForces += glm::vec3(0,0,0);
 			break;
 	}
-	// TODO use the deplacement function
-	newForces += 16.0f * stayWithinWalls(b) + 4.0f * separate(b, mvB);
+	newForces += globalAvoid(b, boidsManager);
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
 	return newForces;
 }
 
@@ -531,6 +571,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
+	glm::vec3 newForces(0,0,0);
 	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
 
 	b.getParameters().staminaIncrease();
@@ -543,8 +584,9 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	///< TODO maybe it better with the target ?
-	return arrive(b, b.getLocation());
+	newForces += arrive(b, b.getLocation());
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	return newForces;
 }
 
 glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
@@ -568,6 +610,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
+	glm::vec3 newForces(0,0,0);
 	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
 	
 	b.getParameters().staminaIncrease();
@@ -580,8 +623,11 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
+	newForces += arrive(b, b.getLocation());
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+
 	///< TODO maybe it better with the target ?
-	return arrive(b, b.getLocation());
+	return newForces;
 }
 
 glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
@@ -630,19 +676,39 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 			newForces += glm::vec3(0,0,0);
 			break;
 	}
-	// TODO use the deplacement function
-	newForces += 16.0f * stayWithinWalls(b) + 4.0f * separate(b, mvB);
+	newForces += globalAvoid(b, boidsManager);
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+
 	return newForces;
 }
 
 glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	// TODO Think about it
-	return glm::vec3(0,0,0);
+	glm::vec3 newForces(0,0,0);
+	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	
+	// Update boid status parameters
+	b.getParameters().staminaDecrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+
+	// Detect danger and update danger parameter 
+	updateDanger(b, mvB);
+
+	// Detect if alone and update affinity
+	updateAffinity(b, mvB);
+	// wander and avoid obstacle until the boid need to eat or fin a group
+	newForces += wander(b) + globalAvoid(b, boidsManager); 
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	return newForces;
 }
 
 glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
 	// Don't move because the boid is dead
-	return arrive(b, b.getLocation());
+	glm::vec3 newForces(0,0,0);
+
+	newForces += arrive(b, b.getLocation());
+	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	return newForces;
 }

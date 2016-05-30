@@ -88,7 +88,7 @@ float MovableParameters::getStamina() const
 
 void MovableParameters::staminaIncrease()
 {
-	return staminaIncrease(0.5f);
+	staminaIncrease(0.1f);
 }
 
 void MovableParameters::staminaIncrease(const float & f)
@@ -98,7 +98,7 @@ void MovableParameters::staminaIncrease(const float & f)
 
 void MovableParameters::staminaDecrease()
 {
-	return staminaDecrease(0.5f);
+	staminaDecrease(0.1f);
 }
 
 void MovableParameters::staminaDecrease(const float & f)
@@ -113,14 +113,24 @@ float MovableParameters::getHunger() const
 
 void MovableParameters::hungerIncrease()
 {
+	hungerIncrease(0.1f);
+}
+
+void MovableParameters::hungerIncrease(const float & f)
+{
 	///< @todo : improve with maybe a better function
-	m_hunger = fmin(m_hunger + 1.0f, 100.0f);
+	m_hunger = fmin(m_hunger + f, 100.0f);
 }
 
 void MovableParameters::hungerDecrease()
 {
+	hungerDecrease(0.1f);	
+}
+
+void MovableParameters::hungerDecrease(const float & f)
+{
 	///< @todo : improve with maybe a better function
-	m_hunger = fmax(m_hunger - 1.0f, 0.0f);
+	m_hunger = fmax(m_hunger - f, 0.0f);
 }
 
 float MovableParameters::getThirst() const
@@ -130,14 +140,24 @@ float MovableParameters::getThirst() const
 
 void MovableParameters::thirstIncrease()
 {
+	thirstIncrease(0.1f);
+}
+
+void MovableParameters::thirstIncrease(const float & f)
+{
 	///< @todo : improve with maybe a better function
-	m_thirst = fmin(m_thirst + 1.0f, 100.0f);
+	m_thirst = fmin(m_thirst + f, 100.0f);
 }
 
 void MovableParameters::thirstDecrease()
 {
+	thirstDecrease(0.1f);
+}
+
+void MovableParameters::thirstDecrease(const float & f)
+{
 	///< @todo : improve with maybe a better function
-	m_thirst = fmax(m_thirst - 1.0f, 0.0f);
+	m_thirst = fmax(m_thirst - f, 0.0f);
 }
 
 float MovableParameters::getDanger() const
@@ -166,14 +186,24 @@ float MovableParameters::getAffinity() const
 
 void MovableParameters::affinityIncrease()
 {
+	affinityIncrease(0.1f);
+}
+
+void MovableParameters::affinityIncrease(const float & f)
+{
 	///< @todo : improve with maybe a better function
-	m_affinity = fmin(m_affinity + 1.0f, 100.0f);
+	m_affinity = fmin(m_affinity + f, 100.0f);
 }
 
 void MovableParameters::affinityDecrease()
 {
+	affinityDecrease(0.1f);
+}
+
+void MovableParameters::affinityDecrease(const float & f)
+{
 	///< @todo : improve with maybe a better function
-	m_affinity = fmax(m_affinity - 1.0f, 0.0f);
+	m_affinity = fmax(m_affinity - f, 0.0f);
 }
 
 bool MovableParameters::isTired() const

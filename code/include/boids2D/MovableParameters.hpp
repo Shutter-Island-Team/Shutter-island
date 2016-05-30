@@ -129,16 +129,30 @@ public:
   float getHunger() const;
 
   /**
-   * @brief Increase the hunger value
+   * @brief Increase the hunger
    * @todo  Review it
    */
   void hungerIncrease();
 
   /**
-   * @brief Decrease the hunger value
+   * @brief     Increase the hunger by a certain value
+   * @param[in] f Value to modify
+   * @todo  Review it
+   */
+  void hungerIncrease(const float & f);
+
+  /**
+   * @brief Decrease the hunger
    * @todo  Review it
    */
   void hungerDecrease();
+
+  /**
+   * @brief     Decrease the hunger by a certain value
+   * @param[in] f Value to modify
+   * @todo  Review it
+   */
+  void hungerDecrease(const float & f);
 
   /**
    * @brief Check if the the boid is hungry
@@ -156,16 +170,30 @@ public:
   float getThirst() const;
 
   /**
-   * @brief Increase the thirst value
+   * @brief Increase the thirst
    * @todo  Review it
    */
   void thirstIncrease();
 
   /**
-   * @brief Decrease the thirst value
+   * @brief     Increase the thirst by a certain value
+   * @param[in] f Value to modify
+   * @todo  Review it
+   */
+  void thirstIncrease(const float & f);
+
+  /**
+   * @brief Decrease the thirst
    * @todo  Review it
    */
   void thirstDecrease();
+
+  /**
+   * @brief     Decrease the thirst by a certain value
+   * @param[in] f Value to modify
+   * @todo  Review it
+   */
+  void thirstDecrease(const float & f);
 
   /**
    * @brief Check if the boid is thristy
@@ -217,14 +245,30 @@ public:
   float getAffinity() const;
 
   /**
-   * @brief Increment the affinity
+   * @brief Increase the affinity
+   * @todo  Review it
    */
   void affinityIncrease();
 
   /**
-   * @brief Decrement the affinity
+   * @brief     Increase the affinity by a certain value
+   * @param[in] f Value to modify
+   * @todo  Review it
+   */
+  void affinityIncrease(const float & f);
+
+  /**
+   * @brief Decrease the affinity
+   * @todo  Review it
    */
   void affinityDecrease();
+
+  /**
+   * @brief     Decrease the affinity by a certain value
+   * @param[in] f Value to modify
+   * @todo  Review it
+   */
+  void affinityDecrease(const float & f);
 
   /**********************************
           Getter methods
