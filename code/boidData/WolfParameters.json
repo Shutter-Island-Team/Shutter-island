@@ -1,10 +1,11 @@
 {
-	"maxSpeed": 4.0,
+	"maxSpeed": 6.0,
 	"maxForce": 1.2,
 	"angleView": 3.25,
 	"distSeparate": 2.5,
 	"distCohesion": 5.0,
-	"distViewMax": 15.0,
+	"distAttack": 3.0,
+	"distViewMax": 20.0,
 	"distToLeader": 1.0,
 	"distSeeAhead": 1.5,
 	"distStartSlowingDown": 9.0,
