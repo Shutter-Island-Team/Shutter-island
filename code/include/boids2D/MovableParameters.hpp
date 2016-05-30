@@ -81,24 +81,10 @@ public:
   void staminaIncrease();
 
   /**
-   * @brief     Increase the stamina by a certain value
-   * @param[in] f Value to modify
-   * @todo  Review it
-   */
-  void staminaIncrease(const float & f);
-
-  /**
    * @brief Decrease the stamina
    * @todo  Review it
    */
   void staminaDecrease();
-
-  /**
-   * @brief     Decrease the stamina by a certain value
-   * @param[in] f Value to modify
-   * @todo  Review it
-   */
-  void staminaDecrease(const float & f);
   
   /**
    * @brief Check if the stamina is high. "high" depends on the parameter
@@ -136,24 +122,10 @@ public:
   void hungerIncrease();
 
   /**
-   * @brief     Increase the hunger by a certain value
-   * @param[in] f Value to modify
-   * @todo  Review it
-   */
-  void hungerIncrease(const float & f);
-
-  /**
    * @brief Decrease the hunger
    * @todo  Review it
    */
   void hungerDecrease();
-
-  /**
-   * @brief     Decrease the hunger by a certain value
-   * @param[in] f Value to modify
-   * @todo  Review it
-   */
-  void hungerDecrease(const float & f);
 
   /**
    * @brief Check if the the boid is hungry
@@ -177,24 +149,10 @@ public:
   void thirstIncrease();
 
   /**
-   * @brief     Increase the thirst by a certain value
-   * @param[in] f Value to modify
-   * @todo  Review it
-   */
-  void thirstIncrease(const float & f);
-
-  /**
    * @brief Decrease the thirst
    * @todo  Review it
    */
   void thirstDecrease();
-
-  /**
-   * @brief     Decrease the thirst by a certain value
-   * @param[in] f Value to modify
-   * @todo  Review it
-   */
-  void thirstDecrease(const float & f);
 
   /**
    * @brief Check if the boid is thristy
@@ -252,24 +210,10 @@ public:
   void affinityIncrease();
 
   /**
-   * @brief     Increase the affinity by a certain value
-   * @param[in] f Value to modify
-   * @todo  Review it
-   */
-  void affinityIncrease(const float & f);
-
-  /**
    * @brief Decrease the affinity
    * @todo  Review it
    */
   void affinityDecrease();
-
-  /**
-   * @brief     Decrease the affinity by a certain value
-   * @param[in] f Value to modify
-   * @todo  Review it
-   */
-  void affinityDecrease(const float & f);
 
   /**********************************
           Getter methods
@@ -377,7 +321,25 @@ public:
   float m_highHungerValue; ///< Value of the high hunger
 
   float m_lowThirstValue; ///< Value of the low thirst
-  float m_highThirstValue; ///< Value of the low thirst
+  float m_highThirstValue; ///< Value of the high thirst
+
+  float m_lowDangerValue; ///< Value of the low danger
+  float m_highDangerValue; ///< Value of the high danger
+
+  float m_staminaIncCoeff;
+  float m_staminaDecCoeff;
+
+  float m_hungerIncCoeff;
+  float m_hungerDecCoeff;
+
+  float m_thirstIncCoeff;
+  float m_thirstDecCoeff;
+
+  float m_affinityIncCoeff;
+  float m_affinityDecCoeff;
+
+  float m_dangerIncCoeff;
+  float m_dangerDecCoeff;
 };
 
 #endif

@@ -33,11 +33,43 @@ MovableParameters::MovableParameters(float maxSpeed, float maxForce,
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
 	m_distStartSlowingDown(distStartSlowingDown), m_distSeeAhead(distSeeAhead), m_distAttack(distAttack),
 	m_rCircleWander(rCircleWander), m_distToCircle(distToCircle), m_danger(0.0f), m_affinity(0.0f), 
-	m_stamina(random(55,99)), m_hunger(random(55,99)), m_thirst(random(55,99)),
-	m_lowStaminaValue(25.0f), m_highStaminaValue(80.0f), m_lowHungerValue(35.0f), m_highHungerValue(80.0f),
-	m_lowThirstValue(35.0f), m_highThirstValue(80.0f)
+	m_stamina(random(55,99)), m_hunger(random(55,99)), m_thirst(random(55,99))
 {
+	rapidjson::Document d;
 
+	std::ifstream t("../boidData/VariableParameters.json");
+	std::string str;
+
+	t.seekg(0, std::ios::end);   
+	str.reserve(t.tellg());
+	t.seekg(0, std::ios::beg);
+
+	str.assign((std::istreambuf_iterator<char>(t)),
+	            std::istreambuf_iterator<char>());	
+
+	d.Parse(str.c_str());
+
+	m_lowStaminaValue = d["Boundaries"]["Stamina"]["low"].GetDouble();
+	m_highStaminaValue = d["Boundaries"]["Stamina"]["high"].GetDouble();
+
+	m_lowHungerValue = d["Boundaries"]["Hunger"]["low"].GetDouble();
+	m_highHungerValue = d["Boundaries"]["Hunger"]["high"].GetDouble();
+
+	m_lowThirstValue = d["Boundaries"]["Thirst"]["low"].GetDouble();
+	m_highThirstValue = d["Boundaries"]["Thirst"]["high"].GetDouble();
+
+	m_lowDangerValue = d["Boundaries"]["Danger"]["low"].GetDouble();
+	m_highDangerValue = d["Boundaries"]["Danger"]["high"].GetDouble();
+
+	m_hungerIncCoeff = d["Coefficient"]["Global coefficient"]["Hunger"].GetDouble();
+	m_staminaIncCoeff = d["Coefficient"]["Global coefficient"]["Stamina"].GetDouble();
+	m_thirstIncCoeff = d["Coefficient"]["Global coefficient"]["Thirst"].GetDouble();
+	m_affinityIncCoeff = d["Coefficient"]["Global coefficient"]["AffinityIncrease"].GetDouble();
+	m_affinityDecCoeff = d["Coefficient"]["Global coefficient"]["AffinityDecrease"].GetDouble();
+
+	m_hungerDecCoeff = d["Coefficient"]["WalkState"]["Hunger"].GetDouble();
+	m_thirstDecCoeff = d["Coefficient"]["WalkState"]["Thirst"].GetDouble();
+	m_staminaDecCoeff = d["Coefficient"]["WalkState"]["Stamina"].GetDouble();
 }
 
 MovableParameters::MovableParameters( const std::string & filename )
@@ -89,22 +121,12 @@ float MovableParameters::getStamina() const
 
 void MovableParameters::staminaIncrease()
 {
-	staminaIncrease(0.1f);
-}
-
-void MovableParameters::staminaIncrease(const float & f)
-{
-	m_stamina = fmin(m_stamina + f, 100.0f);
+	m_stamina = fmin(m_stamina + m_staminaIncCoeff, 100.0f);
 }
 
 void MovableParameters::staminaDecrease()
 {
-	staminaDecrease(0.1f);
-}
-
-void MovableParameters::staminaDecrease(const float & f)
-{
-	m_stamina = fmax(m_stamina - f, 0.0f);
+	m_stamina = fmax(m_stamina - m_staminaDecCoeff, 0.0f);
 }
 
 float MovableParameters::getHunger() const
@@ -114,24 +136,12 @@ float MovableParameters::getHunger() const
 
 void MovableParameters::hungerIncrease()
 {
-	hungerIncrease(0.05f);
-}
-
-void MovableParameters::hungerIncrease(const float & f)
-{
-	///< @todo : improve with maybe a better function
-	m_hunger = fmin(m_hunger + f, 100.0f);
+	m_hunger = fmin(m_hunger + m_hungerIncCoeff, 100.0f);
 }
 
 void MovableParameters::hungerDecrease()
 {
-	hungerDecrease(0.05f);	
-}
-
-void MovableParameters::hungerDecrease(const float & f)
-{
-	///< @todo : improve with maybe a better function
-	m_hunger = fmax(m_hunger - f, 0.0f);
+	m_hunger = fmax(m_hunger - m_hungerDecCoeff, 0.0f);
 }
 
 float MovableParameters::getThirst() const
@@ -141,24 +151,12 @@ float MovableParameters::getThirst() const
 
 void MovableParameters::thirstIncrease()
 {
-	thirstIncrease(0.1f);
-}
-
-void MovableParameters::thirstIncrease(const float & f)
-{
-	///< @todo : improve with maybe a better function
-	m_thirst = fmin(m_thirst + f, 100.0f);
+	m_thirst = fmin(m_thirst + m_thirstIncCoeff, 100.0f);
 }
 
 void MovableParameters::thirstDecrease()
 {
-	thirstDecrease(0.1f);
-}
-
-void MovableParameters::thirstDecrease(const float & f)
-{
-	///< @todo : improve with maybe a better function
-	m_thirst = fmax(m_thirst - f, 0.0f);
+	m_thirst = fmax(m_thirst - m_thirstDecCoeff, 0.0f);
 }
 
 float MovableParameters::getDanger() const
@@ -168,16 +166,12 @@ float MovableParameters::getDanger() const
 
 void MovableParameters::dangerIncrease()
 {
-	///< @todo : improve with maybe a better function
-	//m_danger = fmin(m_danger + 1.0f, 100.0f);
-	m_danger = 100.0f;
+	m_danger = fmin(m_danger + m_dangerIncCoeff, 100.0f);
 }
 
 void MovableParameters::dangerDecrease()
 {
-	///< @todo : improve with maybe a better function
-	//m_danger = fmax(m_danger - 1.0f, 0.0f);
-	m_danger = 0.0f;
+	m_danger = fmax(m_danger - m_dangerDecCoeff, 0.0f);
 }
 
 float MovableParameters::getAffinity() const
@@ -187,24 +181,12 @@ float MovableParameters::getAffinity() const
 
 void MovableParameters::affinityIncrease()
 {
-	affinityIncrease(0.1f);
-}
-
-void MovableParameters::affinityIncrease(const float & f)
-{
-	///< @todo : improve with maybe a better function
-	m_affinity = fmin(m_affinity + f, 100.0f);
+	m_affinity = fmin(m_affinity + m_affinityIncCoeff, 100.0f);
 }
 
 void MovableParameters::affinityDecrease()
 {
-	affinityDecrease(0.1f);
-}
-
-void MovableParameters::affinityDecrease(const float & f)
-{
-	///< @todo : improve with maybe a better function
-	m_affinity = fmax(m_affinity - f, 0.0f);
+	m_affinity = fmax(m_affinity - m_affinityDecCoeff, 0.0f);
 }
 
 bool MovableParameters::isTired() const
@@ -270,8 +252,7 @@ float MovableParameters::getDistViewMax() const
 
 bool MovableParameters::isInDanger() const
 {
-	///< @todo
-	return m_danger == 100.0f;
+	return m_danger >= m_highDangerValue;	
 }
 
 bool MovableParameters::isThirsty() const
@@ -291,8 +272,7 @@ bool MovableParameters::isNotTired() const
 
 bool MovableParameters::isNotInDanger() const
 {
-	///< @todo
-	return m_danger == 0.0f;	
+	return m_danger <= m_lowDangerValue;	
 }
 
 float MovableParameters::getDistToLeader() const
