@@ -31,7 +31,7 @@ static void initializeGL()
 
 Viewer::KeyboardState::KeyboardState()
     : forward( false ), backward( false ), left( false ), right( false ),
-      slow( false ), fast( false ), speed( 0.5 )
+      slow( false ), fast( false ), speed( 40.0 )
 {}
 
 Viewer::~Viewer()
