@@ -17,6 +17,10 @@ code/doc/html
 code/lib/voro++/examples/*
 code/lib/voro++/src/libvoro++.a
 code/lib/voro++/src/voro++
+code/lib/voro++/src/Debug/*
+code/lib/voro++/src/Release/*
+code/lib/voro++/build/*
+code/lib/voro++/CmakeFiles/*
 **/tumeur*
 **/oedeme*
 **/make_*.sh

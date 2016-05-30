@@ -118,7 +118,7 @@ void DynamicSystem::detectCollisions()
 		{
 		    ParticlePtr p1 = m_particles[i];
 		    ParticlePtr p2 = m_particles[j];
-		    if (p1->isCollisionable() and p2->isCollisionable()) {
+		    if (p1->isCollisionable() && p2->isCollisionable()) {
 			if(testParticleParticle(p1, p2))
 			    {
 				ParticleParticleCollisionPtr c = std::make_shared<ParticleParticleCollision>(p1, p2, m_restitution);

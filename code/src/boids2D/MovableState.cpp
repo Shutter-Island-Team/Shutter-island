@@ -309,6 +309,8 @@ bool MovableState::updateAffinity(MovableBoid& b, const std::vector<MovableBoidP
 	} else {
 		b.getParameters().affinityDecrease();
 	}
+
+	return friendFound;
 }
 
 glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager) const

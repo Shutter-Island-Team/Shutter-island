@@ -97,7 +97,11 @@ void Spline::generate_spline(bool is_curve_closed)
      * Pre-computing the coefficients used to generate the points of the
      * spline.
      */
-    float coefficients[m_iteration_level][4];
+    float** coefficients = new float* [m_iteration_level];
+	for (int i = 0; i < m_iteration_level; i++) {
+		coefficients[i] = new float[4];
+	}
+
     for (int step = 0; step < m_iteration_level; step++) {
         /*
          * Computing the [0;1] subdivision, and its powers.
@@ -137,6 +141,14 @@ void Spline::generate_spline(bool is_curve_closed)
             );
         }
     }
+
+	/*
+	 * Deallocating the coefficients.
+	 */
+	for (int i = 0; i < m_iteration_level; i++) {
+		delete[] coefficients[i];
+	}
+	delete[] coefficients;
 }
 
 std::vector<glm::vec3>& Spline::get_generated_points()

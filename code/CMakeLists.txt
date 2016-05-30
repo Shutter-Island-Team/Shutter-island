@@ -1,30 +1,34 @@
-#if( ${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR}/build )
-#else()
-# 	message( FATAL_ERROR "Dear student, you just tried to launch"
-# 	" cmake in another directory than build/. We encourage you to"
-# 	" be more careful in the future and NEVER DO THAT AGAIN. Now "
-# 	"the build system will stop, and you will remove " 
-# 	"../CMakeCache.txt and ../CMakefiles/.\n--Your 3D Computer Graphics teachers.")
-# endif()
-
 #==========================================
-#Project options
+#Project options.
 #==========================================
 cmake_minimum_required(VERSION 2.8)
 
 #==========================================
-#Project name
+#Project name.
 #==========================================
-project(3DCG)
+project(TheIsland)
 
 #==========================================
-#Building options
+#Building options.
 #==========================================
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fopenmp -Wno-deprecated")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
+if(UNIX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fopenmp -Wno-deprecated")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG")
+elseif(WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /openmp /D_CRT_SECURE_NO_DEPRECATE /D_USE_MATH_DEFINES")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DDEBUG")
+endif()
 
 #==========================================
-#Libraries path : glm, sfml, glew, opengl, freetype, voro++
+#Building mode handling.
+#==========================================
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE DEBUG)
+endif()
+message("Building mode: " ${CMAKE_BUILD_TYPE})
+
+#==========================================
+#Libraries path : glm, sfml, glew, opengl, freetype and voro++.
 #==========================================
 
 #GLM Libraries
@@ -39,7 +43,7 @@ if(UNIX)
 elseif(APPLE)
     message("APPLE platform not handled")
 elseif(WIN32)
-    message("WINDOWS platform not handled")
+    set(GLEW_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/glew-1.13.0/lib/Release/Win32/glew32.lib" CACHE FILEPATH "glew")
 endif()
 
 #SFML Libraries
@@ -52,7 +56,15 @@ if(UNIX)
 elseif(APPLE)
     message("APPLE platform not handled")
 elseif(WIN32)
-    message("WINDOWS platform not handled")
+    if (CMAKE_BUILD_TYPE MATCHES RELEASE)
+        set(SFML_SYSTEM_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/sfml-2.3.2/lib/sfml-system.lib" CACHE FILEPATH "sfml")
+        set(SFML_WINDOW_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/sfml-2.3.2/lib/sfml-window.lib" CACHE FILEPATH "sfml")
+        set(SFML_GRAPHICS_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/sfml-2.3.2/lib/sfml-graphics.lib" CACHE FILEPATH "sfml")
+    elseif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+        set(SFML_SYSTEM_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/sfml-2.3.2/lib/sfml-system-d.lib" CACHE FILEPATH "sfml")
+        set(SFML_WINDOW_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/sfml-2.3.2/lib/sfml-window-d.lib" CACHE FILEPATH "sfml")
+        set(SFML_GRAPHICS_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/sfml-2.3.2/lib/sfml-graphics-d.lib" CACHE FILEPATH "sfml")
+    endif()
 endif()
 
 #FREETYPE Libraries
@@ -63,7 +75,11 @@ if(UNIX)
 elseif(APPLE)
     message("APPLE platform not handled")
 elseif(WIN32)
-    message("WINDOWS platform not handled")
+    if (CMAKE_BUILD_TYPE MATCHES RELEASE)
+        set(FREETYPE_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/freetype-2.5.5/objs/vc2010/Win32/freetype255.lib" CACHE FILEPATH "freetype")
+    elseif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+        set(FREETYPE_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/freetype-2.5.5/objs/vc2010/Win32/freetype255d.lib" CACHE FILEPATH "freetype")
+    endif()
 endif()
 
 #TINYOBJLOADER Libraries
@@ -74,7 +90,11 @@ if(UNIX)
 elseif(APPLE)
     message("APPLE platform not handled")
 elseif(WIN32)
-    message("WINDOWS platform not handled")
+    if (CMAKE_BUILD_TYPE MATCHES RELEASE)
+        set(TINYOBJLOADER_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/tinyobjloader/build/Release/tinyobjloader.lib" CACHE FILEPATH "tinyobjloader")
+    elseif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+        set(TINYOBJLOADER_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/extlib/tinyobjloader/build/Debug/tinyobjloader.lib" CACHE FILEPATH "tinyobjloader")
+    endif()
 endif()
 
 #Voro++ Libraries
@@ -85,7 +105,11 @@ if(UNIX)
 elseif(APPLE)
     message("Compile different.")
 elseif(WIN32)
-    message("I have always loved blue. But not on my screen.")
+    if (CMAKE_BUILD_TYPE MATCHES RELEASE)
+        set(VOROPP_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/lib/voro++/src/Release/voro++.lib" CACHE FILEPATH "voro")
+    elseif (CMAKE_BUILD_TYPE MATCHES DEBUG)
+        set(VOROPP_LIBRARIES "${CMAKE_CURRENT_SOURCE_DIR}/lib/voro++/src/Debug/voro++.lib" CACHE FILEPATH "voro")
+    endif()
 endif()
 
 find_package(OpenGL REQUIRED)
@@ -135,7 +159,9 @@ add_executable(${EXECUTABLE_NAME} ${HEADER_FILES} ${SOURCE_FILES} ${SHADER_FILES
 #==============================================
 if (OPENGL_FOUND)
     target_link_libraries(${EXECUTABLE_NAME} ${OPENGL_LIBRARIES})
-    target_link_libraries(${EXECUTABLE_NAME} m)  # if you use maths.h
+    if (UNIX)
+        target_link_libraries(${EXECUTABLE_NAME} m)  # if you use maths.h
+    endif()
 endif()
 
 target_link_libraries(${EXECUTABLE_NAME} ${GLEW_LIBRARIES})
@@ -146,6 +172,3 @@ target_link_libraries(${EXECUTABLE_NAME} ${SFML_GRAPHICS_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${TINYOBJLOADER_LIBRARIES})
 target_link_libraries(${EXECUTABLE_NAME} ${VOROPP_LIBRARIES})
  
-
-set(CMAKE_BUILD_TYPE "Debug")
-#message( "The build type is set to " ${CMAKE_BUILD_TYPE})

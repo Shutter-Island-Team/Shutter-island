@@ -63,7 +63,7 @@ void Plane::boundY(bool limit, float min, float max) {
 }
 
 bool Plane::projectionBelongsToPlane(const glm::vec3 &p) {
-    if ((not m_isLimitedX) and (not m_isLimitedY))
+    if ((! m_isLimitedX) && (! m_isLimitedY))
 	return true;
     
     glm::vec3 projection = this->projectOnPlane(p);
@@ -71,8 +71,8 @@ bool Plane::projectionBelongsToPlane(const glm::vec3 &p) {
 
     float x = glm::dot(localVector, m_xAxis);
     float y = glm::dot(localVector, m_yAxis);
-    return ((((not m_isLimitedX)) or ((m_xMin <= x) and (x <= m_xMax)))
-	    and (((not m_isLimitedY)) or ((m_yMin <= y) and (y <= m_yMax))));
+    return ((((! m_isLimitedX)) || ((m_xMin <= x) && (x <= m_xMax)))
+	    && (((! m_isLimitedY)) || ((m_yMin <= y) && (y <= m_yMax))));
 	
 }
 

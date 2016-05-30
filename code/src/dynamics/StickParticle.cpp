@@ -37,11 +37,11 @@ void StickParticle::updateHierarchy() {
 	this->handleCollision(m_penetration, m_collisionDirection);
     }
     // Eventually calling recursively this function
-    if (m_p1->isAStick() or m_p1->isABox()) {
+    if (m_p1->isAStick() || m_p1->isABox()) {
 	StickParticlePtr stickPtr1 = (StickParticlePtr) std::static_pointer_cast<StickParticle, Particle>(m_p1);
 	stickPtr1->updateHierarchy();
     }
-    if (m_p2->isAStick() or m_p2->isABox()) {
+    if (m_p2->isAStick() || m_p2->isABox()) {
 	StickParticlePtr stickPtr2 = (StickParticlePtr) std::static_pointer_cast<StickParticle, Particle>(m_p2);
 	stickPtr2->updateHierarchy();
     }
@@ -117,7 +117,7 @@ void StickParticle::handleCollision(float penetration, glm::vec3 collisionDirect
     this->setVelocity(oldVelocity - (collisionVelocity * 2.f));
     
     // First child
-    if (m_p1->isAStick() or m_p1->isABox()) {
+    if (m_p1->isAStick() || m_p1->isABox()) {
 	StickParticlePtr stickPtr1 = (StickParticlePtr) std::static_pointer_cast<StickParticle, Particle>(m_p1);
 	stickPtr1->handleCollision(penetration, collisionDirection);
     } else {
@@ -127,7 +127,7 @@ void StickParticle::handleCollision(float penetration, glm::vec3 collisionDirect
 	m_p1->setVelocity(oldVelocity - (collisionVelocity * 2.f));
     }
     // Second child
-    if (m_p2->isAStick() or m_p2->isABox()) {
+    if (m_p2->isAStick() || m_p2->isABox()) {
 	StickParticlePtr stickPtr2 = (StickParticlePtr) std::static_pointer_cast<StickParticle, Particle>(m_p2);
 	stickPtr2->handleCollision(penetration, collisionDirection);
     } else {
