@@ -1,6 +1,7 @@
 #include "./../include/Utils.hpp"
 #include "./../include/log.hpp"
 
+#include <limits>
 #include <chrono>
 #include <random>
 #include <glm/gtx/color_space.hpp>
@@ -499,7 +500,12 @@ void getUnitCone(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
 
 glm::vec3 limitVec3(const glm::vec3 vec, const float val)
 {
-    if (glm::length(vec) > val) {
+    float f = glm::length(vec);
+    if (f != f) {
+        return glm::vec3(0,0,0);
+    }
+
+    if (f > val) {
         return glm::normalize(vec) * val;
     } else {
         return vec;
@@ -518,7 +524,12 @@ void displayVec3(std::ostream & os, const glm::vec3 & vec)
 
 glm::vec3 cNormalize(const glm::vec3 & vec)
 {
-    if (glm::length(vec) > 0.0) {
+    float f = glm::length(vec);
+    if (f != f) {
+        return glm::vec3(0,0,0);
+    }
+
+    if (f > FLT_EPSILON) {
         return glm::normalize(vec);
     } else {
         return glm::vec3(0,0,0);
