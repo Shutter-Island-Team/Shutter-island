@@ -34,7 +34,7 @@ MovableParameters::MovableParameters(float maxSpeedWalk, float maxSpeedRun, floa
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
 	m_distStartSlowingDown(distStartSlowingDown), m_distSeeAhead(distSeeAhead), m_distAttack(distAttack),
 	m_rCircleWander(rCircleWander), m_distToCircle(distToCircle), m_danger(0.0f), m_affinity(0.0f), 
-	m_stamina(random(55,99)), m_hunger(random(55,99)), m_thirst(random(55,99))
+	m_stamina(random(55,99)), m_hunger(random(55,99)), m_thirst(random(55,99)), m_foodRemaining(100.0f)
 {
 	rapidjson::Document d;
 
@@ -63,14 +63,19 @@ MovableParameters::MovableParameters(float maxSpeedWalk, float maxSpeedRun, floa
 	m_highDangerValue = d["Boundaries"]["Danger"]["high"].GetDouble();
 
 	m_hungerIncCoeff = d["Coefficient"]["Global coefficient"]["Hunger"].GetDouble();
+	m_hungerDecCoeff = d["Coefficient"]["WalkState"]["Hunger"].GetDouble();
+
 	m_staminaIncCoeff = d["Coefficient"]["Global coefficient"]["Stamina"].GetDouble();
+	m_staminaDecCoeff = d["Coefficient"]["WalkState"]["Stamina"].GetDouble();
+
 	m_thirstIncCoeff = d["Coefficient"]["Global coefficient"]["Thirst"].GetDouble();
+	m_thirstDecCoeff = d["Coefficient"]["WalkState"]["Thirst"].GetDouble();
+
 	m_affinityIncCoeff = d["Coefficient"]["Global coefficient"]["AffinityIncrease"].GetDouble();
 	m_affinityDecCoeff = d["Coefficient"]["Global coefficient"]["AffinityDecrease"].GetDouble();
 
-	m_hungerDecCoeff = d["Coefficient"]["WalkState"]["Hunger"].GetDouble();
-	m_thirstDecCoeff = d["Coefficient"]["WalkState"]["Thirst"].GetDouble();
-	m_staminaDecCoeff = d["Coefficient"]["WalkState"]["Stamina"].GetDouble();
+	m_dangerIncCoeff = d["Coefficient"]["Global coefficient"]["DangerIncrease"].GetDouble();
+	m_dangerDecCoeff = d["Coefficient"]["Global coefficient"]["DangerDecrease"].GetDouble();
 }
 
 MovableParameters::MovableParameters( const std::string & filename )
@@ -291,3 +296,19 @@ float MovableParameters::getDistAttack() const
 {
 	return m_distAttack;
 }
+
+float MovableParameters::getFoodRemaining() const
+{
+	return m_foodRemaining;
+}
+
+void MovableParameters::setFoodRemaining(float foodRemaining)
+{
+	m_foodRemaining = foodRemaining;
+}
+
+bool MovableParameters::isFoodRemaining() const
+{
+	return m_foodRemaining > 0.0f;
+}
+
