@@ -19,20 +19,20 @@ HeightNode::HeightNode(float newSize,
 
 HeightData HeightNode::getData(QuadPosition position) {
     switch(position) {
-    case TopLeft:
-	return topLeftData;
-	break;
-    case TopRight:
-	return topRightData;
-	break;
-    case BottomLeft:
-	return bottomLeftData;
-	break;
-    case BottomRight:
-	return bottomRightData;
-	break;
-    default:
-	std::cerr << "Error : unknown QuadPosition type" << std::endl;
+        case TopLeft:
+            return topLeftData;
+            break;
+        case TopRight:
+            return topRightData;
+            break;
+        case BottomLeft:
+            return bottomLeftData;
+            break;
+        case BottomRight:
+            return bottomRightData;
+            break;
+        default:
+    	   throw std::invalid_argument("Error : unknown QuadPosition type");
     }
 }
 
