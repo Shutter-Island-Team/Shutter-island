@@ -386,19 +386,12 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	}
 
 	
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
 glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	std::cerr << "Arrive in WalkState" << std::endl;
-	std::cerr << "location : ";
-	displayVec3(b.getLocation());
-	std::cerr << std::endl;
-	std::cerr << "velocity : ";
-	displayVec3(b.getVelocity());
-	std::cerr << std::endl;
 	// stamina <- sd(stamina)
 	// hunger <- hd(hunger)
 	// thirst <- td(thirst)
@@ -429,23 +422,12 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 		newForces = wander(b) + globalAvoid(b, boidsManager); 
 	}
 
-	std::cerr << "newForces : ";
-	displayVec3(newForces);
-	std::cerr << std::endl;
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
 glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	std::cerr << "Arrive in StayState" << std::endl;
-	std::cerr << "location : ";
-	displayVec3(b.getLocation());
-	std::cerr << std::endl;
-	std::cerr << "velocity : ";
-	displayVec3(b.getVelocity());
-	std::cerr << std::endl;
-
 	// /!\ requirement : danger <= lowDanger
 	// stamina <- si(stamina)
 	// hunger <- hd(hunger)
@@ -461,17 +443,13 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
-	//updateDanger(b, mvB);
+	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
 	newForces += arrive(b, b.getLocation());
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
-
-	std::cerr << "newForces : ";
-	displayVec3(newForces);
-	std::cerr << std::endl;
+	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	return newForces;
 }
@@ -496,7 +474,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	updateAffinity(b, mvB);
 
 	newForces += arrive(b, b.getLocation());
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	return newForces;
 }
@@ -544,7 +522,7 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	}
 
 	newForces += globalAvoid(b, boidsManager);
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -598,7 +576,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 			break;
 	}
 	newForces += globalAvoid(b, boidsManager);
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -624,7 +602,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	updateAffinity(b, mvB);
 
 	newForces += arrive(b, b.getLocation());
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -663,7 +641,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	updateAffinity(b, mvB);
 
 	newForces += arrive(b, b.getLocation());
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	///< TODO maybe it better with the target ?
 	return newForces;
@@ -695,7 +673,7 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 
 	newForces += arrive(b, b.getLocation());
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -733,7 +711,7 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 			break;
 	}
 	newForces += globalAvoid(b, boidsManager);
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	return newForces;
 }
@@ -755,7 +733,7 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	updateAffinity(b, mvB);
 	// wander and avoid obstacle until the boid need to eat or fin a group
 	newForces += wander(b) + globalAvoid(b, boidsManager); 
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -765,6 +743,6 @@ glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	glm::vec3 newForces(0,0,0);
 
 	newForces += arrive(b, b.getLocation());
-	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }

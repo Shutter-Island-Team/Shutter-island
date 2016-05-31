@@ -2,6 +2,7 @@
 #include "./../include/log.hpp"
 
 #include <limits>
+#include <cmath>
 #include <chrono>
 #include <random>
 #include <limits>
@@ -503,12 +504,12 @@ void getUnitCone(std::vector<glm::vec3>& positions, std::vector<glm::vec3>& norm
 glm::vec3 limitVec3(const glm::vec3 vec, const float val)
 {
     float f = glm::length(vec);
-    if (f != f) {
+    if (std::isnan(f) || std::isinf(f)) {
         return glm::vec3(0,0,0);
     }
 
     if (f > val) {
-        return cNormalize(vec) * val;
+        return glm::normalize(vec) * val;
     } else {
         return vec;
     }
@@ -527,7 +528,7 @@ void displayVec3(std::ostream & os, const glm::vec3 & vec)
 glm::vec3 cNormalize(const glm::vec3 & vec)
 {
     float f = glm::length(vec);
-    if (f != f) {
+    if (std::isnan(f) || std::isinf(f)) {
         return glm::vec3(0,0,0);
     }
 

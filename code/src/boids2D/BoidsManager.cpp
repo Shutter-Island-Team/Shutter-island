@@ -104,22 +104,10 @@ void BoidsManager::removeDead()
 	std::vector<MovableBoidPtr>::iterator it = m_movableBoids.begin();
 	while ( it != m_movableBoids.end()) {
 		if (!((*it)->getParameters().isFoodRemaining())) {
-			std::cerr << "RIP in peace" << std::endl;
 			(*it)->disapear();
 			it = m_movableBoids.erase(it);
 		} else {
-			std::cerr << (*it)->getParameters().getFoodRemaining() << std::endl;
 			it++;
 		}
 	}
-	// for (MovableBoidPtr mvB : m_movableBoids) {
-	// 	if (mvB == nullptr) {
-	// 		std::cerr << "Lol T mor" << std::endl;
-	// 	}
-	// 	if (mvB->getParameters().isFoodRemaining()) {
-	// 		auto it = std::find(m_movableBoids.begin(), m_movableBoids.end(), mvB);
-	// 		if(it != m_movableBoids.end())
-	// 		    m_movableBoids.erase(it);
-	// 	}
-	// }
 }
