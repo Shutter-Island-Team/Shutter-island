@@ -290,15 +290,6 @@ public:
    */
   float getDistAttack() const;
 
-  /**********************************
-          Decomposition
-  ***********************************/
-  float getFoodRemaining() const;
-
-  void setFoodRemaining(float foodRemaining);
-
-  bool isFoodRemaining() const;
-
  private:
   float m_maxSpeedWalk; ///< Maximum speed of the boid
   float m_maxSpeedRun; ///< Maximum speed of the boid
@@ -350,8 +341,6 @@ public:
 
   float m_dangerIncCoeff;
   float m_dangerDecCoeff;
-
-  float m_foodRemaining;
 };
 
 #endif

@@ -67,7 +67,7 @@ class MovableBoid : public Boid
    * @param[in] parameters  Parameter of the boid
    */
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
-              MovableParameters* parameters, float amountFood);
+              MovableParameters* parameters, int amountFood);
  public:
 
   /**

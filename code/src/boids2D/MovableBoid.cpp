@@ -24,13 +24,13 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, Mov
 
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
     BoidType t, MovableParameters* parameters) :
-    MovableBoid(location, velocity, mass, t, parameters, 100.0f) 
+    MovableBoid(location, velocity, mass, t, parameters, 1) 
 {
 
 }
 
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
-    BoidType t, MovableParameters* parameters, float amountFood)
+    BoidType t, MovableParameters* parameters, int amountFood)
 	: Boid(location, t, amountFood), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
 	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
@@ -298,7 +298,7 @@ void MovableBoid::eatStateHandler()
 		if (m_rootedPrey != (RootedBoidPtr) nullptr) {
 			m_rootedPrey->disapear();
 		} else if (m_movablePrey != (MovableBoidPtr) nullptr) {
-			m_movablePrey->m_parameters->setFoodRemaining(0.0f);
+			m_movablePrey->decreaseFoodRemaining();
 			m_movablePrey = nullptr;
 		}
 		// Update not in group if he can't see the leader	

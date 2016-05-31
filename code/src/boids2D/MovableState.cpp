@@ -344,7 +344,7 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager);
+	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager)
 			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids());
 }
 

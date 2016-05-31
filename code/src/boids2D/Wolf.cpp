@@ -15,7 +15,7 @@ Wolf::Wolf(glm::vec3 location, glm::vec3 velocity, MovableParameters* parameters
 
 Wolf::Wolf(glm::vec3 location, glm::vec3 velocity, float mass,
     MovableParameters* parameters)
-	: MovableBoid(location, velocity, mass, WOLF, parameters, 300.0f)
+	: MovableBoid(location, velocity, mass, WOLF, parameters, 3)
 {
 
 }

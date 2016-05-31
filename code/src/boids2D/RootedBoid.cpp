@@ -1,12 +1,12 @@
 #include "../../include/boids2D/RootedBoid.hpp"
 
 RootedBoid::RootedBoid(glm::vec3 location, BoidType t)
-	: RootedBoid(location, t, 100.0f)
+	: RootedBoid(location, t, 1)
 {
 
 }
 
-RootedBoid::RootedBoid(glm::vec3 location, BoidType t, float amountFood)
+RootedBoid::RootedBoid(glm::vec3 location, BoidType t, int amountFood)
 	: Boid(location, t, amountFood), m_radius(2.0f)
 {
 
