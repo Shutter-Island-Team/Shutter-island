@@ -137,21 +137,12 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 			break;
 	}
 	m_acceleration = m_currentState->computeAcceleration(*this, boidsManager, dt);
-	std::cerr << "Acceleration :";
-	displayVec3(m_acceleration);
-	std::cerr << std::endl;
 }
 
 // x(t + dt) = x(t) + v(t+dt) * dt
 void MovableBoid::computeNextStep(const float & dt)
 {
-	std::cerr << "Previous velocity :";
-	displayVec3(m_velocity);
-	std::cerr << std::endl;
     m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters().getMaxForce()), getParameters().getMaxSpeed());
-    std::cerr << "Next velocity :";
-	displayVec3(m_velocity);
-	std::cerr << std::endl;
 	setAngle(atan2(m_velocity.y, m_velocity.x));
     m_location += dt * m_velocity;
 }
@@ -271,7 +262,9 @@ void MovableBoid::stayStateHandler()
 void MovableBoid::findFoodStateHandler()
 {
 	///< @todo : A modifier
-	if (hasPrey()) {
+	if (m_parameters->isInDanger()) {
+		switchToState(FLEE_STATE);
+	} else if (hasPrey()) {
 		switchToState(ATTACK_STATE);
 	} else if (hasPrey() && preyIsDead()) {
 		switchToState(EAT_STATE);
@@ -297,8 +290,11 @@ void MovableBoid::eatStateHandler()
 	} else if(m_parameters->isNotHungry()) {
 		if (m_rootedPrey != (RootedBoidPtr) nullptr) {
 			m_rootedPrey->disapear();
-			setRootedPrey(nullptr);
-		}		
+		} else if (m_movablePrey != (MovableBoidPtr) nullptr) {
+			m_movablePrey->m_parameters->setFoodRemaining(0.0f);
+			m_movablePrey = nullptr;
+		}
+		// Update not in group if he can't see the leader	
 		switchToState(LOST_STATE);
 	}
 }
@@ -426,6 +422,7 @@ bool MovableBoid::isInGroup() const
 void MovableBoid::setMovablePrey(const MovableBoidPtr & boid)
 {
 	m_movablePrey = boid;
+	// boid->setHunter(this);
 }
 
 MovableBoidPtr MovableBoid::getMovablePrey() const

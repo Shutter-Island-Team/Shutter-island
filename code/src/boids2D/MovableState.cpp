@@ -121,31 +121,8 @@ glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
 
 glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	#ifdef DEBUG
-	std::cerr << "location : ";
-	displayVec3(b.getLocation());
-	std::cerr << std::endl;
-
-	std::cerr << "velocity : ";
-	displayVec3(b.getVelocity());
-	std::cerr << std::endl;
-
-	std::cerr << "glm::length(b.getVelocity()) : " << glm::length(b.getVelocity()) << std::endl;
-
-	std::cerr << "cNormalize(b.getVelocity()) : ";
-	displayVec3(cNormalize(b.getVelocity()));
-	std::cerr << std::endl;
-	#endif
-
 	float coeff = glm::length(b.getVelocity()) / b.getParameters().getMaxSpeed();
 	glm::vec3 posAhead = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead() * 0.5f;
-
-	#ifdef DEBUG
-	std::cerr << "posAhead : ";
-	displayVec3(posAhead);
-	std::cerr << std::endl;
-	#endif
-
 /*
 	if(boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
 		///< TODO move to the center of the map
@@ -155,13 +132,7 @@ glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager &
 		return glm::vec3(0,0,0);
 	} else 
 	*/if (boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(posAhead.x, posAhead.y) == Lake) {
-		glm::vec3 tmp = cNormalize(b.getLocation() - posAhead) * b.getParameters().getMaxForce();
-		#ifdef DEBUG
-		std::cerr << "tmp : ";
-		displayVec3(tmp);
-		std::cerr << std::endl;
-		#endif
-		return tmp;
+		return cNormalize(b.getLocation() - posAhead) * b.getParameters().getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);
 	}
@@ -613,7 +584,6 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 
 glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
-	std::cerr << "Arrive in EatState" << std::endl;
 	// stamina <- si(stamina)
 	// hunger <- hi(hunger)
 	// thirst <- td(thirst)

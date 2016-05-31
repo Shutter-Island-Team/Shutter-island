@@ -43,4 +43,5 @@ void DynamicSystemBoid::computeSimulationStep()
     //Integrate position and velocity of particles
     m_solver->solve(m_dt, m_boidsManager);
 
+    m_boidsManager->removeDead();
 }
