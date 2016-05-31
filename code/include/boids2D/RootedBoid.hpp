@@ -22,9 +22,7 @@ class RootedBoid : public Boid
    * @return Return the radius
    */
   float getRadius() const;
-
-  void disapear();
-
+  
  protected:
   /**
    * @brief Constructor for a RootedBoid

@@ -72,7 +72,6 @@ glm::vec3 MovableState::wander(const MovableBoid& b) const
 // TODO : Maybe reuse seek
 glm::vec3 MovableState::arrive(const MovableBoid& b, const glm::vec3 & target) const
 {
-
 	glm::vec3 desiredVelocity = target - b.getLocation();
 
 	float distance = glm::length(desiredVelocity);
@@ -615,7 +614,23 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	return glm::vec3(0,0,0);
+	glm::vec3 newForces(0,0,0);
+	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+
+	b.getParameters().staminaDecrease();
+	b.getParameters().hungerDecrease();
+	b.getParameters().thirstDecrease();
+
+		// Detect danger and update danger parameter 
+	updateDanger(b, mvB);
+
+	// Detect if alone and update affinity
+	updateAffinity(b, mvB);
+
+	newForces += arrive(b, b.getWaterTarget());
+	newForces += globalAvoid(b, boidsManager);
+
+	return newForces;
 }
 
 glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const

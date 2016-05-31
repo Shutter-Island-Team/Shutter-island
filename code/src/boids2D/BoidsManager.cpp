@@ -101,13 +101,32 @@ MapGenerator& BoidsManager::getMap() const
 
 void BoidsManager::removeDead()
 {
-	std::vector<MovableBoidPtr>::iterator it = m_movableBoids.begin();
-	while ( it != m_movableBoids.end()) {
-		if (!((*it)->isFoodRemaining())) {
-			(*it)->disapear();
-			it = m_movableBoids.erase(it);
+	std::vector<MovableBoidPtr>::iterator itm = m_movableBoids.begin();
+	while ( itm != m_movableBoids.end()) {
+		if (!((*itm)->isFoodRemaining())) {
+			(*itm)->disapear();
+			itm = m_movableBoids.erase(itm);
 		} else {
-			it++;
+			itm++;
 		}
 	}
+	std::vector<RootedBoidPtr>::iterator itr = m_rootedBoids.begin();
+	while ( itr != m_rootedBoids.end()) {
+		if (!((*itr)->isFoodRemaining())) {
+			(*itr)->disapear();
+			itr = m_rootedBoids.erase(itr);
+		} else {
+			itr++;
+		}
+	}
+}
+
+bool BoidsManager::getNearestLake(const MovableBoidPtr & boid, glm::vec2 & result) const
+{
+	return getNearestLake(glm::vec2(boid->getLocation().x, boid->getLocation().y), result);
+}
+
+bool BoidsManager::getNearestLake(const glm::vec2 & position, glm::vec2 & result) const
+{
+	return m_map.getClosestLake(position.x, position.y, result.x, result.y);
 }

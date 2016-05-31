@@ -31,7 +31,7 @@
 		"WalkState": {
 			"Stamina" : 0.1,
 			"Hunger" : 0.06,
-			"Thirst" : 0.1
+			"Thirst" : 0.0
 		},
 		"RunState": {
 			"Stamina" : 0.2,

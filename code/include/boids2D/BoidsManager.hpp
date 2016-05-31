@@ -94,6 +94,10 @@ class BoidsManager
 
     void removeDead();
 
+  bool getNearestLake(const MovableBoidPtr & boid, glm::vec2 & result) const;
+
+  bool getNearestLake(const glm::vec2 & position, glm::vec2 & result) const;
+
  private:
   MapGenerator& m_map;
   std::vector<MovableBoidPtr> m_movableBoids; ///< Vector of the movable boids

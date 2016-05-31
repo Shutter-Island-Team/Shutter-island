@@ -16,9 +16,3 @@ float RootedBoid::getRadius() const
 {
 	return m_radius;
 }
-
-void RootedBoid::disapear()
-{
-	///< @todo : remove from vector
-	m_location = glm::vec3(1000,1000,1000);
-}

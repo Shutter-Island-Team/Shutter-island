@@ -228,6 +228,10 @@ class MovableBoid : public Boid
 
   void setMate(const MovableBoidPtr & mate);
 
+  void askWaterTarget(const BoidsManager & b);
+
+  glm::vec3 getWaterTarget() const;
+
  private:
   glm::vec3 m_velocity; ///< Velocity of the boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
@@ -248,66 +252,68 @@ class MovableBoid : public Boid
 
   bool m_isDead; ///< Boolean to know if the boid is dead
 
+  glm::vec3 m_waterTarget;
+
   /**
    * @brief     Make all the change when a boid get to the new state stateType
    * @param[in] stateType The state the boid change to
    */
-  void switchToState(const StateType & stateType);
+  void switchToState(const StateType & stateType, const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a walking boid
    */
-  void walkStateHandler();
+  void walkStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a staying boid
    */
-  void stayStateHandler();
+  void stayStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid finding food
    */
-  void findFoodStateHandler();
+  void findFoodStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid to attack
    */
-  void attackStateHandler();
+  void attackStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid to eat
    */
-  void eatStateHandler();
+  void eatStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid when he is lost
    */
-  void lostStateHandler();
+  void lostStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid when he sleeps
    */
-  void sleepStateHandler();
+  void sleepStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid when he flees
    */
-  void fleeStateHandler();
+  void fleeStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid when he is looking for water
    */
-  void findWaterStateHandler();
+  void findWaterStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid when he drinks
    */
-  void drinkStateHandler();
+  void drinkStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid when he mates
    */
-  void mateStateHandler();
+  void mateStateHandler(const BoidsManager & boidsManager);
 
   StateType m_stateType; ///< Save the current state of a boid
 
