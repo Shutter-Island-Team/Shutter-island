@@ -92,6 +92,8 @@ class BoidsManager
 
     MapGenerator& getMap() const;
 
+    void removeDead();
+
  private:
   MapGenerator& m_map;
   std::vector<MovableBoidPtr> m_movableBoids; ///< Vector of the movable boids
