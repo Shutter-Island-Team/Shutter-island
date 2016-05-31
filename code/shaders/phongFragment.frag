@@ -85,10 +85,11 @@ vec3 computeDirectionalLight(DirectionalLight light, vec3 surfel_to_camera)
     vec3 reflect_direction = reflect(-surfel_to_light, surfel_normal);
     float specular_factor = pow(max(dot(surfel_to_camera, reflect_direction), 0.0), material.shininess);
 
-    // Combine results
-    vec3 ambient  =                   light.ambient  * material.ambient ;
-    vec3 diffuse  = diffuse_factor  * light.diffuse  * material.diffuse ;
-    vec3 specular = specular_factor * light.specular * material.specular;
+    // Combine results    
+    vec3 ambient  =                   light.ambient  * material.ambient  * vec3(surfel_color);
+    vec3 diffuse  = diffuse_factor  * light.diffuse  * material.diffuse  * vec3(surfel_color);
+    vec3 specular = specular_factor * light.specular * material.specular * vec3(surfel_color);
+
 
     return (ambient + diffuse + specular);
 }
@@ -106,13 +107,13 @@ vec3 computePointLight(PointLight light, vec3 surfel_to_camera)
     vec3 reflect_direction = reflect(-surfel_to_light, surfel_normal);
     float specular_factor = pow(max(dot(surfel_to_camera, reflect_direction), 0.0), material.shininess);
 
-    // Attenuation: TODO
+    // Attenuation
     float attenuation = 1.0/(light.constant + light.linear*distance + light.quadratic*distance*distance);
 
-    // Combine results    
-    vec3 ambient  = attenuation *                   light.ambient  * material.ambient ;
-    vec3 diffuse  = attenuation * diffuse_factor  * light.diffuse  * material.diffuse ;
-    vec3 specular = attenuation * specular_factor * light.specular * material.specular;
+     // Combine results    
+    vec3 ambient  = attenuation *                   light.ambient  * material.ambient  * vec3(surfel_color);
+    vec3 diffuse  = attenuation * diffuse_factor  * light.diffuse  * material.diffuse  * vec3(surfel_color);
+    vec3 specular = attenuation * specular_factor * light.specular * material.specular * vec3(surfel_color);
 
     return (ambient + diffuse + specular);
 }
@@ -140,17 +141,18 @@ vec3 computeSpotLight(SpotLight light, vec3 surfel_to_camera)
     if (posCutOff < light.outerCutOff)
        intensity = 0.0;
     else
-	// Spotlight (soft edges): TODO
+	// Spotlight (soft edges)
     	intensity = max(0.0, min(1.0, (posCutOff - light.outerCutOff)/(light.innerCutOff - light.outerCutOff)));
 		    
-    // Attenuation: TODO
+    // Attenuation
     float attenuation = 1.0/(light.constant + light.linear*distance + light.quadratic*distance*distance);;
 
-    // Combine results    
-    vec3 ambient  =             attenuation *                   light.ambient  * material.ambient ;
-    vec3 diffuse  = intensity * attenuation * diffuse_factor  * light.diffuse  * material.diffuse ;
-    vec3 specular = intensity * attenuation * specular_factor * light.specular * material.specular;
-    
+    // Combine results
+    float coefficient = intensity * attenuation;
+    vec3 ambient  = coefficient *                  light.ambient  * material.ambient  * vec3(surfel_color);
+    vec3 diffuse  = coefficient * diffuse_factor  * light.diffuse  * material.diffuse  * vec3(surfel_color);
+    vec3 specular = coefficient * specular_factor * light.specular * material.specular * vec3(surfel_color);
+
     return (ambient + diffuse + specular);
 }
 

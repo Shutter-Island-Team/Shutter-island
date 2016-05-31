@@ -10,6 +10,7 @@
 #define MAP_2D_RENDERABLE_HPP
 
 #include "../Renderable.hpp"
+#include "./../lighting/Material.hpp"
 #include "MapGenerator.hpp"
 
 #include <list>
@@ -43,6 +44,13 @@ public:
      * Default destructor, nothing particular to say about it.
      */
     ~Map2DRenderable();
+
+    /**
+     * @brief
+     * Setter for the material of the map
+     */
+    void setMaterial(const MaterialPtr& material);
+
 private:
     /**
      * @brief 
@@ -108,6 +116,13 @@ private:
      * map.
      */
     MapGenerator& m_mapGenerator;
+
+
+    /**
+     * @brief
+     * The material of the map
+     */
+    MaterialPtr m_material;
 
     /**
      * @brief Performs a sorted insert of a pair of coordinates into a 

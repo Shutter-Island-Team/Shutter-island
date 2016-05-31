@@ -289,6 +289,9 @@ void Map2DRenderable::do_draw()
     int normalLocation = m_shaderProgram->getAttributeLocation("vNormal");
     int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
 
+    //Send material uniform to GPU
+    Material::sendToGPU(m_shaderProgram, m_material);
+
     if(modelLocation != ShaderProgram::null_location)
     {
         glcheck(glUniformMatrix4fv(
@@ -368,6 +371,13 @@ void Map2DRenderable::do_animate(float time)
 {
 
 }
+
+
+void Map2DRenderable::setMaterial(const MaterialPtr& material)
+{
+    m_material = material;
+}
+
 
 void Map2DRenderable::insertIntoList(
     std::list< std::pair<float, float> >& list,

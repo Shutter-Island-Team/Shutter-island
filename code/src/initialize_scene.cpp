@@ -178,13 +178,12 @@ void display_boid( Viewer& viewer, BoidsManagerPtr boidsManager,
 }
 
 void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
-{
-    /*
+{    /*
      * Positionning the camera.
      */
     viewer.getCamera().setViewMatrix(glm::lookAt( 
-                                        glm::vec3(mapSize/2.0, mapSize/2.0, 1.50*mapSize/2.0), 
-                                        glm::vec3(mapSize/2.0, mapSize/2.0, 0), 
+                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 1.50*MAP_SIZE/2.0), 
+                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 0), 
                                         glm::vec3( 0, 1, 0) 
                                     ) 
     );
@@ -192,7 +191,7 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
     /*
      * Loading default shaders.
      */
-    ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(
+   ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(
             std::list<std::string>{
                 "../shaders/flatVertex.vert", 
                 "../shaders/flatFragment.frag"
@@ -200,24 +199,56 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
     );
     viewer.addShaderProgram(flatShader);
 
+    ShaderProgramPtr phongShader = std::make_shared<ShaderProgram>(
+            std::list<std::string>{
+                "../shaders/phongVertex.vert", 
+                "../shaders/phongFragment.frag"
+            }
+    );
+    viewer.addShaderProgram(phongShader);
+
+
+    /*
+     * Creating the material
+     */
+    glm::vec3 mAmbient(1.0), mDiffuse(0.2), mSpecular(0.1);
+    float mShininess=0.2*128;
+    MaterialPtr material = std::make_shared<Material>(mAmbient, mDiffuse, mSpecular, mShininess);
     /*
      * Creating the map renderable and adding it to the system.
      */
-    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(flatShader, mapGenerator);
+    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(phongShader, mapGenerator);
+    mapRenderable->setMaterial(material);
     viewer.addRenderable(mapRenderable);
-
+    
     /*
      * Creating a QuadRenderable at the altitude 0, so as to represent a calm sea.
      */
     PlaneRenderablePtr seaRenderable = std::make_shared<QuadRenderable>(
         flatShader,
         glm::vec3(0.0, 0.0, 0.0),
-        glm::vec3(mapSize, 0.0, 0.0),
-        glm::vec3(mapSize, mapSize, 0.0),
-        glm::vec3(0.0, mapSize, 0.0),
+        glm::vec3(MAP_SIZE, 0.0, 0.0),
+        glm::vec3(MAP_SIZE, MAP_SIZE, 0.0),
+        glm::vec3(0.0, MAP_SIZE, 0.0),
         glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
     );
-    viewer.addRenderable(seaRenderable);
+    //viewer.addRenderable(seaRenderable);
+
+
+
+    //Define a point light
+    glm::vec3 p_position(0.0,0.0,0.0), p_ambient(0.0,0.0,0.0), p_diffuse(0.0,0.0,0.0), p_specular(0.0,0.0,0.0);
+    float p_constant=0.0, p_linear=0.0, p_quadratic=0.0;
+
+    p_position = glm::vec3(mapSize/2, mapSize/2, mapSize/2);
+    p_ambient = glm::vec3(1.0, 1.0, 1.0);
+    p_diffuse = glm::vec3(1.0,1.0,1.0);
+    p_specular = glm::vec3(1.0,1.0,1.0);
+    p_constant=1.0;
+    p_linear=8e-4;
+    p_quadratic=0.0;
+    PointLightPtr pointLight1 = std::make_shared<PointLight>(p_position, p_ambient, p_diffuse, p_specular, p_constant, p_linear, p_quadratic);
+    viewer.addPointLight(pointLight1);
 }
 
 void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float mapSize)    
