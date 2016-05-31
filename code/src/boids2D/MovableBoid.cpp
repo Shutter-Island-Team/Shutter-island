@@ -288,6 +288,7 @@ void MovableBoid::eatStateHandler()
 	} else if(m_parameters->isNotHungry()) {
 		if (m_rootedPrey != (RootedBoidPtr) nullptr) {
 			m_rootedPrey->disapear();
+			setRootedPrey(nullptr);
 		}		
 		switchToState(LOST_STATE);
 	}

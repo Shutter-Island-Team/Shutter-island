@@ -199,7 +199,7 @@ glm::vec3 MovableState::align (const MovableBoid& b, const std::vector<MovableBo
 
 	if (count > 0) {
 		sum = sum / (float) count;
-		sum = cNormalize(sum);
+		sum = cNormalize(sum); ///< @todo : is it normal ?
 		sum *= b.getParameters().getMaxForce();
 		steer = sum - b.getVelocity();
 		steer = limitVec3(steer, b.getParameters().getMaxForce());

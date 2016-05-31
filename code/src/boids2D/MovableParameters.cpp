@@ -8,27 +8,28 @@
 #include "../../include/boids2D/MovableParameters.hpp"
 
 MovableParameters::MovableParameters()
-	: MovableParameters(3.5f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f, 1.0f, 1.5f, 0.8f)
+	: MovableParameters(3.5f, 7.0f, 2.0f, 3*M_PI/4, 2.0f, 4.0f, 5.0f, 1.0f, 1.5f, 0.8f)
 {
 
 }
 
-MovableParameters::MovableParameters(float maxSpeed, float maxForce,
+MovableParameters::MovableParameters(float maxSpeedWalk,
+		float maxSpeedRun, float maxForce,
 		float angleView, float distSeparate, float distCohesion,
 		float distViewMax, float distToLeader, float distSeeAhead,
 		float distAttack) : 
-	MovableParameters(maxSpeed, maxForce, angleView, distSeparate,
+	MovableParameters(maxSpeedWalk, maxSpeedRun, maxForce, angleView, distSeparate,
 						distCohesion, distViewMax, distToLeader,
 						distSeeAhead, distAttack, 5.0f, 9.0f, 3.0f)
 {
 
 }
 
-MovableParameters::MovableParameters(float maxSpeed, float maxForce,
+MovableParameters::MovableParameters(float maxSpeedWalk, float maxSpeedRun, float maxForce,
 	float angleView, float distSeparate, float distCohesion, float distViewMax,
 	float distToLeader, float distSeeAhead, float distAttack, float distStartSlowingDown, 
 	float rCircleWander, float distToCircle) :
-	m_maxSpeed(maxSpeed), m_maxForce(maxForce), m_angleView(angleView),
+	m_maxSpeedWalk(maxSpeedWalk), m_maxSpeedRun(maxSpeedRun), m_maxForce(maxForce), m_angleView(angleView),
 	m_distSeparate(distSeparate), m_distCohesion(distCohesion),
 	m_distViewMax(distViewMax), m_distToLeader(distToLeader),
 	m_distStartSlowingDown(distStartSlowingDown), m_distSeeAhead(distSeeAhead), m_distAttack(distAttack),
@@ -88,7 +89,8 @@ MovableParameters::MovableParameters( const std::string & filename )
 
 	d.Parse(str.c_str());
 
-	*this = MovableParameters(d["maxSpeed"].GetDouble(),
+	*this = MovableParameters(d["maxSpeedWalk"].GetDouble(),
+		d["maxSpeedRun"].GetDouble(),
 		d["maxForce"].GetDouble(), d["angleView"].GetDouble(),
 		d["distSeparate"].GetDouble(), d["distCohesion"].GetDouble(),
 		d["distViewMax"].GetDouble(), d["distToLeader"].GetDouble(),
@@ -211,7 +213,7 @@ bool MovableParameters::isNotHungry() const
 
 float MovableParameters::getMaxSpeed() const
 {
-	return m_maxSpeed;
+	return m_maxSpeedWalk;
 }
 float MovableParameters::getMaxForce() const
 {
