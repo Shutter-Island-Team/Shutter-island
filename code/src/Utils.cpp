@@ -4,6 +4,7 @@
 #include <limits>
 #include <chrono>
 #include <random>
+#include <limits>
 #include <glm/gtx/color_space.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -11,7 +12,8 @@ using namespace std;
 
 // A random engine initialized on the current time.
 // This way, the random numbers generated won't be the same at each execution.
-static std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count() );
+//static std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count() );
+static std::default_random_engine generator(10);
 
 float random(float a, float b)
 {
@@ -506,7 +508,7 @@ glm::vec3 limitVec3(const glm::vec3 vec, const float val)
     }
 
     if (f > val) {
-        return glm::normalize(vec) * val;
+        return cNormalize(vec) * val;
     } else {
         return vec;
     }

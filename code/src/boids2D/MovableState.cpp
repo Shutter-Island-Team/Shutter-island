@@ -121,8 +121,7 @@ glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
 
 glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	float coeff = glm::length(b.getVelocity()) / b.getParameters().getMaxSpeed();
-	glm::vec3 posAhead = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead() * 0.5f;
+	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
 /*
 	if(boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
 		///< TODO move to the center of the map
@@ -131,7 +130,8 @@ glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager &
 		///< TODO move out of the lake
 		return glm::vec3(0,0,0);
 	} else 
-	*/if (boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(posAhead.x, posAhead.y) == Lake) {
+	*/
+	if (boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(posAhead.x, posAhead.y) == Lake) {
 		return cNormalize(b.getLocation() - posAhead) * b.getParameters().getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);
@@ -365,7 +365,7 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -376,11 +376,10 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	glm::vec3 newForces(0,0,0);
 	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters().getDistViewMax())) { // Can see the leader
 		newForces = boidsManager.m_forceController.getFollowLeader() * followLeader(b, mvB, dt,
-		boidsManager.m_forceController.getSeparate(),
-		boidsManager.m_forceController.getEvade())
-		+ avoidEnvironment(b, boidsManager);
-	}
-	else if (b.isLeader()) {
+			boidsManager.m_forceController.getSeparate(),
+			boidsManager.m_forceController.getEvade())
+			+ avoidEnvironment(b, boidsManager);
+	} else if (b.isLeader()) {
 		newForces = wander(b) + avoidEnvironment(b, boidsManager);
 	} else { // Can't see the leader
 		newForces = wander(b) + globalAvoid(b, boidsManager); 
@@ -393,6 +392,13 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
+	std::cerr << "Arrive in WalkState" << std::endl;
+	std::cerr << "location : ";
+	displayVec3(b.getLocation());
+	std::cerr << std::endl;
+	std::cerr << "velocity : ";
+	displayVec3(b.getVelocity());
+	std::cerr << std::endl;
 	// stamina <- sd(stamina)
 	// hunger <- hd(hunger)
 	// thirst <- td(thirst)
@@ -404,7 +410,7 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -423,13 +429,23 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 		newForces = wander(b) + globalAvoid(b, boidsManager); 
 	}
 
-	
+	std::cerr << "newForces : ";
+	displayVec3(newForces);
+	std::cerr << std::endl;
 	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
 	return newForces;
 }
 
 glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
 {
+	std::cerr << "Arrive in StayState" << std::endl;
+	std::cerr << "location : ";
+	displayVec3(b.getLocation());
+	std::cerr << std::endl;
+	std::cerr << "velocity : ";
+	displayVec3(b.getVelocity());
+	std::cerr << std::endl;
+
 	// /!\ requirement : danger <= lowDanger
 	// stamina <- si(stamina)
 	// hunger <- hd(hunger)
@@ -442,16 +458,20 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
-	updateDanger(b, mvB);
+	//updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
 	newForces += arrive(b, b.getLocation());
 	newForces.z = 0.0f; // Trick to stay in 2D change with the height map when in 3D
+
+	std::cerr << "newForces : ";
+	displayVec3(newForces);
+	std::cerr << std::endl;
 
 	return newForces;
 }
@@ -470,7 +490,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
@@ -495,7 +515,7 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -543,7 +563,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -595,7 +615,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerIncrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -634,7 +654,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstIncrease();
+	b.getParameters().thirstIncrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -692,7 +712,7 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -726,7 +746,7 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// Update boid status parameters
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
-	// b.getParameters().thirstDecrease();
+	b.getParameters().thirstDecrease();
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
