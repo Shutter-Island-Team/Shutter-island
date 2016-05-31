@@ -1,4 +1,5 @@
 #include "../../include/boids2D/BoidRenderable.hpp"
+#include "../../include/boids2D/MovableBoid.hpp"
 
 #include "./../../include/gl_helper.hpp"
 #include "./../../include/log.hpp"
@@ -98,6 +99,9 @@ BoidRenderable::BoidRenderable(ShaderProgramPtr shaderProgram, BoidPtr boid)
 
 void BoidRenderable::do_draw()
 {
+    if (!m_boid->toDisplay()) {
+        return;
+    }
     //Location
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
