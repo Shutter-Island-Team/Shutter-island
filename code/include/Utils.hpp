@@ -13,6 +13,9 @@
 #include <utility>
 #include <glm/glm.hpp>
 
+
+ int randInt(int a, int b);
+
 /** @brief Get a random number uniformly sampled in [a,b[.
  *
  * This function returns a random number in [a,b[.

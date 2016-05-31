@@ -1,7 +1,8 @@
 #include "./../include/Utils.hpp"
 #include "./../include/log.hpp"
 
-#include <limits>
+#include <cstdlib>
+#include <ctime>
 #include <cmath>
 #include <chrono>
 #include <random>
@@ -15,6 +16,11 @@ using namespace std;
 // This way, the random numbers generated won't be the same at each execution.
 //static std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count() );
 static std::default_random_engine generator(10);
+
+int randInt(int a, int b)
+{
+    return a + (std::rand() % (int)(b - a + 1));
+}
 
 float random(float a, float b)
 {

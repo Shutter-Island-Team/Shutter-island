@@ -108,11 +108,9 @@ MovableParameters::MovableParameters(const BoidType & type)
 {
 	switch (type) {
 		case RABBIT:
-			std::cerr << "Read rabbit data from file" << std::endl;
 			*this = MovableParameters( "../boidData/RabbitParameters.json" ); 
 			break;
 		case WOLF:
-			std::cerr << "Read wolf data from file" << std::endl;
 			*this = MovableParameters( "../boidData/WolfParameters.json" );
 			break;
 		default:

@@ -17,6 +17,7 @@
 
 int main( int argc, char* argv[] )
 {
+    std::srand(std::time(0));
     Viewer viewer(1280,720);
 
      /*

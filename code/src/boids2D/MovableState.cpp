@@ -121,16 +121,22 @@ glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
 glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
 	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
-/*
+
 	if(boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
 		///< TODO move to the center of the map
 		return glm::vec3(0,0,0);
 	} else if (boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Lake) {
-		///< TODO move out of the lake
-		return glm::vec3(0,0,0);
-	} else 
-	*/
-	if (boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(posAhead.x, posAhead.y) == Lake) {
+		glm::vec3 lakeCenter(0,0,0);
+
+		bool lakeFound = boidsManager.getMap().getClosestLake(b.getLocation().x, b.getLocation().y, lakeCenter.x, lakeCenter.y);
+
+		if(lakeFound) {
+			return cNormalize(b.getLocation() - lakeCenter) * b.getParameters().getMaxForce();
+		} else {
+			return glm::vec3(0,0,0); // There is no lake
+		}
+		
+	} else if (boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(posAhead.x, posAhead.y) == Lake) {
 		return cNormalize(b.getLocation() - posAhead) * b.getParameters().getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);
