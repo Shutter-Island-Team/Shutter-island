@@ -57,6 +57,19 @@ class MovableBoid : public Boid
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
               MovableParameters* parameters);
 
+ protected:
+  /**
+   * @brief Constructor of a MovableBoid
+   * @param[in] location    Initial location of the boid
+   * @param[in] velocity    Initial velocity of the boid
+   * @param[in] mass        Mass of the boid
+   * @param[in] t           Type of the boid
+   * @param[in] parameters  Parameter of the boid
+   */
+  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
+              MovableParameters* parameters, float amountFood);
+ public:
+
   /**
    * @brief Destructor of MovableBoid
    */

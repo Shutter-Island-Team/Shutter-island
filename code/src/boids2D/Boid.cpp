@@ -1,9 +1,15 @@
 #include "../../include/boids2D/Boid.hpp"
 
 Boid::Boid(glm::vec3 location, BoidType t) 
-	: m_location(location), m_boidType(t), m_angle(0.0f), m_scale(1.0f), m_display(true)
+	: Boid(location, t, 100.0f)
 {
 
+}
+
+Boid::Boid(glm::vec3 location, BoidType t, float amountFood)
+	: m_location(location), m_boidType(t), m_angle(0.0f), m_scale(1.0f), m_display(true), m_amountFood(100.0f)
+{
+	
 }
 
 glm::vec3 Boid::getLocation() const

@@ -23,8 +23,15 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, Mov
 }
 
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
-    BoidType t, MovableParameters* parameters)
-	: Boid(location, t), m_velocity(velocity), 
+    BoidType t, MovableParameters* parameters) :
+    MovableBoid(location, velocity, mass, t, parameters, 100.0f) 
+{
+
+}
+
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
+    BoidType t, MovableParameters* parameters, float amountFood)
+	: Boid(location, t, amountFood), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
 	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
 	m_rootedPrey((RootedBoidPtr) nullptr), m_hunter((MovableBoidPtr) nullptr),

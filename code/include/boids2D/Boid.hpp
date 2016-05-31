@@ -64,6 +64,13 @@ class Boid
   bool toDisplay() const;
 
  protected:
+  /**
+   * @brief   Constructor for a Boid
+   * @param[in] location  The initial position
+   * @param[in] t       Type of the boid
+   */
+  Boid(glm::vec3 location, BoidType t, float amountFood);
+  
   glm::vec3 m_location; ///< Position of the boid
 
  private:
@@ -71,6 +78,7 @@ class Boid
   float m_angle; ///< Angle of position of the boid
   float m_scale; ///< Size of the boid
   bool m_display;
+  float m_amountFood;
 };
 
 typedef std::shared_ptr<Boid> BoidPtr;
