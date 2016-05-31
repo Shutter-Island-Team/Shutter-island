@@ -23,7 +23,7 @@
  * Defines the default number of seeds by subdivisions 
  * of the grid used within the VoronoiSeedsGenerator.
  */
-#define DEFAULT_NB_SEEDS_MAX_SUBDIV (  5)
+#define DEFAULT_NB_SEEDS_MAX_SUBDIV ( 5)
 
 /**
  * @brief
@@ -139,7 +139,7 @@ void MapGenerator::compute() {
     computeMountains(seeds);
 
     // Adding the lakes
-    computeLake(seeds);
+    computeLake(seeds, m_lakes);
 
     // HeightTree step
     // Creating the initial map : a deep dark sea
@@ -176,4 +176,28 @@ float MapGenerator::getHeight(float x, float y) {
         exit(EXIT_FAILURE);
     }
     return heightTree->evalHeight(position);
+}
+
+bool MapGenerator::getLakes(
+	std::vector<glm::vec2>::iterator& begin,
+	std::vector<glm::vec2>::iterator& end
+)
+{
+    if (m_lakes.size() > 0) {
+        begin = m_lakes.begin();
+        end = m_lakes.end();
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool MapGenerator::getClosestLake(
+	float x,
+	float y,
+	float& xLake,
+	float& yLake
+)
+{
+	return findClosestLake(m_lakes, x, y, xLake, yLake);
 }

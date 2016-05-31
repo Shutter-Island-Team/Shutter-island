@@ -13,7 +13,13 @@ void initialize_boid_scene_debug( Viewer& viewer);
 void initialize_boid_scene_follow_leader( Viewer& viewer );
 void initialize_boid_scene_hunt( Viewer& viewer );
 */
-void initialize_map2D(Viewer& viewer);
+
+void initialize_map2D(
+	Viewer& viewer, 
+	MapGenerator& mapGenerator, 
+	float mapSize
+);
+
 void initialize_test_scene(
 	Viewer& viewer, 
 	MapGenerator& mapGenerator, 

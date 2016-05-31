@@ -22,8 +22,10 @@ void computeLand(std::vector<Seed>& seeds, float mapSize);
  *
  * @param seeds   Set of seeds
  * This set must be sorted by the distance to the center of the map
+ * @param lakes A reference on the vector to fill with the coordinates of the
+ * centroids of the Lake biomes.
  */
-void computeLake(std::vector<Seed>& seeds);
+void computeLake(std::vector<Seed>& seeds, std::vector<glm::vec2>& lakes);
 
 
 /**

@@ -191,7 +191,7 @@ void computeLand(std::vector<Seed>& seeds, float mapSize) {
     }
 }
 
-void computeLake(std::vector<Seed>& seeds) {
+void computeLake(std::vector<Seed>& seeds, std::vector<glm::vec2>& lakes) {
 
     // Plains that are surrounded by land can turn into a lake
 
@@ -242,9 +242,17 @@ void computeLake(std::vector<Seed>& seeds) {
         }
 
         // If the neighbourhood is valid, then picking if it becomes a lake
-        if ((validNeighbourhood) 
-	    && ((random(0.0, 1.0)) <= (LAKE_PROB_TRANSFORM + probOffset)))
-            currentSeedIt->setBiome(Lake);   
+		if (
+				(validNeighbourhood)
+			&&  ((random(0.0, 1.0)) <= (LAKE_PROB_TRANSFORM + probOffset))
+		) {
+			currentSeedIt->setBiome(Lake);
+			lakes.push_back(glm::vec2(
+								currentSeedIt->getCentroidX(),
+								currentSeedIt->getCentroidY()
+							)
+			);
+		}
     }
 
 }

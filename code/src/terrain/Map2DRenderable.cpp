@@ -125,7 +125,7 @@ Map2DRenderable::Map2DRenderable(
         glm::vec3 centroid(
             cX,
             cY,
-            0.0
+            m_mapGenerator.getHeight(cX, cY)
         );
         glm::vec4 cellColor = biomeColor(seedsIt->getBiome());
 
@@ -145,10 +145,10 @@ Map2DRenderable::Map2DRenderable(
              */
             p1.x = previous->first;
             p1.y = previous->second; 
-            p1.z = 0.0;
+            p1.z = m_mapGenerator.getHeight(p1.x, p1.y);
             p2.x = current->first;
             p2.y = current->second; 
-            p2.z = 0.0;
+            p2.z = m_mapGenerator.getHeight(p2.x, p2.y);
 
             /*
              * Computing the normal, since it is the same for all the points
@@ -192,7 +192,7 @@ Map2DRenderable::Map2DRenderable(
          */
         p1.x = (*listIt)->front().first;
         p1.y = (*listIt)->front().second;
-        p1.z = 0.0;
+        p1.z = m_mapGenerator.getHeight(p1.x, p1.y);
         
         glm::vec3 triangleNormal(
             glm::normalize(glm::cross(p1-p2, centroid-p2))    

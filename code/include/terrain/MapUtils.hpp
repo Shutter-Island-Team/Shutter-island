@@ -9,9 +9,9 @@
 
 
 #include "../../lib/voro++/src/voro++.hh"
-
 #include "VoronoiSeedsGenerator.hpp"
 
+#include <glm/glm.hpp>
 
 /**
  * @brief Find the centroid of the biome associated to a position
@@ -48,6 +48,30 @@ Biome findClosestBiome(Vertex2D & pos,
 		       voro::container & container, 
 		       std::vector<Seed> & seeds);
 
+/**
+ * @brief
+ * Determines which Lake biome is the closest of the given position.
+ *
+ * @param lakes A reference on the vector containing the positions of the Lake
+ * biome.
+ * @param x The abscissa of the point this function aims at dertermining the
+ * closest Lake biome.
+ * @param y The ordinate of the point this function aims at dertermining the
+ * closest Lake biome.
+ * @param xLake A reference on a float in which the function is going to store
+ * the abscissa of the centroid of the closest Lake biome.
+ * @param yLake A reference on a float in which the function is going to store
+ * the ordinate of the centroid of the closest Lake biome.
+ *
+ * @return A boolean representing "Closest Lake biome found ?"
+ */
+bool findClosestLake(
+	std::vector<glm::vec2>& lakes,
+	float x,
+	float y,
+	float& xLake,
+	float& yLake
+);
 
 /**
  * @brief Compute the distance between two Vertex2D

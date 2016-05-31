@@ -1,9 +1,13 @@
 #include "../include/Viewer.hpp"
 #include "../include/log.hpp"
 
+#include <glm/glm.hpp>
+#include <iostream>
 #include <sstream>
+#include <vector>
 
 #include "../include/initialize_scene.hpp"
+#include "../include/Utils.hpp"
 
 /**
  * @brief
@@ -23,7 +27,7 @@ int main( int argc, char* argv[] )
 
     //initialize_map2D(viewer, mapGenerator, MAP_SIZE);
     initialize_test_scene(viewer, mapGenerator, MAP_SIZE);
-
+    
     while( viewer.isRunning() )
     {
     	viewer.handleEvent();
