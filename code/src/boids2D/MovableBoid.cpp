@@ -137,12 +137,21 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 			break;
 	}
 	m_acceleration = m_currentState->computeAcceleration(*this, boidsManager, dt);
+	std::cerr << "Acceleration :";
+	displayVec3(m_acceleration);
+	std::cerr << std::endl;
 }
 
 // x(t + dt) = x(t) + v(t+dt) * dt
 void MovableBoid::computeNextStep(const float & dt)
 {
+	std::cerr << "Previous velocity :";
+	displayVec3(m_velocity);
+	std::cerr << std::endl;
     m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters().getMaxForce()), getParameters().getMaxSpeed());
+    std::cerr << "Next velocity :";
+	displayVec3(m_velocity);
+	std::cerr << std::endl;
 	setAngle(atan2(m_velocity.y, m_velocity.x));
     m_location += dt * m_velocity;
 }

@@ -518,9 +518,10 @@ void displayVec3(std::ostream & os, const glm::vec3 & vec)
 
 glm::vec3 cNormalize(const glm::vec3 & vec)
 {
-    if (vec == glm::vec3(0,0,0)) {
+    if (glm::length(vec) > 0.0) {
+        return glm::normalize(vec);
+    } else {
         return glm::vec3(0,0,0);
     }
-    return glm::normalize(vec);
 }
 

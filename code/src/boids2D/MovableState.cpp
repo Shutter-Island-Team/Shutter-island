@@ -121,17 +121,47 @@ glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
 
 glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
+	#ifdef DEBUG
+	std::cerr << "location : ";
+	displayVec3(b.getLocation());
+	std::cerr << std::endl;
+
+	std::cerr << "velocity : ";
+	displayVec3(b.getVelocity());
+	std::cerr << std::endl;
+
+	std::cerr << "glm::length(b.getVelocity()) : " << glm::length(b.getVelocity()) << std::endl;
+
+	std::cerr << "cNormalize(b.getVelocity()) : ";
+	displayVec3(cNormalize(b.getVelocity()));
+	std::cerr << std::endl;
+	#endif
 
 	float coeff = glm::length(b.getVelocity()) / b.getParameters().getMaxSpeed();
-	glm::vec3 posAhead = b.getLocation() + coeff * cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
-	glm::vec3 posAhead2 = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead() * 0.5f;
+	glm::vec3 posAhead = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead() * 0.5f;
 
+	#ifdef DEBUG
+	std::cerr << "posAhead : ";
+	displayVec3(posAhead);
+	std::cerr << std::endl;
+	#endif
+
+/*
 	if(boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
 		///< TODO move to the center of the map
-	} else if (boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
+		return glm::vec3(0,0,0);
+	} else if (boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Lake) {
 		///< TODO move out of the lake
-	} else if (boidsManager.getBiome(posAhead2.x, posAhead2.y) == Sea || boidsManager.getBiome(posAhead2.x, posAhead2.y) == Lake) {
-		return cNormalize(b.getLocation() - posAhead2) * b.getParameters().getMaxForce();
+		return glm::vec3(0,0,0);
+	} else 
+	*/if (boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(posAhead.x, posAhead.y) == Lake) {
+		glm::vec3 tmp = cNormalize(b.getLocation() - posAhead) * b.getParameters().getMaxForce();
+		#ifdef DEBUG
+		std::cerr << "tmp : ";
+		displayVec3(tmp);
+		std::cerr << std::endl;
+		#endif
+		return tmp;
 	} else {
 		return glm::vec3(0,0,0);
 	}
@@ -343,7 +373,7 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager)
+	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager);
 			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids());
 }
 
