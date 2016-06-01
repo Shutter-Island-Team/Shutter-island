@@ -17,7 +17,7 @@ enum Biome {
     Lake,
     Sea, 
     InnerBeach,
-    OutterBeach, 
+    OuterBeach, 
     Plains, 
     Mountain,
     Peak

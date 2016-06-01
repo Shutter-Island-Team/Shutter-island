@@ -271,7 +271,7 @@ void computeBeach(std::vector<Seed>& seeds, float mapSize){
 	    case Plains :
 	    case InnerBeach:
 		// Default land type turn into a beach
-		seeds[currentSeedIndex].setBiome(OutterBeach);
+		seeds[currentSeedIndex].setBiome(OuterBeach);
 		// Propagate the beach 
 		propagateBeach(seeds, currentSeedIndex);
 		break;
