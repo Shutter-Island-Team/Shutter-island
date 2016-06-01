@@ -9,17 +9,17 @@
 
 
 Seed::Seed(float x, float y, Biome biome):
-    cell{NULL},
     position{Vertex2D(x, y)},
     centroid{Vertex2D(-1.0, -1.0)},
-    biomeType{biome}
+    biomeType{biome},
+    cell{NULL}
 {}
 
 Seed::Seed(const Seed& seed)
-    :   cell{NULL},
-        position{Vertex2D(seed.position.first, seed.position.second)},
+    :   position{Vertex2D(seed.position.first, seed.position.second)},
         centroid{Vertex2D(seed.centroid.first, seed.centroid.second)},
-        biomeType{seed.biomeType}
+        biomeType{seed.biomeType},
+        cell{NULL}
 {
     this->setCell(seed.getCell());
 }

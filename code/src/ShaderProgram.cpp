@@ -139,7 +139,8 @@ ShaderProgram::ShaderProgram()
 
 
 ShaderProgram::ShaderProgram(const std::list< std::string >& shader_sources)
-    : m_source_filenames{ shader_sources }, m_programId{ 0 }
+    :   m_programId{ 0 },
+        m_source_filenames{ shader_sources }
   {
       reload();
   }
