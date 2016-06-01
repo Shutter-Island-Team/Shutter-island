@@ -6,6 +6,7 @@
 #include <iostream>
 #include "../../include/math/InterpolationFunctions.hpp"
 #include "../../include/terrain/HeightNode.hpp"
+#include "../../include/terrain/MapUtils.hpp"
 
 HeightNode::HeightNode(float newSize,
 		       HeightData tlData, HeightData trData, 
@@ -57,7 +58,7 @@ float HeightNode::evalHeight(Vertex2D pos) {
     float yMax = tlPos.second - brPos.second;
 
     // Interpolation coefficients to compute
-    float u, uTop, uBottom, uBlend, vLeft, vRight;
+    float u, uTop, uBottom, v, vLeft, vRight;
 
     /*
      * We do here a kind of distorted bilinear interpolation to compute
@@ -76,119 +77,49 @@ float HeightNode::evalHeight(Vertex2D pos) {
      *
      *    TL----uTop-------TR
      *    |                |
-     *  vLeft            vRight
+     *  vLeft    x       vRight
      *    |                |             ^ y
      *    |                |             |
      *    BL----uBot-------BR            |__> x
      *
      * 1) The four coefficients on the previous schema are computed
-     *    ie an interpolation is done on each edge according to the following rules
-     *    a) If both vertices belong to a mountain area (Mountain or Peak),
-     *       we can assume that the edge belongs to a mountain are and do a
-     *       sharp (linear) interpolation
-     *    b) If both vertices do not belong to a mountain area, following the same
-     *       idea, we do a smooth interpolation.
-     *    c) Otherwise, there is a mountain and a normal land. We thus do a smooth
-     *       interpolation to acknoledge the transition between the two biomes, but
-     *       we control this interpolation with a scale parameter to reduce the area
-     *       of influence of the mountain vertex.
-     * 2) As a bilinear interpolation require only three coefficients, we blend uTop
-     *    and uBot into one coefficient by simply interpolating the value u.
-     * 3) Finally, with the three coefficients u, vLeft and vRight, we use the 
-     *    same formula as in the bilinear interpolation.
+     *    ie an interpolation is done on each edge according to the rules
+     *    explained in MapUtils   
+     * 2) We use these coefficients to interpolate a height on each edge
+     * 3) Then we interpolate on each axis :
+     *         heightVertical(heightTop, heightBottom)
+     *         heightHorizontal(heightLeft, heightRight)
+     * 4) Finally we take the average height :
+     *        0.5*(heightVertical + heightHorizontal)
      */   
 
+    
+    float tlHeight = topLeftData.getHeight();
+    float trHeight = topRightData.getHeight();
+    float blHeight = bottomLeftData.getHeight();
+    float brHeight = bottomRightData.getHeight();
+
+    // Interpolating on each edge
     // Left side
-    if ((tlBiome == Peak) || (tlBiome == Mountain)) {
-	if((blBiome == Peak) || (blBiome == Mountain)) {
-	    // Mountain region : linear interpolation
-	    vLeft = linearInterpolation(y, yMax);
-	} else {
-	    // Border between a mountain and something else 
-	    // Smooth interpolation limiting the mountain influence
-	    vLeft = smooth6Interpolation(y, yMax, SCALE_MOUNTAIN);
-	}
-    } else {
-	if((blBiome == Peak) || (blBiome == Mountain)) {
-	    // Border between a mountain and something else 
-	    // Smooth interpolation limiting the mountain influence
-	    vLeft = smooth6Interpolation(yMax - y, yMax, SCALE_MOUNTAIN);
-	} else {
-	    // Smooth area
-	    vLeft = smooth6Interpolation(y, yMax);
-	}
-    }
-
+    vLeft = computeInterpolationCoefficient(tlBiome, blBiome, y, yMax);
+    float heightLeft  = vLeft   * (blHeight) + (1 - vLeft)   * (tlHeight);
     // Right side
-    if ((trBiome == Peak) || (trBiome == Mountain)) {
-	if((brBiome == Peak) || (brBiome == Mountain)) {
-	    // Mountain region : linear interpolation
-	    vRight = linearInterpolation(y, yMax);
-	} else {
-	    // Border between a mountain and something else 
-	    // Smooth interpolation limiting the mountain influence
-	    vRight = smooth6Interpolation(y, yMax, SCALE_MOUNTAIN);
-	}
-    } else {
-	if((brBiome == Peak) || (brBiome == Mountain)) {
-	    // Border between a mountain and something else 
-	    // Smooth interpolation limiting the mountain influence
-	    vRight = smooth6Interpolation(yMax - y, yMax, SCALE_MOUNTAIN);
-	} else {
-	    // Smooth area
-	    vRight = smooth6Interpolation(y, yMax);
-	}
-    }
-
+    vRight = computeInterpolationCoefficient(trBiome, brBiome, y, yMax);
+    float heightRight = vRight  * (brHeight) + (1 - vRight)  * (trHeight);
     // Top side
-    if ((tlBiome == Peak) || (tlBiome == Mountain)) {
-	if((trBiome == Peak) || (trBiome == Mountain)) {
-	    // Mountain region : linear interpolation
-	    uTop = linearInterpolation(x, xMax);
-	} else {
-	    // Border between a mountain and something else 
-	    // Smooth interpolation limiting the mountain influence
-	    uTop = smooth6Interpolation(x, xMax, SCALE_MOUNTAIN);
-	}
-    } else {
-	if((trBiome == Peak) || (trBiome == Mountain)) {
-	    // Border between a mountain and something else 
-	    // Smooth interpolation limiting the mountain influence
-	    uTop = smooth6Interpolation(xMax - x, xMax, SCALE_MOUNTAIN);
-	} else {
-	    // Smooth area
-	    uTop = smooth6Interpolation(x, xMax);
-	}
-    }
-
+    uTop = computeInterpolationCoefficient(tlBiome, trBiome, x, xMax);
+    float heightTop   = uTop    * (tlHeight) + (1 - uTop)    * (trHeight);
     // Bottom side
-    if ((blBiome == Peak) || (blBiome == Mountain)) {
-	if((brBiome == Peak) || (brBiome == Mountain)) {
-	    // Mountain region : linear interpolation
-	    uBottom = linearInterpolation(x, xMax);
-	} else {
-	    // Border between a mountain and something else 
-	    // Smooth interpolation limiting the mountain influence
-	    uBottom = smooth6Interpolation(x, xMax, SCALE_MOUNTAIN);
-	}
-    } else {
-	if((brBiome == Peak) || (brBiome == Mountain)) {
-	    // Border between a mountain and something else 
-	    // Smooth interpolation limiting the mountain influence
-	    uBottom = smooth6Interpolation(xMax - x, xMax, SCALE_MOUNTAIN);
-	} else {
-	    // Smooth area
-	    uBottom = smooth6Interpolation(x, xMax);
-	}
-    }
+    uBottom = computeInterpolationCoefficient(blBiome, brBiome, x, xMax);
+    float heightBot   = uBottom * (blHeight) + (1 - uBottom) * (brHeight);
 
-    // Blend the coefficient on the x axis
-    uBlend = linearInterpolation(y, yMax);
-    u = uBlend*uBottom + (1-uBlend)*uTop;
+    // Interpolating on each axis
+    // Vertical axis
+    u = linearInterpolation(y, yMax);
+    float heightVert = u * heightBot  + (1 - u) * heightTop;
+    // Horizontal axis
+    v = linearInterpolation(x, xMax);
+    float heightHori = v * heightLeft + (1 - v) * heightRight;
 
-    // Interpolating on the y axis
-    float heightLeft  = vLeft*(bottomLeftData.getHeight())   + (1 - vLeft)*(topLeftData.getHeight());
-    float heightRight = vRight*(bottomRightData.getHeight()) + (1 - vRight)*(topRightData.getHeight());
-    // Interpolating on the x axis
-    return (u*heightLeft + (1 - u)*heightRight);
+    return 0.5f*(heightVert + heightHori);
 }

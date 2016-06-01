@@ -19,60 +19,6 @@
  */
 #define MAX(a,b) (((a)<(b))?(b):(a))
 
-/**
- * @brief
- * When deciding if a biome is going to be a land biome, we take into account 
- * both its distance to the center of the map and the proportion of its
- * neighbours being land biomes.
- * Defines the coefficient used to ponderate the importance of the former in
- * comparison with the latter.
- */
-#define LAND_BLENDING_COEFFICIENT (0.7f)
-
-/**
- * @brief
- * Defines the parameter of the geometric law used to generate Lake biomes.
- */
-#define LAKE_GEOMETRIC_PICKING  (0.8)
-
-/**
- * @brief
- * Defines the probability that a Lake-eligible biome is effectively
- * transformed into a Lake biome.
- */
-#define LAKE_PROB_TRANSFORM     (0.1)
-
-/**
- * @brief
- * When a biome is transformed into a Lake, it has a special influence on its
- * neighbours. As a matter of fact, it fosters the fact that its Lake-eligible
- * neighbours are transformed into Lake too.
- * Concretely, it defines the "bonus" probability added to the initial one when
- * the previously described situation occurs.
- */
-#define LAKE_POSITIVE_INFLUENCE (0.15f)
-
-/**
- * @brief
- * Defines the parameter of the geometric law used to generate Mountain biomes.
- */
-#define MOUNTAIN_GEOMETRIC_PICKING (0.6)
-
-/**
- * @brief
- * Defines the probability that a Mountain-eligible biome is effectively
- * transformed into a Mountain biome.
- */
-#define MOUNTAIN_PROB_TRANSFORM    (0.9)
-
-/**
- * @brief
- * Defines the maximum number of iterations of the geometric law used
- * to generate Mountain biomes.
- * If this maximum is reached, then we stop trying to generate mountains.
- */
-#define MOUNTAIN_MAX_TRY            (10)
-
 
 /**
  * @brief
@@ -85,7 +31,7 @@
  * @return The pseudo-probability of the biome being a Land biome.
  */
 float landRepartitionProbability(float distance, float size){
-    return 1.1f*smooth6Interpolation(distance, size);
+    return 1.5f*smooth6Interpolation(distance, size);
 }
 
 void computeLand(
@@ -267,39 +213,67 @@ void computeLake(
 
 
 
+
+// Private function
+// Enable a beach to turn its land neighbours into beaches
+
+void propagateBeach(std::vector<Seed>& seeds, int beachIndex) {
+    // Get the cell corresponding to the peak
+    auto currentCell = seeds[beachIndex].getCell();
+
+    // Get its neighbours
+    std::vector<int> neighbours;
+    currentCell->neighbors(neighbours);
+
+    // Turn them into beaches
+    for (auto neighboursIdPtr = neighbours.begin();
+	 neighboursIdPtr != neighbours.end();
+	 neighboursIdPtr++) {
+	
+	int neighbourId = *neighboursIdPtr;
+	if ((neighbourId >= 0) && (seeds[neighbourId].getBiome() == Plains))
+	    seeds[neighbourId].setBiome(InnerBeach);
+    }
+}
+
 void computeBeach(std::vector<Seed>& seeds, float mapSize){
 
     // The sea type must be propagated towards the interior of the map
-    // Land type becomes beach if one of their neighbor is a sea
+    // Land type becomes beach if one of their neighbor of degree 1 or 2 is a sea
     // Small inner seas are erased
-    for (auto currentSeedIt = seeds.rbegin(); 
-	 currentSeedIt != seeds.rend();
-	 currentSeedIt++) {
+    for (int currentSeedIndex = seeds.size()-1; 
+	 currentSeedIndex >= 0;
+	 currentSeedIndex--) {
 	
-	Biome currentBiome = currentSeedIt->getBiome();
+	Seed currentSeed = seeds[currentSeedIndex];
+
+	Biome currentBiome = currentSeed.getBiome();
 
 	bool seaFound = false;
 
 	// Computing the neighbors
-	auto currentCell = currentSeedIt->getCell();
+	auto currentCell = currentSeed.getCell();
 	std::vector<int> neighbours;
 	currentCell->neighbors(neighbours);
 	
 	// Searching a sea in the neighbors
-	for (auto currentIndexIt = neighbours.begin();
-	     (currentIndexIt != neighbours.end()) && (!seaFound);
-	     currentIndexIt++) { 
-	    int currentIndex = *currentIndexIt;
-	    if (currentIndex >= 0)
-		seaFound = ((seeds[currentIndex].getBiome()) == Sea);
+	for (auto currentNeighbourIndexIt = neighbours.begin();
+	     (currentNeighbourIndexIt != neighbours.end()) && (!seaFound);
+	     currentNeighbourIndexIt++) { 
+	    int currentNeighbourIndex = *currentNeighbourIndexIt;
+	    if (currentNeighbourIndex >= 0)
+		seaFound = ((seeds[currentNeighbourIndex].getBiome()) == Sea);
 	}
 	// Setting the new biome
 	if (seaFound) {
 	    switch (currentBiome) {
 		
 	    case Plains :
+	    case InnerBeach:
 		// Default land type turn into a beach
-		currentSeedIt->setBiome(Beach);
+		seeds[currentSeedIndex].setBiome(OutterBeach);
+		// Propagate the beach 
+		propagateBeach(seeds, currentSeedIndex);
 		break;
 		
 	    default:
@@ -310,7 +284,7 @@ void computeBeach(std::vector<Seed>& seeds, float mapSize){
 		
 	    case Sea :
 		// Inner sea are erased
-		currentSeedIt->setBiome(Plains);
+		currentSeed.setBiome(Plains);
 		break;
 
 	    default :
@@ -319,7 +293,6 @@ void computeBeach(std::vector<Seed>& seeds, float mapSize){
 	}
     }
 }
-
 
 
 // Private function

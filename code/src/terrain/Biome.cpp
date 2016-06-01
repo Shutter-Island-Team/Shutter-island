@@ -24,8 +24,11 @@ float biomeHeight(MapParameters& parameters, Biome biome) {
 	return random(parameters.getHeightMinLake(), parameters.getHeightMaxLake());
 	break;
 
-    case Beach :
-	return random(parameters.getHeightMinBeach(), parameters.getHeightMaxBeach());
+    case InnerBeach :
+	return random(parameters.getHeightMinInnerBeach(), parameters.getHeightMaxInnerBeach());
+
+    case OutterBeach :
+	return random(parameters.getHeightMinOutterBeach(), parameters.getHeightMaxOutterBeach());
 	break;
 
     case Plains :

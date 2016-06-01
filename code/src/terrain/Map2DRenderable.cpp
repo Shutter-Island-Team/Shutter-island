@@ -435,7 +435,11 @@ glm::vec4 Map2DRenderable::biomeColor(Biome biome)
             return glm::vec4(0.051f, 0.878f, 1.00f, 1.00f);
             break;
 
-        case Beach:
+        case InnerBeach:
+            return glm::vec4(0.80f, 0.645f, 0.352f, 1.00f);
+            break;
+	    
+	case OutterBeach:
             return glm::vec4(1.00f, 0.835f, 0.482f, 1.00f);
             break;
 

@@ -66,19 +66,36 @@ public:
 
     /**
      * @brief
-     * Getter on m_heightMinBeach.
+     * Getter on m_heightMinInnerBeach.
      *
-     * @return The value of m_heightMinBeach.
+     * @return The value of m_heightMinInnerBeach.
      */
-    float getHeightMinBeach();
+    float getHeightMinInnerBeach();
 
     /**
      * @brief
-     * Getter on m_heightMaxBeach.
+     * Getter on m_heightMaxInnerBeach.
      *
-     * @return The value of m_heightMaxBeach.
+     * @return The value of m_heightMaxInnerBeach.
      */
-    float getHeightMaxBeach();
+    float getHeightMaxInnerBeach();
+
+    /**
+     * @brief
+     * Getter on m_heightMinOutterBeach.
+     *
+     * @return The value of m_heightMinOutterBeach.
+     */
+    float getHeightMinOutterBeach();
+
+    /**
+     * @brief
+     * Getter on m_heightMaxOutterBeach.
+     *
+     * @return The value of m_heightMaxOutterBeach.
+     */
+    float getHeightMaxOutterBeach();
+
 
     /**
      * @brief
@@ -250,15 +267,27 @@ private:
 
     /**
      * @brief
-     * Defines the minimal height associated with a biome "Beach".
+     * Defines the minimal height associated with a biome "InnerBeach".
      */
-    float m_heightMinBeach;
+    float m_heightMinInnerBeach;
 
     /**
      * @brief
-     * Defines the maximal height associated with a biome "Beach".
+     * Defines the maximal height associated with a biome "InnerBeach".
      */
-    float m_heightMaxBeach;
+    float m_heightMaxInnerBeach;
+
+    /**
+     * @brief
+     * Defines the minimal height associated with a biome "OutterBeach".
+     */
+    float m_heightMinOutterBeach;
+
+    /**
+     * @brief
+     * Defines the maximal height associated with a biome "OutterBeach".
+     */
+    float m_heightMaxOutterBeach;
 
     /**
      * @brief

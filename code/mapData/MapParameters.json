@@ -1,20 +1,22 @@
 {
     "Biome" : {
-        "heightMinSea"      :   -2.0,
-        "heightMaxSea"      :   -0.5,
-        "heightMinLake"     :   -2.0,
-        "heightMaxLake"     :   -1.0,
-        "heightMinBeach"    :   1.0,
-        "heightMaxBeach"    :   2.0,
-        "heightMinPlains"   :   2.0,
-        "heightMaxPlains"   :   4.0,
-        "heightMinMountain" :   5.0,
-        "heightMaxMountain" :   10.0,
-        "heightMinPeak"     :   20.0,
-        "heightMaxPeak"     :   30.0,
-        "scaleMountain"     :   0.05,
-        "biomeDepthMin"     :   2,
-        "biomeDepthMax"     :   8
+        "heightMinSea"          :   -5.0,
+        "heightMaxSea"          :   -3.0,
+        "heightMinLake"         :   -2.0,
+        "heightMaxLake"         :   -1.0,
+        "heightMinInnerBeach"   :   1.0,
+        "heightMaxInnerBeach"   :   2.0,
+        "heightMinOutterBeach"  :   -0.5,
+        "heightMaxOutterBeach"  :   0.5,
+        "heightMinPlains"       :   2.5,
+        "heightMaxPlains"       :   4.0,
+        "heightMinMountain"     :   5.0,
+        "heightMaxMountain"     :   15.0,
+        "heightMinPeak"         :   20.0,
+        "heightMaxPeak"         :   30.0,
+        "scaleMountain"         :   0.015,
+        "biomeDepthMin"         :   2,
+        "biomeDepthMax"         :   8
     },
 
     "BiomeRepartition" : {

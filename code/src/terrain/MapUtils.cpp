@@ -8,7 +8,7 @@
 #include <iostream>
 
 #include "../../include/terrain/MapUtils.hpp"
-
+#include "../../include/math/InterpolationFunctions.hpp"
 /**
  * @brief
  * Macro aiming at computing an image of the distance between two points.
@@ -43,6 +43,8 @@ int findClosestCell(
             )
     ) {
         std::cerr << "Cell not found." << std::endl;
+        std::cerr << "(Requested position : (" << pos.first
+		  << ", " << pos.second << ")"<< std::endl;
         exit(EXIT_FAILURE);
     } 
     return seedID;
@@ -114,4 +116,30 @@ float distanceV2D(Vertex2D & a, Vertex2D & b) {
     float v = bY - aY;
 
     return sqrt(u*u + v*v);
+}
+
+
+
+// See the hpp to have a detailed explanation of this function
+float computeInterpolationCoefficient(Biome biome1, Biome biome2,
+				      float x,      float xMax) {
+
+    if ((biome1 == Peak) || (biome1 == Mountain) || (biome1 == Sea)) {
+	if((biome2 == Peak) || (biome2 == Mountain) || (biome2 == Sea)) {
+	    // case a)
+	    return linearInterpolation(x, xMax);
+	} else {
+	    // case b)
+	    return smooth6Interpolation(x, xMax, SCALE_LIMIT_INFLUENCE);
+	}
+    } else {
+	if((biome2 == Peak) || (biome2 == Mountain) || (biome2 == Sea)) {
+	    // case b)
+	    return smooth6Interpolation(xMax - x, xMax, SCALE_LIMIT_INFLUENCE);
+	} else {
+	    // case c)
+	    return smooth6Interpolation(x, xMax);
+	}
+    }
+
 }

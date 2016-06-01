@@ -44,8 +44,10 @@ MapParameters::MapParameters(const std::string& filename)
     m_heightMaxSea = document["Biome"]["heightMaxSea"].GetFloat();
     m_heightMinLake = document["Biome"]["heightMinLake"].GetFloat();
     m_heightMaxLake = document["Biome"]["heightMaxLake"].GetFloat();
-    m_heightMinBeach = document["Biome"]["heightMinBeach"].GetFloat();
-    m_heightMaxBeach = document["Biome"]["heightMaxBeach"].GetFloat();
+    m_heightMinInnerBeach = document["Biome"]["heightMinInnerBeach"].GetFloat();
+    m_heightMaxInnerBeach = document["Biome"]["heightMaxInnerBeach"].GetFloat();
+    m_heightMinOutterBeach = document["Biome"]["heightMinOutterBeach"].GetFloat();
+    m_heightMaxOutterBeach = document["Biome"]["heightMaxOutterBeach"].GetFloat();
     m_heightMinPlains = document["Biome"]["heightMinPlains"].GetFloat();
     m_heightMaxPlains = document["Biome"]["heightMaxPlains"].GetFloat();
     m_heightMinMountain = document["Biome"]["heightMinMountain"].GetFloat();
@@ -92,14 +94,24 @@ float MapParameters::getHeightMaxLake()
 }
 
 
-float MapParameters::getHeightMinBeach()
+float MapParameters::getHeightMinInnerBeach()
 {
-    return m_heightMinBeach;
+    return m_heightMinInnerBeach;
 }
 
-float MapParameters::getHeightMaxBeach()
+float MapParameters::getHeightMaxInnerBeach()
 {
-    return m_heightMaxBeach;
+    return m_heightMaxInnerBeach;
+}
+
+float MapParameters::getHeightMinOutterBeach()
+{
+    return m_heightMinOutterBeach;
+}
+
+float MapParameters::getHeightMaxOutterBeach()
+{
+    return m_heightMaxOutterBeach;
 }
 
 float MapParameters::getHeightMinPlains()

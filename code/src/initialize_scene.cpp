@@ -182,8 +182,8 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
      * Positionning the camera.
      */
     viewer.getCamera().setViewMatrix(glm::lookAt( 
-                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 1.50*MAP_SIZE/2.0), 
-                                        glm::vec3(MAP_SIZE/2.0, MAP_SIZE/2.0, 0), 
+                                        glm::vec3(mapSize/2.0, mapSize/2.0, 1.50*mapSize/2.0), 
+                                        glm::vec3(mapSize/2.0, mapSize/2.0, 0), 
                                         glm::vec3( 0, 1, 0) 
                                     ) 
     );
@@ -226,13 +226,14 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
      */
     PlaneRenderablePtr seaRenderable = std::make_shared<QuadRenderable>(
         flatShader,
-        glm::vec3(0.0, 0.0, 0.0),
-        glm::vec3(MAP_SIZE, 0.0, 0.0),
-        glm::vec3(MAP_SIZE, MAP_SIZE, 0.0),
-        glm::vec3(0.0, MAP_SIZE, 0.0),
-        glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
+        glm::vec3(0.0, 0.0, 0.1),
+        glm::vec3(mapSize, 0.0, 0.1),
+        glm::vec3(mapSize, mapSize, 0.1),
+        glm::vec3(0.0, mapSize, 0.1),
+        //glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
+	glm::vec4(1.00f, 0.345f, 0.00f, 1.00f)
     );
-    //viewer.addRenderable(seaRenderable);
+    viewer.addRenderable(seaRenderable);
 
 
 

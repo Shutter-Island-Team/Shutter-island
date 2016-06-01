@@ -157,24 +157,29 @@ void MapGenerator::compute() {
 }
 
 
+Vertex2D MapGenerator::clipPosition(float x, float y) {
+    return Vertex2D(MAX(MIN(x, mapSize), 0.0f),
+		    MAX(MIN(y, mapSize), 0.0f));
+}
+
 Biome MapGenerator::getBiome(float x, float y) {
-    Vertex2D position(x, y);
+    Vertex2D position = clipPosition(x, y);
     return findClosestBiome(position, seedsContainer, seeds);
 }
 
 
 void MapGenerator::getCentroid(float x, float y, 
 			       float& xCentroid, float& yCentroid) {
-    Vertex2D position(x, y);
+    Vertex2D position = clipPosition(x, y);
     return findClosestCentroid(position, seedsContainer, seeds,
 			       xCentroid, yCentroid);
 }
 
 float MapGenerator::getHeight(float x, float y) {
-    Vertex2D position(x, y);
+    Vertex2D position = clipPosition(x, y);
     if (!heightTree) { 
-        std::cerr << "HeightTree not computed !" << std::endl;
-        exit(EXIT_FAILURE);
+	std::cerr << "HeightTree not computed !" << std::endl;
+	exit(EXIT_FAILURE);
     }
     return heightTree->evalHeight(position);
 }
@@ -202,3 +207,4 @@ bool MapGenerator::getClosestLake(
 {
 	return findClosestLake(m_lakes, x, y, xLake, yLake);
 }
+
