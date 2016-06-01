@@ -23,7 +23,7 @@
         "lakeProbTransform"         :   0.1,
         "lakePositiveInfluence"     :   0.15,
         "mountainGeometricPicking"  :   0.6,
-        "mountainPorbTransform"     :   0.9,
+        "mountainProbTransform"     :   0.9,
         "mountainMaxTry"            :   10
     }
 }
