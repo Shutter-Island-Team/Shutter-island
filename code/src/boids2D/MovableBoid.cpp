@@ -98,6 +98,7 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 {
 	if(isDead()) {
 		switchToState(DEAD_STATE, boidsManager);
+		bodyDecomposition();
 	} else {
 		updateDeadStatus();
 	}
@@ -249,6 +250,8 @@ void MovableBoid::walkStateHandler(const BoidsManager & boidsManager)
 		switchToState(FIND_FOOD_STATE, boidsManager);
 	} else if (m_parameters->isTired()) {
 		switchToState(STAY_STATE, boidsManager);
+	} else {
+		return; //Stay in walk state
 	}
 }
 
@@ -261,28 +264,36 @@ void MovableBoid::stayStateHandler(const BoidsManager & boidsManager)
 		switchToState(FIND_WATER_STATE, boidsManager);
 	} else if (m_parameters->isHungry()) {
 		switchToState(FIND_FOOD_STATE, boidsManager);
-	} else if (!m_parameters->isNotTired()) {
-		return; // Stay in the state
-	}else if (isNight()) {
+	} else if (!m_parameters->isNotTired() && isNight()) {
 		switchToState(SLEEP_STATE, boidsManager);
+	} else if (!m_parameters->isNotTired()) { 
+		// Trick to refill stamina up to high stamina
+		return; // Stay in the state
 	} else if (hasSoulMate()) {
 		switchToState(MATE_STATE, boidsManager);
 	} else if (hasLeader() && m_parameters->isHighStamina()) {
 		switchToState(WALK_STATE, boidsManager);
 	} else if (!hasLeader()) {
 		switchToState(LOST_STATE, boidsManager);
+	} else {
+		return; // Stay in stay state
 	}
 }
 
 void MovableBoid::findFoodStateHandler(const BoidsManager & boidsManager)
 {
-	///< @todo : A modifier
 	if (m_parameters->isInDanger()) {
 		switchToState(FLEE_STATE, boidsManager);
 	} else if (hasPrey()) {
 		switchToState(ATTACK_STATE, boidsManager);
-	} else if (hasPrey() && preyIsDead()) {
-		switchToState(EAT_STATE, boidsManager);
+	} else if (m_parameters->isThirsty() && m_parameters->getThirst() < m_parameters->getHunger()) {
+		// If the boid don't find food for a long time it might be better to find water
+		switchToState(FIND_WATER_STATE, boidsManager); 
+	} else if (m_parameters->isTired() && m_parameters->getStamina() < m_parameters->getHunger()) {
+		// If the boid don't find food for a long time it might be better to refill stamina
+		switchToState(STAY_STATE, boidsManager);
+	} else {
+		return;
 	}
 }
 
@@ -291,6 +302,7 @@ void MovableBoid::attackStateHandler(const BoidsManager & boidsManager)
 	if (m_parameters->isInDanger()) {
 		switchToState(FLEE_STATE, boidsManager);
 	} else if (m_movablePrey != nullptr && !canSee(*m_movablePrey, m_parameters->getDistViewMax())) {
+		m_movablePrey = nullptr;
 		switchToState(FIND_FOOD_STATE, boidsManager);
 	} else if (closeToPrey()) {
 		switchToState(EAT_STATE, boidsManager);

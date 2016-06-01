@@ -22,21 +22,21 @@
 		"Global coefficient": {
 			"Stamina" : 0.4,
 			"Hunger" : 0.2,
-			"Thirst" : 0.8,
-			"AffinityIncrease" : 0.1,
+			"Thirst" : 0.5,
+			"AffinityIncrease" : 0.5,
 			"AffinityDecrease" : 0.1,
 			"DangerIncrease" : 10,
 			"DangerDecrease" : 2
 		},
 		"WalkState": {
 			"Stamina" : 0.1,
-			"Hunger" : 0.06,
-			"Thirst" : 0.03
+			"Hunger" : 0.05,
+			"Thirst" : 0.01
 		},
 		"RunState": {
 			"Stamina" : 0.2,
 			"Hunger" : 0.1,
-			"Thirst" : 0.0
+			"Thirst" : 0.02
 		}	
 	}
 }

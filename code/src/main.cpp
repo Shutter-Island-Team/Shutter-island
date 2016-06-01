@@ -31,8 +31,8 @@ int main( int argc, char* argv[] )
     MapGenerator mapGenerator(mapParameters, MAP_SIZE);
     mapGenerator.compute();
 
-    initialize_map2D(viewer, mapGenerator, MAP_SIZE);
-    //initialize_test_scene(viewer, mapGenerator, MAP_SIZE);
+    //initialize_map2D(viewer, mapGenerator, MAP_SIZE);
+    initialize_test_scene(viewer, mapGenerator, MAP_SIZE);
     
     while( viewer.isRunning() )
     {

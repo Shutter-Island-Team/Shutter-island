@@ -7,7 +7,7 @@ Boid::Boid(glm::vec3 location, BoidType t)
 }
 
 Boid::Boid(glm::vec3 location, BoidType t, int amountFood)
-	: m_location(location), m_boidType(t), m_angle(0.0f), m_scale(1.0f), m_display(true), m_amountFood(1)
+	: m_location(location), m_boidType(t), m_angle(0.0f), m_scale(1.0f), m_display(true), m_amountFood(1), m_decomposition(100.0f)
 {
 	
 }
@@ -59,11 +59,21 @@ bool Boid::toDisplay() const
 
 bool Boid::isFoodRemaining() const
 {
-	return m_amountFood > 0.0f;
+	return m_amountFood > 0;
 }
 
 void Boid::decreaseFoodRemaining()
 {
 	///< Check this coefficient
 	m_amountFood--;
+}
+
+bool Boid::isDecomposed() const
+{
+	return m_decomposition <= 0.0f;
+}
+
+void Boid::bodyDecomposition()
+{
+	m_decomposition -= 0.01f;
 }

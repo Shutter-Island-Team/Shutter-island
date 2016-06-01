@@ -120,15 +120,20 @@ glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
 
 glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters().getDistViewMax();
+	glm::vec3 posAheadMax = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters().getDistViewMax();
+	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
 	glm::vec3 stayOnIsland(0,0,0);
 
-	if(boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
+	if(boidsManager.getBiome(posAheadMax.x, posAheadMax.y) == Sea || boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
 		///< TODO move to the center of the map
 		glm::vec3 islandCenter(250.0, 250.0, 0.0);
 
 		return cNormalize(islandCenter - b.getLocation()) * b.getParameters().getMaxForce();
-	} else if (boidsManager.getBiome(posAhead.x, posAhead.y) == Lake || boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Lake) {
+	} else if (b.getStateType() != FIND_WATER_STATE && 
+		(boidsManager.getBiome(posAhead.x, posAhead.y) == Lake || 
+			boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Lake)) 
+	{
+
 		glm::vec3 lakeCenter(0,0,0);
 
 		bool lakeFound = boidsManager.getMap().getClosestLake(b.getLocation().x, b.getLocation().y, lakeCenter.x, lakeCenter.y);
@@ -141,6 +146,8 @@ glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager &
 		return glm::vec3(0,0,0);
 	}
 }
+
+
 
 glm::vec3 MovableState::separate(const MovableBoid& b, const std::vector<MovableBoidPtr> & bVec) const
 {
@@ -300,16 +307,18 @@ void MovableState::updateDanger(MovableBoid& b, const std::vector<MovableBoidPtr
 {
 	BoidType predator = b.getPredatorType();
 	bool predatorFound = false;
+	MovableBoidPtr predatorBoid;
 
 	std::vector<MovableBoidPtr>::const_iterator it = mvB.begin();
 	while(!predatorFound && it != mvB.end()) {
 		if((*it)->getBoidType() == predator && b.canSee(**it, b.getParameters().getDistViewMax())) {
+			predatorBoid = *it;
 			predatorFound = true;
 		}
 		++it;
 	}
 
-	if(predatorFound) {
+	if(predatorFound && !predatorBoid->isDead()) {
 		b.getParameters().dangerIncrease();
 	} else {
 		b.getParameters().dangerDecrease();
@@ -520,8 +529,10 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 			if (rabbitPredator == (MovableBoidPtr) nullptr) {
 				newForces += wander(b);
 			} else {
-				b.setHunter(rabbitPredator);
-				newForces += evade(b, *b.getHunter(), dt);
+				if(!rabbitPredator->isDead()) {
+					b.setHunter(rabbitPredator);
+					newForces += evade(b, *b.getHunter(), dt);
+				}
 			}
 			break;
 		default:
@@ -640,7 +651,7 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 
 	newForces += arrive(b, b.getWaterTarget());
 	newForces += globalAvoid(b, boidsManager, dt);
-
+	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 

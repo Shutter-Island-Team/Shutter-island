@@ -103,7 +103,7 @@ void BoidsManager::removeDead()
 {
 	std::vector<MovableBoidPtr>::iterator itm = m_movableBoids.begin();
 	while ( itm != m_movableBoids.end()) {
-		if (!((*itm)->isFoodRemaining())) {
+		if (!((*itm)->isFoodRemaining()) || (*itm)->isDecomposed()) {
 			(*itm)->disapear();
 			itm = m_movableBoids.erase(itm);
 		} else {

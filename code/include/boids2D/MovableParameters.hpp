@@ -28,7 +28,7 @@ public:
    * @param[in] distToLeader  Distance to keep with the leader of the group
    */
   MovableParameters(float maxSpeedWalk, float maxSpeedRun, float maxForce, float angleView,
-		float distSeparate, float distCohesion, float distViewMax,
+		float distSeparate, float distCohesion, float distViewMax, float distMaxToLeader, 
     float distToLeader, float distSeeAhead, float distAttack);
 
   /**
@@ -47,7 +47,7 @@ public:
    */
   MovableParameters(float maxSpeedWalk, float maxSpeedRun, float maxForce, float angleView,
 		float distSeparate, float distCohesion, float distViewMax,
-    float distToLeader, float distSeeAhead, float distAttack,
+    float distToLeader, float distSeeAhead, float distAttack, float distMaxToLeader, 
     float distStartSlowingDown, float rCircleWander,
     float distToCircle);
 	
@@ -304,6 +304,7 @@ public:
   float m_distStartSlowingDown; ///< Distance before start slowing down
   float m_distSeeAhead; ///< Distance to see ahead the obstacle
   float m_distAttack;
+  float m_distMaxToLeader;
 
   float m_rCircleWander; ///< Radius of the wander circle 
   float m_distToCircle; ///< Distance between the boid and the center of the wander circle

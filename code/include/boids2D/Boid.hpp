@@ -67,6 +67,10 @@ class Boid
 
   void decreaseFoodRemaining();
 
+  bool isDecomposed() const;
+
+  void bodyDecomposition();
+
  protected:
   /**
    * @brief   Constructor for a Boid
@@ -83,6 +87,7 @@ class Boid
   float m_scale; ///< Size of the boid
   bool m_display;
   int m_amountFood; ///< @todo : change this in int
+  float m_decomposition;
 };
 
 typedef std::shared_ptr<Boid> BoidPtr;

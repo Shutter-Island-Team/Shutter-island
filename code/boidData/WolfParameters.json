@@ -3,13 +3,14 @@
 	"maxSpeedRun": 8.0,
 	"maxForce": 1.2,
 	"angleView": 3.25,
-	"distSeparate": 2.5,
-	"distCohesion": 5.0,
+	"distSeparate": 3.0,
+	"distCohesion": 1.0,
 	"distAttack": 3.0,
 	"distViewMax": 20.0,
 	"distToLeader": 1.0,
 	"distSeeAhead": 1.5,
 	"distStartSlowingDown": 9.0,
 	"rCircleWander": 3.0,
-	"distToCircle": 3.0
+	"distToCircle": 3.0,
+	"distMaxToLeader": 20.0
 }
