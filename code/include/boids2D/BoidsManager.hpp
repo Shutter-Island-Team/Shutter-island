@@ -9,6 +9,7 @@
 #include "ForceController.hpp"
 #include "../terrain/MapGenerator.hpp"
 #include "../terrain/Biome.hpp"
+#include "../structures/Matrix.hpp"
 
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
