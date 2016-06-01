@@ -76,6 +76,12 @@ MapParameters::MapParameters(const std::string& filename)
      m_nbSubdivision = document["MapGenerator"]["nbSubdivision"].GetInt();
      m_nbSeedsMaxSubdiv = document["MapGenerator"]["nbSeedsMaxSubdiv"].GetInt();
      m_distMin = document["MapGenerator"]["distMin"].GetInt();
+
+     /*
+      * HeightTree "defines".
+      */
+     m_detectionThreshold = document["HeightTree"]["detectionThreshold"].GetFloat();
+     m_heightBlendingCoefficient = document["HeightTree"]["heightBlendingCoefficient"].GetFloat();
 }
 
 /*
@@ -226,4 +232,17 @@ int MapParameters::getNbSeedsMaxSubdiv()
 int MapParameters::getDistMin()
 {
     return m_distMin;
+}
+
+/*
+ * HeightTree "getters".
+ */
+float MapParameters::getDetectionThreshold()
+{
+    return m_detectionThreshold;
+}
+
+float MapParameters::getHeightBlendingCoefficient()
+{
+    return m_heightBlendingCoefficient;
 }

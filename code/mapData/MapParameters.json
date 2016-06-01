@@ -34,5 +34,10 @@
         "nbSubdivision"     :   25,
         "nbSeedsMaxSubdiv"  :   5,
         "distMin"           :   10
-    } 
+    },
+
+    "HeightTree" : {
+        "detectionThreshold"        :   0.1,
+        "heightBlendingCoefficient" :   1.0
+    }
 }

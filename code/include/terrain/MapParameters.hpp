@@ -272,6 +272,27 @@ public:
      * End ofMapGenerator class "getters".
      *************************************************************************/
 
+    /**************************************************************************
+     * HeightTree class "getters".
+     *************************************************************************/
+    /**
+     * @brief
+     * Getter on m_detectionThreshold.
+     *
+     * @return The value of m_detectionThreshold.
+     */
+    float getDetectionThreshold();
+
+    /**
+     * @brief
+     * Getter on m_heightBlendingCoefficient.
+     *
+     * @return The value of m_heightBlendingCoefficient.
+     */
+    float getHeightBlendingCoefficient();
+    /**************************************************************************
+     * End of HeightTree class "getters".
+     *************************************************************************/
 private:
     /**************************************************************************
      * Biome class "defines".
@@ -479,6 +500,35 @@ private:
     int m_distMin = 10;
     /**************************************************************************
      * End of MapGenerator class "defines".
+     *************************************************************************/
+
+    /**************************************************************************
+     * HeightTree class "defines".
+     *************************************************************************/
+    /**
+     * @brief
+     * Determining if a point is already in the tree before inserting it,
+     * we have to compare the position of the point to insert with the positions
+     * of all the already inserted points.
+     * However, when comparing floats, such as the coordinates of the points, the
+     * computation error has to be taken into account (so as to avoid false
+     * negative).
+     * This threshold aims precisely at that : if the distance between two points
+     * is lesser than the former, the two points are considered equal.
+     */
+    float m_detectionThreshold;
+
+    /**
+     * @brief
+     * When determining the height associated with a point, we iterate recursively
+     * from the root of the tree to the corresponding node of the deepest level
+     * of subdivision.
+     * Each level contributes to the global height, but their contribution is
+     * recursively reduced by applying the defined blending coefficient.
+     */
+    float m_heightBlendingCoefficient;
+    /**************************************************************************
+     * End of HeightTree class "defines".
      *************************************************************************/
 };
 
