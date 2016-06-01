@@ -148,8 +148,15 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 
 // x(t + dt) = x(t) + v(t+dt) * dt
 void MovableBoid::computeNextStep(const float & dt)
-{
-    m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters().getMaxForce()), getParameters().getMaxSpeed());
+{	
+	glm::vec3 nextVelocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters().getMaxForce()), getParameters().getMaxSpeed());
+  	float k = 0.5f;
+  	if(glm::length(m_velocity) < FLT_EPSILON) {
+  		m_velocity = 0.015f * nextVelocity + (1.0f - 0.015f) * m_velocity;
+  	} else {
+  		m_velocity = k * nextVelocity + (1.0f - k) * m_velocity;
+  	}
+    
 	setAngle(atan2(m_velocity.y, m_velocity.x));
     m_location += dt * m_velocity;
 }

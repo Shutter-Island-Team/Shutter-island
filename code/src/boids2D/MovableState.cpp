@@ -120,24 +120,23 @@ glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
 
 glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters().getDistSeeAhead();
+	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters().getDistViewMax();
+	glm::vec3 stayOnIsland(0,0,0);
 
-	if(boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
+	if(boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
 		///< TODO move to the center of the map
-		return glm::vec3(0,0,0);
-	} else if (boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Lake) {
+		glm::vec3 islandCenter(250.0, 250.0, 0.0);
+
+		return cNormalize(islandCenter - b.getLocation()) * b.getParameters().getMaxForce();
+	} else if (boidsManager.getBiome(posAhead.x, posAhead.y) == Lake || boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Lake) {
 		glm::vec3 lakeCenter(0,0,0);
 
 		bool lakeFound = boidsManager.getMap().getClosestLake(b.getLocation().x, b.getLocation().y, lakeCenter.x, lakeCenter.y);
-
 		if(lakeFound) {
 			return cNormalize(b.getLocation() - lakeCenter) * b.getParameters().getMaxForce();
 		} else {
 			return glm::vec3(0,0,0); // There is no lake
 		}
-		
-	} else if (boidsManager.getBiome(posAhead.x, posAhead.y) == Sea || boidsManager.getBiome(posAhead.x, posAhead.y) == Lake) {
-		return cNormalize(b.getLocation() - posAhead) * b.getParameters().getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);
 	}
@@ -338,13 +337,18 @@ bool MovableState::updateAffinity(MovableBoid& b, const std::vector<MovableBoidP
 	return friendFound;
 }
 
-glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager) const
+glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager, const float & dt) const
 {
 	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
-	return boidsManager.m_forceController.getSeparate() * separate(b, mvB)
+	glm::vec3 avoid = boidsManager.m_forceController.getSeparate() * separate(b, mvB)
 		+ boidsManager.m_forceController.getCohesion() * cohesion(b, mvB)
 		+ boidsManager.m_forceController.getAlign() * align(b, mvB) 
 		+ avoidEnvironment(b, boidsManager);
+
+	if(b.hasLeader()  && b.getLeader()->canSee(b, 1.4f * b.getLeader()->getParameters().getDistSeparate())) {
+		avoid += boidsManager.m_forceController.getEvade() * evade(b, *b.getLeader(), dt);
+	}
+	return avoid;
 }
 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
@@ -387,7 +391,7 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	} else if (b.isLeader()) {
 		newForces = wander(b) + avoidEnvironment(b, boidsManager);
 	} else { // Can't see the leader
-		newForces = wander(b) + globalAvoid(b, boidsManager); 
+		newForces = wander(b) + globalAvoid(b, boidsManager, dt); 
 	}
 
 	
@@ -422,9 +426,9 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 			boidsManager.m_forceController.getEvade())
 			+ avoidEnvironment(b, boidsManager);
 	} else if (b.isLeader()) {
-		newForces = wander(b) + avoidEnvironment(b, boidsManager);
+		newForces = wander(b) + globalAvoid(b, boidsManager, dt); //avoidEnvironment(b, boidsManager);
 	} else { // Can't see the leader
-		newForces = wander(b) + globalAvoid(b, boidsManager); 
+		newForces = wander(b) + globalAvoid(b, boidsManager, dt); 
 	}
 
 	newForces.z = 0.0f; // Trick to compute force in 2D
@@ -526,7 +530,7 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 			break;
 	}
 
-	newForces += globalAvoid(b, boidsManager);
+	newForces += globalAvoid(b, boidsManager, dt);
 	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
@@ -580,7 +584,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 			newForces += glm::vec3(0,0,0);
 			break;
 	}
-	newForces += globalAvoid(b, boidsManager);
+	newForces += globalAvoid(b, boidsManager, dt);
 	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
@@ -607,6 +611,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	updateAffinity(b, mvB);
 
 	newForces += arrive(b, b.getLocation());
+	newForces += globalAvoid(b, boidsManager, dt);
 	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
@@ -634,7 +639,7 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 	updateAffinity(b, mvB);
 
 	newForces += arrive(b, b.getWaterTarget());
-	newForces += globalAvoid(b, boidsManager);
+	newForces += globalAvoid(b, boidsManager, dt);
 
 	return newForces;
 }
@@ -731,7 +736,7 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 			newForces += glm::vec3(0,0,0);
 			break;
 	}
-	newForces += globalAvoid(b, boidsManager);
+	newForces += globalAvoid(b, boidsManager, dt);
 	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	return newForces;
@@ -753,7 +758,7 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 	// wander and avoid obstacle until the boid need to eat or fin a group
-	newForces += wander(b) + globalAvoid(b, boidsManager); 
+	newForces += wander(b) + globalAvoid(b, boidsManager, dt); 
 	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }

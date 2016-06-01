@@ -3,7 +3,7 @@
 	"maxSpeedRun": 8.0,
 	"maxForce": 1.2,
 	"angleView": 3.25,
-	"distSeparate": 2.5,
+	"distSeparate": 3.0,
 	"distCohesion": 5.0,
 	"distAttack": 3.0,
 	"distViewMax": 10.0,

@@ -170,7 +170,7 @@ class MovableState
    * @param[in] boidsManager The boid manager needed to be awared of the environment
    * @return Return the resulting force to feel it avoids boids enough
    */
-  glm::vec3 globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager) const;
+  glm::vec3 globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager, const float & dt) const;
 
   /**
    * @brief Compute the resulting force to avoid the environment in normal behavior

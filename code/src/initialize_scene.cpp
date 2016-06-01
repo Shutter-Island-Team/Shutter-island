@@ -42,7 +42,7 @@
 #include "../include/Utils.hpp"
 
 
-// TODO : ajouté la vérif sur le boidsManager avec les boids déjà placé
+///< TODO : ajouté la vérif sur le boidsManager avec les boids déjà placé
 glm::vec3 compute_biome_positionLeader(MapGenerator& mapGenerator, Biome biome, float min, float max, float zPos)
 {
     glm::vec3 position(random(min, max), random(min, max), zPos);
@@ -66,9 +66,9 @@ glm::vec3 compute_biome_positionFellow(MapGenerator& mapGenerator, Biome biome,
     return positionFellow;
 }
 
-void place_rabbit_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager )
+void place_rabbit_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
 {
-    glm::vec3 position = compute_biome_positionLeader(mapGenerator, Plains, 0, MAP_SIZE, 2.0);
+    glm::vec3 position = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
     glm::vec3 positionFellow;
 
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, position);
@@ -78,15 +78,15 @@ void place_rabbit_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManager
     glm::vec3 diffPos;
 
     for (int i = 0; i < nbRabbit; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, Plains, position, 0, MAP_SIZE, 2.0, 10.0f);
+        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, position, 0, MAP_SIZE, 2.0, 10.0f);
         MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, positionFellow);
         rabbitFellow->setNewLeader(leaderRabbit);
     }
 }
 
-void place_wolf_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager )
+void place_wolf_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
 {
-    glm::vec3 position = compute_biome_positionLeader(mapGenerator, Plains, 0, MAP_SIZE, 2.0);
+    glm::vec3 position = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
     glm::vec3 positionFellow;
 
     MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, position);
@@ -95,15 +95,15 @@ void place_wolf_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPt
     int nbWolf = randInt(NB_WOLF_MIN, NB_WOLF_MAX);
 
     for (int i = 0; i < nbWolf; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, Plains, position, 0, MAP_SIZE, 2.0, 10.0f);
+        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, position, 0, MAP_SIZE, 2.0, 10.0f);
         MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, positionFellow);
         wolfFellow->setNewLeader(leaderWolf);
     }
 }
 
-void place_forest(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager )
+void place_forest(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
 {
-    glm::vec3 position = compute_biome_positionLeader(mapGenerator, Plains, 0, MAP_SIZE, 2.0);
+    glm::vec3 position = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
     boidsManager->addRootedBoid(TREE, position);
 
     glm::vec3 positionFellow;
@@ -111,14 +111,14 @@ void place_forest(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr bo
     int nbTree = randInt(NB_TREE_MIN, NB_TREE_MAX);
 
     for (int i = 0; i < nbTree - 1; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, Plains, position, 0, MAP_SIZE, 2.0, 25.0f);
+        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, position, 0, MAP_SIZE, 2.0, 25.0f);
         boidsManager->addRootedBoid(TREE, positionFellow);
     }
 }
 
-void place_carrot_field(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager )
+void place_carrot_field(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
 {
-    glm::vec3 position = compute_biome_positionLeader(mapGenerator, Plains, 0, MAP_SIZE, 2.0);
+    glm::vec3 position = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
     boidsManager->addRootedBoid(CARROT, position);
 
     glm::vec3 positionFellow;
@@ -126,28 +126,28 @@ void place_carrot_field(Viewer& viewer, MapGenerator& mapGenerator, BoidsManager
     int nbCarrot = randInt(NB_CARROT_MIN, NB_CARROT_MAX);
 
     for (int i = 0; i < nbCarrot - 1; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, Plains, position, 0, MAP_SIZE, 2.0, 30.0f);
+        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, position, 0, MAP_SIZE, 2.0, 30.0f);
         boidsManager->addRootedBoid(CARROT, positionFellow);
     }
 }
 
-void place_boid( Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, 
+void place_boid( Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType,
     int nbRabbitGroup, int nbWolfGroup, int nbForest,  int nbCarrotField) 
 {
     for(int i = 0; i < nbRabbitGroup; i++) {
-        place_rabbit_group(viewer, mapGenerator, boidsManager);
+        place_rabbit_group(viewer, mapGenerator, boidsManager, biomeType);
     }
 
     for(int i = 0; i < nbWolfGroup; i++) {
-        place_wolf_group(viewer, mapGenerator, boidsManager);
+        place_wolf_group(viewer, mapGenerator, boidsManager, biomeType);
     }
 
     for(int i = 0; i < nbForest; i++) {
-        place_forest(viewer, mapGenerator, boidsManager);
+        place_forest(viewer, mapGenerator, boidsManager, biomeType);
     }
 
     for(int i = 0; i < nbCarrotField; i++) {
-        place_carrot_field(viewer, mapGenerator, boidsManager);
+        place_carrot_field(viewer, mapGenerator, boidsManager, biomeType);
     }
 }
 
@@ -313,7 +313,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    place_boid( viewer, mapGenerator, boidsManager, 5, 5, 5, 5); 
+    place_boid( viewer, mapGenerator, boidsManager, Plains, 5, 5, 5, 5); 
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
