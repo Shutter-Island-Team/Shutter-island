@@ -4,7 +4,7 @@
 #include "../../include/boids2D/BoidsManager.hpp"
 
 BoidsManager::BoidsManager(MapGenerator& map) 
-	: m_map(map)
+	: m_map(map), m_movableBoids(Matrix<MovableBoidPtr>(5, 5))
 {
 
 }
@@ -31,7 +31,10 @@ MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 locatio
 			throw std::invalid_argument("valid boidType required");
 			break;
 	}
-    m_movableBoids.push_back(movableBoid);
+	int i;
+	int j;
+	CoordToBox(location, i, j);
+    m_movableBoids.push_back(i, j, movableBoid);
     
     return movableBoid;
 }
@@ -56,11 +59,22 @@ RootedBoidPtr BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 	return rootedBoid;
 }
 
+const std::vector<MovableBoidPtr> BoidsManager::getMovableBoids() const
+{
+	std::vector<MovableBoidPtr> v;
+	for (int i = 0; i < m_movableBoids.getNumLine(); ++i) {
+		for (int j = 0; j < m_movableBoids.getNumCol(); ++j) {
+			v.insert( v.end(), m_movableBoids.at(i,j).begin(), m_movableBoids.at(i,j).end() );
+		}
+	}
+	return v;
+}
 
-const std::vector<MovableBoidPtr>& BoidsManager::getMovableBoids() const
+const Matrix<MovableBoidPtr> BoidsManager::getMovableBoidsMatrix() const
 {
 	return m_movableBoids;
 }
+
 
 const std::vector<RootedBoidPtr>& BoidsManager::getRootedBoids() const
 {
@@ -77,9 +91,17 @@ void BoidsManager::setTimeDay(bool state)
 	isNightTime = state;
 }
 
-const std::vector<MovableBoidPtr> & BoidsManager::getNeighbour(MovableBoid mvB) const
+const std::vector<MovableBoidPtr> BoidsManager::getNeighbour(MovableBoid mvB, const int & i, const int & j) const
 {
-	return m_movableBoids;
+	std::cerr << "I hear the call" << std::endl;
+	///< @todo mistake for i or j near border negative ?
+	std::vector<MovableBoidPtr> v;
+	for (int il = i-1; il <= i+1; ++il) {
+		for (int jl = j-1; jl <= j+1; ++jl) {
+
+		}
+	}
+	return v;
 }
 
 Biome BoidsManager::getBiome(const float& x, const float& y) const
@@ -101,13 +123,17 @@ MapGenerator& BoidsManager::getMap() const
 
 void BoidsManager::removeDead()
 {
-	std::vector<MovableBoidPtr>::iterator itm = m_movableBoids.begin();
-	while ( itm != m_movableBoids.end()) {
-		if (!((*itm)->isFoodRemaining())) {
-			(*itm)->disapear();
-			itm = m_movableBoids.erase(itm);
-		} else {
-			itm++;
+	for (int i = 0; i < m_movableBoids.getNumLine(); ++i) {
+		for (int j = 0; j < m_movableBoids.getNumCol(); ++j) {
+			std::vector<MovableBoidPtr>::iterator itm = m_movableBoids.at(i,j).begin();
+			while ( itm != m_movableBoids.at(i,j).end()) {
+				if (!((*itm)->isFoodRemaining())) {
+					(*itm)->disapear();
+					itm = m_movableBoids.at(i,j).erase(itm);
+				} else {
+					itm++;
+				}
+			}
 		}
 	}
 	std::vector<RootedBoidPtr>::iterator itr = m_rootedBoids.begin();
@@ -129,4 +155,11 @@ bool BoidsManager::getNearestLake(const MovableBoidPtr & boid, glm::vec2 & resul
 bool BoidsManager::getNearestLake(const glm::vec2 & position, glm::vec2 & result) const
 {
 	return m_map.getClosestLake(position.x, position.y, result.x, result.y);
+}
+
+void BoidsManager::CoordToBox(const glm::vec3 & location, int & i, int & j) const
+{
+	///< @todo : Mistake ?
+	i = floor(location.x / 100.0f);
+	j = floor(location.y / 100.0f);
 }

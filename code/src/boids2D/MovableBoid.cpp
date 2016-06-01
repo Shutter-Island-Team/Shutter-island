@@ -94,7 +94,7 @@ void MovableBoid::resetAcceleration()
 	m_acceleration = glm::vec3(0, 0, 0);
 }
 
-void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const float & dt)
+void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const float & dt, const int & i, const int & j)
 {
 	if(isDead()) {
 		switchToState(DEAD_STATE, boidsManager);
@@ -143,7 +143,7 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 			std::cerr << "Unknown state" << std::endl;
 			break;
 	}
-	m_acceleration = m_currentState->computeAcceleration(*this, boidsManager, dt);
+	m_acceleration = m_currentState->computeAcceleration(*this, boidsManager, dt, i, j);
 }
 
 // x(t + dt) = x(t) + v(t+dt) * dt

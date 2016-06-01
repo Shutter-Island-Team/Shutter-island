@@ -33,10 +33,17 @@ class Matrix
    */
   ~Matrix<T>();
 
+  std::vector<T> & at(const int & i, const int & j);
+
   const std::vector<T> & at(const int & i, const int & j) const;
 
   void push_back(const int & i, const int & j, const T & elt);
 
+  int getNumLine() const;
+
+  int getNumCol() const;
+
+  int getNumElt() const;
 
  private:
   std::vector<T> *m_content; ///< Container of in the class

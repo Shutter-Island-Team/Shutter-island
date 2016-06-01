@@ -33,11 +33,11 @@ RootedBoidPtr closestRooted(const MovableBoid & b, const BoidType & type, const 
 	return target;
 }
 
-glm::vec3 MovableState::computeAcceleration(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 MovableState::computeAcceleration(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// Reset acceleration
 	b.resetAcceleration();
-	return computeNewForces(b, boidsManager, dt);
+	return computeNewForces(b, boidsManager, dt, i, j);
 }
 
 glm::vec3 MovableState::seek(const MovableBoid& b, const glm::vec3 & target) const
@@ -364,7 +364,7 @@ glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManag
  * State priority : FleeState, FindFood, Eat, Stay, Walk, ...
  * 
  */
-glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
 
@@ -395,7 +395,7 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// stamina <- sd(stamina)
 	// hunger <- hd(hunger)
@@ -404,7 +404,10 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	std::cerr << mvB.size() << std::endl;
+	mvB = boidsManager.getNeighbour(b, i, j);
+	std::cerr << mvB.size() << std::endl;
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
@@ -431,7 +434,7 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// /!\ requirement : danger <= lowDanger
 	// stamina <- si(stamina)
@@ -441,7 +444,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
@@ -459,7 +462,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// /!\ requirement : danger <= lowDanger
 	// stamina <- si(stamina)
@@ -469,7 +472,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
@@ -484,7 +487,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	return newForces;
 }
 
-glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// TODO : velocity <- max_speed in the opposite direction of predators
 	// stamina <- sd(stamina) 
@@ -494,7 +497,7 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity) 
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
@@ -531,7 +534,7 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// TODO : wander or follow group until the boid find sth (we can mix both in funtion of hunger variable)
 	// stamina <- sd(stamina)
@@ -541,7 +544,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 	const std::vector<RootedBoidPtr> rtB = boidsManager.getRootedBoids();
 
 	b.getParameters().staminaDecrease();
@@ -585,7 +588,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 	return newForces;
 }
 
-glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// stamina <- si(stamina)
 	// hunger <- hi(hunger)
@@ -594,7 +597,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerIncrease();
@@ -611,7 +614,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	return newForces;
 }
 
-glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// TODO : wander or follow group until the boid find sth (we can mix both in funtion of thirst variable)
 	// stamina <- sd(stamina)
@@ -621,7 +624,7 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
@@ -639,7 +642,7 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 	return newForces;
 }
 
-glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// TODO : velocity <- (0,0,0)
 	// stamina <- si(stamina)
@@ -649,7 +652,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 	
 	b.getParameters().staminaIncrease();
 	b.getParameters().hungerDecrease();
@@ -668,7 +671,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	return newForces;
 }
 
-glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// TODO : velocity <- (0,0,0) && create a new boid
 	// requirement : danger <= lowDanger
@@ -679,7 +682,7 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 
 	MovableBoidPtr mate = closestMovable(b, b.getBoidType(), mvB);
 	
@@ -698,7 +701,7 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// TODO : velocity <- max velocity to taget
 	// stamina <- decrease
@@ -707,7 +710,7 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 
 	b.getParameters().staminaDecrease();
 	b.getParameters().hungerDecrease();
@@ -737,10 +740,10 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	return newForces;
 }
 
-glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getMovableBoids();
+	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
 	
 	// Update boid status parameters
 	b.getParameters().staminaDecrease();
@@ -758,7 +761,7 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const
+glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	// Don't move because the boid is dead
 	glm::vec3 newForces(0,0,0);

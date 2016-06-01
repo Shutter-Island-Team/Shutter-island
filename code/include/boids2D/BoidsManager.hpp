@@ -31,7 +31,9 @@ class BoidsManager
   * @brief Getter for the movable boids of the manager
   * @return Movable boids of the manager
   */
-  const std::vector<MovableBoidPtr>& getMovableBoids() const;
+  const std::vector<MovableBoidPtr> getMovableBoids() const;
+
+  const Matrix<MovableBoidPtr> getMovableBoidsMatrix() const;
 
   /**
   * @brief Getter for the rooted boids of the manager
@@ -69,7 +71,7 @@ class BoidsManager
    */
   void setTimeDay(bool state);
 
-  const std::vector<MovableBoidPtr> & getNeighbour(MovableBoid mvB) const;
+  const std::vector<MovableBoidPtr> getNeighbour(MovableBoid mvB, const int & i, const int & j) const;
 
   ForceController m_forceController; ///< Keep track of the coefficient forces
 
@@ -99,9 +101,11 @@ class BoidsManager
 
   bool getNearestLake(const glm::vec2 & position, glm::vec2 & result) const;
 
+  void CoordToBox(const glm::vec3 & location, int & i, int & j) const;
+
  private:
   MapGenerator& m_map;
-  std::vector<MovableBoidPtr> m_movableBoids; ///< Vector of the movable boids
+  Matrix<MovableBoidPtr> m_movableBoids; ///< Vector of the movable boids
   std::vector<RootedBoidPtr> m_rootedBoids;  ///< Vector of the rooted boids
   bool isNightTime; ///< Boolean to check if it is night time
 };

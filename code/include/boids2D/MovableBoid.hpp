@@ -108,7 +108,7 @@ class MovableBoid : public Boid
    * @param[in] boidsManager The boid's manager
    * @param[in] dt Time step
    */
-  void computeAcceleration(const BoidsManager & boidsManager, const float & dt);
+  void computeAcceleration(const BoidsManager & boidsManager, const float & dt, const int & i, const int & j);
 
   /**
    * @brief     Update the position and the velocity for the next step in the simulation 
