@@ -336,10 +336,11 @@ class MovableBoid : public Boid
   bool isInGroup() const;
 
   /**
-   * @brief   Check if the boid is next to a source of water (can touch it)
-   * @return  true if the boid is next to a source of water, false otherwise
+   * @brief     Check if the boid is next to a source of water (can touch it)
+   * @param[in] boidsManager The boids manager
+   * @return    true if the boid is next to a source of water, false otherwise
    */
-  bool nextToWater() const;
+  bool nextToWater(const BoidsManager & boidsManager) const;
 
   /**
    * @brief   Check if the boid has a soulmate

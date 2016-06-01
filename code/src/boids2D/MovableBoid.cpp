@@ -344,7 +344,7 @@ void MovableBoid::findWaterStateHandler(const BoidsManager & boidsManager)
 {
 	if (m_parameters->isInDanger()) {
 		switchToState(FLEE_STATE, boidsManager);
-	} else if (nextToWater()) {
+	} else if (nextToWater(boidsManager)) {
 		switchToState(DRINK_STATE, boidsManager);
 	}
 }
@@ -379,10 +379,10 @@ bool MovableBoid::closeToPrey() const
 	return res;
 }
 
-bool MovableBoid::nextToWater() const
+bool MovableBoid::nextToWater(const BoidsManager & boidsManager) const
 {
-	///< @todo
-	return false;
+	glm::vec3 posAhead = getLocation() + cNormalize(getVelocity()) * m_parameters->getDistSeeAhead();
+	return boidsManager.getBiome(posAhead.x, posAhead.y) == Lake;
 }
 
 bool MovableBoid::hasSoulMate() const
