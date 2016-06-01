@@ -27,5 +27,12 @@
         "mountainGeometricPicking"  :   0.6,
         "mountainProbTransform"     :   0.9,
         "mountainMaxTry"            :   10
-    }
+    },
+
+    "MapGenerator" : {
+        "nbSeeds"           :   300,
+        "nbSubdivision"     :   25,
+        "nbSeedsMaxSubdiv"  :   5,
+        "distMin"           :   10
+    } 
 }

@@ -68,6 +68,14 @@ MapParameters::MapParameters(const std::string& filename)
      m_mountainGeometricPicking = document["BiomeRepartition"]["mountainGeometricPicking"].GetFloat();
      m_mountainProbTransform = document["BiomeRepartition"]["mountainProbTransform"].GetFloat();
      m_mountainMaxTry = document["BiomeRepartition"]["mountainMaxTry"].GetInt();
+
+     /*
+      * MapGenerator "defines".
+      */
+     m_nbSeeds = document["MapGenerator"]["nbSeeds"].GetInt();
+     m_nbSubdivision = document["MapGenerator"]["nbSubdivision"].GetInt();
+     m_nbSeedsMaxSubdiv = document["MapGenerator"]["nbSeedsMaxSubdiv"].GetInt();
+     m_distMin = document["MapGenerator"]["distMin"].GetInt();
 }
 
 /*
@@ -195,4 +203,27 @@ float MapParameters::getMountainProbTransform()
 int MapParameters::getMountainMaxTry()
 {
     return m_mountainMaxTry;
+}
+
+/*
+ * MapGenerator "getters".
+ */
+int MapParameters::getNbSeeds() 
+{
+    return m_nbSeeds;
+}
+
+int MapParameters::getNbSubdivision()
+{
+    return m_nbSubdivision;
+}
+
+int MapParameters::getNbSeedsMaxSubdiv()
+{
+    return m_nbSeedsMaxSubdiv;
+}
+
+int MapParameters::getDistMin()
+{
+    return m_distMin;
 }
