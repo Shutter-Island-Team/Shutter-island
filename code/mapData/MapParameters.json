@@ -14,7 +14,7 @@
         "heightMaxMountain"     :   15.0,
         "heightMinPeak"         :   20.0,
         "heightMaxPeak"         :   30.0,
-        "scaleMountain"         :   0.015,
+        "scaleLimitInfluence"   :   0.015,
         "biomeDepthMin"         :   2,
         "biomeDepthMax"         :   8
     },

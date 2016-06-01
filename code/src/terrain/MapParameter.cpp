@@ -54,7 +54,7 @@ MapParameters::MapParameters(const std::string& filename)
     m_heightMaxMountain = document["Biome"]["heightMaxMountain"].GetFloat();
     m_heightMinPeak = document["Biome"]["heightMinPeak"].GetFloat();
     m_heightMaxPeak = document["Biome"]["heightMaxPeak"].GetFloat();
-    m_scaleMountain = document["Biome"]["scaleMountain"].GetFloat();
+    m_scaleLimitInfluence = document["Biome"]["scaleLimitInfluence"].GetFloat();
     m_biomeDepthMin = document["Biome"]["biomeDepthMin"].GetInt();
     m_biomeDepthMax = document["Biome"]["biomeDepthMax"].GetInt();
 
@@ -144,9 +144,9 @@ float MapParameters::getHeightMaxPeak()
     return m_heightMaxPeak;
 }
 
-float MapParameters::getScaleMountain()
+float MapParameters::getScaleLimitInfluence()
 {
-    return m_scaleMountain;
+    return m_scaleLimitInfluence;
 }
 
 int MapParameters::getBiomeDepthMin()

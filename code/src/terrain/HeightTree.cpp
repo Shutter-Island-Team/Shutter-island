@@ -187,16 +187,20 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
 
     // Building now the 4 children of the current node
     float subSize = size/2.0f; 
-    HeightTree *tlTree = new HeightTree(m_mapParameters, HeightNode(subSize,
+    HeightTree *tlTree = new HeightTree(m_mapParameters, 
+					HeightNode(m_mapParameters, subSize,
 						   tlData,     northData,
 						   westData,   centerData));
-    HeightTree *trTree = new HeightTree(m_mapParameters, HeightNode(subSize,
+    HeightTree *trTree = new HeightTree(m_mapParameters, 
+					HeightNode(m_mapParameters, subSize,
 						   northData,  trData,
 						   centerData, eastData));
-    HeightTree *blTree = new HeightTree(m_mapParameters, HeightNode(subSize,
+    HeightTree *blTree = new HeightTree(m_mapParameters, 
+					HeightNode(m_mapParameters, subSize,
 						   westData,   centerData,
 						   blData,     southData));
-    HeightTree *brTree = new HeightTree(m_mapParameters, HeightNode(subSize,
+    HeightTree *brTree = new HeightTree(m_mapParameters, 
+					HeightNode(m_mapParameters, subSize,
 						   centerData, eastData,
 						   southData,  brData));    
 

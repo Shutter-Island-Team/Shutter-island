@@ -147,11 +147,11 @@ public:
 
     /**
      * @brief
-     * Getter on m_scaleMountain.
+     * Getter on m_scaleLimitInfluence.
      *
-     * @return The value of m_scaleMountain.
+     * @return The value of m_scaleLimitInfluence.
      */
-    float getScaleMountain();
+    float getScaleLimitInfluence();
 
     /**
      * @brief
@@ -329,9 +329,9 @@ private:
 
     /**
      * @brief
-     * A scale parameter to limit the inluence of mountains on other biomes.
+     * A scale parameter to limit the inluence of a biome on other biomes.
      */
-    float m_scaleMountain;
+    float m_scaleLimitInfluence;
 
     /**
      * @brief

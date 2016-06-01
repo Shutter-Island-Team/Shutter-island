@@ -32,6 +32,19 @@
 #define DEFAULT_DIST_MIN            ( 10)
 
 
+/**
+ * @brief
+ * Min function
+ */
+#define MIN(a, b) (((a)<(b))?(a):(b))
+
+/**
+ * @brief
+ * Max function
+ */
+#define MAX(a, b) (((a)>(b))?(a):(b))
+
+
 #include "../../include/terrain/Seed.hpp"
 #include "../../include/terrain/MapGenerator.hpp"
 #include "../../include/terrain/MapUtils.hpp"
@@ -86,7 +99,7 @@ void MapGenerator::compute() {
      * we only are interested in bidimensional ones, we decided to set the 
      * third dimension to "0.0", so that we may simulate a bidimensional
      * behavior of voro++.
-     * In order to properly loop over the seeds during the "Whittaker Step",
+     * In order to properly loop over the seeds during the repartition step,
      * we need to sort them according to the distance of the latter to a 
      * reference point (typically the middle of the map).
      * That is why we use a "particle_order" and a "loop_order" to retain
@@ -148,7 +161,8 @@ void MapGenerator::compute() {
     HeightData trCorner(Vertex2D(mapSize, mapSize), biomeHeight(m_mapParameters, Sea), Sea);
     HeightData blCorner(Vertex2D(0.0f,    0.0f)   , biomeHeight(m_mapParameters, Sea), Sea);
     HeightData brCorner(Vertex2D(mapSize, 0.0f)   , biomeHeight(m_mapParameters, Sea), Sea);
-    heightTree = new HeightTree(m_mapParameters, HeightNode(mapSize,
+    heightTree = new HeightTree(m_mapParameters, 
+				HeightNode(m_mapParameters, mapSize,
 					   tlCorner, trCorner,
 					   blCorner, brCorner));
     // Computing the tree

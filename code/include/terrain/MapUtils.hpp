@@ -10,6 +10,7 @@
 
 #include "../../lib/voro++/src/voro++.hh"
 #include "VoronoiSeedsGenerator.hpp"
+#include "MapParameters.hpp"
 
 #include <glm/glm.hpp>
 
@@ -107,7 +108,8 @@ float distanceV2D(Vertex2D & a, Vertex2D & b);
  * @return The interpolation coefficient
  */
 
-float computeInterpolationCoefficient(Biome biome1, Biome biome2,
+float computeInterpolationCoefficient(MapParameters & mapParameters,
+				      Biome biome1, Biome biome2,
 				      float x,      float xMax);
 
 #endif

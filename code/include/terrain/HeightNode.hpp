@@ -8,6 +8,7 @@
 #define HEIGHTNODE_HPP
 
 #include "HeightData.hpp"
+#include "MapParameters.hpp"
 #include "../structures/QuadTree.hpp"
 
 /**
@@ -30,7 +31,8 @@ public:
      * @param blData The bottom left  blob
      * @param brData The bottom right blob
      */
-    HeightNode(float newSize,
+    HeightNode(MapParameters& parameters,
+	       float newSize,
 	       HeightData tlData, HeightData trData, 
 	       HeightData blData, HeightData brData);
 
@@ -55,6 +57,13 @@ public:
 
 
 private :
+    
+    /**
+     * @brief
+     * A reference on the MapParameters object containing the parsed parameters.
+     */
+    MapParameters& m_mapParameters;
+
     
     /// @brief The size of the square
     float size;

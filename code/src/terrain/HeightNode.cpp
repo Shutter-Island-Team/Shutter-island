@@ -8,10 +8,12 @@
 #include "../../include/terrain/HeightNode.hpp"
 #include "../../include/terrain/MapUtils.hpp"
 
-HeightNode::HeightNode(float newSize,
+HeightNode::HeightNode(MapParameters& parameters,
+		       float newSize,
 		       HeightData tlData, HeightData trData, 
 		       HeightData blData, HeightData brData) :
-    size(newSize),
+    m_mapParameters{parameters},
+    size{newSize},
     topLeftData{tlData}   , topRightData{trData},
     bottomLeftData{blData}, bottomRightData{brData}
 {}
@@ -101,16 +103,16 @@ float HeightNode::evalHeight(Vertex2D pos) {
 
     // Interpolating on each edge
     // Left side
-    vLeft = computeInterpolationCoefficient(tlBiome, blBiome, y, yMax);
+    vLeft = computeInterpolationCoefficient(m_mapParameters, tlBiome, blBiome, y, yMax);
     float heightLeft  = vLeft   * (blHeight) + (1 - vLeft)   * (tlHeight);
     // Right side
-    vRight = computeInterpolationCoefficient(trBiome, brBiome, y, yMax);
+    vRight = computeInterpolationCoefficient(m_mapParameters, trBiome, brBiome, y, yMax);
     float heightRight = vRight  * (brHeight) + (1 - vRight)  * (trHeight);
     // Top side
-    uTop = computeInterpolationCoefficient(tlBiome, trBiome, x, xMax);
+    uTop = computeInterpolationCoefficient(m_mapParameters, tlBiome, trBiome, x, xMax);
     float heightTop   = uTop    * (tlHeight) + (1 - uTop)    * (trHeight);
     // Bottom side
-    uBottom = computeInterpolationCoefficient(blBiome, brBiome, x, xMax);
+    uBottom = computeInterpolationCoefficient(m_mapParameters, blBiome, brBiome, x, xMax);
     float heightBot   = uBottom * (blHeight) + (1 - uBottom) * (brHeight);
 
     // Interpolating on each axis

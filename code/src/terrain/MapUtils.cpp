@@ -23,25 +23,25 @@
 // Internal function to get the closest cell
 // ie the cell the position is in
 int findClosestCell(
-	Vertex2D& pos, 
-	voro::container& container
-)
+		    Vertex2D& pos, 
+		    voro::container& container
+		    )
 {
     double rx, ry, rz;
     int seedID;
     if (
-            !(
-                container.find_voronoi_cell(
-                    (double) pos.first, 
-                    (double) pos.second, 
-                    0.0,
-                    rx, 
-                    ry, 
-                    rz, 
-                    seedID
-                )
-            )
-    ) {
+	!(
+	  container.find_voronoi_cell(
+				      (double) pos.first, 
+				      (double) pos.second, 
+				      0.0,
+				      rx, 
+				      ry, 
+				      rz, 
+				      seedID
+				      )
+	  )
+	) {
         std::cerr << "Cell not found." << std::endl;
         std::cerr << "(Requested position : (" << pos.first
 		  << ", " << pos.second << ")"<< std::endl;
@@ -69,40 +69,40 @@ void findClosestCentroid(Vertex2D & pos,
 }
 
 bool findClosestLake(
-	std::vector<glm::vec2>& lakes,
-	float x,
-	float y,
-	float& xLake,
-	float& yLake
-)
+		     std::vector<glm::vec2>& lakes,
+		     float x,
+		     float y,
+		     float& xLake,
+		     float& yLake
+		     )
 {
+    /*
+     * If the vector is empty, then, there is no lake on the map !
+     */
+    if (lakes.size() != 0) {
 	/*
-	 * If the vector is empty, then, there is no lake on the map !
+	 * Preparation of the loop on the Lake biome in order to determine which Lake
+	 * biome is the closest of the given coordinates.
 	 */
-	if (lakes.size() != 0) {
-		/*
-		 * Preparation of the loop on the Lake biome in order to determine which Lake
-		 * biome is the closest of the given coordinates.
-		 */
-		auto lakesIt = lakes.begin();
-		float minDist = DIST_2(x, y, lakesIt->x, lakesIt->y);
-		xLake = lakesIt->x;
-		yLake = lakesIt->y;
-		lakesIt++;
+	auto lakesIt = lakes.begin();
+	float minDist = DIST_2(x, y, lakesIt->x, lakesIt->y);
+	xLake = lakesIt->x;
+	yLake = lakesIt->y;
+	lakesIt++;
 
-		for (; lakesIt != lakes.end(); lakesIt++)
-		{
-			float currentDist = DIST_2(x, y, lakesIt->x, lakesIt->y);
-			if (currentDist < minDist) {
-				minDist = currentDist;
-				xLake = lakesIt->x;
-				yLake = lakesIt->y;
-			}
+	for (; lakesIt != lakes.end(); lakesIt++)
+	    {
+		float currentDist = DIST_2(x, y, lakesIt->x, lakesIt->y);
+		if (currentDist < minDist) {
+		    minDist = currentDist;
+		    xLake = lakesIt->x;
+		    yLake = lakesIt->y;
 		}
-		return true;
-	} else {
-		return false;
-	}
+	    }
+	return true;
+    } else {
+	return false;
+    }
 }
 
 float distanceV2D(Vertex2D & a, Vertex2D & b) {
@@ -121,7 +121,8 @@ float distanceV2D(Vertex2D & a, Vertex2D & b) {
 
 
 // See the hpp to have a detailed explanation of this function
-float computeInterpolationCoefficient(Biome biome1, Biome biome2,
+float computeInterpolationCoefficient(MapParameters & mapParameters, 
+				      Biome biome1, Biome biome2,
 				      float x,      float xMax) {
 
     if ((biome1 == Peak) || (biome1 == Mountain) || (biome1 == Sea)) {
@@ -130,12 +131,14 @@ float computeInterpolationCoefficient(Biome biome1, Biome biome2,
 	    return linearInterpolation(x, xMax);
 	} else {
 	    // case b)
-	    return smooth6Interpolation(x, xMax, SCALE_LIMIT_INFLUENCE);
+	    return smooth6Interpolation(x, xMax, 
+					mapParameters.getScaleLimitInfluence());
 	}
     } else {
 	if((biome2 == Peak) || (biome2 == Mountain) || (biome2 == Sea)) {
 	    // case b)
-	    return smooth6Interpolation(xMax - x, xMax, SCALE_LIMIT_INFLUENCE);
+	    return smooth6Interpolation(xMax - x, xMax, 
+					mapParameters.getScaleLimitInfluence());
 	} else {
 	    // case c)
 	    return smooth6Interpolation(x, xMax);
