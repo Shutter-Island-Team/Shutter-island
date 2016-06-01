@@ -20,13 +20,19 @@ int main( int argc, char* argv[] )
     std::srand(std::time(0));
     Viewer viewer(1280,720);
 
+    /*
+     * Parsing the JSon file containing the simulation parameters for the map.
+     */
+    MapParameters mapParameters("../mapData/MapParameters.json");
+
      /*
       * Creating the map generator and generating the map.
       */
-    MapGenerator mapGenerator(MAP_SIZE);
+    MapGenerator mapGenerator(mapParameters, MAP_SIZE);
     mapGenerator.compute();
-    //initialize_map2D(viewer, mapGenerator, MAP_SIZE);
-    initialize_test_scene(viewer, mapGenerator, MAP_SIZE);
+
+    initialize_map2D(viewer, mapGenerator, MAP_SIZE);
+    //initialize_test_scene(viewer, mapGenerator, MAP_SIZE);
     
     while( viewer.isRunning() )
     {

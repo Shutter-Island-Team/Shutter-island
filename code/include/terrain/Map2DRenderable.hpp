@@ -18,6 +18,8 @@
 #include <glm/glm.hpp>
 
 /**
+ * @class Map2DRenderable
+ *
  * @brief
  * The class Map2DRenderable implements the rendering step of the
  * bi-dimensional map.

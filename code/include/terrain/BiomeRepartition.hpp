@@ -5,6 +5,7 @@
  */
 
 
+#include "MapParameters.hpp"
 #include "VoronoiSeedsGenerator.hpp"
 
 /**
@@ -12,9 +13,15 @@
  * 
  * @param seeds   Set of seeds
  * @param mapSize The size of the map
+ * @param parameters A reference on the MapParameters object which contains
+ * the parsed parameters for the simulation.
  * This set must be sorted by the distance to the center of the map
  */
-void computeLand(std::vector<Seed>& seeds, float mapSize);
+void computeLand(
+    MapParameters& parameters, 
+    std::vector<Seed>& seeds, 
+    float mapSize
+);
 
 
 /**
@@ -24,8 +31,14 @@ void computeLand(std::vector<Seed>& seeds, float mapSize);
  * This set must be sorted by the distance to the center of the map
  * @param lakes A reference on the vector to fill with the coordinates of the
  * centroids of the Lake biomes.
+ * @param parameters A reference on the MapParameters object which contains
+ * the parsed parameters for the simulation.
  */
-void computeLake(std::vector<Seed>& seeds, std::vector<glm::vec2>& lakes);
+void computeLake(
+    MapParameters& parameters,
+    std::vector<Seed>& seeds,
+    std::vector<glm::vec2>& lakes
+);
 
 
 /**
@@ -43,6 +56,8 @@ void computeBeach(std::vector<Seed>& seeds, float mapSize);
  *
  * @param seeds Set of seeds
  * This set must be sorted by the distance to the center of the map
+ * @param parameters A reference on the MapParameters object which contains
+ * the parsed parameters for the simulation.
  */
 
-void computeMountains(std::vector<Seed>& seeds);
+void computeMountains(MapParameters& parameters, std::vector<Seed>& seeds);

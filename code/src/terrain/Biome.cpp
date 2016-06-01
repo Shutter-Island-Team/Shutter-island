@@ -11,33 +11,33 @@
 
 
 
-float biomeHeight(Biome biome) {
+float biomeHeight(MapParameters& parameters, Biome biome) {
 
     // Simply generating a random height depending on the biome
     switch (biome) {
     	
     case Sea :
-	return random(HEIGHT_MIN_SEA,     HEIGHT_MAX_SEA);
+	return random(parameters.getHeightMinSea(), parameters.getHeightMaxSea());
 	break;
 
     case Lake :
-	return random(HEIGHT_MIN_LAKE,    HEIGHT_MAX_LAKE);
+	return random(parameters.getHeightMinLake(), parameters.getHeightMaxLake());
 	break;
 
     case Beach :
-	return random(HEIGHT_MIN_BEACH,   HEIGHT_MAX_BEACH);
+	return random(parameters.getHeightMinBeach(), parameters.getHeightMaxBeach());
 	break;
 
     case Plains :
-	return random(HEIGHT_MIN_PLAINS,  HEIGHT_MAX_PLAINS);
+	return random(parameters.getHeightMinPlains(), parameters.getHeightMaxPlains());
 	break;
 
     case Mountain :
-	return random(HEIGHT_MIN_MOUTAIN, HEIGHT_MAX_MOUTAIN);
+	return random(parameters.getHeightMinMountain(), parameters.getHeightMaxMountain());
 	break;
 
     case Peak :
-	return random(HEIGHT_MIN_PEAK,    HEIGHT_MAX_PEAK);
+	return random(parameters.getHeightMinPeak(), parameters.getHeightMaxPeak());
 	break;
 	
     case Undefined :
@@ -50,6 +50,6 @@ float biomeHeight(Biome biome) {
 
 
 
-bool checkSubdivision(int currentDepth) {
-    return (currentDepth < BIOME_DEPTH_MAX);
+bool checkSubdivision(MapParameters& parameters, int currentDepth) {
+    return (currentDepth < parameters.getBiomeDepthMax());
 }

@@ -50,10 +50,13 @@ public :
      * @param trChild
      * @param blChild
      * @param brChild
+     * @param parameters A reference on the MapParameters object which contains
+     * all the parsed simulation parameters.
      */
-    HeightTree(HeightNode content,
+    HeightTree(MapParameters& parameters, HeightNode content, 
 	       HeightTree *tlChild = NULL, HeightTree *trChild = NULL,
-	       HeightTree *blChild = NULL, HeightTree *brChild = NULL);
+	       HeightTree *blChild = NULL, HeightTree *brChild = NULL
+           );
      
     
     /**
@@ -83,6 +86,13 @@ public :
     float evalHeight(Vertex2D pos);
 
 private :
+
+    /**
+     * @brief
+     * A reference on the MapParameters onject containing all the parsed
+     * simulation parameters.
+     */
+    MapParameters& m_mapParameters;
 
     /**
      * @brief Choose the correct child where the given point is

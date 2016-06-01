@@ -38,7 +38,8 @@
 #include "../../include/terrain/BiomeRepartition.hpp"
 #include <iostream>
 
-MapGenerator::MapGenerator(float size) :
+MapGenerator::MapGenerator(MapParameters& parameters, float size) :
+    m_mapParameters(parameters),
     mapSize{size},
     voronoiSeedsGenerator{VoronoiSeedsGenerator(size, size,
 						DEFAULT_NB_SEEDS,
@@ -130,24 +131,24 @@ void MapGenerator::compute() {
     }
 
     // Repartition land/sea
-    computeLand(seeds, mapSize);
+    computeLand(m_mapParameters, seeds, mapSize);
 
     // Computing the beaches depending on the seas
     computeBeach(seeds, mapSize);
 
     // Mountain repartition
-    computeMountains(seeds);
+    computeMountains(m_mapParameters, seeds);
 
     // Adding the lakes
-    computeLake(seeds, m_lakes);
+    computeLake(m_mapParameters, seeds, m_lakes);
 
     // HeightTree step
     // Creating the initial map : a deep dark sea
-    HeightData tlCorner(Vertex2D(0.0f,    mapSize), biomeHeight(Sea), Sea);
-    HeightData trCorner(Vertex2D(mapSize, mapSize), biomeHeight(Sea), Sea);
-    HeightData blCorner(Vertex2D(0.0f,    0.0f)   , biomeHeight(Sea), Sea);
-    HeightData brCorner(Vertex2D(mapSize, 0.0f)   , biomeHeight(Sea), Sea);
-    heightTree = new HeightTree(HeightNode(mapSize,
+    HeightData tlCorner(Vertex2D(0.0f,    mapSize), biomeHeight(m_mapParameters, Sea), Sea);
+    HeightData trCorner(Vertex2D(mapSize, mapSize), biomeHeight(m_mapParameters, Sea), Sea);
+    HeightData blCorner(Vertex2D(0.0f,    0.0f)   , biomeHeight(m_mapParameters, Sea), Sea);
+    HeightData brCorner(Vertex2D(mapSize, 0.0f)   , biomeHeight(m_mapParameters, Sea), Sea);
+    heightTree = new HeightTree(m_mapParameters, HeightNode(mapSize,
 					   tlCorner, trCorner,
 					   blCorner, brCorner));
     // Computing the tree

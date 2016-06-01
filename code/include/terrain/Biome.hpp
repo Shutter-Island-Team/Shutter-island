@@ -6,6 +6,8 @@
 #ifndef BIOME_HPP
 #define BIOME_HPP
 
+#include "../../include/terrain/MapParameters.hpp"
+
 /**
  * @brief
  * Defines the minimal height associated with a biome of sea
@@ -121,22 +123,25 @@ enum Biome {
 };
 
 /**
- * @brief Pick the height of a biome
+ * @brief Pick the height of a biome.
  *
- * @param biome 
- * @return The height of the biome
+ * @param biome The type of biome the height has to be picked.
+ * @param parameters The map generation parameters.
+ * @return The height of the biome.
  */
 
-float biomeHeight(Biome biome);
+float biomeHeight(MapParameters& parameters, Biome biome);
 
 
 /**
- * @brief Compute if the square defined by its four biomes should be subdivised or not
+ * @brief 
+ * Compute if the square defined by its four biomes should be subdivised or not.
  *
- * @param currentDepth
- * @return Whether there must be a subdivision or not
+ * @param currentDepth The current depth in the QuadTree/HeightTree.
+ * @param parameters The map generation parameters.
+ * @return Whether there must be a subdivision or not.
  */
 
-bool checkSubdivision(int currentDepth);
+bool checkSubdivision(MapParameters& parameters, int currentDepth);
 
 #endif

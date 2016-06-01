@@ -88,8 +88,12 @@ float landRepartitionProbability(float distance, float size){
     return 1.1f*smooth6Interpolation(distance, size);
 }
 
-void computeLand(std::vector<Seed>& seeds, float mapSize) {
-
+void computeLand(
+    MapParameters& parameters,
+    std::vector<Seed>& seeds,
+    float mapSize
+) 
+{
     // Probability of being a land
     float pLand;
     
@@ -174,8 +178,8 @@ void computeLand(std::vector<Seed>& seeds, float mapSize) {
 
 		// Computing the blended 'probability'
 		if (neighbourFound) {
-		    pLand = LAND_BLENDING_COEFFICIENT*prob
-			+ (1 - LAND_BLENDING_COEFFICIENT)*(landVolume/neighboursVolume);
+		    pLand = parameters.getLandBlendingCoefficient()*prob
+			+ (1 - parameters.getLandBlendingCoefficient())*(landVolume/neighboursVolume);
 		} else {
 		    pLand = prob;
 		}
@@ -191,8 +195,12 @@ void computeLand(std::vector<Seed>& seeds, float mapSize) {
     }
 }
 
-void computeLake(std::vector<Seed>& seeds, std::vector<glm::vec2>& lakes) {
-
+void computeLake(
+    MapParameters& parameters, 
+    std::vector<Seed>& seeds,
+    std::vector<glm::vec2>& lakes
+) 
+{
     // Plains that are surrounded by land can turn into a lake
 
     // Skipping some biomes at the beginning    
@@ -205,7 +213,7 @@ void computeLake(std::vector<Seed>& seeds, std::vector<glm::vec2>& lakes) {
    
         // Skipping bloc 
         if (!startPick) {
-            probStart *= LAKE_GEOMETRIC_PICKING;
+            probStart *= parameters.getLakeGeometricPicking();
             startPick = ((random(0.0, 1.0)) > probStart);
             if (!startPick)
                 continue;
@@ -237,14 +245,14 @@ void computeLake(std::vector<Seed>& seeds, std::vector<glm::vec2>& lakes) {
 				      || (neighbourBiome == Lake));
 		// Positive influence
 		if (neighbourBiome == Lake)
-		    probOffset += LAKE_POSITIVE_INFLUENCE;
+		    probOffset += parameters.getLakePositiveInfluence();
             }
         }
 
         // If the neighbourhood is valid, then picking if it becomes a lake
 		if (
 				(validNeighbourhood)
-			&&  ((random(0.0, 1.0)) <= (LAKE_PROB_TRANSFORM + probOffset))
+			&&  ((random(0.0, 1.0)) <= (parameters.getLakeProbTransform() + probOffset))
 		) {
 			currentSeedIt->setBiome(Lake);
 			lakes.push_back(glm::vec2(
@@ -337,7 +345,7 @@ void raiseMountains(std::vector<Seed>& seeds, int peakIndex) {
 }
 
 
-void computeMountains(std::vector<Seed>& seeds){
+void computeMountains(MapParameters& parameters, std::vector<Seed>& seeds){
 
     int nbBiomes = seeds.size();
 
@@ -350,7 +358,7 @@ void computeMountains(std::vector<Seed>& seeds){
 	if (seeds[peakIndex+1].getBiome() != Plains)
 	    break;
 	peakIndex++;
-	probPick *= MOUNTAIN_GEOMETRIC_PICKING;
+	probPick *= parameters.getMountainGeometricPicking();
     }
     seeds[peakIndex].setBiome(Peak);
     // Turning its neighbours into mountains (hills actually)
@@ -363,7 +371,7 @@ void computeMountains(std::vector<Seed>& seeds){
     // First picking if a new peak is created
     while ((random(0.0, 1.0) <= probPick) && (nbPeak < nbBiomes/2)) {
 	nbPeak++;
-	probPick *= MOUNTAIN_PROB_TRANSFORM;
+	probPick *= parameters.getMountainProbTransform();
 	// Computing the neighbours
 	auto currentCell = seeds[peakIndex].getCell();
 	std::vector<int> neighbours;
@@ -377,7 +385,7 @@ void computeMountains(std::vector<Seed>& seeds){
 	    peakIndex = neighbours[rand() % nbNeighbours];
 	    // The neighbour, if the index is valid, is compulsorily a mountain
 	    invalidNeighbour = (peakIndex < 0);
-	} while (invalidNeighbour && (nbTry < MOUNTAIN_MAX_TRY));
+	} while (invalidNeighbour && (nbTry < parameters.getMountainMaxTry()));
 	// breaking if we cannot find a suitable neighbour
 	if (invalidNeighbour)
 	    break;

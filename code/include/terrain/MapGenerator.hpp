@@ -10,6 +10,7 @@
 
 #include "VoronoiSeedsGenerator.hpp"
 #include "HeightTree.hpp"
+#include "MapParameters.hpp"
 
 #include <glm/glm.hpp>
 
@@ -39,9 +40,11 @@ public :
     /**
      * @brief Constructor
      *
+     * @param parameters A reference on the MapParameter object containing
+     * the parsed parameters.
      * @param size Size of the map to create
      */
-    MapGenerator(float size);
+    MapGenerator(MapParameters& parameters, float size);
 
     /**
      * @brief Compute the map
@@ -126,6 +129,12 @@ public :
 
 private :
 
+    /**
+     * @brief
+     * A reference on the MapParameters object containing the parsed parameters.
+     */
+    MapParameters& m_mapParameters;
+
     /// @brief Size of the map
     float mapSize;
 
@@ -148,6 +157,5 @@ private :
     HeightTree *heightTree = NULL;
 
 };
-
 
 #endif

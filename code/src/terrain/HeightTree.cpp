@@ -6,12 +6,13 @@
 #include "../../include/terrain/MapUtils.hpp"
 #include "../../include/terrain/HeightTree.hpp"
 
-HeightTree::HeightTree(HeightNode content,
+HeightTree::HeightTree(MapParameters& parameters, HeightNode content,
 		       HeightTree *tlChild, HeightTree *trChild,
 		       HeightTree *blChild, HeightTree *brChild) :
     QuadTree<HeightNode, HeightTree>(content,
 				     tlChild, trChild,
-				     blChild, brChild)
+				     blChild, brChild),
+    m_mapParameters(parameters)
 {}
 
 // Freeing recursively the free
@@ -123,7 +124,7 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
 				     int depth, HeightTree* root) {
     
     // Check the current level must be build or not
-    if(!checkSubdivision(depth)) return;
+    if(!checkSubdivision(m_mapParameters, depth)) return;
 
     // Recuperating all the needed informations
     HeightNode content = this->getContent();
@@ -166,15 +167,15 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
     // NB : Because the search is done in this order : TL -> TR -> BL -> BR
     // Only the norh and the west might have been already computed
     // Thus we only search them
-    float centerHeight = biomeHeight(centerBiome);
+    float centerHeight = biomeHeight(m_mapParameters, centerBiome);
     float northHeight;
     if (!(root->findVertexHeight(northPos, depth+1, &northHeight)))
-	northHeight = biomeHeight(northBiome);
-    float southHeight = biomeHeight(southBiome);
-    float eastHeight  = biomeHeight(eastBiome);
+	northHeight = biomeHeight(m_mapParameters, northBiome);
+    float southHeight = biomeHeight(m_mapParameters, southBiome);
+    float eastHeight  = biomeHeight(m_mapParameters, eastBiome);
     float westHeight;
     if (!(root->findVertexHeight(westPos, depth+1, &westHeight)))
-	westHeight = biomeHeight(westBiome);
+	westHeight = biomeHeight(m_mapParameters, westBiome);
     
 
     // Finally the 5 blobs
@@ -186,16 +187,16 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
 
     // Building now the 4 children of the current node
     float subSize = size/2.0f; 
-    HeightTree *tlTree = new HeightTree(HeightNode(subSize,
+    HeightTree *tlTree = new HeightTree(m_mapParameters, HeightNode(subSize,
 						   tlData,     northData,
 						   westData,   centerData));
-    HeightTree *trTree = new HeightTree(HeightNode(subSize,
+    HeightTree *trTree = new HeightTree(m_mapParameters, HeightNode(subSize,
 						   northData,  trData,
 						   centerData, eastData));
-    HeightTree *blTree = new HeightTree(HeightNode(subSize,
+    HeightTree *blTree = new HeightTree(m_mapParameters, HeightNode(subSize,
 						   westData,   centerData,
 						   blData,     southData));
-    HeightTree *brTree = new HeightTree(HeightNode(subSize,
+    HeightTree *brTree = new HeightTree(m_mapParameters, HeightNode(subSize,
 						   centerData, eastData,
 						   southData,  brData));    
 
