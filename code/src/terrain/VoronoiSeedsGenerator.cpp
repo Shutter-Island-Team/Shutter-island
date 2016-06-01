@@ -7,14 +7,14 @@
 #include <random>
 #include <vector>
 
-VoronoiSeedsGenerator::VoronoiSeedsGenerator()
-	:	m_width(VSG_WIDTH),
-		m_height(VSG_HEIGHT),
-		m_nbOfSeeds(VSG_NB_SEEDS),
-		m_nbOfWidthSubdivisions(VSG_WIDTH_SUB),
-		m_nbOfHeightSubdivisions(VSG_HEIGHT_SUB),
-		m_maxNbOfSeedsBySubdivision(VSG_MAX_SEEDS_BY_SUB),
-        m_minDist(VSG_MIN_DIST)
+VoronoiSeedsGenerator::VoronoiSeedsGenerator(MapParameters& parameters)
+	:	m_width(parameters.getVsgWidth()),
+		m_height(parameters.getVsgHeight()),
+		m_nbOfSeeds(parameters.getVsgNbSeeds()),
+		m_nbOfWidthSubdivisions(parameters.getVsgWidthSub()),
+		m_nbOfHeightSubdivisions(parameters.getVsgHeightSub()),
+		m_maxNbOfSeedsBySubdivision(parameters.getVsgMaxSeedsBySub()),
+        m_minDist(parameters.getVsgMinDist())
 {
 
 }

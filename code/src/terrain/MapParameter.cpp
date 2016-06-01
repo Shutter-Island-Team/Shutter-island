@@ -82,6 +82,17 @@ MapParameters::MapParameters(const std::string& filename)
       */
      m_detectionThreshold = document["HeightTree"]["detectionThreshold"].GetFloat();
      m_heightBlendingCoefficient = document["HeightTree"]["heightBlendingCoefficient"].GetFloat();
+
+     /*
+      * VoronoiSeedsGenerator "defines".
+      */
+     m_vsgWidth = document["VSG"]["vsgWidth"].GetFloat();
+     m_vsgHeight = document["VSG"]["vsgHeight"].GetFloat();
+     m_vsgNbSeeds = document["VSG"]["vsgNbSeeds"].GetInt();
+     m_vsgWidthSub = document["VSG"]["vsgWidthSub"].GetInt();
+     m_vsgHeightSub = document["VSG"]["vsgHeightSub"].GetInt();
+     m_vsgMaxSeedsBySub = document["VSG"]["vsgMaxSeedsBySub"].GetInt();
+     m_vsgMinDist = document["VSG"]["vsgMinDist"].GetFloat();
 }
 
 /*
@@ -245,4 +256,42 @@ float MapParameters::getDetectionThreshold()
 float MapParameters::getHeightBlendingCoefficient()
 {
     return m_heightBlendingCoefficient;
+}
+
+/*
+ * VSG "getters".
+ */
+float MapParameters::getVsgWidth()
+{
+    return m_vsgWidth;
+}
+
+float MapParameters::getVsgHeight()
+{
+    return m_vsgHeight;
+}
+
+int MapParameters::getVsgNbSeeds()
+{
+    return m_vsgNbSeeds;
+}
+
+int MapParameters::getVsgWidthSub()
+{
+    return m_vsgWidthSub;
+}
+
+int MapParameters::getVsgHeightSub()
+{
+    return m_vsgHeightSub;
+}
+
+int MapParameters::getVsgMaxSeedsBySub()
+{
+    return m_vsgMaxSeedsBySub;
+}
+
+float MapParameters::getVsgMinDist()
+{
+    return m_vsgMinDist;
 }

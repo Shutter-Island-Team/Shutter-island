@@ -293,6 +293,68 @@ public:
     /**************************************************************************
      * End of HeightTree class "getters".
      *************************************************************************/
+
+    /**************************************************************************
+     * VSG class "getters".
+     *************************************************************************/
+    /**
+     * @brief
+     * Getter on m_vsgWidth.
+     *
+     * @return The value of m_vsgWidth.
+     */
+    float getVsgWidth();
+
+    /**
+     * @brief
+     * Getter on m_vsgHeight.
+     *
+     * @return The value of m_vsgHeight.
+     */
+    float getVsgHeight();
+
+    /**
+     * @brief
+     * Getter on m_vsgNbSeeds.
+     *
+     * @return The value of m_vsgNbSeeds.
+     */
+    int getVsgNbSeeds();
+
+    /**
+     * @brief
+     * Getter on m_vsgWidthSub.
+     *
+     * @return The value of m_vsgWidthSub.
+     */
+    int getVsgWidthSub();
+
+    /**
+     * @brief
+     * Getter on m_vsgHeightSub.
+     *
+     * @return The value of m_vsgHeightSub.
+     */
+    int getVsgHeightSub();
+
+    /**
+     * @brief
+     * Getter on m_vsgMaxSeedsBySub.
+     *
+     * @return The value of m_vsgMaxSeedsBySub.
+     */
+    int getVsgMaxSeedsBySub();
+
+    /**
+     * @brief
+     * Getter on m_vsgMinDist.
+     *
+     * @return The value of m_vsgMinDist.
+     */
+    float getVsgMinDist();
+    /**************************************************************************
+     * End of VSG class "defines".
+     *************************************************************************/
 private:
     /**************************************************************************
      * Biome class "defines".
@@ -529,6 +591,58 @@ private:
     float m_heightBlendingCoefficient;
     /**************************************************************************
      * End of HeightTree class "defines".
+     *************************************************************************/
+
+    /**************************************************************************
+     * VSG class "defines".
+     *************************************************************************/
+    /**
+     * @brief
+     * Default width of the constrained plane in which the seeds are generated.
+     */
+    float m_vsgWidth;
+
+    /**
+     * @brief
+     * Default height of the constrained plane in which the seeds are generated.
+     */
+    float m_vsgHeight;
+
+    /**
+     * @brief
+     * Default number of seeds to generate.
+     */
+    int m_vsgNbSeeds;
+
+    /**
+     * @brief
+     * Default width of a subdivision of the grid used to tessellate the
+     * constrained plane the seeds generation takes place within.
+     */
+    int m_vsgWidthSub;
+
+    /**
+     * @brief
+     * Default height of a subdivision of the grid used to tessellate the
+     * constrained plane the seeds generation takes place within.
+     */
+    int m_vsgHeightSub;
+
+    /**
+     * @brief
+     * Default maximum of the number of seeds by subdivision of the grid
+     * used to tessellate the constrained plane the seeds generation takes
+     * place within.
+     */
+    int m_vsgMaxSeedsBySub;
+
+    /**
+     * @brief
+     * Default minimum distance between two generated seeds.
+     */
+    float m_vsgMinDist;
+    /**************************************************************************
+     * End of VSG class "defines".
      *************************************************************************/
 };
 

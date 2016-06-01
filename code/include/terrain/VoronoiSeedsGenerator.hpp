@@ -14,52 +14,6 @@
 
 /**
  * @brief
- * Default width of the constrained plane in which the seeds are generated.
- */
-#define VSG_WIDTH 				500.0
-
-/**
- * @brief
- * Default height of the constrained plane in which the seeds are generated.
- */
-#define VSG_HEIGHT 				500.0
-
-/**
- * @brief
- * Default number of seeds to generate.
- */
-#define VSG_NB_SEEDS 			250
-
-/**
- * @brief
- * Default width of a subdivision of the grid used to tessellate the
- * constrained plane the seeds generation takes place within.
- */
-#define VSG_WIDTH_SUB 			10
-
-/**
- * @brief
- * Default height of a subdivision of the grid used to tessellate the
- * constrained plane the seeds generation takes place within.
- */
-#define VSG_HEIGHT_SUB 			10
-
-/**
- * @brief
- * Default maximum of the number of seeds by subdivision of the grid
- * used to tessellate the constrained plane the seeds generation takes
- * place within.
- */
-#define VSG_MAX_SEEDS_BY_SUB 	5
-
-/**
- * @brief
- * Default minimum distance between two generated seeds.
- */
-#define VSG_MIN_DIST            10.0
-
-/**
- * @brief
  * Defining a useful macro to compute the distance between two points.
  * 
  * @param x First point.
@@ -99,8 +53,6 @@
  * This is the first countermeasure against "degenerated patterns", the second
  * one being the use of Lloyd algorithm as a post-processing treatment of the
  * Voronoi diagram's generation.
- *
- * ####### TODO => Mettre un lien vers l'en-tête de la classe implémentant Lloyd
  *
  * Last piece of information to add about this generator : the generated
  * seeds are sorted according to their distance to the center of the map.
@@ -149,10 +101,12 @@ private:
 public:
 	/**
 	 * @brief Default constructor.
-	 *
 	 * Default values are used to set the parameters of the generator.
+     *
+     * @param A reference on the MapParameters object which contained
+     * the JSon-parsed simulation parameters.
 	 */
-	VoronoiSeedsGenerator();
+	VoronoiSeedsGenerator(MapParameters& parameters);
 
 	/**
 	 * @brief Full-parametrization constructor.
