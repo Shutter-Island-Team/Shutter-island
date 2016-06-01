@@ -1,0 +1,29 @@
+{
+    "Biome" : {
+        "heightMinSea"      :   -2.0,
+        "heightMaxSea"      :   -0.5,
+        "heightMinLake"     :   -2.0,
+        "heightMaxLake"     :   -1.0,
+        "heightMinBeach"    :   1.0,
+        "heightMaxBeach"    :   2.0,
+        "heightMinPlains"   :   2.0,
+        "heightMaxPlains"   :   4.0,
+        "heightMinMountain" :   5.0,
+        "heightMaxMountain" :   10.0,
+        "heightMinPeak"     :   20.0,
+        "heightMaxPeak"     :   30.0,
+        "scaleMountain"     :   0.05,
+        "biomeDepthMin"     :   2,
+        "biomeDepthMax"     :   8
+    },
+
+    "BiomeRepartition" : {
+        "landBlendingCoefficient"   :   0.7,
+        "lakeGeometricPicking"      :   0.8,
+        "lakeProbTransform"         :   0.1,
+        "lakePositiveInfluence"     :   0.15,
+        "mountainGeometricPicking"  :   0.6,
+        "mountainPorbTransform"     :   0.9,
+        "mountainMaxTry"            :   10
+    }
+}
