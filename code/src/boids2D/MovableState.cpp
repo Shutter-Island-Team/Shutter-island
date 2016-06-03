@@ -3,7 +3,7 @@
 #include "../../include/Utils.hpp"
 #include <iostream>
 
-MovableBoidPtr closestMovable(const MovableBoid & b, const BoidType & type, const std::vector<MovableBoidPtr> & mvB) {
+MovableBoidPtr closestMovable(const MovableBoid & b, const BoidType & type, const std::list<MovableBoidPtr> & mvB) {
 	float tmpDistance = FLT_MAX;
 	MovableBoidPtr target = (MovableBoidPtr) nullptr;
 
@@ -17,7 +17,7 @@ MovableBoidPtr closestMovable(const MovableBoid & b, const BoidType & type, cons
 	return target;
 }
 
-RootedBoidPtr closestRooted(const MovableBoid & b, const BoidType & type, const std::vector<RootedBoidPtr> & rtB) {
+RootedBoidPtr closestRooted(const MovableBoid & b, const BoidType & type, const std::list<RootedBoidPtr> & rtB) {
 	float tmpDistance = FLT_MAX;
 	RootedBoidPtr target = (RootedBoidPtr) nullptr;
 
@@ -147,7 +147,7 @@ glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager &
 
 
 
-glm::vec3 MovableState::separate(const MovableBoid& b, const std::vector<MovableBoidPtr> & bVec) const
+glm::vec3 MovableState::separate(const MovableBoid& b, const std::list<MovableBoidPtr> & bVec) const
 {
 	glm::vec3 sum(0,0,0);
 	glm::vec3 steer(0,0,0);
@@ -170,12 +170,12 @@ glm::vec3 MovableState::separate(const MovableBoid& b, const std::vector<Movable
 	return steer;
 }
 
-glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::vector<RootedBoidPtr> & rootB) const
+glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::list<RootedBoidPtr> & rootB) const
 {
 	float coeff = glm::length(b.getVelocity()) / b.getParameters()->getMaxSpeed();
 	glm::vec3 posAhead = b.getLocation() + coeff * cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead();
 	glm::vec3 posAhead2 = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead() * 0.5f;
-	std::vector<RootedBoidPtr>::const_iterator it = rootB.begin();
+	std::list<RootedBoidPtr>::const_iterator it = rootB.begin();
 	RootedBoidPtr eltFar = (RootedBoidPtr) nullptr;
 	RootedBoidPtr eltClose = (RootedBoidPtr) nullptr;
 	RootedBoidPtr elt;
@@ -197,7 +197,7 @@ glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::vector<
 	}
 }
 
-glm::vec3 MovableState::align (const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
+glm::vec3 MovableState::align (const MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const
 {
 	glm::vec3 sum(0,0,0);
 	glm::vec3 steer;
@@ -229,7 +229,7 @@ glm::vec3 MovableState::align (const MovableBoid& b, const std::vector<MovableBo
 	return steer;
 }
 
-glm::vec3 MovableState::cohesion (const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB) const
+glm::vec3 MovableState::cohesion (const MovableBoid & b, const std::list<MovableBoidPtr> & mvB) const
 {
     glm::vec3 sum(0,0,0);
     glm::vec3 steer;
@@ -280,7 +280,7 @@ glm::vec3 MovableState::evade(const MovableBoid & prey, const MovableBoid & hunt
 }
 
 // Precondition b.hasLeader() == true
-glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt,
+glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::list<MovableBoidPtr> & mvB, const float & dt,
 	const float & separateCoeff, const float & evadeCoeff) const
 {
 	if (!b.hasLeader()) {
@@ -301,13 +301,13 @@ glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::vector<Mo
 	return steer;	
 }
 
-void MovableState::updateDanger(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
+void MovableState::updateDanger(MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const
 {
 	BoidType predator = b.getPredatorType();
 	bool predatorFound = false;
 	MovableBoidPtr predatorBoid;
 
-	std::vector<MovableBoidPtr>::const_iterator it = mvB.begin();
+	std::list<MovableBoidPtr>::const_iterator it = mvB.begin();
 	while(!predatorFound && it != mvB.end()) {
 		if((*it)->getBoidType() == predator && b.canSee(**it, b.getParameters()->getDistViewMax())) {
 			predatorBoid = *it;
@@ -323,11 +323,11 @@ void MovableState::updateDanger(MovableBoid& b, const std::vector<MovableBoidPtr
 	}
 }
 
-bool MovableState::updateAffinity(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const
+bool MovableState::updateAffinity(MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const
 {
 	bool friendFound = false;
 
-	std::vector<MovableBoidPtr>::const_iterator it = mvB.begin();
+	std::list<MovableBoidPtr>::const_iterator it = mvB.begin();
 	while(!friendFound && it != mvB.end()) {
 		if(b != **it && (*it)->getBoidType() == b.getBoidType() && b.canSee(**it, b.getParameters()->getDistViewMax())) {
 			friendFound = true;
@@ -346,11 +346,11 @@ bool MovableState::updateAffinity(MovableBoid& b, const std::vector<MovableBoidP
 
 glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j, const float & dt) const
 {
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 	glm::vec3 avoid = boidsManager.m_forceController.getSeparate() * separate(b, mvB)
 		+ boidsManager.m_forceController.getCohesion() * cohesion(b, mvB)
 		+ boidsManager.m_forceController.getAlign() * align(b, mvB) 
-		+ avoidEnvironment(b, boidsManager);
+		+ avoidEnvironment(b, boidsManager, i, j);
 
 	if(b.hasLeader()  && b.getLeader()->canSee(b, 1.4f * b.getLeader()->getParameters()->getDistSeparate())) {
 		avoid += boidsManager.m_forceController.getEvade() * evade(b, *b.getLeader(), dt);
@@ -358,10 +358,10 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 	return avoid;
 }
 
-glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const
+glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j) const
 {
 	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager)
-			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids());
+			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids(i, j));
 }
 
 /* ==================================== Boid State Value ====================================
@@ -377,7 +377,7 @@ glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManag
  */
 glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	b.getParameters()->staminaDecrease();
 	b.getParameters()->hungerDecrease();
@@ -394,9 +394,9 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 		newForces = boidsManager.m_forceController.getFollowLeader() * followLeader(b, mvB, dt,
 			boidsManager.m_forceController.getSeparate(),
 			boidsManager.m_forceController.getEvade())
-			+ avoidEnvironment(b, boidsManager);
+			+ avoidEnvironment(b, boidsManager, i, j);
 	} else if (b.isLeader()) {
-		newForces = wander(b) + avoidEnvironment(b, boidsManager);
+		newForces = wander(b) + avoidEnvironment(b, boidsManager, i, j);
 	} else { // Can't see the leader
 		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt);
 	}
@@ -415,7 +415,7 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	b.getParameters()->staminaDecrease();
 	b.getParameters()->hungerDecrease();
@@ -431,9 +431,9 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 		newForces = boidsManager.m_forceController.getFollowLeader() * followLeader(b, mvB, dt,
 			boidsManager.m_forceController.getSeparate(),
 			boidsManager.m_forceController.getEvade())
-			+ avoidEnvironment(b, boidsManager);
+			+ avoidEnvironment(b, boidsManager, i, j);
 	} else if (b.isLeader()) {
-		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt); //avoidEnvironment(b, boidsManager);
+		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt); //avoidEnvironment(b, boidsManager, i, j);
 	} else { // Can't see the leader
 		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt); 
 	}
@@ -452,7 +452,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	b.getParameters()->staminaIncrease();
 	b.getParameters()->hungerDecrease();
@@ -480,7 +480,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	b.getParameters()->staminaIncrease();
 	b.getParameters()->hungerDecrease();
@@ -505,7 +505,7 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity) 
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	b.getParameters()->staminaDecrease();
 	b.getParameters()->hungerDecrease();
@@ -554,8 +554,8 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
-	const std::vector<RootedBoidPtr> rtB = boidsManager.getRootedBoids();
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
+	const std::list<RootedBoidPtr> rtB = boidsManager.getRootedBoids(i, j);
 
 	b.getParameters()->staminaDecrease();
 	b.getParameters()->hungerDecrease();
@@ -607,7 +607,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	b.getParameters()->staminaIncrease();
 	b.getParameters()->hungerIncrease();
@@ -635,7 +635,7 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	b.getParameters()->staminaDecrease();
 	b.getParameters()->hungerDecrease();
@@ -663,7 +663,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 	
 	b.getParameters()->staminaIncrease();
 	b.getParameters()->hungerDecrease();
@@ -693,7 +693,7 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	MovableBoidPtr mate = closestMovable(b, b.getBoidType(), mvB);
 	
@@ -721,7 +721,7 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if alone affinity <- ad(affinity)
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	b.getParameters()->staminaDecrease();
 	b.getParameters()->hungerDecrease();
@@ -754,7 +754,7 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
 {
 	glm::vec3 newForces(0,0,0);
-	const std::vector<MovableBoidPtr> mvB = boidsManager.getNeighbour(b, i, j);
+	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 	
 	// Update boid status parameters
 	b.getParameters()->staminaDecrease();

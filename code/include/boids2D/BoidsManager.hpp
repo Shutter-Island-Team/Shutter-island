@@ -42,7 +42,9 @@ class BoidsManager
   * @brief Getter for the rooted boids of the manager
   * @return Rooted boids of the manager
   */
-  const std::vector<RootedBoidPtr> getRootedBoids() const;
+  const std::list<RootedBoidPtr> getRootedBoids(const int & i, const int & j) const;
+
+  const std::vector<RootedBoidPtr> getAllRootedBoids() const;
 
   /**
   * @brief Add a rooted boid to the manager
@@ -74,7 +76,7 @@ class BoidsManager
    */
   void setTimeDay(bool state);
 
-  const std::vector<MovableBoidPtr> getNeighbour(MovableBoid mvB, const int & i, const int & j) const;
+  const std::list<MovableBoidPtr> getNeighbour(const int & i, const int & j) const;
 
   ForceController m_forceController; ///< Keep track of the coefficient forces
 

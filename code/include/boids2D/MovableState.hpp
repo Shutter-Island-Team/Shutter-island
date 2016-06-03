@@ -2,7 +2,7 @@
 #define MOVABLE_STATE_HPP
 
 #include <glm/glm.hpp>
-#include <vector>
+#include <list>
 #include <cmath>
 #include "BoidsManager.hpp"
 
@@ -99,31 +99,31 @@ class MovableState
   /**
    * @brief     Computes the force for a boid b separate from others boids
    * @param[in] b     The concerned boid
-   * @param[in] bVec  Vector of boids which b should be awared of
+   * @param[in] bVec  list of boids which b should be awared of
    * @return    Returns the force required for the b to separate
    */
-  glm::vec3 separate(const MovableBoid& b, const std::vector<MovableBoidPtr> & bVec) const;
+  glm::vec3 separate(const MovableBoid& b, const std::list<MovableBoidPtr> & bVec) const;
 
   /**
    * @todo
    */
-  glm::vec3 collisionAvoid (const MovableBoid& b, const std::vector<RootedBoidPtr> & rootB) const;
+  glm::vec3 collisionAvoid (const MovableBoid& b, const std::list<RootedBoidPtr> & rootB) const;
   
   /**
    * @brief     Computes the force for a boid b to align with other boids
    * @param[in] b   The concerned boid
-   * @param[in] mvB Vector of boids which b align with
+   * @param[in] mvB list of boids which b align with
    * @return    Returns the force required for the b to align
    */
-  glm::vec3 align (const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+  glm::vec3 align (const MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const;
   
   /**
    * @brief     Computes the force for a boid b to be in cohesion with other boids
    * @param[in] b   The concerned boid
-   * @param[in] mvB Vector of boids which b have cohesion with
+   * @param[in] mvB list of boids which b have cohesion with
    * @return    Returns the force required for the b to be in cohesion with the others
    */
-  glm::vec3 cohesion (const MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+  glm::vec3 cohesion (const MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const;
   
   /**
    * @brief     Computes the force for a hunter to pursuit a target. The hunter
@@ -147,13 +147,13 @@ class MovableState
   /**
    * @brief     Computes the force for a boid b to follow its leader
    * @param[in] b The concerned boid
-   * @param[in] mvB Vector of boids which b have should be aware
+   * @param[in] mvB list of boids which b have should be aware
    * @param[in] dt Time step
    * @param[in] separateCoeff Coefficient for separation behavior
    * @param[in] evadeCoeff Coefficient for evade behavior
    * @return    Returns the force required for the boid to follow its leader
    */
-  glm::vec3 followLeader(const MovableBoid & b, const std::vector<MovableBoidPtr> & mvB, const float & dt,
+  glm::vec3 followLeader(const MovableBoid & b, const std::list<MovableBoidPtr> & mvB, const float & dt,
     const float & separateCoeff, const float & evadeCoeff) const;
 
   /**
@@ -178,7 +178,7 @@ class MovableState
    * @param[in] boidsManager The boid manager needed to be awared of the environment
    * @return Return the resulting force to avoid the environment
    */
-  glm::vec3 avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager) const;
+  glm::vec3 avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j) const;
 
   /**
    * @brief Detect if the boid is in danger with its environment. If it is the case
@@ -186,7 +186,7 @@ class MovableState
    * @param[in] b   The concerned boid
    * @param[in] mvB Others boids
    */
-  void updateDanger(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+  void updateDanger(MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const;
 
   /**
    * @brief Detect if the boid is in a pleasant environment. If it is the case
@@ -194,7 +194,7 @@ class MovableState
    * @param[in] b   The concerned boid
    * @param[in] mvB Others boids
    */
-  bool updateAffinity(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
+  bool updateAffinity(MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const;
 
 };
 
@@ -331,8 +331,8 @@ class DeadState : public MovableState
 };
 
 
-// Return the closest animal of b of the good type in the vector.
+// Return the closest animal of b of the good type in the list.
 // Need to be seen too.
-MovableBoidPtr closestAnimal(const MovableBoid & b, const BoidType & type, const std::vector<MovableBoidPtr> & mvB);
+MovableBoidPtr closestAnimal(const MovableBoid & b, const BoidType & type, const std::list<MovableBoidPtr> & mvB);
 
 #endif

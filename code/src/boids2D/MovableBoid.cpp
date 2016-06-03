@@ -97,8 +97,6 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 		updateDeadStatus();
 	}
 	switch (m_stateType) {
-		case TEST_STATE:
-			break;
 		case WALK_STATE:
 			walkStateHandler(boidsManager);
 			break;

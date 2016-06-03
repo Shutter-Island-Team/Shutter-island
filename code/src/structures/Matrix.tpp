@@ -63,6 +63,22 @@ const int Matrix<T>::getNumCol() const
 }
 
 template<typename T>
+const std::list<T> Matrix<T>::merge(const int & i, const int & j) const
+{
+	std::list<T> res;
+	res.insert(res.end(), at(i-1, j-1).begin(), at(i-1,j-1).end());
+	res.insert(res.end(), at(i-1, j).begin(), at(i-1,j).end());
+	res.insert(res.end(), at(i-1, j+1).begin(), at(i-1,j+1).end());
+	res.insert(res.end(), at(i, j-1).begin(), at(i,j-1).end());
+	res.insert(res.end(), at(i, j).begin(), at(i,j).end());
+	res.insert(res.end(), at(i, j+1).begin(), at(i,j+1).end());
+	res.insert(res.end(), at(i+1, j-1).begin(), at(i+1,j-1).end());
+	res.insert(res.end(), at(i+1, j).begin(), at(i+1,j).end());
+	res.insert(res.end(), at(i+1, j+1).begin(), at(i+1,j+1).end());
+	return res;
+}
+
+template<typename T>
 void Matrix<T>::move(const T & elt, const int & iprev, const int & jprev, const int & inext, const int & jnext)
 {
 	if (iprev < 0 || iprev >= m_numLine || jprev < 0 || jprev >= m_numCol) {

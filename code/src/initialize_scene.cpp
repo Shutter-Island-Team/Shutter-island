@@ -170,7 +170,7 @@ void display_boid( Viewer& viewer, BoidsManagerPtr boidsManager,
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
 
-    for(RootedBoidPtr m : boidsManager->getRootedBoids())
+    for(RootedBoidPtr m : boidsManager->getAllRootedBoids())
     {
         BoidRenderablePtr br = std::make_shared<BoidRenderable>(texShader, m);
         HierarchicalRenderable::addChild( systemRenderable, br );

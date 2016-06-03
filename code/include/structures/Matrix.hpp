@@ -81,6 +81,7 @@ class Matrix
    */
   void move(const T & elt, const int & iprev, const int & jprev, const int & inext, const int & jnext);
 
+  const std::list<T> merge(const int & i, const int & j) const;
 
  private:
   std::list<T> *m_content; ///< Container of in the class

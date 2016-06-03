@@ -24,7 +24,7 @@ class Boid
   /**
    * @brief Getter for the location
    */
-  glm::vec3 getLocation() const;
+  const glm::vec3 & getLocation() const;
 
   /**
    * @brief 	Setter for the location
@@ -35,7 +35,7 @@ class Boid
   /**
    * @brief Getter of the angle
    */
-  float getAngle() const;
+  const float & getAngle() const;
 
   /**
    * @brief 	Setter of the angle
@@ -47,12 +47,12 @@ class Boid
    * @brief   Getter of the type of the boid
    * @return  Type of the boid
    */
-  BoidType getBoidType() const;
+  const BoidType & getBoidType() const;
 
   /**
    * @brief Getter of the size of the boid
    */
-  float getScale() const;
+  const float & getScale() const;
 
   /**
    * @brief Setter of the size of the boid
@@ -61,7 +61,7 @@ class Boid
 
   void disapear();
 
-  bool toDisplay() const;
+  const bool & toDisplay() const;
 
   bool isFoodRemaining() const;
 

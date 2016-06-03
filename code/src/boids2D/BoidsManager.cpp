@@ -82,7 +82,12 @@ const MatrixMovableBoidPtr & BoidsManager::getMovableBoidsMatrix() const
 }
 
 
-const std::vector<RootedBoidPtr> BoidsManager::getRootedBoids() const
+const std::list<RootedBoidPtr> BoidsManager::getRootedBoids(const int & i, const int & j) const
+{
+	return m_rootedBoids->merge(i,j);
+}
+
+const std::vector<RootedBoidPtr> BoidsManager::getAllRootedBoids() const
 {
 	std::vector<RootedBoidPtr> v;
 	for (int i = 0; i < m_rootedBoids->getNumLine(); ++i) {
@@ -105,18 +110,9 @@ void BoidsManager::setTimeDay(bool state)
 	isNightTime = state;
 }
 
-const std::vector<MovableBoidPtr> BoidsManager::getNeighbour(MovableBoid mvB, const int & i, const int & j) const
+const std::list<MovableBoidPtr> BoidsManager::getNeighbour(const int & i, const int & j) const
 {
-	///< @todo mistake for i or j near border negative ?
-	std::vector<MovableBoidPtr> v;
-	for (int il = i-1; il <= i+1; ++il) {
-		for (int jl = j-1; jl <= j+1; ++jl) {
-			for (std::list<MovableBoidPtr>::const_iterator it = m_movableBoids->at(i,j).begin(); it != m_movableBoids->at(i,j).end(); ++it) {
-				v.push_back( *it );
-			}
-		}
-	}
-	return v;
+	return m_movableBoids->merge(i,j);
 }
 
 Biome BoidsManager::getBiome(const float& x, const float& y) const
