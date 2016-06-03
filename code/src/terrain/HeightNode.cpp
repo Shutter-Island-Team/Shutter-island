@@ -103,10 +103,10 @@ float HeightNode::evalHeight(Vertex2D pos) {
 
     // Interpolating on each edge
     // Left side
-    vLeft = computeInterpolationCoefficient(m_mapParameters, tlBiome, blBiome, y, yMax);
+    vLeft = computeInterpolationCoefficient(m_mapParameters, blBiome, tlBiome, y, yMax);
     float heightLeft  = vLeft   * (blHeight) + (1 - vLeft)   * (tlHeight);
     // Right side
-    vRight = computeInterpolationCoefficient(m_mapParameters, trBiome, brBiome, y, yMax);
+    vRight = computeInterpolationCoefficient(m_mapParameters, brBiome, trBiome, y, yMax);
     float heightRight = vRight  * (brHeight) + (1 - vRight)  * (trHeight);
     // Top side
     uTop = computeInterpolationCoefficient(m_mapParameters, tlBiome, trBiome, x, xMax);

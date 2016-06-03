@@ -165,17 +165,17 @@ void HeightTree::computeTreeInternal(voro::container & container, std::vector<Se
 
     // Computing the height
     // NB : Because the search is done in this order : TL -> TR -> BL -> BR
-    // Only the norh and the west might have been already computed
+    // Only the norh and the east might have been already computed
     // Thus we only search them
     float centerHeight = biomeHeight(m_mapParameters, centerBiome);
     float northHeight;
     if (!(root->findVertexHeight(northPos, depth+1, &northHeight)))
-	northHeight = biomeHeight(m_mapParameters, northBiome);
+	    northHeight = biomeHeight(m_mapParameters, northBiome);
     float southHeight = biomeHeight(m_mapParameters, southBiome);
-    float eastHeight  = biomeHeight(m_mapParameters, eastBiome);
-    float westHeight;
-    if (!(root->findVertexHeight(westPos, depth+1, &westHeight)))
-	westHeight = biomeHeight(m_mapParameters, westBiome);
+    float eastHeight;
+    if (!(root->findVertexHeight(eastPos, depth+1, &eastHeight)))
+	    eastHeight = biomeHeight(m_mapParameters, eastBiome);
+    float westHeight  = biomeHeight(m_mapParameters, westBiome);
     
 
     // Finally the 5 blobs
