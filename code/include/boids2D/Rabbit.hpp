@@ -15,7 +15,7 @@ class Rabbit : public MovableBoid
    * @param[in]	location	Initial position of the rabbit
    * @param[in]	parameters 	Parameter of the rabbit
    */
-  Rabbit(glm::vec3 location, MovableParameters* parameters);
+  Rabbit(glm::vec3 location, MovableParametersPtr parameters);
 
   /**
    * @brief 	Constructor for Rabbit
@@ -23,7 +23,7 @@ class Rabbit : public MovableBoid
    * @param[in]	velocity	Initial velocity of the rabbit
    * @param[in]	parameters 	Parameter of the rabbit
    */
-  Rabbit(glm::vec3 location, glm::vec3 velocity, MovableParameters* parameters);
+  Rabbit(glm::vec3 location, glm::vec3 velocity, MovableParametersPtr parameters);
 
   /**
    * @brief 	Constructor for Rabbit
@@ -33,7 +33,7 @@ class Rabbit : public MovableBoid
    * @param[in]	parameters 	Parameter of the rabbit
    */
   Rabbit(glm::vec3 location, glm::vec3 velocity, float mass,
-		MovableParameters* parameters);
+		MovableParametersPtr parameters);
 
 
  protected:
@@ -45,7 +45,7 @@ class Rabbit : public MovableBoid
    * @param[in] parameters  Parameter of the rabbit
    */
   Rabbit(glm::vec3 location, glm::vec3 velocity, float mass,
-    MovableParameters* parameters, float amountFood);  
+    MovableParametersPtr parameters, float amountFood);
 };
 
 typedef std::shared_ptr<Rabbit> RabbitPtr;

@@ -18,25 +18,24 @@ Matrix<T>::Matrix( int n, int m ) {
 	}
 	m_numLine = n;
 	m_numCol = m;
-	m_content = new std::vector<T>[n * m];
+	m_content = new std::list<T>[n * m];
 }
 
 template<typename T>
 Matrix<T>::~Matrix() {
-	std::cerr << "Lulz" << std::endl;
-	for (int i = 0; i < m_numLine * m_numCol; ++i) {
-		
-	}
+	if (m_content != NULL) {
+		delete [] m_content;
+ 	}
 }
 
 template<typename T>
-std::vector<T> & Matrix<T>::at(const int & i, const int & j)
+std::list<T> & Matrix<T>::at(const int & i, const int & j)
 {
 	return m_content[i * m_numLine + j];
 }
 
 template<typename T>
-const std::vector<T> & Matrix<T>::at(const int & i, const int & j) const
+const std::list<T> & Matrix<T>::at(const int & i, const int & j) const
 {
 	return m_content[i * m_numLine + j];
 }
@@ -69,6 +68,21 @@ int Matrix<T>::getNumElt() const
 		}
 	}
 	return res;
+}
+
+template<typename T>
+void Matrix<T>::move(const T & elt, const int & iprev, const int & jprev, const int & inext, const int & jnext)
+{
+	typename std::list<T>::iterator it = at(iprev, jprev).begin();
+	bool found = false;
+	while ( !found ) {
+		if ( *it == elt ) {
+			found = true;
+		} else {
+			it++;
+		}
+	}
+	at(iprev, jprev).splice(it, at(inext, jnext));
 }
 
 #endif

@@ -36,12 +36,12 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
  */ 
 void DynamicSystemBoid::computeSimulationStep()
 {
-
-    Matrix<MovableBoidPtr> mvB = m_boidsManager->getMovableBoidsMatrix();
-
-    for (int i = 0; i < mvB.getNumLine(); ++i) {
-        for (int j = 0; j < mvB.getNumCol(); ++j) {
-            for (std::vector<MovableBoidPtr>::iterator it = mvB.at(i,j).begin(); it != mvB.at(i,j).end(); ++it) {
+    MatrixMovableBoidPtr mvB = m_boidsManager->getMovableBoidsMatrix();
+    
+    // #pragma omp parallel for collapse(1)
+    for (int i = 0; i < mvB->getNumLine(); ++i) {
+        for (int j = 0; j < mvB->getNumCol(); ++j) {
+            for (std::list<MovableBoidPtr>::iterator it = mvB->at(i,j).begin(); it != mvB->at(i,j).end(); ++it) {
                 (*it)->computeAcceleration(*m_boidsManager, m_dt, i, j);
             }
         }

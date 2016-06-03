@@ -14,7 +14,10 @@
 class BoidsManager;
 
 class MovableState;
+typedef std::shared_ptr<MovableState> MovableStatePtr;
+
 class MovableParameters;
+typedef std::shared_ptr<MovableParameters> MovableParametersPtr;
 
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
@@ -34,7 +37,7 @@ class MovableBoid : public Boid
    * @param[in] t           Type of the boid
    * @param[in] parameters  Parameter of the boid
    */
-	MovableBoid(glm::vec3 location, BoidType t, MovableParameters* parameters);
+	MovableBoid(glm::vec3 location, BoidType t, MovableParametersPtr parameters);
 
   /**
    * @brief Constructor of a MovableBoid
@@ -44,7 +47,7 @@ class MovableBoid : public Boid
    * @param[in] parameters  Parameter of the boid
    */
   MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t,
-              MovableParameters* parameters);
+              MovableParametersPtr parameters);
 
   /**
    * @brief Constructor of a MovableBoid
@@ -55,7 +58,7 @@ class MovableBoid : public Boid
    * @param[in] parameters  Parameter of the boid
    */
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
-              MovableParameters* parameters);
+              MovableParametersPtr parameters);
 
  protected:
   /**
@@ -67,13 +70,8 @@ class MovableBoid : public Boid
    * @param[in] parameters  Parameter of the boid
    */
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
-              MovableParameters* parameters, int amountFood);
+              MovableParametersPtr parameters, int amountFood);
  public:
-
-  /**
-   * @brief Destructor of MovableBoid
-   */
-  ~MovableBoid();
 
   /**
    * @brief Getter for the velocity of the object
@@ -89,7 +87,7 @@ class MovableBoid : public Boid
    * @brief   Getter for the parameter of the object
    * @return  Parameter of the object
    */
-  MovableParameters & getParameters() const;
+  MovableParametersPtr getParameters() const;
 
   /**
    * @brief Getter for the state type of the object
@@ -114,7 +112,7 @@ class MovableBoid : public Boid
    * @brief     Update the position and the velocity for the next step in the simulation 
    * @param[in] dt Value of the time step
    */
-  void computeNextStep(const float & dt);
+  glm::vec3 computeNextStep(const float & dt);
 
   /**
    * @brief     Check if the other boid is in the cone of vision of this
@@ -237,8 +235,8 @@ class MovableBoid : public Boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
   float m_mass; ///< Mass of the boid
 
-  MovableState* m_currentState; ///< State of the boid
-  MovableParameters* m_parameters; ///< Parameter of the boid
+  MovableStatePtr m_currentState; ///< State of the boid
+  MovableParametersPtr m_parameters; ///< Parameter of the boid
 
   MovableBoidPtr m_movablePrey; ///< Movable prey of the boid. (If exist cannot have a rooted prey)
   RootedBoidPtr m_rootedPrey; ///< Rooted prey of the boid. (If exist cannot have a movable prey)
@@ -377,6 +375,5 @@ bool operator==(const MovableBoid& b1, const MovableBoid& b2);
  * @brief Comparator between 2 boid. @see ==
  */
 bool operator!=(const MovableBoid& b1, const MovableBoid& b2);
-
 
 #endif

@@ -170,7 +170,7 @@ class MovableState
    * @param[in] boidsManager The boid manager needed to be awared of the environment
    * @return Return the resulting force to feel it avoids boids enough
    */
-  glm::vec3 globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager) const;
+  glm::vec3 globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j) const;
 
   /**
    * @brief Compute the resulting force to avoid the environment in normal behavior
@@ -197,6 +197,8 @@ class MovableState
   bool updateAffinity(MovableBoid& b, const std::vector<MovableBoidPtr> & mvB) const;
 
 };
+
+typedef std::shared_ptr<MovableState> MovableStatePtr;
 
 /**
  * @class TestState

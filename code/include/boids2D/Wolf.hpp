@@ -15,7 +15,7 @@ class Wolf : public MovableBoid
    * @param[in]	location	Initial position of the wolf
    * @param[in]	parameters 	Parameter of the wolf
    */
-  Wolf(glm::vec3 location, MovableParameters* parameters);
+  Wolf(glm::vec3 location, MovableParametersPtr parameters);
 
   /**
    * @brief 	Constructor for Wolf
@@ -23,7 +23,7 @@ class Wolf : public MovableBoid
    * @param[in]	velocity	Initial velocity of the wolf
    * @param[in]	parameters 	Parameter of the wolf
    */
-  Wolf(glm::vec3 location, glm::vec3 velocity, MovableParameters* parameters);
+  Wolf(glm::vec3 location, glm::vec3 velocity, MovableParametersPtr parameters);
 
   /**
    * @brief 	Constructor for Wolf
@@ -33,7 +33,7 @@ class Wolf : public MovableBoid
    * @param[in]	parameters 	Parameter of the wolf
    */
   Wolf(glm::vec3 location, glm::vec3 velocity, float mass,
-		MovableParameters* parameters);
+		MovableParametersPtr parameters);
 };
 
 typedef std::shared_ptr<Wolf> WolfPtr;

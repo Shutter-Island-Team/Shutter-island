@@ -12,8 +12,8 @@ SightRenderable::SightRenderable(ShaderProgramPtr shaderProgram, MovableBoidPtr 
   : HierarchicalRenderable(shaderProgram), m_boid(boid), m_display(false),
     m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
-    double startAngle = boid->getAngle() - boid->getParameters().getAngleView() / 2.0;
-    double endAngle = boid->getAngle() + boid->getParameters().getAngleView() / 2.0;
+    double startAngle = boid->getAngle() - boid->getParameters()->getAngleView() / 2.0;
+    double endAngle = boid->getAngle() + boid->getParameters()->getAngleView() / 2.0;
 
     double numberFace = 16;
     double incr = M_PI/numberFace;
@@ -105,7 +105,7 @@ void SightRenderable::do_draw()
 
     float c = cos(m_boid->getAngle());
     float s = sin(m_boid->getAngle());
-    float scale = m_boid->getParameters().getDistViewMax();
+    float scale = m_boid->getParameters()->getDistViewMax();
 
     glm::vec3 position = m_boid->getLocation();
     transformation[0][0] = scale * c;

@@ -14,6 +14,8 @@
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
+typedef std::shared_ptr<Matrix<MovableBoidPtr> > MatrixMovableBoidPtr;
+
 class BoidsManager
 {
  public:
@@ -31,9 +33,9 @@ class BoidsManager
   * @brief Getter for the movable boids of the manager
   * @return Movable boids of the manager
   */
-  const std::vector<MovableBoidPtr> getMovableBoids() const;
+  const std::list<MovableBoidPtr> getMovableBoids() const;
 
-  const Matrix<MovableBoidPtr> getMovableBoidsMatrix() const;
+  const MatrixMovableBoidPtr getMovableBoidsMatrix() const;
 
   /**
   * @brief Getter for the rooted boids of the manager
@@ -101,11 +103,13 @@ class BoidsManager
 
   bool getNearestLake(const glm::vec2 & position, glm::vec2 & result) const;
 
-  void CoordToBox(const glm::vec3 & location, int & i, int & j) const;
+  void coordToBox(const glm::vec3 & location, int & i, int & j) const;
+
+  void updateBoid(MovableBoidPtr mvB, const glm::vec3 & newPosition, const int & inext, const int & jnext);
 
  private:
   MapGenerator& m_map;
-  Matrix<MovableBoidPtr> m_movableBoids; ///< Vector of the movable boids
+  MatrixMovableBoidPtr m_movableBoids; ///< Vector of the movable boids
   std::vector<RootedBoidPtr> m_rootedBoids;  ///< Vector of the rooted boids
   bool isNightTime; ///< Boolean to check if it is night time
 };

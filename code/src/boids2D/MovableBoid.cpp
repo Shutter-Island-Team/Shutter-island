@@ -4,33 +4,27 @@
 #include "../../include/boids2D/StateType.hpp"
 #include "../../include/boids2D/MovableBoid.hpp"
 
-MovableBoid::~MovableBoid()
-{
-	delete m_currentState;
-	delete m_parameters;
-}
-
-MovableBoid::MovableBoid(glm::vec3 location, BoidType t, MovableParameters* parameters) 
+MovableBoid::MovableBoid(glm::vec3 location, BoidType t, MovableParametersPtr parameters) 
 	: MovableBoid(location, glm::vec3(0,0,0), t, parameters)
 {
 
 }
 
-MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, MovableParameters* parameters) 
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, MovableParametersPtr parameters) 
 	: MovableBoid(location, velocity, 0.05f, t, parameters)
 {
 
 }
 
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
-    BoidType t, MovableParameters* parameters) :
+    BoidType t, MovableParametersPtr parameters) :
     MovableBoid(location, velocity, mass, t, parameters, 1) 
 {
 
 }
 
 MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
-    BoidType t, MovableParameters* parameters, int amountFood)
+    BoidType t, MovableParametersPtr parameters, int amountFood)
 	: Boid(location, t, amountFood), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
 	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
@@ -45,14 +39,14 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 
 	switch(m_stateType) {
 		case TEST_STATE:
-			m_currentState = new TestState();
+			m_currentState.reset(new TestState());
 			break;
 		case WALK_STATE:
-			m_currentState = new WalkState();
+			m_currentState.reset(new WalkState());
 			break;
 		default:
 			std::cerr << "State not recognize. Default state walk initialization" << std::endl;
-			m_currentState = new WalkState();
+			m_currentState.reset(new WalkState());
 			break;
 	}
 
@@ -79,9 +73,9 @@ float MovableBoid::getMass() const
 	return m_mass;
 }
 
-MovableParameters & MovableBoid::getParameters() const
+MovableParametersPtr MovableBoid::getParameters() const
 {
-	return *m_parameters;
+	return m_parameters;
 }
 
 StateType MovableBoid::getStateType() const
@@ -147,11 +141,12 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 }
 
 // x(t + dt) = x(t) + v(t+dt) * dt
-void MovableBoid::computeNextStep(const float & dt)
+glm::vec3 MovableBoid::computeNextStep(const float & dt)
 {
-    m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters().getMaxForce()), getParameters().getMaxSpeed());
+    m_velocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters()->getMaxForce()), getParameters()->getMaxSpeed());
 	setAngle(atan2(m_velocity.y, m_velocity.x));
     m_location += dt * m_velocity;
+    return m_location;
 }
 
 bool MovableBoid::canSee(const Boid & other, const float & distView) const
@@ -174,55 +169,54 @@ bool MovableBoid::angleVision (const Boid & other) const
 	glm::vec3 diffPos = other.getLocation() - m_location;
 	float comparativeValue = acos(glm::dot(glm::normalize(m_velocity), glm::normalize(diffPos)));
 
-	if (getParameters().getAngleView() <= M_PI) {
-		return (0 <= comparativeValue) && (comparativeValue <= getParameters().getAngleView()/2);
+	if (getParameters()->getAngleView() <= M_PI) {
+		return (0 <= comparativeValue) && (comparativeValue <= getParameters()->getAngleView()/2);
 	} else {
         diffPos = - diffPos;
         comparativeValue = - comparativeValue;
-        return !((0 <= comparativeValue) && (comparativeValue <= M_PI - getParameters().getAngleView()/2));
+        return !((0 <= comparativeValue) && (comparativeValue <= M_PI - getParameters()->getAngleView()/2));
     }
 }
 
 void MovableBoid::switchToState(const StateType & stateType, const BoidsManager & boidsManager) 
 {
-	delete m_currentState;
 	switch(stateType) {
 		case WALK_STATE:
-			m_currentState = new WalkState();
+			m_currentState.reset(new WalkState());
 			break;
 		case STAY_STATE:
-			m_currentState = new StayState();
+			m_currentState.reset(new StayState());
 			break;
 		case SLEEP_STATE:
-			m_currentState = new SleepState();
+			m_currentState.reset(new SleepState());
 			break;
 		case FLEE_STATE:
-			m_currentState = new FleeState();
+			m_currentState.reset(new FleeState());
 			break;
 		case FIND_FOOD_STATE:
-			m_currentState = new FindFoodState();
+			m_currentState.reset(new FindFoodState());
 			break;
 		case ATTACK_STATE:
-			m_currentState = new AttackState();
+			m_currentState.reset(new AttackState());
 			break;
 		case EAT_STATE:
-			m_currentState = new EatState();
+			m_currentState.reset(new EatState());
 			break;
 		case FIND_WATER_STATE:
 			askWaterTarget(boidsManager);
-			m_currentState = new FindWaterState();
+			m_currentState.reset(new FindWaterState());
 			break;
 		case DRINK_STATE:
-			m_currentState = new DrinkState();
+			m_currentState.reset(new DrinkState());
 			break;
 		case MATE_STATE:
-			m_currentState = new MateState();
+			m_currentState.reset(new MateState());
 			break;
 		case LOST_STATE:
-			m_currentState = new LostState();
+			m_currentState.reset(new LostState());
 			break;
 		case DEAD_STATE:
-			m_currentState = new DeadState(); 
+			m_currentState.reset(new DeadState()); 
 		case TEST_STATE:
 			break;
 		default:

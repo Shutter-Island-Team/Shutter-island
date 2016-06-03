@@ -4,9 +4,9 @@
 #include "../../include/boids2D/BoidsManager.hpp"
 
 BoidsManager::BoidsManager(MapGenerator& map) 
-	: m_map(map), m_movableBoids(Matrix<MovableBoidPtr>(5, 5))
+	: m_map(map)
 {
-
+	m_movableBoids = std::make_shared<Matrix<MovableBoidPtr> >(25, 25);
 }
 
 BoidsManager::~BoidsManager()
@@ -17,7 +17,7 @@ BoidsManager::~BoidsManager()
 MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity) 
 {
 	MovableBoidPtr movableBoid;
-	MovableParameters *parameters = new MovableParameters(boidType);
+	MovableParametersPtr parameters = std::make_shared<MovableParameters>(boidType);
 
 	switch(boidType)
 	{
@@ -33,8 +33,8 @@ MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 locatio
 	}
 	int i;
 	int j;
-	CoordToBox(location, i, j);
-    m_movableBoids.push_back(i, j, movableBoid);
+	coordToBox(location, i, j);
+    m_movableBoids->push_back(i, j, movableBoid);
     
     return movableBoid;
 }
@@ -59,18 +59,20 @@ RootedBoidPtr BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 	return rootedBoid;
 }
 
-const std::vector<MovableBoidPtr> BoidsManager::getMovableBoids() const
+const std::list<MovableBoidPtr> BoidsManager::getMovableBoids() const
 {
-	std::vector<MovableBoidPtr> v;
-	for (int i = 0; i < m_movableBoids.getNumLine(); ++i) {
-		for (int j = 0; j < m_movableBoids.getNumCol(); ++j) {
-			v.insert( v.end(), m_movableBoids.at(i,j).begin(), m_movableBoids.at(i,j).end() );
+	std::list<MovableBoidPtr> v;
+	for (int i = 0; i < m_movableBoids->getNumLine(); ++i) {
+		for (int j = 0; j < m_movableBoids->getNumCol(); ++j) {
+			for (std::list<MovableBoidPtr>::const_iterator it = m_movableBoids->at(i,j).begin(); it != m_movableBoids->at(i,j).end(); ++it) {
+				v.push_back( *it );
+			}
 		}
 	}
 	return v;
 }
 
-const Matrix<MovableBoidPtr> BoidsManager::getMovableBoidsMatrix() const
+const MatrixMovableBoidPtr BoidsManager::getMovableBoidsMatrix() const
 {
 	return m_movableBoids;
 }
@@ -93,12 +95,13 @@ void BoidsManager::setTimeDay(bool state)
 
 const std::vector<MovableBoidPtr> BoidsManager::getNeighbour(MovableBoid mvB, const int & i, const int & j) const
 {
-	std::cerr << "I hear the call" << std::endl;
 	///< @todo mistake for i or j near border negative ?
 	std::vector<MovableBoidPtr> v;
 	for (int il = i-1; il <= i+1; ++il) {
 		for (int jl = j-1; jl <= j+1; ++jl) {
-
+			for (std::list<MovableBoidPtr>::const_iterator it = m_movableBoids->at(i,j).begin(); it != m_movableBoids->at(i,j).end(); ++it) {
+				v.push_back( *it );
+			}
 		}
 	}
 	return v;
@@ -123,13 +126,13 @@ MapGenerator& BoidsManager::getMap() const
 
 void BoidsManager::removeDead()
 {
-	for (int i = 0; i < m_movableBoids.getNumLine(); ++i) {
-		for (int j = 0; j < m_movableBoids.getNumCol(); ++j) {
-			std::vector<MovableBoidPtr>::iterator itm = m_movableBoids.at(i,j).begin();
-			while ( itm != m_movableBoids.at(i,j).end()) {
+	for (int i = 0; i < m_movableBoids->getNumLine(); ++i) {
+		for (int j = 0; j < m_movableBoids->getNumCol(); ++j) {
+			std::list<MovableBoidPtr>::iterator itm = m_movableBoids->at(i,j).begin();
+			while ( itm != m_movableBoids->at(i,j).end()) {
 				if (!((*itm)->isFoodRemaining())) {
 					(*itm)->disapear();
-					itm = m_movableBoids.at(i,j).erase(itm);
+					itm = m_movableBoids->at(i,j).erase(itm);
 				} else {
 					itm++;
 				}
@@ -157,9 +160,20 @@ bool BoidsManager::getNearestLake(const glm::vec2 & position, glm::vec2 & result
 	return m_map.getClosestLake(position.x, position.y, result.x, result.y);
 }
 
-void BoidsManager::CoordToBox(const glm::vec3 & location, int & i, int & j) const
+void BoidsManager::coordToBox(const glm::vec3 & location, int & i, int & j) const
 {
 	///< @todo : Mistake ?
-	i = floor(location.x / 100.0f);
-	j = floor(location.y / 100.0f);
+	i = floor(location.x / 20.0f);
+	j = floor(location.y / 20.0f);
 }
+
+void BoidsManager::updateBoid(MovableBoidPtr mvB, const glm::vec3 & newPosition, const int & iprev, const int & jprev)
+{
+	int inext = 0;
+	int jnext = 0;
+	coordToBox(newPosition, inext, jnext);
+	if (iprev != inext || jprev != jnext) {
+		m_movableBoids->move(mvB, iprev, jprev, inext, jnext);
+	}
+}
+

@@ -9,7 +9,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <vector>
+#include <list>
 #include <stdexcept>
 
 /**
@@ -33,9 +33,9 @@ class Matrix
    */
   ~Matrix<T>();
 
-  std::vector<T> & at(const int & i, const int & j);
+  std::list<T> & at(const int & i, const int & j);
 
-  const std::vector<T> & at(const int & i, const int & j) const;
+  const std::list<T> & at(const int & i, const int & j) const;
 
   void push_back(const int & i, const int & j, const T & elt);
 
@@ -45,8 +45,11 @@ class Matrix
 
   int getNumElt() const;
 
+  void move(const T & elt, const int & iprev, const int & jprev, const int & inext, const int & jnext);
+
+
  private:
-  std::vector<T> *m_content; ///< Container of in the class
+  std::list<T> *m_content; ///< Container of in the class
   int m_numLine;
   int m_numCol;
 };
