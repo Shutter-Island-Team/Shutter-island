@@ -36,6 +36,7 @@ MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 locatio
 	int j;
 	coordToBox(location, i, j);
     m_movableBoids->add(i, j, movableBoid);
+    m_movableBoidsVec.push_back(movableBoid);
     
     return movableBoid;
 }
@@ -63,17 +64,9 @@ RootedBoidPtr BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 	return rootedBoid;
 }
 
-const std::vector<MovableBoidPtr> BoidsManager::getMovableBoids() const
+const std::vector<MovableBoidPtr> & BoidsManager::getMovableBoids() const
 {
-	std::vector<MovableBoidPtr> v;
-	for (int i = 0; i < m_movableBoids->getNumLine(); ++i) {
-		for (int j = 0; j < m_movableBoids->getNumCol(); ++j) {
-			for (std::list<MovableBoidPtr>::const_iterator it = m_movableBoids->at(i,j).begin(); it != m_movableBoids->at(i,j).end(); ++it) {
-				v.push_back( *it );
-			}
-		}
-	}
-	return v;
+	return m_movableBoidsVec;
 }
 
 const MatrixMovableBoidPtr & BoidsManager::getMovableBoidsMatrix() const
@@ -142,6 +135,7 @@ void BoidsManager::removeDead()
 				if (!((*itm)->isFoodRemaining())) {
 					(*itm)->disapear();
 					itm = m_movableBoids->at(i,j).erase(itm);
+					m_movableBoidsVec.erase(std::remove(m_movableBoidsVec.begin(), m_movableBoidsVec.end(), *itm), m_movableBoidsVec.end());
 				} else {
 					itm++;
 				}

@@ -28,8 +28,6 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
     m_boidsManager = boidsManager;
 }
 
-#include <omp.h>
-
 /**
  * It is important in this function to note that it first computes
  * the acceleration of each boid then update the boid in two different
@@ -38,14 +36,11 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
  */ 
 void DynamicSystemBoid::computeSimulationStep()
 {
-    MatrixMovableBoidPtr mvB = m_boidsManager->getMovableBoidsMatrix();
-
-    for (int i = 0; i < mvB->getNumLine(); ++i) {
-        for (int j = 0; j < mvB->getNumCol(); ++j) {
-            for (std::list<MovableBoidPtr>::iterator it = mvB->at(i,j).begin(); it != mvB->at(i,j).end(); ++it) {
-                (*it)->computeAcceleration(*m_boidsManager, m_dt, i, j);
-            }
-        }
+    // MatrixMovableBoidPtr mvB = m_boidsManager->getMovableBoidsMatrix();
+    std::vector<MovableBoidPtr> mvB = m_boidsManager->getMovableBoids();
+    #pragma omp parallel for
+    for (unsigned int i = 0; i < mvB.size(); ++i) {
+        mvB[i]->computeAcceleration(*m_boidsManager, m_dt);
     }
 
     //Integrate position and velocity of particles
