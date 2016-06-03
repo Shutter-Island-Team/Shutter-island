@@ -1,0 +1,63 @@
+//////////////////// Tesselation Evaluation Shader
+
+#version 400
+
+
+// Patches setting
+layout(triangles, fractional_odd_spacing, ccw) in;  // Fractional division
+// layout(triangles) in;                            // Integer division (less good)
+
+
+////////// Uniformes to set
+
+// Camera related informations
+uniform mat4 projMat, viewMat, modelMat;
+
+// The height map as a sampler
+// (x, y, z) contains the normals
+// w         contains the heights
+uniform sampler2D heightMap;
+
+// The minimal height and the scale parameter
+uniform float heightMin;
+uniform float heightScale;
+
+// In the paper, he has a MVP matrix - don't know what it stands for
+
+/////////// In parameters
+
+// The vertices for the tesselation evaluation shader
+in vec3 tcPosition[];
+
+// The texture coordinates
+in vec2 tcTexCoord[];
+
+////////// Out values
+
+// The tex coords
+out vec2 tsTexCoord;
+
+
+///////// Main
+
+void main() 
+{
+    // Tex coord : simple (and bad) mapping
+    
+    // use the gl_TessCoord.x, gl_TessCoord.y, gl_TessCoord.z
+    // to compute the position of the vertex depending on the 3
+    // vertices of the triangle (tcPosition[0, 1, 2])
+    vec2 tsPosition = ((gl_TessCoord.x * tcPosition[0]) +
+                        (gl_TessCoord.y * tcPosition[1]) +
+                        (gl_TessCoord.z * tcPosition[2])).xy;
+
+    tsTexCoord = (gl_TessCoord.x * tcTexCoord[0]) +
+                 (gl_TessCoord.y * tcTexCoord[1]) +
+                 (gl_TessCoord.z * tcTexCoord[2]);
+    
+    // Compute the position of the vertex to compute the fragment positin
+    float height = heightMin + heightScale*(texture(heightMap, tsTexCoord).w);
+
+    vec4 position = vec4(tsPosition.x, tsPosition.y, height, 1.0);
+    gl_Position = projMat*viewMat*position;
+}

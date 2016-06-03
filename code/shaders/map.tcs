@@ -1,0 +1,98 @@
+//////////////////// Tessellation Control Shader
+
+#version 400
+
+
+// Shortcut for the gl_ID
+#define ID gl_InvocationID
+
+// Vertices out : triangles
+layout(vertices = 3) out;
+
+////////// Uniforms to set
+
+// Camera properties
+uniform mat4 projMat, viewMat, modelMat;
+
+// The user tessellation level
+uniform float tessellationLevel;
+
+// The maximal distance to tesselate
+uniform float maxDist = 500.0f;
+
+// The height map as a sampler
+// (x, y, z) contains the normals
+// w         contains the heights
+uniform sampler2D heightMap;
+
+
+////////// In parameters
+
+// The position of the vertices
+in vec3 vPosition[];
+
+// The texture coordinates
+in vec2 vTexCoord[];
+
+
+////////// Out values
+
+// The position of the vertices
+out vec3 tcPosition[];
+
+// The texture coordinates
+out vec2 tcTexCoord[];
+
+
+///////// Distance to Tessellation level function
+
+float distanceToTessellation(float dist) 
+{
+    float tessLevel;
+    if (dist > maxDist) {
+        tessLevel = 0.0f;
+    } else {
+        tessLevel = tessellationLevel*(maxDist - dist)/maxDist;
+    }
+    tessLevel += 1.0f;
+    return tessLevel;
+}
+
+
+///////// Main
+
+void main()
+{
+    // Simply transfer the coordinates
+    tcPosition[ID] = vPosition[ID];
+    tcTexCoord[ID] = vTexCoord[ID];
+
+    // The Tessellation levels are set only once by patch.
+    if (ID == 0) {
+        // Camera position
+        vec3 cameraPosition = - vec3( viewMat[3] ) * mat3( viewMat );
+
+        // Compute the center of each edge
+        vec3 center0 = (vPosition[0] + vPosition[1])/2;
+        vec3 center1 = (vPosition[1] + vPosition[2])/2;
+        vec3 center2 = (vPosition[2] + vPosition[0])/2;
+
+        // Distance to the camera
+        float distance0 = distance(center0, cameraPosition);
+        float distance1 = distance(center1, cameraPosition);
+        float distance2 = distance(center2, cameraPosition);
+
+        // Compute the tessellation levels
+        float tessLevel0 = distanceToTessellation(distance0);
+        float tessLevel1 = distanceToTessellation(distance1);
+        float tessLevel2 = distanceToTessellation(distance2);      
+
+        // Set the tessellation levels
+        gl_TessLevelOuter[0] = tessLevel0;
+        gl_TessLevelOuter[1] = tessLevel1;
+        gl_TessLevelOuter[2] = tessLevel2;
+
+        gl_TessLevelInner[0] = (tessLevel0 + tessLevel1 + tessLevel2)/3;
+    }
+
+}

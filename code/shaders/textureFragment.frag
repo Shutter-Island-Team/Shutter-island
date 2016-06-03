@@ -109,7 +109,7 @@ vec3 computePointLight(PointLight light, vec3 surfel_to_camera)
     vec3 reflect_direction = reflect(-surfel_to_light, surfel_normal);
     float specular_factor = pow(max(dot(surfel_to_camera, reflect_direction), 0.0), material.shininess);
 
-    // Attenuation: TODO
+    // Attenuation:
     float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
     //float attenuation = 1.0;
 
