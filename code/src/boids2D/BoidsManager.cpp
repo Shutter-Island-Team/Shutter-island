@@ -34,7 +34,7 @@ MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 locatio
 	int i;
 	int j;
 	coordToBox(location, i, j);
-    m_movableBoids->push_back(i, j, movableBoid);
+    m_movableBoids->add(i, j, movableBoid);
     
     return movableBoid;
 }
