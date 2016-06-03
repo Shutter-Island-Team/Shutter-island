@@ -199,13 +199,16 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
     );
     viewer.addShaderProgram(flatShader);
 
-    ShaderProgramPtr phongShader = std::make_shared<ShaderProgram>(
+    ShaderProgramPtr mapShader = std::make_shared<ShaderProgram>(
             std::list<std::string>{
-                "../shaders/phongVertex.vert", 
-                "../shaders/phongFragment.frag"
+                "../shaders/map.vert", 
+                "../shaders/map.tcs", 
+                "../shaders/map.tes", 
+                "../shaders/map.geom", 
+                "../shaders/map.frag"
             }
     );
-    viewer.addShaderProgram(phongShader);
+    viewer.addShaderProgram(mapShader);
 
 
     /*
@@ -217,7 +220,7 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
     /*
      * Creating the map renderable and adding it to the system.
      */
-    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(phongShader, mapGenerator);
+    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(mapShader, mapGenerator);
     mapRenderable->setMaterial(material);
     viewer.addRenderable(mapRenderable);
     
@@ -231,9 +234,9 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
         glm::vec3(mapSize, mapSize, 0.1),
         glm::vec3(0.0, mapSize, 0.1),
         //glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
-	glm::vec4(1.00f, 0.345f, 0.00f, 1.00f)
+        glm::vec4(1.00f, 0.345f, 0.00f, 1.00f)
     );
-    viewer.addRenderable(seaRenderable);
+    //viewer.addRenderable(seaRenderable);
 
 
 

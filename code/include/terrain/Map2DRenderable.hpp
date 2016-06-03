@@ -70,24 +70,17 @@ private:
 
     /**
      * @brief 
-     * Vectors dedicated to store the positions to send to 
+     * Vector dedicated to store the positions to send to 
      * the GPU buffer in order to render the map.
      */
     std::vector<glm::vec3> m_positions;
 
     /**
-     * @brief 
-     * Vectors dedicated to store the colors to send to 
-     * the GPU buffer in order to render the map.
+     * @brief
+     * Vector dedicated to store the texture coordinates
+     * to access the height map
      */
-    std::vector<glm::vec4> m_colors;
-
-    /**
-     * @brief 
-     * Vectors dedicated to store the normals to send to 
-     * the GPU buffer in order to render the map.
-     */
-    std::vector<glm::vec3> m_normals;
+    std::vector<glm::vec2> m_texCoords;
 
     /**
      * @brief
@@ -98,17 +91,32 @@ private:
 
     /**
      * @brief
-     * IDs of the GPU's buffers associated with the colors
+     * IDs of the GPU's buffers associated with the texture
      * used for rendering.
      */
-    unsigned int m_colorsBufferID;
+    unsigned int m_heightmapID;
 
     /**
      * @brief
-     * IDs of the GPU's buffers associated with the normals
-     * used for rendering.
+     * IDs of the texture coordinates
      */
-    unsigned int m_normalsBufferID;
+    unsigned int m_texCoordsID;
+
+    /**
+     * @brief
+     * The minimum altitude of the heightmap associated with the map.
+     * It will be used when applying a scaling during the tessellation
+     * step.
+     */
+    float m_minAltitude;
+
+    /**
+     * @brief
+     * The scale altitude of the heightmap associated with the map.
+     * It will be used when applying a scaling during the tessellation
+     * step.
+     */
+    float m_scaleAltitude;
 
     /**
      * @brief
@@ -142,14 +150,6 @@ private:
         float centerX,
         float centerY
     );
-
-    /**
-     * @brief Returns the color corresponding to a biome.
-     * 
-     * @param biome The biome to get the color.
-     * @return The color corresponding to the biome.
-     */
-    glm::vec4 biomeColor(Biome biome);
 };
 
 /**

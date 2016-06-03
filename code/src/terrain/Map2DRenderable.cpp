@@ -11,6 +11,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
+#include <omp.h>
+
+#include <iostream>
 
 /**
  * @brief
@@ -30,9 +33,9 @@ Map2DRenderable::Map2DRenderable(
 )
     :   Renderable(shaderProgram),
         m_positions(0),
-        m_colors(0),
-        m_normals(0),
-        m_mapGenerator(mapGenerator)
+        m_mapGenerator(mapGenerator),
+        m_minAltitude(0.0),
+        m_scaleAltitude(0.0)
 {
     /*
      * Iterating on each cell in order to obtain the coordinates of each
@@ -127,7 +130,6 @@ Map2DRenderable::Map2DRenderable(
             cY,
             m_mapGenerator.getHeight(cX, cY)
         );
-        glm::vec4 cellColor = biomeColor(seedsIt->getBiome());
 
         auto current = (*listIt)->begin();
         auto previous = current;
@@ -137,7 +139,7 @@ Map2DRenderable::Map2DRenderable(
          * Iterating on each vertex associated with the seed, that is to say
          * the cell, and constructing the associated triangles.
          * In other words, each pair of consecutive vertices is linked with the
-         * center of the cell to construct a triangle.
+        / * center of the cell to construct a triangle.
          */
         while (current != (*listIt)->end()) {
             /*
@@ -151,36 +153,24 @@ Map2DRenderable::Map2DRenderable(
             p2.z = m_mapGenerator.getHeight(p2.x, p2.y);
 
             /*
-             * Computing the normal, since it is the same for all the points
-             * of the triangle.
-             */
-            glm::vec3 triangleNormal(
-                glm::normalize(glm::cross(p2-p1, centroid-p1))    
-            );
-
-            /*
              * Pushing the information associated with the first point to the
              * buffers.
              */
             m_positions.push_back(p1);
-            m_colors.push_back(cellColor);
-            m_normals.push_back(triangleNormal);
-
+            m_texCoords.push_back(glm::vec2(p1)/m_mapGenerator.mapSize);
             /*
              * Pushing the information associated with the second point to the
              * buffers.
              */
             m_positions.push_back(p2);
-            m_colors.push_back(cellColor);
-            m_normals.push_back(triangleNormal);
+            m_texCoords.push_back(glm::vec2(p2)/m_mapGenerator.mapSize);
 
             /*
              * Pushing the information associated with the centroid to the
              * buffers.
              */
             m_positions.push_back(centroid);
-            m_colors.push_back(cellColor);
-            m_normals.push_back(triangleNormal);
+            m_texCoords.push_back(glm::vec2(centroid)/m_mapGenerator.mapSize);
 
             previous = current;
             current++;
@@ -194,21 +184,14 @@ Map2DRenderable::Map2DRenderable(
         p1.y = (*listIt)->front().second;
         p1.z = m_mapGenerator.getHeight(p1.x, p1.y);
         
-        glm::vec3 triangleNormal(
-            glm::normalize(glm::cross(p1-p2, centroid-p2))    
-        );
-
         m_positions.push_back(p2);
-        m_colors.push_back(cellColor);
-        m_normals.push_back(triangleNormal);
+        m_texCoords.push_back(glm::vec2(p2)/m_mapGenerator.mapSize);
 
         m_positions.push_back(p1);
-        m_colors.push_back(cellColor);
-        m_normals.push_back(triangleNormal);
-
+        m_texCoords.push_back(glm::vec2(p1)/m_mapGenerator.mapSize);
+     
         m_positions.push_back(centroid);
-        m_colors.push_back(cellColor);
-        m_normals.push_back(triangleNormal);
+        m_texCoords.push_back(glm::vec2(centroid)/m_mapGenerator.mapSize);
     }
 
 
@@ -239,8 +222,7 @@ Map2DRenderable::Map2DRenderable(
      * Creation of the buffers on the GPU, and storing their IDs.
      */
     glGenBuffers(1, &m_positionsBufferID);
-    glGenBuffers(1, &m_colorsBufferID);
-    glGenBuffers(1, &m_normalsBufferID);
+    glGenBuffers(1, &m_texCoordsID);
 
     /*
      * Activating buffers and sending data.
@@ -253,30 +235,141 @@ Map2DRenderable::Map2DRenderable(
                 GL_STATIC_DRAW
             )
     );
-    glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_colorsBufferID));
+
+    glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_texCoordsID));
     glcheck(glBufferData(
                 GL_ARRAY_BUFFER, 
-                m_colors.size()*sizeof(glm::vec4), 
-                m_colors.data(), 
+                m_texCoords.size()*sizeof(glm::vec2), 
+                m_texCoords.data(), 
                 GL_STATIC_DRAW
             )
     );
-    glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_normalsBufferID));
-    glcheck(glBufferData(
-                GL_ARRAY_BUFFER, 
-                m_normals.size()*sizeof(glm::vec3), 
-                m_normals.data(), 
-                GL_STATIC_DRAW
-            )
+    /*
+     * Creating and computing the 2D texture representing the heightmap.
+     */
+    int heightmapScaling    = m_mapGenerator.m_mapParameters.getHeightmapScaling();
+    int mapSize             = (int) m_mapGenerator.mapSize;
+    int effMapSize          = mapSize*heightmapScaling;
+    int mapDimension        = mapSize + 1;
+    int effMapDimension     = effMapSize + 1;
+    float* heightMap        = new float [4*effMapDimension*effMapDimension];
+
+    /*
+     * We sample the heightmap within the textureaccording to a 
+     * (1 pixel = 2 meters) scale.
+     * On top of that, we have to retain the maximum and minimum altitudes
+     * so as to apply a scaling during the Tessellation step (which
+     * prevent us from using OpenMP to parallelize this loop).
+     */
+    float maxAltitude = 0.0;
+    for (int i = 0; i < effMapSize; i++) {
+        for (int j = 0; j < effMapSize; j++) {
+            
+            float effI = (float)i / (float)heightmapScaling;
+            float effJ = (float)j / (float)heightmapScaling;
+            float altitude = m_mapGenerator.getHeight(effI, effJ);
+            if (altitude < m_minAltitude) {
+                m_minAltitude = altitude;
+            } else if (altitude > maxAltitude) {
+                maxAltitude = altitude;
+            }
+            // Computing the normal
+            float delta = 0.1f / (float)heightmapScaling;
+            float dzx   = (m_mapGenerator.getHeight(effI + delta, effJ) - altitude);
+            float dzy   = (m_mapGenerator.getHeight(effI, effJ + delta) - altitude);
+            // The normal
+            glm::vec3 normal = glm::normalize(glm::cross(glm::vec3(delta, 0.0f,  dzx),
+                                                         glm::vec3(0.0f,  delta, dzy)));
+            // Transforming the normal to fit in the texture
+            normal = (normal*0.5f) + glm::vec3(0.5f); 
+
+            heightMap[(i*effMapDimension+j)*4]     = normal.x;
+            heightMap[(i*effMapDimension+j)*4 + 1] = normal.y;
+            heightMap[(i*effMapDimension+j)*4 + 2] = normal.z;
+            heightMap[(i*effMapDimension+j)*4 + 3] = altitude;
+        }
+    }
+    // Special case : copying for the last row and column
+    #pragma omp parallel for
+    for (int i = 0; i < effMapDimension; i++) {
+        heightMap[(i*effMapDimension+effMapSize)*4]     = heightMap[(i*effMapDimension+effMapSize-1)*4];
+        heightMap[(i*effMapDimension+effMapSize)*4 + 1] = heightMap[(i*effMapDimension+effMapSize-1)*4 + 1];
+        heightMap[(i*effMapDimension+effMapSize)*4 + 2] = heightMap[(i*effMapDimension+effMapSize-1)*4 + 2];
+        heightMap[(i*effMapDimension+effMapSize)*4 + 3] = heightMap[(i*effMapDimension+effMapSize-1)*4 + 3];
+    }
+    #pragma omp parallel for
+    for (int j = 0; j < effMapDimension; j++) {
+        heightMap[(effMapSize*effMapDimension+j)*4]     = heightMap[((effMapSize-1)*effMapDimension+j)*4];
+        heightMap[(effMapSize*effMapDimension+j)*4 + 1] = heightMap[((effMapSize-1)*effMapDimension+j)*4 + 1];
+        heightMap[(effMapSize*effMapDimension+j)*4 + 2] = heightMap[((effMapSize-1)*effMapDimension+j)*4 + 2];
+        heightMap[(effMapSize*effMapDimension+j)*4 + 3] = heightMap[((effMapSize-1)*effMapDimension+j)*4 + 3];
+    }
+    m_scaleAltitude = maxAltitude - m_minAltitude;
+    /*
+     * Normalizing the heightmap, since the OpenGL tessellation shaders need
+     * texture coordinates between 0 and 1.
+     * That is why the scaling is needed, in order to have a final map with
+     * altitudes corresponding to the original heightmap's ones.
+     */
+    #pragma omp parallel for collapse(2)
+    for (int i = 0; i < effMapDimension; i++) {
+        for (int j = 0; j < effMapDimension; j++) {
+            heightMap[(i*effMapDimension+j)*4 + 3] -= m_minAltitude;
+            heightMap[(i*effMapDimension+j)*4 + 3] /= m_scaleAltitude;
+        }
+    }
+
+    /*
+     * Creating the texture on the GPU.
+     */
+    glGenTextures(1, &m_heightmapID);
+
+    /*
+     * Binding the texture.
+     */
+    glBindTexture(GL_TEXTURE_2D, m_heightmapID);
+
+    /*
+     * Setting the texture's parameters.
+     */
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+
+    /*
+     * Sending the texture to the GPU.
+     */
+    glcheck(
+        glTexImage2D(
+            GL_TEXTURE_2D,
+            0,
+            GL_RGBA32F,
+            effMapDimension,
+            effMapDimension,
+            0,
+            GL_RGBA,
+            GL_FLOAT,
+            (const GLvoid*) heightMap
+        )
     );
 
+    /*
+     * Releasing the texture.
+     */
+    glBindTexture(GL_TEXTURE_2D, 0);
+    delete [] heightMap;
 }
 
 Map2DRenderable::~Map2DRenderable()
 {
+    /*
+     * Disabling the GPU buffers used while rendering.
+     */
     glcheck(glDeleteBuffers(1, &m_positionsBufferID));
-    glcheck(glDeleteBuffers(1, &m_colorsBufferID));
-    glcheck(glDeleteBuffers(1, &m_normalsBufferID));
+    glcheck(glDeleteBuffers(1, &m_texCoordsID));
+    glcheck(glDeleteBuffers(1, &m_heightmapID));
+
 }
 
 void Map2DRenderable::do_draw()
@@ -284,25 +377,46 @@ void Map2DRenderable::do_draw()
     /*
      * Drawing geometric data
      */
-    int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
-    int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
-    int normalLocation = m_shaderProgram->getAttributeLocation("vNormal");
-    int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
+
+    // Position
+    int positionLocation        = m_shaderProgram->getAttributeLocation("coord");
+    
+    // TexCoords
+    int texCoordLocation        = m_shaderProgram->getAttributeLocation("texCoord");
+
+    // Model matrix
+    int modelLocation           = m_shaderProgram->getUniformLocation("modelMat");
+    
+    // Height map
+    int heightmapLocation       = m_shaderProgram->getUniformLocation("heightMap");
+    int heightMinLocation       = m_shaderProgram->getUniformLocation("heightMin");
+    int heightScaleLocation     = m_shaderProgram->getUniformLocation("heightScale");
+
+    // Tesselation parameters
+    int tessLevelLocation       = m_shaderProgram->getUniformLocation("tessellationLevel");
+    //int maxDistLocation         = m_shaderProgram->getUniformLocation("maxDist");
+    
+    // Textures
+    int seaTextureLocation      = m_shaderProgram->getUniformLocation("seaTex"); 
+    int sandTextureLocation     = m_shaderProgram->getUniformLocation("sandTex"); 
+    int plainsTextureLocation   = m_shaderProgram->getUniformLocation("plainsTex"); 
+    int lakeTextureLocation     = m_shaderProgram->getUniformLocation("lakeTex"); 
+    int mountainTextureLocation = m_shaderProgram->getUniformLocation("mountainTex"); 
+    
+    // Masks (ie blending coefficients)
+    int seaMaskLocation         = m_shaderProgram->getUniformLocation("seaMask"); 
+    int sandMaskLocation        = m_shaderProgram->getUniformLocation("sandMask"); 
+    int plainsMaskLocation      = m_shaderProgram->getUniformLocation("plainsMask"); 
+    int lakeMaskLocation        = m_shaderProgram->getUniformLocation("lakeMask"); 
+    int mountainMaskLocation    = m_shaderProgram->getUniformLocation("mountainMask"); 
 
     //Send material uniform to GPU
     Material::sendToGPU(m_shaderProgram, m_material);
 
-    if(modelLocation != ShaderProgram::null_location)
-    {
-        glcheck(glUniformMatrix4fv(
-                    modelLocation, 
-                    1, 
-                    GL_FALSE, 
-                    glm::value_ptr(getModelMatrix())
-                )
-        );
-    }
-
+    /*
+     * Sending the uniforms to their locations on the GPU.
+     * Lone exception, the textures are simply binded here.
+     */
     if(positionLocation != ShaderProgram::null_location)
     {
         glcheck(glEnableVertexAttribArray(positionLocation));
@@ -318,13 +432,13 @@ void Map2DRenderable::do_draw()
         );
     }
 
-    if(colorLocation != ShaderProgram::null_location)
+    if(texCoordLocation != ShaderProgram::null_location)
     {
-        glcheck(glEnableVertexAttribArray(colorLocation));
-        glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_colorsBufferID));
+        glcheck(glEnableVertexAttribArray(texCoordLocation));
+        glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_texCoordsID));
         glcheck(glVertexAttribPointer(
-                    colorLocation, 
-                    4, 
+                    texCoordLocation, 
+                    2,
                     GL_FLOAT, 
                     GL_FALSE, 
                     0, 
@@ -333,37 +447,55 @@ void Map2DRenderable::do_draw()
         );
     }
 
-    if(normalLocation != ShaderProgram::null_location)
+    if(modelLocation != ShaderProgram::null_location)
     {
-        glcheck(glEnableVertexAttribArray(normalLocation));
-        glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_normalsBufferID));
-        glcheck(glVertexAttribPointer(
-                    normalLocation, 
-                    3, 
-                    GL_FLOAT, 
+        glcheck(glUniformMatrix4fv(
+                    modelLocation, 
+                    1, 
                     GL_FALSE, 
-                    0, 
-                    (void*)0
+                    glm::value_ptr(getModelMatrix())
+                )
+        );
+    }
+
+    if (heightmapLocation != ShaderProgram::null_location)
+    {
+        glcheck(glActiveTexture(GL_TEXTURE0));
+        glcheck(glBindTexture(GL_TEXTURE_2D, m_heightmapID));
+        glcheck(glUniform1i(heightmapLocation, 0));
+    }
+
+    if (heightMinLocation != ShaderProgram::null_location)
+    {
+        glcheck(glUniform1f(heightMinLocation, m_minAltitude));
+    }
+
+    if (heightScaleLocation != ShaderProgram::null_location)
+    {
+        glcheck(glUniform1f(heightScaleLocation, m_scaleAltitude));
+    }
+
+    if (tessLevelLocation != ShaderProgram::null_location)
+    {
+        glcheck(glUniform1f(
+                    tessLevelLocation, 
+                    m_mapGenerator.m_mapParameters.getTessellationLevel()
                 )
         );
     }
 
     /*
-     * Drawing triangles elements.
+     * Tessellating the map, and rendering it.
      */
-    glcheck(glDrawArrays(GL_TRIANGLES,0, m_positions.size()));
+    glcheck(glPatchParameteri(GL_PATCH_VERTICES, 3));
+    glcheck(glDrawArrays(GL_PATCHES, 0, m_positions.size()));
 
+    /*
+     * Disabling the buffers.
+     */
     if(positionLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(positionLocation));
-    }
-    if(colorLocation != ShaderProgram::null_location)
-    {
-        glcheck(glDisableVertexAttribArray(colorLocation));
-    }
-    if(normalLocation != ShaderProgram::null_location)
-    {
-        glcheck(glDisableVertexAttribArray(normalLocation));
     }
 }
 
@@ -421,42 +553,4 @@ void Map2DRenderable::insertIntoList(
             list.push_back(std::pair<float, float>(x,y));
         }
     }
-}
-
-glm::vec4 Map2DRenderable::biomeColor(Biome biome)
-{
-    switch (biome)
-	{
-        case Sea:
-            return glm::vec4(0.00f, 0.345f, 1.00f, 1.00f);
-            break;
-
-        case Lake:
-            return glm::vec4(0.051f, 0.878f, 1.00f, 1.00f);
-            break;
-
-        case InnerBeach:
-            return glm::vec4(0.80f, 0.645f, 0.352f, 1.00f);
-            break;
-	    
-	case OuterBeach:
-            return glm::vec4(1.00f, 0.835f, 0.482f, 1.00f);
-            break;
-
-        case Plains:
-            return glm::vec4(0.165f, 0.910f, 0.220f, 1.00f);
-            break;
-
-        case Mountain:
-            return glm::vec4(0.510f, 0.157f, 0.051f, 1.00f);
-            break;
-
-	case Peak:
-            return glm::vec4(0.910f, 0.157f, 0.051f, 1.00f);
-            break;
-
-        default:
-            return glm::vec4(1.00f, 0.051f, 0.510f, 1.00f);
-            break;
-	}
 }
