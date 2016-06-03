@@ -15,6 +15,7 @@ class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
 
 typedef std::shared_ptr<Matrix<MovableBoidPtr> > MatrixMovableBoidPtr;
+typedef std::shared_ptr<Matrix<RootedBoidPtr> > MatrixRootedBoidPtr;
 
 class BoidsManager
 {
@@ -33,15 +34,15 @@ class BoidsManager
   * @brief Getter for the movable boids of the manager
   * @return Movable boids of the manager
   */
-  const std::list<MovableBoidPtr> getMovableBoids() const;
+  const std::vector<MovableBoidPtr> getMovableBoids() const;
 
-  const MatrixMovableBoidPtr getMovableBoidsMatrix() const;
+  const MatrixMovableBoidPtr & getMovableBoidsMatrix() const;
 
   /**
   * @brief Getter for the rooted boids of the manager
   * @return Rooted boids of the manager
   */
-  const std::vector<RootedBoidPtr>& getRootedBoids() const;
+  const std::vector<RootedBoidPtr> getRootedBoids() const;
 
   /**
   * @brief Add a rooted boid to the manager
@@ -109,8 +110,9 @@ class BoidsManager
 
  private:
   MapGenerator& m_map;
-  MatrixMovableBoidPtr m_movableBoids; ///< Vector of the movable boids
-  std::vector<RootedBoidPtr> m_rootedBoids;  ///< Vector of the rooted boids
+  MatrixMovableBoidPtr m_movableBoids; ///< Matrix of the rooted boids
+  MatrixRootedBoidPtr m_rootedBoids; ///< Matrix of the rooted boids
+  // std::vector<RootedBoidPtr> m_rootedBoids;  ///< Vector of the rooted boids
   bool isNightTime; ///< Boolean to check if it is night time
 };
 
