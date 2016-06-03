@@ -112,7 +112,7 @@ class MovableBoid : public Boid
    * @brief     Update the position and the velocity for the next step in the simulation 
    * @param[in] dt Value of the time step
    */
-  const glm::vec3 & computeNextStep(const float & dt);
+  const glm::vec3 computeNextStep(const float & dt);
 
   /**
    * @brief     Check if the other boid is in the cone of vision of this

@@ -143,8 +143,9 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 }
 
 // x(t + dt) = x(t) + v(t+dt) * dt
-const glm::vec3 & MovableBoid::computeNextStep(const float & dt)
+const glm::vec3 MovableBoid::computeNextStep(const float & dt)
 {
+	glm::vec3 prevLocation = m_location;
 	glm::vec3 nextVelocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters()->getMaxForce()), getParameters()->getMaxSpeed());
   	float k = 0.5f;
   	if(glm::length(m_velocity) < FLT_EPSILON) {
@@ -154,7 +155,7 @@ const glm::vec3 & MovableBoid::computeNextStep(const float & dt)
   	}
 	setAngle(atan2(m_velocity.y, m_velocity.x));
     m_location += dt * m_velocity;
-    return m_location;
+    return prevLocation;
 }
 
 bool MovableBoid::canSee(const Boid & other, const float & distView) const

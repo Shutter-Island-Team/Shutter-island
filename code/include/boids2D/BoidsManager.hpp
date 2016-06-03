@@ -108,7 +108,7 @@ class BoidsManager
 
   void coordToBox(const glm::vec3 & location, int & i, int & j) const;
 
-  void updateBoid(MovableBoidPtr mvB, const glm::vec3 & newPosition, const int & inext, const int & jnext);
+  void updateBoid(MovableBoidPtr mvB, const int & iprev, const int & jprev);
 
  private:
   MapGenerator& m_map;
