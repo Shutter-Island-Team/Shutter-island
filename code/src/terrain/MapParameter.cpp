@@ -93,6 +93,12 @@ MapParameters::MapParameters(const std::string& filename)
      m_vsgHeightSub = document["VSG"]["vsgHeightSub"].GetInt();
      m_vsgMaxSeedsBySub = document["VSG"]["vsgMaxSeedsBySub"].GetInt();
      m_vsgMinDist = document["VSG"]["vsgMinDist"].GetFloat();
+
+     /*
+      * Map2DRenderable "defines".
+      */
+     m_tessellationLevel = document["Map2D"]["tessellationLevel"].GetFloat();
+     m_heightmapScaling = document["Map2D"]["heightmapScaling"].GetFloat();
 }
 
 /*
@@ -294,4 +300,17 @@ int MapParameters::getVsgMaxSeedsBySub()
 float MapParameters::getVsgMinDist()
 {
     return m_vsgMinDist;
+}
+
+/*
+ * Map2DRenderable "getters".
+ */
+float MapParameters::getTessellationLevel()
+{
+    return m_tessellationLevel;
+}
+
+float MapParameters::getHeightmapScaling()
+{
+    return m_heightmapScaling;
 }

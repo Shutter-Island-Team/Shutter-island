@@ -1,4 +1,23 @@
 {
+    "Global" : {
+        "mapSize"           :   500.0
+    },
+
+    "VSG" : {
+        "vsgWidth"          :   500.0,
+        "vsgHeight"         :   500.0,
+        "vsgNbSeeds"        :   250,
+        "vsgWidthSub"       :   10,
+        "vsgHeightSub"      :   10,
+        "vsgMaxSeedsBySub"  :   5,
+        "vsgMinDist"        :   10.0
+    },
+
+    "HeightTree" : {
+        "detectionThreshold"        :   0.1,
+        "heightBlendingCoefficient" :   1.0
+    },
+
     "Biome" : {
         "heightMinSea"          :   -5.0,
         "heightMaxSea"          :   -3.0,
@@ -36,18 +55,8 @@
         "distMin"           :   10
     },
 
-    "HeightTree" : {
-        "detectionThreshold"        :   0.1,
-        "heightBlendingCoefficient" :   1.0
-    },
-
-    "VSG" : {
-        "vsgWidth"          :   500.0,
-        "vsgHeight"         :   500.0,
-        "vsgNbSeeds"        :   250,
-        "vsgWidthSub"       :   10,
-        "vsgHeightSub"      :   10,
-        "vsgMaxSeedsBySub"  :   5,
-        "vsgMinDist"        :   10.0
-    }    
+    "Map2D" : {
+        "tessellationLevel" :   10.0,
+        "heightmapScaling"  :   2
+    }
 }
