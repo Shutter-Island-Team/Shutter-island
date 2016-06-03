@@ -36,10 +36,15 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
  */ 
 void DynamicSystemBoid::computeSimulationStep()
 {
-    std::vector<MovableBoidPtr> mvB = m_boidsManager->getMovableBoids();
-    #pragma omp parallel for
-    for (unsigned int i = 0 ; i < mvB.size() ; ++i) {
-        mvB[i]->computeAcceleration(*m_boidsManager, m_dt);
+    MatrixMovableBoidPtr mvB = m_boidsManager->getMovableBoidsMatrix();
+    
+    // #pragma omp parallel for collapse(1)
+    for (int i = 0; i < mvB->getNumLine(); ++i) {
+        for (int j = 0; j < mvB->getNumCol(); ++j) {
+            for (std::list<MovableBoidPtr>::iterator it = mvB->at(i,j).begin(); it != mvB->at(i,j).end(); ++it) {
+                (*it)->computeAcceleration(*m_boidsManager, m_dt, i, j);
+            }
+        }
     }
     //Integrate position and velocity of particles
     m_solver->solve(m_dt, m_boidsManager);

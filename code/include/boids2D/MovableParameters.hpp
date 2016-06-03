@@ -344,4 +344,6 @@ public:
   float m_dangerDecCoeff;
 };
 
+typedef std::shared_ptr<MovableParameters> MovableParametersPtr;
+
 #endif

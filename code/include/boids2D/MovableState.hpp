@@ -37,7 +37,7 @@ class MovableState
    * @return    The new acceleration of the boid
    */
   glm::vec3 computeAcceleration(MovableBoid& b,
-              const BoidsManager & boidsManager, const float & dt) const;
+              const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 
  private:
   /**
@@ -49,7 +49,7 @@ class MovableState
    * @return    The acceleration (decision) of the boid
    */
   virtual glm::vec3 computeNewForces(MovableBoid& b,
-          const BoidsManager & boidsManager, const float & dt) const = 0;
+          const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const = 0;
 
  protected:
   /**
@@ -170,7 +170,7 @@ class MovableState
    * @param[in] boidsManager The boid manager needed to be awared of the environment
    * @return Return the resulting force to feel it avoids boids enough
    */
-  glm::vec3 globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j, const float & dt) const;
 
   /**
    * @brief Compute the resulting force to avoid the environment in normal behavior
@@ -198,6 +198,8 @@ class MovableState
 
 };
 
+typedef std::shared_ptr<MovableState> MovableStatePtr;
+
 /**
  * @class TestState
  * @brief State for bebugging
@@ -205,7 +207,7 @@ class MovableState
 class TestState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -215,7 +217,7 @@ class TestState : public MovableState
 class WalkState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -225,7 +227,7 @@ class WalkState : public MovableState
 class StayState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -235,7 +237,7 @@ class StayState : public MovableState
 class SleepState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -245,7 +247,7 @@ class SleepState : public MovableState
 class FleeState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -255,7 +257,7 @@ class FleeState : public MovableState
 class FindFoodState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -265,7 +267,7 @@ class FindFoodState : public MovableState
 class EatState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -275,7 +277,7 @@ class EatState : public MovableState
 class FindWaterState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -285,7 +287,7 @@ class FindWaterState : public MovableState
 class DrinkState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -295,7 +297,7 @@ class DrinkState : public MovableState
 class MateState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -305,7 +307,7 @@ class MateState : public MovableState
 class AttackState : public MovableState
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -315,7 +317,7 @@ class AttackState : public MovableState
 class LostState : public MovableState
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 /**
@@ -325,7 +327,7 @@ class LostState : public MovableState
 class DeadState : public MovableState
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
 };
 
 
