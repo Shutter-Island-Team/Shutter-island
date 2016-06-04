@@ -68,6 +68,7 @@ class MovableBoid : public Boid
    * @param[in] mass        Mass of the boid
    * @param[in] t           Type of the boid
    * @param[in] parameters  Parameter of the boid
+   * @param[in] amountFood  Amount of food in the boid
    */
   MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
               MovableParametersPtr parameters, int amountFood);
@@ -104,7 +105,8 @@ class MovableBoid : public Boid
    * @brief     Update the acceleration of the boid. Save the value
    *            in the acceleration field of the class
    * @param[in] boidsManager The boid's manager
-   * @param[in] dt Time step
+   * @param[in] dt           Time step
+   * @param[in] updateTick   True if the current tick should have update of state of boids
    */
   void computeAcceleration(const BoidsManager & boidsManager, const float & dt, const bool & updateTick);
 
@@ -214,20 +216,49 @@ class MovableBoid : public Boid
    */
   BoidType getPredatorType() const;
 
+  /**
+   * @brief     Set the predator type for the boid
+   * @param[in] predator Type of the boid to be the predator
+   */
   void setPredatorType(const BoidType & predator);
 
-  bool isDead();
+  /**
+   * @brief   Getter to know if the boid is dead
+   * @return  True if the boid is dead, false otherwise
+   */
+  bool isDead() const;
 
+  /**
+   * @brief Set the dead status of the boid
+   */
   void die();
 
+  /**
+   * @brief Update the boid, looking at its coefficient of living 
+   */
   void updateDeadStatus();
 
+  /**
+   * @brief   Getter for the mate of the boid
+   * @return  Returns the mate of the boid
+   */
   MovableBoidPtr getMate() const;
 
+  /**
+   * @brief  Setter for the mate of the boid
+   */
   void setMate(const MovableBoidPtr & mate);
 
-  void askWaterTarget(const BoidsManager & b);
+  /**
+   * @brief     Updates the water target
+   * @param[in] b Reference of the boidManager to ask for the source position
+   */
+  void updateWaterTarget(const BoidsManager & b);
 
+  /**
+   * @brief Getter for the position of the water
+   * @return Return the position of the water
+   */
   glm::vec3 getWaterTarget() const;
 
  private:
@@ -250,11 +281,12 @@ class MovableBoid : public Boid
 
   bool m_isDead; ///< Boolean to know if the boid is dead
 
-  glm::vec3 m_waterTarget;
+  glm::vec3 m_waterTarget; ///< Position of the water source
 
   /**
    * @brief     Make all the change when a boid get to the new state stateType
-   * @param[in] stateType The state the boid change to
+   * @param[in] stateType     The state the boid change to
+   * @param[in] boidsManager  Reference of the boidsManager
    */
   void switchToState(const StateType & stateType, const BoidsManager & boidsManager);
 

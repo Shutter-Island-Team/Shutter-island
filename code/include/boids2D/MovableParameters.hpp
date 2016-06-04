@@ -17,15 +17,18 @@ public:
 
   /**
    * @brief     Constructor for MovableParameters
-   * @param[in] maxSpeed      Initial max speed
-   * @param[in] maxForce      Initial max force
-   * @param[in] angleView     Angle of view
-   * @param[in] distSeparate  Distance of separation 
-   * @param[in] distCohesion  Distance of cohesion
-   * @param[in] distViewMax   Distance of maximum view
-   * @param[in] distToLeader  Distance to keep with the leader of the group
-   * @param[in] distSeeAhead  Distance to see ahead the obstacles
-   * @param[in] distToLeader  Distance to keep with the leader of the group
+   * @param[in] maxSpeedWalk    Initial max speed when walking
+   * @param[in] maxSpeedRun     Initial max speed when running
+   * @param[in] maxForce        Initial max force
+   * @param[in] angleView       Angle of view
+   * @param[in] distSeparate    Distance of separation 
+   * @param[in] distCohesion    Distance of cohesion
+   * @param[in] distViewMax     Distance of maximum view
+   * @param[in] distMaxToLeader Distance to stay around the leader
+   * @param[in] distToLeader    Distance to keep with the leader of the group
+   * @param[in] distToLeader    Distance to keep with the leader of the group
+   * @param[in] distSeeAhead    Distance to see ahead the obstacles
+   * @param[in] distAttack      Distance to consider the boid is close enough to consider it is eating
    */
   MovableParameters(float maxSpeedWalk, float maxSpeedRun, float maxForce, float angleView,
 		float distSeparate, float distCohesion, float distViewMax, float distMaxToLeader, 
@@ -33,7 +36,8 @@ public:
 
   /**
    * @brief     Constructor for MovableParameters
-   * @param[in] maxSpeed              Initial max speed
+   * @param[in] maxSpeedWalk          Initial max speed when walking
+   * @param[in] maxSpeedRun           Initial max speed when running
    * @param[in] maxForce              Initial max force
    * @param[in] angleView             Angle of view
    * @param[in] distSeparate          Distance of separation 
@@ -41,6 +45,8 @@ public:
    * @param[in] distViewMax           Distance of maximum view
    * @param[in] distToLeader          Distance to keep with the leader of the group
    * @param[in] distSeeAhead          Distance to see ahead the obstacles
+   * @param[in] distAttack            Distance to check if the boid is close enough to consider it is eating
+   * @param[in] distMaxToLeader       Distance to stay around the leader
    * @param[in] distStartSlowingDown  Distance before slowing down for arrive behavior
    * @param[in] rCircleWander         Radius of the circle for wander behavior
    * @param[in] distToCircle          Distance between the boid and the wander circle   
@@ -132,6 +138,11 @@ public:
    * @return true if the boid is hungry, false otherwise
    */
   bool isHungry() const;
+
+  /**
+   * @brief   Check if the boid is not hungry
+   * @return  true if the boid is not hungry, false otherwise
+   */
   bool isNotHungry() const;
 
   /**********************************
@@ -159,6 +170,11 @@ public:
    * @return true if the boid is thristy, false otherwise
    */
   bool isThirsty() const;
+
+  /**
+   * @brief   Check if the boid is not thirsty
+   * @return  true if the boid is not thirsty, false otherwise
+   */
   bool isNotThirsty() const;
 
   /**********************************
@@ -303,8 +319,8 @@ public:
   float m_distToLeader; ///< Distance to respect behind the leader
   float m_distStartSlowingDown; ///< Distance before start slowing down
   float m_distSeeAhead; ///< Distance to see ahead the obstacle
-  float m_distAttack;
-  float m_distMaxToLeader;
+  float m_distAttack; ///< Distance to check if the boid is close enough to consider it is eating
+  float m_distMaxToLeader; ///< Distance to stay around the leader
 
   float m_rCircleWander; ///< Radius of the wander circle 
   float m_distToCircle; ///< Distance between the boid and the center of the wander circle
@@ -328,20 +344,20 @@ public:
   float m_lowDangerValue; ///< Value of the low danger
   float m_highDangerValue; ///< Value of the high danger
 
-  float m_staminaIncCoeff;
-  float m_staminaDecCoeff;
+  float m_staminaIncCoeff; ///< Coefficient to increase the stamina
+  float m_staminaDecCoeff; ///< Coefficient to decrease the stamina
 
-  float m_hungerIncCoeff;
-  float m_hungerDecCoeff;
+  float m_hungerIncCoeff; ///< Coefficient to increase the hunger
+  float m_hungerDecCoeff; ///< Coefficient to decrease the hunger
 
-  float m_thirstIncCoeff;
-  float m_thirstDecCoeff;
+  float m_thirstIncCoeff; ///< Coefficient to increase the thirst
+  float m_thirstDecCoeff; ///< Coefficient to decrease the thirst
 
-  float m_affinityIncCoeff;
-  float m_affinityDecCoeff;
+  float m_affinityIncCoeff; ///< Coefficient to increase the affinity
+  float m_affinityDecCoeff; ///< Coefficient to decrease the affinity
 
-  float m_dangerIncCoeff;
-  float m_dangerDecCoeff;
+  float m_dangerIncCoeff; ///< Coefficient to increase the danger
+  float m_dangerDecCoeff; ///< Coefficient to decrease the danger
 };
 
 typedef std::shared_ptr<MovableParameters> MovableParametersPtr;

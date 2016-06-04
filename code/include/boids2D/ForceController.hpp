@@ -13,12 +13,46 @@ class ForceController
    */
   ForceController();
 
+  /**
+   * @brief   Getter for the coefficient of separate
+   * @return  Value of the coefficient of separate
+   */
   float getSeparate() const;
+
+  /**
+   * @brief   Getter for the coefficient of evade
+   * @return  Value of the coefficient of evade
+   */
   float getEvade() const;
+
+  /**
+   * @brief   Getter for the coefficient of cohesion
+   * @return  Value of the coefficient of cohesion
+   */
   float getCohesion() const;
+
+  /**
+   * @brief   Getter for the coefficient of align
+   * @return  Value of the coefficient of align
+   */
   float getAlign() const;
+
+  /**
+   * @brief   Getter for the coefficient of stay on island
+   * @return  Value of the coefficient of stay on island
+   */
   float getStayOnIsland() const;
+
+  /**
+   * @brief   Getter for the coefficient of collision avoidance
+   * @return  Value of the coefficient of collision avoidance
+   */
   float getCollisionAvoidance() const;
+
+  /**
+   * @brief   Getter for the coefficient of follow leader
+   * @return  Value of the coefficient of follow leader
+   */
   float getFollowLeader() const;
 
  private:

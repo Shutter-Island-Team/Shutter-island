@@ -64,15 +64,11 @@ template<typename T>
 const std::list<T> Matrix<T>::merge(const unsigned int & i, const unsigned int & j) const
 {
 	std::list<T> res;
-	res.insert(res.end(), at(i-1, j-1).begin(), at(i-1,j-1).end());
-	res.insert(res.end(), at(i-1, j).begin(), at(i-1,j).end());
-	res.insert(res.end(), at(i-1, j+1).begin(), at(i-1,j+1).end());
-	res.insert(res.end(), at(i, j-1).begin(), at(i,j-1).end());
-	res.insert(res.end(), at(i, j).begin(), at(i,j).end());
-	res.insert(res.end(), at(i, j+1).begin(), at(i,j+1).end());
-	res.insert(res.end(), at(i+1, j-1).begin(), at(i+1,j-1).end());
-	res.insert(res.end(), at(i+1, j).begin(), at(i+1,j).end());
-	res.insert(res.end(), at(i+1, j+1).begin(), at(i+1,j+1).end());
+	for (unsigned int iloop = i-1; iloop <= i+1; ++iloop) {
+		for (unsigned int jloop = j-1; jloop <= j+1; ++jloop) {
+			res.insert(res.end(), at(iloop, jloop).begin(), at(iloop,jloop).end());
+		}
+	}
 	return res;
 }
 

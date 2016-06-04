@@ -34,6 +34,9 @@ class MovableState
    *                          It is this thing which knows what it should do
    * @param[in] boidsManager  Allow the access to all boids to compute the adapted force
    * @param[in] dt            Time step useful to compute some forces
+   * @param[in] i             Index of line in the grid
+   * @param[in] j             Index of column in the grid
+   * @param[in] updateTick    True if the compute is on an updateTick
    * @return    The new acceleration of the boid
    */
   glm::vec3 computeAcceleration(MovableBoid& b,
@@ -46,6 +49,9 @@ class MovableState
    * @param[in] b             The boid which knows what do to
    * @param[in] boidsManager  Allow the access to all boids to compute the adapted force
    * @param[in] dt            Time step useful to compute some forces
+   * @param[in] i             Index of line in the grid
+   * @param[in] j             Index of column in the grid
+   * @param[in] updateTick    True if the compute is on an updateTick
    * @return    The acceleration (decision) of the boid
    */
   virtual glm::vec3 computeNewForces(MovableBoid& b,
@@ -166,16 +172,21 @@ class MovableState
 
   /**
    * @brief Compute the resulting force to avoid boids in normal behavior
-   * @param[in] b           The concerned boid
-   * @param[in] boidsManager The boid manager needed to be awared of the environment
+   * @param[in] b             The concerned boid
+   * @param[in] boidsManager  The boid manager needed to be awared of the environment
+   * @param[in] i             Index of the line in the grid
+   * @param[in] j             Index of the column in the grid
+   * @param[in] dt            Step of time
    * @return Return the resulting force to feel it avoids boids enough
    */
   glm::vec3 globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j, const float & dt) const;
 
   /**
    * @brief Compute the resulting force to avoid the environment in normal behavior
-   * @param[in] b           The concerned boid
-   * @param[in] boidsManager The boid manager needed to be awared of the environment
+   * @param[in] b             The concerned boid
+   * @param[in] boidsManager  The boid manager needed to be awared of the environment
+   * @param[in] i             Index of the line of the boid in the grid
+   * @param[in] j             Index of the column of the boid in the grid
    * @return Return the resulting force to avoid the environment
    */
   glm::vec3 avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j) const;

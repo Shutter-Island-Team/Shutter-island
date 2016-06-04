@@ -26,7 +26,7 @@ class BoidsManager
   BoidsManager(MapGenerator& map);
 
   /**
-   * @briezf Destructor for the BoidsManager
+   * @brief Destructor for the BoidsManager
    */
   ~BoidsManager();
 	
@@ -36,14 +36,24 @@ class BoidsManager
   */
   const std::vector<MovableBoidPtr> & getMovableBoids() const;
 
+  /**
+   * @brief   Getter for the matrix of movable boids
+   * @return  Returns the matrix of movable boids
+   */
   const MatrixMovableBoidPtr & getMovableBoidsMatrix() const;
 
   /**
-  * @brief Getter for the rooted boids of the manager
-  * @return Rooted boids of the manager
+  * @brief      Getter for the rooted boids at the asked position
+   * @param[in] i The index of the line of the grid
+   * @param[in] j The index of the column of the grid
+   * @return    Returns the list of the rooted boid at the requested position
   */
   const std::list<RootedBoidPtr> getRootedBoids(const int & i, const int & j) const;
 
+  /**
+   * @brief  Getter of the rooted boids
+   * @return Return the vector of the rooted boids
+   */
   const std::vector<RootedBoidPtr> getAllRootedBoids() const;
 
   /**
@@ -76,25 +86,29 @@ class BoidsManager
    */
   void setTimeDay(bool state);
 
+  /**
+   * @brief     Getter of the neighbour at a grid position
+   * @param[in] i The index of the line of the grid
+   * @param[in] j The index of the column of the grid
+   * @return    Return the list of the movableBoid neighbour at the requested position
+   */
   const std::list<MovableBoidPtr> getNeighbour(const int & i, const int & j) const;
 
   ForceController m_forceController; ///< Keep track of the coefficient forces
 
   /**
-   * @brief Get the biome associated to a MovableBoid
-   * 
-   * @param[in] movableBoid The concerned movableBoid
-   *
-   * @return The biome of the position
+   * @brief     Get the biome giving a position
+   * @param[in] x The x-coord
+   * @param[in] y The y-coord
+   * @return    The biome at the position
    */
   Biome getBiome(const float& x, const float& y) const;
     
   /**
-   * @brief Get the height of a MovableBoid
-   *
-   * @param[in] movableBoid The concerned movableBoid
-   *
-   * @return The biome of the position
+   * @brief     Get the height of a position
+   * @param[in] x The x-coord
+   * @param[in] y The y-coord
+   * @return    The value of the height at the requested position 
    */
   float getHeight(const float& x, const float& y) const;
 
@@ -139,7 +153,7 @@ class BoidsManager
    * @param[in] iprev Previous index of the line in the grid
    * @param[in] jprev Previous index of the column in the grid
    */
-  void updateBoidInGrid(MovableBoidPtr mvB, const int & iprev, const int & jprev);
+  void updateBoidInGrid(MovableBoidPtr mvB, const unsigned int & iprev, const unsigned int & jprev);
 
   /**
    * @brief Update the tick for update of state of boids

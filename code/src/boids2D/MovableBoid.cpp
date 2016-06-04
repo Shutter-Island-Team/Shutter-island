@@ -212,7 +212,7 @@ void MovableBoid::switchToState(const StateType & stateType, const BoidsManager 
 			m_currentState.reset(new EatState());
 			break;
 		case FIND_WATER_STATE:
-			askWaterTarget(boidsManager);
+			updateWaterTarget(boidsManager);
 			m_currentState.reset(new FindWaterState());
 			break;
 		case DRINK_STATE:
@@ -486,7 +486,7 @@ BoidType MovableBoid::getPredatorType() const
 	return m_predator;
 }
 
-bool MovableBoid::isDead()
+bool MovableBoid::isDead() const
 {
 	return m_isDead;
 }
@@ -503,7 +503,7 @@ void MovableBoid::updateDeadStatus()
 		&& m_parameters->getThirst() == 0.0f);
 }
 
-void MovableBoid::askWaterTarget(const BoidsManager & b)
+void MovableBoid::updateWaterTarget(const BoidsManager & b)
 {
 	glm::vec2 posBoid(m_location.x, m_location.y);
 	glm::vec2 result(0,0);

@@ -26,8 +26,9 @@ class RootedBoid : public Boid
  protected:
   /**
    * @brief Constructor for a RootedBoid
-   * @param[in] location Location of the object
-   * @param[in] t Type of the RootedBoid
+   * @param[in] location    Location of the object
+   * @param[in] t           Type of the RootedBoid
+   * @param[in] amountFood  Amount of food of the boid
    */
   RootedBoid(glm::vec3 location, BoidType t, int amountFood);
 

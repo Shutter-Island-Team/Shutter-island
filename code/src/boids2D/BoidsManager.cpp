@@ -175,14 +175,14 @@ void BoidsManager::coordToBox(const glm::vec3 & location, unsigned int & i, unsi
 	j = floor(location.y / 20.0f);
 }
 
-void BoidsManager::updateBoidInGrid(MovableBoidPtr mvB, const int & iprev, const int & jprev)
+void BoidsManager::updateBoidInGrid(MovableBoidPtr mvB, const unsigned int & iprev, const unsigned int & jprev)
 {
 	unsigned int inext = 0;
 	unsigned int jnext = 0;
 	coordToBox(mvB->getLocation(), inext, jnext);
-	if (inext != inext || jnext != jnext) {
-		m_movableBoids->move(mvB, iprev, jprev, inext, jnext);
-	}
+	// if (iprev != inext || jprev != jnext) {
+	// 	m_movableBoids->move(mvB, iprev, jprev, inext, jnext);
+	// }
 }
 
 void BoidsManager::updateTick()
