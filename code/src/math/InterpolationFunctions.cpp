@@ -22,7 +22,6 @@ float linearInterpolation(float x, float size, float scale) {
 float smooth6Interpolation(float x, float size, float scale) {
     
     float localSize = scale * size;
-
     if (x >= localSize) {
 	return 0.f;
     } else {

@@ -255,8 +255,8 @@ Map2DRenderable::Map2DRenderable(
     float* heightMap        = new float [4*effMapDimension*effMapDimension];
 
     /*
-     * We sample the heightmap within the textureaccording to a 
-     * (1 pixel = 2 meters) scale.
+     * We sample the heightmap within the texture according to a 
+     * (1 pixel = <heightMapScaling = 2> meters) scale.
      * On top of that, we have to retain the maximum and minimum altitudes
      * so as to apply a scaling during the Tessellation step (which
      * prevent us from using OpenMP to parallelize this loop).
@@ -283,26 +283,26 @@ Map2DRenderable::Map2DRenderable(
             // Transforming the normal to fit in the texture
             normal = (normal*0.5f) + glm::vec3(0.5f); 
 
-            heightMap[(i*effMapDimension+j)*4]     = normal.x;
-            heightMap[(i*effMapDimension+j)*4 + 1] = normal.y;
-            heightMap[(i*effMapDimension+j)*4 + 2] = normal.z;
-            heightMap[(i*effMapDimension+j)*4 + 3] = altitude;
+	    heightMap[(i+j*effMapDimension)*4]     = normal.x;
+            heightMap[(i+j*effMapDimension)*4 + 1] = normal.y;
+            heightMap[(i+j*effMapDimension)*4 + 2] = normal.z;
+            heightMap[(i+j*effMapDimension)*4 + 3] = altitude;
         }
     }
     // Special case : copying for the last row and column
     #pragma omp parallel for
     for (int i = 0; i < effMapDimension; i++) {
-        heightMap[(i*effMapDimension+effMapSize)*4]     = heightMap[(i*effMapDimension+effMapSize-1)*4];
-        heightMap[(i*effMapDimension+effMapSize)*4 + 1] = heightMap[(i*effMapDimension+effMapSize-1)*4 + 1];
-        heightMap[(i*effMapDimension+effMapSize)*4 + 2] = heightMap[(i*effMapDimension+effMapSize-1)*4 + 2];
-        heightMap[(i*effMapDimension+effMapSize)*4 + 3] = heightMap[(i*effMapDimension+effMapSize-1)*4 + 3];
+        heightMap[(i+(effMapSize*effMapDimension))*4]     = heightMap[(i+((effMapSize-1)*effMapDimension))*4];
+        heightMap[(i+(effMapSize*effMapDimension))*4 + 1] = heightMap[(i+((effMapSize-1)*effMapDimension))*4 + 1];
+        heightMap[(i+(effMapSize*effMapDimension))*4 + 2] = heightMap[(i+((effMapSize-1)*effMapDimension))*4 + 2];
+        heightMap[(i+(effMapSize*effMapDimension))*4 + 3] = heightMap[(i+((effMapSize-1)*effMapDimension))*4 + 3];
     }
     #pragma omp parallel for
     for (int j = 0; j < effMapDimension; j++) {
-        heightMap[(effMapSize*effMapDimension+j)*4]     = heightMap[((effMapSize-1)*effMapDimension+j)*4];
-        heightMap[(effMapSize*effMapDimension+j)*4 + 1] = heightMap[((effMapSize-1)*effMapDimension+j)*4 + 1];
-        heightMap[(effMapSize*effMapDimension+j)*4 + 2] = heightMap[((effMapSize-1)*effMapDimension+j)*4 + 2];
-        heightMap[(effMapSize*effMapDimension+j)*4 + 3] = heightMap[((effMapSize-1)*effMapDimension+j)*4 + 3];
+        heightMap[(effMapSize+(effMapDimension*j))*4]     = heightMap[((effMapSize-1)+(effMapDimension*j))*4];
+        heightMap[(effMapSize+(effMapDimension*j))*4 + 1] = heightMap[((effMapSize-1)+(effMapDimension*j))*4 + 1];
+        heightMap[(effMapSize+(effMapDimension*j))*4 + 2] = heightMap[((effMapSize-1)+(effMapDimension*j))*4 + 2];
+        heightMap[(effMapSize+(effMapDimension*j))*4 + 3] = heightMap[((effMapSize-1)+(effMapDimension*j))*4 + 3];
     }
     m_scaleAltitude = maxAltitude - m_minAltitude;
     /*

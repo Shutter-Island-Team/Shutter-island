@@ -173,7 +173,9 @@ float MapGenerator::getHeight(float x, float y) {
 	std::cerr << "HeightTree not computed !" << std::endl;
 	exit(EXIT_FAILURE);
     }
-    return heightTree->evalHeight(position);
+    return heightTree->evalHeight(position, 
+				  seedsContainer,
+				  seeds);
 }
 
 bool MapGenerator::getLakes(

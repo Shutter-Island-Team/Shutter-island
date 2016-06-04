@@ -49,11 +49,15 @@ public:
     /**
      * @brief Evaluate the height of a point inside the square
      *
-     * @param pos The position of the point
-     * 
+     * @param pos       The position of the point
+     * @param container The seeds container
+     * @param seeds     The vector containing the seeds
+     *
      * @return The height of the point
      */
-    float evalHeight(Vertex2D pos);
+    float evalHeight(Vertex2D & pos,
+		     voro::container & container, 
+		     std::vector<Seed> & seeds);
 
 
 private :

@@ -41,7 +41,9 @@ HeightData HeightNode::getData(QuadPosition position) {
 
 
 // Interpolating between the 4 vertices of the square
-float HeightNode::evalHeight(Vertex2D pos) {
+float HeightNode::evalHeight(Vertex2D & pos,
+			     voro::container & container, 
+			     std::vector<Seed> & seeds) {
  
     // Getting the required informations
     Vertex2D tlPos = topLeftData.getPosition();		
@@ -91,8 +93,7 @@ float HeightNode::evalHeight(Vertex2D pos) {
      * 3) Then we interpolate on each axis :
      *         heightVertical(heightTop, heightBottom)
      *         heightHorizontal(heightLeft, heightRight)
-     * 4) Finally we take the average height :
-     *        0.5*(heightVertical + heightHorizontal)
+     * 4) Finally we interpolate between the two heights
      */   
 
     
@@ -104,24 +105,32 @@ float HeightNode::evalHeight(Vertex2D pos) {
     // Interpolating on each edge
     // Left side
     vLeft = computeInterpolationCoefficient(m_mapParameters, blBiome, tlBiome, y, yMax);
-    float heightLeft  = vLeft   * (blHeight) + (1 - vLeft)   * (tlHeight);
+    float leftHeight  = vLeft   * (blHeight) + (1 - vLeft)   * (tlHeight);
     // Right side
     vRight = computeInterpolationCoefficient(m_mapParameters, brBiome, trBiome, y, yMax);
-    float heightRight = vRight  * (brHeight) + (1 - vRight)  * (trHeight);
+    float rightHeight = vRight  * (brHeight) + (1 - vRight)  * (trHeight);
     // Top side
     uTop = computeInterpolationCoefficient(m_mapParameters, tlBiome, trBiome, x, xMax);
-    float heightTop   = uTop    * (tlHeight) + (1 - uTop)    * (trHeight);
+    float topHeight   = uTop    * (tlHeight) + (1 - uTop)    * (trHeight);
     // Bottom side
     uBottom = computeInterpolationCoefficient(m_mapParameters, blBiome, brBiome, x, xMax);
-    float heightBot   = uBottom * (blHeight) + (1 - uBottom) * (brHeight);
+    float botHeight   = uBottom * (blHeight) + (1 - uBottom) * (brHeight);
 
     // Interpolating on each axis
-    // Vertical axis
-    u = linearInterpolation(y, yMax);
-    float heightVert = u * heightBot  + (1 - u) * heightTop;
+    // Vertical axis                                          // Maybe a "biomeMap" to speed this up.
+    Vertex2D botPos(pos.first, brPos.second);
+    Biome    botBiome = findClosestBiome(botPos, container, seeds);                   //! Bottleneck !
+    Vertex2D topPos(pos.first, tlPos.second);
+    Biome    topBiome = findClosestBiome(topPos, container, seeds);                   //! Bottleneck !
+    u = computeInterpolationCoefficient(m_mapParameters, botBiome, topBiome, y, yMax);
+  float vertHeight = u * botHeight  + (1 - u) * topHeight; 
     // Horizontal axis
-    v = linearInterpolation(x, xMax);
-    float heightHori = v * heightLeft + (1 - v) * heightRight;
-
-    return 0.5f*(heightVert + heightHori);
+    Vertex2D leftPos(tlPos.first, pos.second);
+    Biome    leftBiome = findClosestBiome(leftPos, container, seeds);                 //! Bottleneck !
+    Vertex2D rightPos(brPos.first, pos.second); 
+    Biome    rightBiome = findClosestBiome(rightPos, container, seeds);               //! Bottleneck !
+    v = computeInterpolationCoefficient(m_mapParameters, leftBiome, rightBiome, x, xMax);
+    float horiHeight = v * leftHeight + (1 - v) * rightHeight;
+    
+    return 0.5f*(vertHeight + horiHeight);
 }

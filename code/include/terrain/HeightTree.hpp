@@ -57,10 +57,14 @@ public :
      * map defined by the tree
      *
      * @param pos The position of the point
+     * @param container The voronoi container of the seeds
+     * @param seeds     The seeds vector 
      *
      * @return The height of the point
      */
-    float evalHeight(Vertex2D pos);
+    float evalHeight(Vertex2D & pos,
+		     voro::container & container, 
+		     std::vector<Seed> & seeds);
 
 private :
 

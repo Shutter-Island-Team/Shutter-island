@@ -84,26 +84,32 @@ bool findClosestLake(
  */
 float distanceV2D(Vertex2D & a, Vertex2D & b);
 
+
 /**
  * @brief Compute an interpolation coefficient depending
  * on the biomes
  *
- *  a) If both vertices belong to a mountain area (Mountain or Peak),
- *       we can assume that the edge belongs to a mountain are and do a
- *       sharp (linear) interpolation
- *       Seas are also added to this category as the effect will not be seen underwater
- *       and as it helps in step c)
- *    b) If both vertices do not belong to a mountain or sea area, to acknoledge
- *       the border, we do a smooth interpolation.
- *    c) Otherwise, there is a mountain or a sea-hole and a normal land. We thus do a smooth
- *       interpolation to acknoledge the transition between the two biomes, but
- *       we control this interpolation with a scale parameter to reduce the area
- *       of influence of the mountain/sea vertex.
+ *  The function implements the following decision function :
+ *  * A) The two biomes are from a mountain zone : 
+ *       Linear (sharp) interpolation
+ *  * B) One of the two biomes is a mountain :
+ *       We're on a border between a mountain and another biome
+ *       The mountain should not raise the other biome
+ *       Smooth interpolation limiting the influence of the mountain
+ *  * C) The two biomes are from a sea zone :
+ *       Classic smooth interpolation
+ *  * D) One of the two biomes is a sea :
+ *       We're on a border between a sea and another biome
+ *       The sea should not drown the other biome
+ *       Smooth interpolation limiting the influence of the sea
+ *  * E) Else :
+ *       Classic smooth interpolation
  *
- * @param biome1 The first biome
- * @param biome2 The second biome
- * @param x      The distance to the first biome
- * @param xMax   The distance between the two biomes
+ * @param mapParameters The parameters of the map generation
+ * @param biome1        The first biome
+ * @param biome2        The second biome
+ * @param x             The distance to the first biome
+ * @param xMax          The distance between the two biomes
  *
  * @return The interpolation coefficient
  */
@@ -111,5 +117,6 @@ float distanceV2D(Vertex2D & a, Vertex2D & b);
 float computeInterpolationCoefficient(MapParameters & mapParameters,
 				      Biome biome1, Biome biome2,
 				      float x,      float xMax);
+
 
 #endif

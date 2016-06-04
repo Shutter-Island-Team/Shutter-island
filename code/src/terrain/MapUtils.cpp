@@ -20,6 +20,8 @@
  */
 #define DIST_2(x0,y0,x1,y1) ((x0)-(x1))*((x0)-(x1))+((y0)-(y1))*((y0)-(y1))
 
+#define CORRECT_ERROR(v) (((v)<0)?(0.0f):(v))
+
 // Internal function to get the closest cell
 // ie the cell the position is in
 int findClosestCell(
@@ -119,30 +121,50 @@ float distanceV2D(Vertex2D & a, Vertex2D & b) {
 }
 
 
-
-// See the hpp to have a detailed explanation of this function
+// See the hpp to have a detailed explanation of the following functions
 float computeInterpolationCoefficient(MapParameters & mapParameters, 
 				      Biome biome1, Biome biome2,
 				      float x,      float xMax) {
 
-    if ((biome1 == Peak) || (biome1 == Mountain) || (biome1 == Sea)) {
-	if((biome2 == Peak) || (biome2 == Mountain) || (biome2 == Sea)) {
-	    // case a)
-	    return linearInterpolation(x, xMax);
+    float result;
+
+    if ((biome1 == Peak) || (biome1 == Mountain)) {
+	if ((biome2 == Peak) || (biome2 == Mountain)) {
+	    // Case A
+	    result = linearInterpolation(x, xMax);
 	} else {
-	    // case b)
-	    return smooth6Interpolation(x, xMax, 
-					mapParameters.getScaleLimitInfluence());
+	    // Case B
+	    result = smooth6Interpolation(x, xMax, 
+					  mapParameters.getScaleLimitInfluence());
 	}
     } else {
-	if((biome2 == Peak) || (biome2 == Mountain) || (biome2 == Sea)) {
-	    // case b)
-	    return smooth6Interpolation(xMax - x, xMax, 
-					mapParameters.getScaleLimitInfluence());
+	if ((biome2 == Peak) || (biome2 == Mountain)) {
+	    // Case B
+	    result = 1.0f - smooth6Interpolation(xMax - x, xMax, 
+					  mapParameters.getScaleLimitInfluence());
 	} else {
-	    // case c)
-	    return smooth6Interpolation(x, xMax);
+	    if (biome1 == Sea) {
+		if (biome2 == Sea) {
+		    // Case C
+		    result = smooth6Interpolation(x, xMax);
+		} else {
+		    // Case D
+		    result = smooth6Interpolation(x, xMax, 
+						  mapParameters.getScaleLimitInfluence());
+		}
+	    } else {
+		if (biome2 == Sea) {
+		    // Case D
+		    result = 1.0f - smooth6Interpolation(xMax - x, xMax, 
+						  mapParameters.getScaleLimitInfluence());
+		} else {
+		    // Case E
+		    result = smooth6Interpolation(x, xMax);
+		}
+	    }
 	}
     }
-
+    return CORRECT_ERROR(result);
 }
+
+					 
