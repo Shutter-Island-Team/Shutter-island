@@ -110,12 +110,21 @@ class BoidsManager
 
   void updateBoid(MovableBoidPtr mvB, const int & iprev, const int & jprev);
 
+  void updateTick();
+
+  bool isUpdateTick() const;
+
+  void resetTick();
+
  private:
   MapGenerator& m_map;
   MatrixMovableBoidPtr m_movableBoids; ///< Matrix of the rooted boids
   std::vector<MovableBoidPtr> m_movableBoidsVec;
   MatrixRootedBoidPtr m_rootedBoids; ///< Matrix of the rooted boids
   bool isNightTime; ///< Boolean to check if it is night time
+
+  int m_updateCoeff;
+  const int m_updatePeriod;
 };
 
 typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;

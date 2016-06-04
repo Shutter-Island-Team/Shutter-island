@@ -38,13 +38,20 @@ void DynamicSystemBoid::computeSimulationStep()
 {
     // MatrixMovableBoidPtr mvB = m_boidsManager->getMovableBoidsMatrix();
     std::vector<MovableBoidPtr> mvB = m_boidsManager->getMovableBoids();
+    const bool updateTick = m_boidsManager->isUpdateTick();
     #pragma omp parallel for
     for (unsigned int i = 0; i < mvB.size(); ++i) {
-        mvB[i]->computeAcceleration(*m_boidsManager, m_dt);
+        mvB[i]->computeAcceleration(*m_boidsManager, m_dt, updateTick);
     }
 
     //Integrate position and velocity of particles
     m_solver->solve(m_dt, m_boidsManager);
 
     m_boidsManager->removeDead();
+
+    if(updateTick) {
+        m_boidsManager->resetTick();
+    } else {
+        m_boidsManager->updateTick();
+    }
 }

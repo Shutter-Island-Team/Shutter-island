@@ -37,7 +37,7 @@ class MovableState
    * @return    The new acceleration of the boid
    */
   glm::vec3 computeAcceleration(MovableBoid& b,
-              const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+              const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 
  private:
   /**
@@ -49,7 +49,7 @@ class MovableState
    * @return    The acceleration (decision) of the boid
    */
   virtual glm::vec3 computeNewForces(MovableBoid& b,
-          const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const = 0;
+          const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const = 0;
 
  protected:
   /**
@@ -207,7 +207,7 @@ typedef std::shared_ptr<MovableState> MovableStatePtr;
 class TestState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -217,7 +217,7 @@ class TestState : public MovableState
 class WalkState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -227,7 +227,7 @@ class WalkState : public MovableState
 class StayState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -237,7 +237,7 @@ class StayState : public MovableState
 class SleepState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -247,7 +247,7 @@ class SleepState : public MovableState
 class FleeState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -257,7 +257,7 @@ class FleeState : public MovableState
 class FindFoodState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -267,7 +267,7 @@ class FindFoodState : public MovableState
 class EatState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -277,7 +277,7 @@ class EatState : public MovableState
 class FindWaterState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -287,7 +287,7 @@ class FindWaterState : public MovableState
 class DrinkState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -297,7 +297,7 @@ class DrinkState : public MovableState
 class MateState : public MovableState 
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -307,7 +307,7 @@ class MateState : public MovableState
 class AttackState : public MovableState
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -317,7 +317,7 @@ class AttackState : public MovableState
 class LostState : public MovableState
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 /**
@@ -327,7 +327,7 @@ class LostState : public MovableState
 class DeadState : public MovableState
 {
  private:
-  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const;
+  glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
 

@@ -4,7 +4,7 @@
 #include "../../include/boids2D/BoidsManager.hpp"
 
 BoidsManager::BoidsManager(MapGenerator& map) 
-	: m_map(map)
+	: m_map(map), m_updateCoeff(0), m_updatePeriod(10)
 {
 	m_movableBoids = std::make_shared<Matrix<MovableBoidPtr> >(25, 25);
 	m_rootedBoids = std::make_shared<Matrix<RootedBoidPtr> >(25, 25);
@@ -185,4 +185,17 @@ void BoidsManager::updateBoid(MovableBoidPtr mvB, const int & iprev, const int &
 	}
 }
 
+void BoidsManager::updateTick()
+{
+	m_updateCoeff++;
+}
 
+bool BoidsManager::isUpdateTick() const
+{
+	return m_updateCoeff == m_updatePeriod;
+}
+
+void BoidsManager::resetTick()
+{
+	m_updateCoeff = 0;
+}

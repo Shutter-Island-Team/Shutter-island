@@ -31,11 +31,11 @@ RootedBoidPtr closestRooted(const MovableBoid & b, const BoidType & type, const 
 	return target;
 }
 
-glm::vec3 MovableState::computeAcceleration(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 MovableState::computeAcceleration(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// Reset acceleration
 	b.resetAcceleration();
-	return computeNewForces(b, boidsManager, dt, i, j);
+	return computeNewForces(b, boidsManager, dt, i, j, updateTick);
 }
 
 glm::vec3 MovableState::seek(const MovableBoid& b, const glm::vec3 & target) const
@@ -375,13 +375,15 @@ glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManag
  * State priority : FleeState, FindFood, Eat, Stay, Walk, ...
  * 
  */
-glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
-	b.getParameters()->staminaDecrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaDecrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -406,7 +408,7 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// stamina <- sd(stamina)
 	// hunger <- hd(hunger)
@@ -417,9 +419,11 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
-	b.getParameters()->staminaDecrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaDecrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -442,7 +446,7 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// /!\ requirement : danger <= lowDanger
 	// stamina <- si(stamina)
@@ -454,9 +458,11 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
-	b.getParameters()->staminaIncrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaIncrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -470,7 +476,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// /!\ requirement : danger <= lowDanger
 	// stamina <- si(stamina)
@@ -482,9 +488,11 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
-	b.getParameters()->staminaIncrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaIncrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
@@ -495,7 +503,7 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	return newForces;
 }
 
-glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// TODO : velocity <- max_speed in the opposite direction of predators
 	// stamina <- sd(stamina) 
@@ -507,9 +515,11 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
-	b.getParameters()->staminaDecrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaDecrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -544,7 +554,7 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// TODO : wander or follow group until the boid find sth (we can mix both in funtion of hunger variable)
 	// stamina <- sd(stamina)
@@ -557,9 +567,11 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 	const std::list<RootedBoidPtr> rtB = boidsManager.getRootedBoids(i, j);
 
-	b.getParameters()->staminaDecrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaDecrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -598,7 +610,7 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 	return newForces;
 }
 
-glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// stamina <- si(stamina)
 	// hunger <- hi(hunger)
@@ -609,9 +621,11 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
-	b.getParameters()->staminaIncrease();
-	b.getParameters()->hungerIncrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaIncrease();
+		b.getParameters()->hungerIncrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -625,7 +639,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	return newForces;
 }
 
-glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// TODO : wander or follow group until the boid find sth (we can mix both in funtion of thirst variable)
 	// stamina <- sd(stamina)
@@ -637,11 +651,13 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
-	b.getParameters()->staminaDecrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaDecrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
-		// Detect danger and update danger parameter 
+	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
 
 	// Detect if alone and update affinity
@@ -653,7 +669,7 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 	return newForces;
 }
 
-glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// TODO : velocity <- (0,0,0)
 	// stamina <- si(stamina)
@@ -665,9 +681,11 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 	
-	b.getParameters()->staminaIncrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstIncrease();
+	if (updateTick) {
+		b.getParameters()->staminaIncrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstIncrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -682,7 +700,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	return newForces;
 }
 
-glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// TODO : velocity <- (0,0,0) && create a new boid
 	// requirement : danger <= lowDanger
@@ -697,9 +715,11 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	MovableBoidPtr mate = closestMovable(b, b.getBoidType(), mvB);
 	
-	b.getParameters()->staminaDecrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaDecrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -712,7 +732,7 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// TODO : velocity <- max velocity to taget
 	// stamina <- decrease
@@ -723,9 +743,11 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
-	b.getParameters()->staminaDecrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
+	if (updateTick) {
+		b.getParameters()->staminaDecrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
 
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
@@ -751,16 +773,18 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	return newForces;
 }
 
-glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 	
 	// Update boid status parameters
-	b.getParameters()->staminaDecrease();
-	b.getParameters()->hungerDecrease();
-	b.getParameters()->thirstDecrease();
-
+	if (updateTick) {
+		b.getParameters()->staminaDecrease();
+		b.getParameters()->hungerDecrease();
+		b.getParameters()->thirstDecrease();
+	}
+	
 	// Detect danger and update danger parameter 
 	updateDanger(b, mvB);
 
@@ -772,7 +796,7 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	return newForces;
 }
 
-glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j) const
+glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
 	// Don't move because the boid is dead
 	glm::vec3 newForces(0,0,0);
