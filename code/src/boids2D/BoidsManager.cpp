@@ -32,8 +32,8 @@ MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 locatio
 			throw std::invalid_argument("valid boidType required");
 			break;
 	}
-	int i;
-	int j;
+	unsigned int i;
+	unsigned int j;
 	coordToBox(location, i, j);
     m_movableBoids->add(i, j, movableBoid);
     m_movableBoidsVec.push_back(movableBoid);
@@ -56,8 +56,8 @@ RootedBoidPtr BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 			throw std::invalid_argument("valid boidType required");
 			break;
 	}
-	int i;
-	int j;
+	unsigned int i;
+	unsigned int j;
 	coordToBox(location, i, j);
     m_rootedBoids->add(i, j, rootedBoid);
 	
@@ -83,8 +83,8 @@ const std::list<RootedBoidPtr> BoidsManager::getRootedBoids(const int & i, const
 const std::vector<RootedBoidPtr> BoidsManager::getAllRootedBoids() const
 {
 	std::vector<RootedBoidPtr> v;
-	for (int i = 0; i < m_rootedBoids->getNumLine(); ++i) {
-		for (int j = 0; j < m_rootedBoids->getNumCol(); ++j) {
+	for (unsigned int i = 0; i < m_rootedBoids->getNumLine(); ++i) {
+		for (unsigned int j = 0; j < m_rootedBoids->getNumCol(); ++j) {
 			for (std::list<RootedBoidPtr>::const_iterator it = m_rootedBoids->at(i,j).begin(); it != m_rootedBoids->at(i,j).end(); ++it) {
 				v.push_back( *it );
 			}
@@ -128,8 +128,8 @@ MapGenerator& BoidsManager::getMap() const
 void BoidsManager::removeDead()
 {
 	std::list<MovableBoidPtr>::iterator itm;
-	for (int i = 0; i < m_movableBoids->getNumLine(); ++i) {
-		for (int j = 0; j < m_movableBoids->getNumCol(); ++j) {
+	for (unsigned int i = 0; i < m_movableBoids->getNumLine(); ++i) {
+		for (unsigned int j = 0; j < m_movableBoids->getNumCol(); ++j) {
 			itm = m_movableBoids->at(i,j).begin();
 			while ( itm != m_movableBoids->at(i,j).end()) {
 				if (!((*itm)->isFoodRemaining())) {
@@ -143,8 +143,8 @@ void BoidsManager::removeDead()
 		}
 	}
 	std::list<RootedBoidPtr>::iterator itr;
-	for (int i = 0; i < m_rootedBoids->getNumLine(); ++i) {
-		for (int j = 0; j < m_rootedBoids->getNumCol(); ++j) {
+	for (unsigned int i = 0; i < m_rootedBoids->getNumLine(); ++i) {
+		for (unsigned int j = 0; j < m_rootedBoids->getNumCol(); ++j) {
 			itr = m_rootedBoids->at(i,j).begin();
 			while ( itr != m_rootedBoids->at(i,j).end()) {
 				if (!((*itr)->isFoodRemaining())) {
@@ -168,17 +168,17 @@ bool BoidsManager::getNearestLake(const glm::vec2 & position, glm::vec2 & result
 	return m_map.getClosestLake(position.x, position.y, result.x, result.y);
 }
 
-void BoidsManager::coordToBox(const glm::vec3 & location, int & i, int & j) const
+void BoidsManager::coordToBox(const glm::vec3 & location, unsigned int & i, unsigned int & j) const
 {
 	///< @todo : Mistake ?
 	i = floor(location.x / 20.0f);
 	j = floor(location.y / 20.0f);
 }
 
-void BoidsManager::updateBoid(MovableBoidPtr mvB, const int & iprev, const int & jprev)
+void BoidsManager::updateBoidInGrid(MovableBoidPtr mvB, const int & iprev, const int & jprev)
 {
-	int inext = 0;
-	int jnext = 0;
+	unsigned int inext = 0;
+	unsigned int jnext = 0;
 	coordToBox(mvB->getLocation(), inext, jnext);
 	if (inext != inext || jnext != jnext) {
 		m_movableBoids->move(mvB, iprev, jprev, inext, jnext);

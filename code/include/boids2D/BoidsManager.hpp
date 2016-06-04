@@ -81,50 +81,91 @@ class BoidsManager
   ForceController m_forceController; ///< Keep track of the coefficient forces
 
   /**
-     * @brief Get the biome associated to a MovableBoid
-     * 
-     * @param[in] movableBoid The concerned movableBoid
-     *
-     * @return The biome of the position
-     */
-    Biome getBiome(const float& x, const float& y) const;
+   * @brief Get the biome associated to a MovableBoid
+   * 
+   * @param[in] movableBoid The concerned movableBoid
+   *
+   * @return The biome of the position
+   */
+  Biome getBiome(const float& x, const float& y) const;
     
-    /**
-     * @brief Get the height of a MovableBoid
-     *
-     * @param[in] movableBoid The concerned movableBoid
-     *
-     * @return The biome of the position
-     */
-    float getHeight(const float& x, const float& y) const;
+  /**
+   * @brief Get the height of a MovableBoid
+   *
+   * @param[in] movableBoid The concerned movableBoid
+   *
+   * @return The biome of the position
+   */
+  float getHeight(const float& x, const float& y) const;
 
-    MapGenerator& getMap() const;
+  /**
+   * @brief  Getter of the map
+   * @return Return the map
+   */
+  MapGenerator& getMap() const;
 
-    void removeDead();
+  /**
+   * @brief Remove all the dead boids from the boidManager
+   */
+  void removeDead();
 
+  /**
+   * @brief      Getter for the nearest lake of a boid
+   * @param[in]  boid   The boid asking its nearest lake
+   * @param[out] result Position of the nearest lake
+   * @return     True if there it exists a lake, false otherwise
+   */
   bool getNearestLake(const MovableBoidPtr & boid, glm::vec2 & result) const;
 
+  /**
+   * @brief      Getter for the nearest lake giving a position
+   * @param[in]  position Position from where the request is asked
+   * @param[out] result   Position of the nearest lake
+   * @return     True if there it exists a lake, false otherwise
+   */
   bool getNearestLake(const glm::vec2 & position, glm::vec2 & result) const;
 
-  void coordToBox(const glm::vec3 & location, int & i, int & j) const;
+  /**
+   * @brief       Return the index of the boid giving a location
+   * @param[in]   location Location asked
+   * @param[out]  i line of the box
+   * @param[out]  j column of the box
+   */
+  void coordToBox(const glm::vec3 & location, unsigned int & i, unsigned int & j) const;
 
-  void updateBoid(MovableBoidPtr mvB, const int & iprev, const int & jprev);
+  /**
+   * @brief     update the boid in the grid if its poisition is different than before
+   * @param[in] mvB   The considered boid
+   * @param[in] iprev Previous index of the line in the grid
+   * @param[in] jprev Previous index of the column in the grid
+   */
+  void updateBoidInGrid(MovableBoidPtr mvB, const int & iprev, const int & jprev);
 
+  /**
+   * @brief Update the tick for update of state of boids
+   */
   void updateTick();
 
+  /**
+   * @brief  Check if the current tick is an update tick
+   * @return True if it is an update tick, false otherwise
+   */
   bool isUpdateTick() const;
 
+  /**
+   * @brief Reset the tick to 0
+   */
   void resetTick();
 
  private:
-  MapGenerator& m_map;
-  MatrixMovableBoidPtr m_movableBoids; ///< Matrix of the rooted boids
-  std::vector<MovableBoidPtr> m_movableBoidsVec;
+  MapGenerator& m_map; ///< Reference of the map
+  MatrixMovableBoidPtr m_movableBoids; ///< Matrix of the movable boids
+  std::vector<MovableBoidPtr> m_movableBoidsVec; ///< Vector of movable boids
   MatrixRootedBoidPtr m_rootedBoids; ///< Matrix of the rooted boids
   bool isNightTime; ///< Boolean to check if it is night time
 
-  int m_updateCoeff;
-  const int m_updatePeriod;
+  int m_updateCoeff; ///< State of the update coefficient to check if the status of the boids need to be updated
+  const int m_updatePeriod; ///< Period of tick before the update of the state of the boids
 };
 
 typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;

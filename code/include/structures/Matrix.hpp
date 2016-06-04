@@ -26,7 +26,7 @@ class Matrix
    * @param[in] n Number of lines
    * @param[in] m Number of columns
    */
-  Matrix<T>( int n, int m );
+  Matrix<T>( size_t n, size_t m );
 
   /**
    * @brief Destructor
@@ -40,7 +40,7 @@ class Matrix
    * @param[in] j Number of the column 
    * @return    Returns a reference of the list at the giving position
    */
-  std::list<T> & at(const int & i, const int & j);
+  std::list<T> & at(const unsigned int & i, const unsigned int & j);
 
   /**
    * @brief     Getter of the list of the matrix giving a position
@@ -49,7 +49,7 @@ class Matrix
    * @param[in] j Number of the column
    * @return    Return the list of element at the giving position
    */
-  const std::list<T> & at(const int & i, const int & j) const;
+  const std::list<T> & at(const unsigned int & i, const unsigned int & j) const;
 
   /**
    * @brief     Add an element in the list of the matrix at the giving position
@@ -57,19 +57,19 @@ class Matrix
    * @param[in] j   Number of the column
    * @param[in] elt Value of the element to be added
    */
-  void add(const int & i, const int & j, const T & elt);
+  void add(const unsigned int & i, const unsigned int & j, const T & elt);
 
   /**
    * @brief   Getter of the number of line
    * @return  Number of line of the matrix
    */
-  const int getNumLine() const;
+  const size_t getNumLine() const;
 
   /**
    * @brief   Getter of the number of column
    * @return  Number of column of the matrix
    */
-  const int getNumCol() const;
+  const size_t getNumCol() const;
 
   /**
    * @brief     Remove an element from the position (iprev, jprev) and add it to (inext, jnext)
@@ -79,14 +79,14 @@ class Matrix
    * @param[in] inext index of the next line
    * @param[in] jnext index of the next line
    */
-  void move(const T & elt, const int & iprev, const int & jprev, const int & inext, const int & jnext);
+  void move(const T & elt, const unsigned int & iprev, const unsigned int & jprev, const unsigned int & inext, const unsigned int & jnext);
 
-  const std::list<T> merge(const int & i, const int & j) const;
+  const std::list<T> merge(const unsigned int & i, const unsigned int & j) const;
 
  private:
+  const size_t m_numLine;
+  const size_t m_numCol;
   std::list<T> *m_content; ///< Container of in the class
-  int m_numLine;
-  int m_numCol;
 };
 
 #include "../../src/structures/Matrix.tpp"

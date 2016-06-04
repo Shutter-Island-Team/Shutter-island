@@ -136,8 +136,8 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 			std::cerr << "Unknown state" << std::endl;
 			break;
 	}
-	int i;
-	int j;
+	unsigned int i;
+	unsigned int j;
 	boidsManager.coordToBox(m_location, i, j);
 	m_acceleration = m_currentState->computeAcceleration(*this, boidsManager, dt, i, j, updateTick);
 }
