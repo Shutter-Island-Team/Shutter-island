@@ -23,8 +23,8 @@
 			"Stamina" : 4,
 			"Hunger" : 2,
 			"Thirst" : 5,
-			"AffinityIncrease" : 0.5,
-			"AffinityDecrease" : 0.1,
+			"AffinityIncrease" : 0.0,
+			"AffinityDecrease" : 0.0,
 			"DangerIncrease" : 10,
 			"DangerDecrease" : 2
 		},
