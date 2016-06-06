@@ -42,9 +42,8 @@ HeightData HeightNode::getData(QuadPosition position) {
 
 // Interpolating between the 4 vertices of the square
 float HeightNode::evalHeight(Vertex2D & pos,
-			     voro::container & container, 
-			     std::vector<Seed> & seeds) {
- 
+			     int effMapSize,
+			     Biome* biomeMap) {
     // Getting the required informations
     Vertex2D tlPos = topLeftData.getPosition();		
     Vertex2D brPos = bottomRightData.getPosition();
@@ -53,6 +52,11 @@ float HeightNode::evalHeight(Vertex2D & pos,
     Biome trBiome = topRightData.getBiome();
     Biome blBiome = bottomLeftData.getBiome();
     Biome brBiome = bottomRightData.getBiome();
+
+    float tlHeight = topLeftData.getHeight();
+    float trHeight = topRightData.getHeight();
+    float blHeight = bottomLeftData.getHeight();
+    float brHeight = bottomRightData.getHeight();
     
     // Computing the local coordinates to interpolate
     float x    = pos.first   - tlPos.first;
@@ -74,14 +78,14 @@ float HeightNode::evalHeight(Vertex2D & pos,
      * charaterized by their nature (ie their biome).
      * Whereas a beach or a plain can be extended, thus affect the whole
      * square, a mountain must have a very local influence ie it must 
-     * turn the surrounding plains into green mountains.
+     * not turn the surrounding plains into green mountains.
      * 
      * Thus we compute the interpolation using the following strategy
      * that consider the four biomes.
      *
      *    TL----uTop-------TR
      *    |                |
-     *  vLeft    x       vRight
+     *  vLeft    X       vRight
      *    |                |             ^ y
      *    |                |             |
      *    BL----uBot-------BR            |__> x
@@ -95,12 +99,6 @@ float HeightNode::evalHeight(Vertex2D & pos,
      *         heightHorizontal(heightLeft, heightRight)
      * 4) Finally we interpolate between the two heights
      */   
-
-    
-    float tlHeight = topLeftData.getHeight();
-    float trHeight = topRightData.getHeight();
-    float blHeight = bottomLeftData.getHeight();
-    float brHeight = bottomRightData.getHeight();
 
     // Interpolating on each edge
     // Left side
@@ -117,18 +115,18 @@ float HeightNode::evalHeight(Vertex2D & pos,
     float botHeight   = uBottom * (blHeight) + (1 - uBottom) * (brHeight);
 
     // Interpolating on each axis
-    // Vertical axis                                          // Maybe a "biomeMap" to speed this up.
+    // Vertical axis   
     Vertex2D botPos(pos.first, brPos.second);
-    Biome    botBiome = findClosestBiome(botPos, container, seeds);                   //! Bottleneck !
+    Biome    botBiome = findApproximativeBiome(botPos, effMapSize, biomeMap, m_mapParameters.getHeightmapScaling());                   
     Vertex2D topPos(pos.first, tlPos.second);
-    Biome    topBiome = findClosestBiome(topPos, container, seeds);                   //! Bottleneck !
+    Biome    topBiome = findApproximativeBiome(topPos, effMapSize, biomeMap, m_mapParameters.getHeightmapScaling());          
     u = computeInterpolationCoefficient(m_mapParameters, botBiome, topBiome, y, yMax);
   float vertHeight = u * botHeight  + (1 - u) * topHeight; 
     // Horizontal axis
     Vertex2D leftPos(tlPos.first, pos.second);
-    Biome    leftBiome = findClosestBiome(leftPos, container, seeds);                 //! Bottleneck !
+    Biome    leftBiome = findApproximativeBiome(leftPos, effMapSize, biomeMap, m_mapParameters.getHeightmapScaling());
     Vertex2D rightPos(brPos.first, pos.second); 
-    Biome    rightBiome = findClosestBiome(rightPos, container, seeds);               //! Bottleneck !
+    Biome    rightBiome = findApproximativeBiome(rightPos, effMapSize, biomeMap, m_mapParameters.getHeightmapScaling());
     v = computeInterpolationCoefficient(m_mapParameters, leftBiome, rightBiome, x, xMax);
     float horiHeight = v * leftHeight + (1 - v) * rightHeight;
     

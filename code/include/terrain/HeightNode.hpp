@@ -56,8 +56,8 @@ public:
      * @return The height of the point
      */
     float evalHeight(Vertex2D & pos,
-		     voro::container & container, 
-		     std::vector<Seed> & seeds);
+		     int effMapSize,
+		     Biome* biomeMap);
 
 
 private :

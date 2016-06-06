@@ -50,6 +50,22 @@ Biome findClosestBiome(Vertex2D & pos,
 		       std::vector<Seed> & seeds);
 
 /**
+ * @brief Find the approximative biome 
+ * associated to a location using a sampled biome map
+ * 
+ * @param pos         The desired position
+ * @param effMapSize  The size of the sampled map
+ * @param biomeMap    The sampled biome map
+ * @param mapSacing   The sampling resolution
+ *
+ * @return A biome close to the position
+ */
+Biome findApproximativeBiome(Vertex2D & pos,
+			     int effMapSize,
+			     Biome* biomeMap,
+			     int mapScaling);
+
+/**
  * @brief
  * Determines which Lake biome is the closest of the given position.
  *

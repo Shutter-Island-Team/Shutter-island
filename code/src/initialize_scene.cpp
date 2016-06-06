@@ -236,7 +236,7 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
         //glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
         glm::vec4(1.00f, 0.345f, 0.00f, 1.00f)
     );
-    //viewer.addRenderable(seaRenderable);
+    viewer.addRenderable(seaRenderable);
 
 
 

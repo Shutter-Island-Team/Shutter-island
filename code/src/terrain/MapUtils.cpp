@@ -20,6 +20,12 @@
  */
 #define DIST_2(x0,y0,x1,y1) ((x0)-(x1))*((x0)-(x1))+((y0)-(y1))*((y0)-(y1))
 
+/**
+ * @brief Macro aiming to correct the negative values that approximate 0
+ * returned by the interpolation functions
+ *
+ * @param The value to correct
+ */ 
 #define CORRECT_ERROR(v) (((v)<0)?(0.0f):(v))
 
 // Internal function to get the closest cell
@@ -31,6 +37,7 @@ int findClosestCell(
 {
     double rx, ry, rz;
     int seedID;
+    // Calling the voro++ function
     if (
 	!(
 	  container.find_voronoi_cell(
@@ -46,7 +53,7 @@ int findClosestCell(
 	) {
         std::cerr << "Cell not found." << std::endl;
         std::cerr << "(Requested position : (" << pos.first
-		  << ", " << pos.second << ")"<< std::endl;
+		  << ", " << pos.second << "))"<< std::endl;
         exit(EXIT_FAILURE);
     } 
     return seedID;
@@ -60,6 +67,18 @@ Biome findClosestBiome(Vertex2D & pos,
     return seeds[cellId].getBiome();
 }
 
+
+
+Biome findApproximativeBiome(Vertex2D & pos,
+			     int effMapSize,
+			     Biome* biomeMap,
+			     int mapScaling) {
+    // Simply taking the closest lower bound value
+    int closeI = (int) pos.first*mapScaling;
+    int closeJ = (int) pos.second*mapScaling;
+
+    return biomeMap[closeI+closeJ*effMapSize];
+}
 void findClosestCentroid(Vertex2D & pos, 
 			 voro::container & container, 
 			 std::vector<Seed> & seeds,

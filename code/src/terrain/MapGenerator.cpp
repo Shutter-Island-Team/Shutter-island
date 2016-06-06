@@ -45,16 +45,19 @@ MapGenerator::MapGenerator(MapParameters& parameters, float size) :
      *
      * @see voro++ library.
      */
-    seedsContainer(0.0, size+1, 0.0, size+1, -10.0, 10.0,
-		   parameters.getNbSubdivision(), parameters.getNbSubdivision(), 1,
-		   false, false, false,
-		   1)
+    seedsContainer{0.0, size+1, 0.0, size+1, -10.0, 10.0,
+	    parameters.getNbSubdivision(), parameters.getNbSubdivision(), 1,
+	    false, false, false,
+	    1}
 {}
 
 MapGenerator::~MapGenerator() { 
     if (heightTree) {
         heightTree->freeHeightTree();
         heightTree = NULL;
+    }
+    if (biomeMap) {
+	delete [] biomeMap;
     }
 }
  
@@ -121,6 +124,8 @@ void MapGenerator::compute() {
         iterator->setCentroidY(y + iterator->getY());
     }
 
+    // Biome step
+
     // Repartition land/sea
     computeLand(m_mapParameters, seeds, mapSize);
 
@@ -132,6 +137,7 @@ void MapGenerator::compute() {
 
     // Adding the lakes
     computeLake(m_mapParameters, seeds, m_lakes);
+
 
     // HeightTree step
     // Creating the initial map : a deep dark sea
@@ -145,10 +151,30 @@ void MapGenerator::compute() {
 					   blCorner, brCorner));
     // Computing the tree
     heightTree->computeTree(seedsContainer, seeds);
+    
 
+    // Biome map 
+    // This sampled biome map is used to accelerate the search of a biome associated
+    // to a position, altough the result is obviously approximative
+
+    // Filling the biome map
+    int heightmapScaling    = this->m_mapParameters.getHeightmapScaling();
+    int mapSize             = (int) this->mapSize;
+    int effMapSize          = mapSize*heightmapScaling;
+    biomeMap = new Biome [effMapSize*effMapSize];
+    // pragma omp does not work here...
+    for (int i = 0; i < effMapSize; i++) {
+	for (int j = 0; j < effMapSize; j++) {
+	    float effI = (float)i / (float)heightmapScaling;
+	    float effJ = (float)j / (float)heightmapScaling;
+	    biomeMap[i+j*effMapSize] = this->getBiome(effI, effJ);
+	}
+    }
 }
 
-
+// To ensure that voro++ does not raise an exception, we
+// clip the positions given to voro++ to the space
+// allowed by the library
 Vertex2D MapGenerator::clipPosition(float x, float y) {
     return Vertex2D(MAX(MIN(x, mapSize), 0.0f),
 		    MAX(MIN(y, mapSize), 0.0f));
@@ -159,6 +185,16 @@ Biome MapGenerator::getBiome(float x, float y) {
     return findClosestBiome(position, seedsContainer, seeds);
 }
 
+Biome MapGenerator::getApproximativeBiome(float x, float y) {
+    
+    Vertex2D position = clipPosition(x, y);
+
+    int heightmapScaling    = this->m_mapParameters.getHeightmapScaling();
+    int mapSize             = (int) this->mapSize;
+    int effMapSize          = mapSize*heightmapScaling;
+
+    return findApproximativeBiome(position, effMapSize, biomeMap, heightmapScaling);
+}
 
 void MapGenerator::getCentroid(float x, float y, 
 			       float& xCentroid, float& yCentroid) {
@@ -168,14 +204,20 @@ void MapGenerator::getCentroid(float x, float y,
 }
 
 float MapGenerator::getHeight(float x, float y) {
-    Vertex2D position = clipPosition(x, y);
+
     if (!heightTree) { 
 	std::cerr << "HeightTree not computed !" << std::endl;
 	exit(EXIT_FAILURE);
     }
+
+    Vertex2D position = clipPosition(x, y);
+    
+    int heightmapScaling    = this->m_mapParameters.getHeightmapScaling();
+    int mapSize             = (int) this->mapSize;
+    int effMapSize          = mapSize*heightmapScaling;
     return heightTree->evalHeight(position, 
-				  seedsContainer,
-				  seeds);
+				  effMapSize,
+				  biomeMap);
 }
 
 bool MapGenerator::getLakes(

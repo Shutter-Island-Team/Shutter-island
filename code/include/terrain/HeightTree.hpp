@@ -56,15 +56,16 @@ public :
      * @brief Compute the height of a point within the 
      * map defined by the tree
      *
-     * @param pos The position of the point
-     * @param container The voronoi container of the seeds
-     * @param seeds     The seeds vector 
+     * @param pos        The position of the point
+     * @param effMapSize The effective size of the sampled map
+     * @param biomeMap   The sampled map 
      *
      * @return The height of the point
      */
     float evalHeight(Vertex2D & pos,
-		     voro::container & container, 
-		     std::vector<Seed> & seeds);
+		     int effMapSize,
+		     Biome* biomeMap);
+
 
 private :
 

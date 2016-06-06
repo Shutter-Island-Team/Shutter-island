@@ -11,6 +11,7 @@
 #include "VoronoiSeedsGenerator.hpp"
 #include "HeightTree.hpp"
 #include "MapParameters.hpp"
+#include "../structures/Matrix.hpp"
 
 #include <glm/glm.hpp>
 
@@ -60,6 +61,17 @@ public :
      * @return The biome of the position
      */
     Biome getBiome(float x, float y);
+
+    /**
+     * @brief Get the approximative biome 
+     * associated to a location using a sampled biome map
+     * 
+     * @param x Abscissa of the desired position
+     * @param y Ordinna  of the desired position 
+     *
+     * @return A biome close to the position
+     */
+    Biome getApproximativeBiome(float x, float y);
     
     /**
      * @brief Get the centroid of a biome associated to a location
@@ -72,6 +84,7 @@ public :
      */
     void getCentroid(float x, float y, 
 		     float& xCentroid, float& yCentroid);
+
     /**
      * @brief Get the height of a position
      *
@@ -146,6 +159,9 @@ private :
 
     /// @brief The voronoi seeds container
     voro::container seedsContainer;
+
+    /// @brief A 'biome map' use to accelerate the computation of a biome
+    Biome *biomeMap = NULL;
 
     /**
      * @brief
