@@ -62,20 +62,23 @@ MovableParameters::MovableParameters(float maxSpeedWalk, float maxSpeedRun, floa
 	m_lowDangerValue = d["Boundaries"]["Danger"]["low"].GetDouble();
 	m_highDangerValue = d["Boundaries"]["Danger"]["high"].GetDouble();
 
-	m_hungerIncCoeff = d["Coefficient"]["Global coefficient"]["Hunger"].GetDouble();
-	m_hungerDecCoeff = d["Coefficient"]["WalkState"]["Hunger"].GetDouble();
+	m_hungerIncCoeff = d["Coefficient"]["Global state"]["Hunger"].GetDouble();
+	m_hungerDecCoeffWalk = d["Coefficient"]["WalkState"]["Hunger"].GetDouble();
+	m_hungerDecCoeffRun = d["Coefficient"]["RunState"]["Hunger"].GetDouble();
 
-	m_staminaIncCoeff = d["Coefficient"]["Global coefficient"]["Stamina"].GetDouble();
-	m_staminaDecCoeff = d["Coefficient"]["WalkState"]["Stamina"].GetDouble();
+	m_staminaIncCoeff = d["Coefficient"]["Global state"]["Stamina"].GetDouble();
+	m_staminaDecCoeffWalk = d["Coefficient"]["WalkState"]["Stamina"].GetDouble();
+	m_staminaDecCoeffRun = d["Coefficient"]["RunState"]["Stamina"].GetDouble();
 
-	m_thirstIncCoeff = d["Coefficient"]["Global coefficient"]["Thirst"].GetDouble();
-	m_thirstDecCoeff = d["Coefficient"]["WalkState"]["Thirst"].GetDouble();
+	m_thirstIncCoeff = d["Coefficient"]["Global state"]["Thirst"].GetDouble();
+	m_thirstDecCoeffWalk = d["Coefficient"]["WalkState"]["Thirst"].GetDouble();
+	m_thirstDecCoeffRun = d["Coefficient"]["RunState"]["Thirst"].GetDouble();
 
-	m_affinityIncCoeff = d["Coefficient"]["Global coefficient"]["AffinityIncrease"].GetDouble();
-	m_affinityDecCoeff = d["Coefficient"]["Global coefficient"]["AffinityDecrease"].GetDouble();
+	m_affinityIncCoeff = d["Coefficient"]["Global state"]["AffinityIncrease"].GetDouble();
+	m_affinityDecCoeff = d["Coefficient"]["Global state"]["AffinityDecrease"].GetDouble();
 
-	m_dangerIncCoeff = d["Coefficient"]["Global coefficient"]["DangerIncrease"].GetDouble();
-	m_dangerDecCoeff = d["Coefficient"]["Global coefficient"]["DangerDecrease"].GetDouble();
+	m_dangerIncCoeff = d["Coefficient"]["Global state"]["DangerIncrease"].GetDouble();
+	m_dangerDecCoeff = d["Coefficient"]["Global state"]["DangerDecrease"].GetDouble();
 }
 
 MovableParameters::MovableParameters( const std::string & filename )
@@ -129,9 +132,14 @@ void MovableParameters::staminaIncrease()
 	m_stamina = fmin(m_stamina + m_staminaIncCoeff, 100.0f);
 }
 
-void MovableParameters::staminaDecrease()
+void MovableParameters::staminaDecreaseWalk()
 {
-	m_stamina = fmax(m_stamina - m_staminaDecCoeff, 0.0f);
+	m_stamina = fmax(m_stamina - m_staminaDecCoeffWalk, 0.0f);
+}
+
+void MovableParameters::staminaDecreaseRun()
+{
+	m_stamina = fmax(m_stamina - m_staminaDecCoeffRun, 0.0f);
 }
 
 float MovableParameters::getHunger() const
@@ -144,9 +152,14 @@ void MovableParameters::hungerIncrease()
 	m_hunger = fmin(m_hunger + m_hungerIncCoeff, 100.0f);
 }
 
-void MovableParameters::hungerDecrease()
+void MovableParameters::hungerDecreaseWalk()
 {
-	m_hunger = fmax(m_hunger - m_hungerDecCoeff, 0.0f);
+	m_hunger = fmax(m_hunger - m_hungerDecCoeffWalk, 0.0f);
+}
+
+void MovableParameters::hungerDecreaseRun()
+{
+	m_hunger = fmax(m_hunger - m_hungerDecCoeffRun, 0.0f);
 }
 
 float MovableParameters::getThirst() const
@@ -159,9 +172,14 @@ void MovableParameters::thirstIncrease()
 	m_thirst = fmin(m_thirst + m_thirstIncCoeff, 100.0f);
 }
 
-void MovableParameters::thirstDecrease()
+void MovableParameters::thirstDecreaseWalk()
 {
-	m_thirst = fmax(m_thirst - m_thirstDecCoeff, 0.0f);
+	m_thirst = fmax(m_thirst - m_thirstDecCoeffWalk, 0.0f);
+}
+
+void MovableParameters::thirstDecreaseRun()
+{
+	m_thirst = fmax(m_thirst - m_thirstDecCoeffRun, 0.0f);
 }
 
 float MovableParameters::getDanger() const
@@ -214,22 +232,31 @@ bool MovableParameters::isNotHungry() const
 	return m_hunger >= m_highHungerValue;
 }
 
-float MovableParameters::getMaxSpeed() const
+float MovableParameters::getMaxSpeedWalk() const
 {
 	return m_maxSpeedWalk;
 }
+
+float MovableParameters::getMaxSpeedRun() const
+{
+	return m_maxSpeedRun;
+}
+
 float MovableParameters::getMaxForce() const
 {
 	return m_maxForce;
 }
+
 float MovableParameters::getRadiusCircleWander() const
 {
 	return m_rCircleWander;
 }
+
 float MovableParameters::getDistToCircleWander() const
 {
 	return m_distToCircle;
 }
+
 float MovableParameters::getDistStartSlowingDown() const
 {
 	return m_distStartSlowingDown;

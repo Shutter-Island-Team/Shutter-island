@@ -19,7 +19,7 @@
 	},
 
 	"Coefficient" : {
-		"Global coefficient": {
+		"Global state": {
 			"Stamina" : 4,
 			"Hunger" : 2,
 			"Thirst" : 5,

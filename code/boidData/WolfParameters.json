@@ -1,6 +1,6 @@
 {
 	"maxSpeedWalk": 5.0,
-	"maxSpeedRun": 8.0,
+	"maxSpeedRun": 9.0,
 	"maxForce": 1.2,
 	"angleView": 3.25,
 	"distSeparate": 3.0,

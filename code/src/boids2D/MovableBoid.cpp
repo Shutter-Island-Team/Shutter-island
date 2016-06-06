@@ -146,7 +146,12 @@ void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const 
 const glm::vec3 MovableBoid::computeNextStep(const float & dt)
 {
 	glm::vec3 prevLocation = m_location;
-	glm::vec3 nextVelocity = limitVec3(m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters()->getMaxForce()), getParameters()->getMaxSpeed());
+	glm::vec3 nextVelocity = m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters()->getMaxForce());
+	if (m_stateType == FLEE_STATE || m_stateType == ATTACK_STATE) {
+		nextVelocity = limitVec3(nextVelocity, getParameters()->getMaxSpeedRun());
+	} else {
+		nextVelocity = limitVec3(nextVelocity, getParameters()->getMaxSpeedWalk());
+	}
   	float k = 0.5f;
   	if(glm::length(m_velocity) < FLT_EPSILON) {
   		m_velocity = 0.015f * nextVelocity + (1.0f - 0.015f) * m_velocity;

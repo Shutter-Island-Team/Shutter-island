@@ -42,7 +42,7 @@ glm::vec3 MovableState::seek(const MovableBoid& b, const glm::vec3 & target) con
 {
 	glm::vec3 desiredVelocity = target - b.getLocation();
 	desiredVelocity = glm::normalize(desiredVelocity);
-	desiredVelocity *= b.getParameters()->getMaxSpeed();
+	desiredVelocity *= b.getParameters()->getMaxSpeedRun();
 	glm::vec3 steer = desiredVelocity - b.getVelocity();
 
 	return steer;
@@ -77,12 +77,12 @@ glm::vec3 MovableState::arrive(const MovableBoid& b, const glm::vec3 & target) c
 	if (distance < b.getParameters()->getDistStartSlowingDown()) {
 		// Set the magnitude according to how close we are.
 		// Linear computation of the magnitude
-	  	float magnitude = distance * b.getParameters()->getMaxSpeed()
+	  	float magnitude = distance * b.getParameters()->getMaxSpeedRun()
 	  		/ b.getParameters()->getDistStartSlowingDown();
 	  desiredVelocity *= magnitude;
 	} else {
 	  // Otherwise, proceed at maximum speed.
-	  desiredVelocity *= b.getParameters()->getMaxSpeed();
+	  desiredVelocity *= b.getParameters()->getMaxSpeedRun();
 	}
 
 	// The usual steering = desiredVelocity - velocity
@@ -163,7 +163,7 @@ glm::vec3 MovableState::separate(const MovableBoid& b, const std::list<MovableBo
 	}
 	if (count > 0) {
 		sum /= count;
-		sum = glm::normalize(sum) * b.getParameters()->getMaxSpeed();
+		sum = glm::normalize(sum) * b.getParameters()->getMaxSpeedRun();
 		steer = sum - b.getVelocity();
 		steer = limitVec3(steer, b.getParameters()->getMaxForce());
 	}
@@ -172,7 +172,7 @@ glm::vec3 MovableState::separate(const MovableBoid& b, const std::list<MovableBo
 
 glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::list<RootedBoidPtr> & rootB) const
 {
-	float coeff = glm::length(b.getVelocity()) / b.getParameters()->getMaxSpeed();
+	float coeff = glm::length(b.getVelocity()) / b.getParameters()->getMaxSpeedRun();
 	glm::vec3 posAhead = b.getLocation() + coeff * cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead();
 	glm::vec3 posAhead2 = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead() * 0.5f;
 	std::list<RootedBoidPtr>::const_iterator it = rootB.begin();
@@ -262,7 +262,7 @@ glm::vec3 MovableState::positionForecast(const MovableBoid & b, const float & dt
 glm::vec3 MovableState::pursuit (const MovableBoid & hunter, const MovableBoid & target, const float & dt) const
 {
 	const float val = glm::distance(hunter.getLocation(), target.getLocation())
-									/ (hunter.getParameters()->getMaxSpeed());
+									/ (hunter.getParameters()->getMaxSpeedRun());
 	return seek(hunter, positionForecast(target, dt, val));
 }
 
@@ -275,7 +275,7 @@ glm::vec3 MovableState::evade(const MovableBoid & prey, const MovableBoid & hunt
 		throw std::invalid_argument("Hunter is null in evade");
 	}
 	const float val = glm::distance(prey.getLocation(), hunter.getLocation())
-									/ (hunter.getParameters()->getMaxSpeed());
+									/ (hunter.getParameters()->getMaxSpeedRun());
 	return flee(prey, positionForecast(hunter, dt, val));
 }
 
@@ -380,9 +380,9 @@ glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	if (updateTick) {
-		b.getParameters()->staminaDecrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->staminaDecreaseWalk();
+		b.getParameters()->hungerDecreaseWalk();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 
 	// Detect danger and update danger parameter 
@@ -420,9 +420,9 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	if (updateTick) {
-		b.getParameters()->staminaDecrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->staminaDecreaseWalk();
+		b.getParameters()->hungerDecreaseWalk();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 
 	// Detect danger and update danger parameter 
@@ -460,8 +460,8 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	if (updateTick) {
 		b.getParameters()->staminaIncrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->hungerDecreaseWalk();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 
 	// Detect danger and update danger parameter 
@@ -490,8 +490,8 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 
 	if (updateTick) {
 		b.getParameters()->staminaIncrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->hungerDecreaseWalk();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 
 	// Detect if alone and update affinity
@@ -516,9 +516,9 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	if (updateTick) {
-		b.getParameters()->staminaDecrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->staminaDecreaseRun();
+		b.getParameters()->hungerDecreaseRun();
+		b.getParameters()->thirstDecreaseRun();
 	}
 
 	// Detect danger and update danger parameter 
@@ -568,9 +568,9 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 	const std::list<RootedBoidPtr> rtB = boidsManager.getRootedBoids(i, j);
 
 	if (updateTick) {
-		b.getParameters()->staminaDecrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->staminaDecreaseWalk();
+		b.getParameters()->hungerDecreaseWalk();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 
 	// Detect danger and update danger parameter 
@@ -624,7 +624,7 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	if (updateTick) {
 		b.getParameters()->staminaIncrease();
 		b.getParameters()->hungerIncrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 
 	// Detect danger and update danger parameter 
@@ -652,9 +652,9 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	if (updateTick) {
-		b.getParameters()->staminaDecrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->staminaDecreaseWalk();
+		b.getParameters()->hungerDecreaseWalk();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 
 	// Detect danger and update danger parameter 
@@ -683,7 +683,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	
 	if (updateTick) {
 		b.getParameters()->staminaIncrease();
-		b.getParameters()->hungerDecrease();
+		b.getParameters()->hungerDecreaseWalk();
 		b.getParameters()->thirstIncrease();
 	}
 
@@ -716,9 +716,9 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	MovableBoidPtr mate = closestMovable(b, b.getBoidType(), mvB);
 	
 	if (updateTick) {
-		b.getParameters()->staminaDecrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->staminaDecreaseWalk();
+		b.getParameters()->hungerDecreaseWalk();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 
 	// Detect danger and update danger parameter 
@@ -744,9 +744,9 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	if (updateTick) {
-		b.getParameters()->staminaDecrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->staminaDecreaseRun();
+		b.getParameters()->hungerDecreaseRun();
+		b.getParameters()->thirstDecreaseRun();
 	}
 
 	// Detect danger and update danger parameter 
@@ -780,9 +780,9 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	
 	// Update boid status parameters
 	if (updateTick) {
-		b.getParameters()->staminaDecrease();
-		b.getParameters()->hungerDecrease();
-		b.getParameters()->thirstDecrease();
+		b.getParameters()->staminaDecreaseWalk();
+		b.getParameters()->hungerDecreaseWalk();
+		b.getParameters()->thirstDecreaseWalk();
 	}
 	
 	// Detect danger and update danger parameter 

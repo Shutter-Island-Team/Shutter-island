@@ -87,10 +87,14 @@ public:
   void staminaIncrease();
 
   /**
-   * @brief Decrease the stamina
-   * @todo  Review it
+   * @brief Decrease the stamina when walking
    */
-  void staminaDecrease();
+  void staminaDecreaseWalk();
+
+  /**
+   * @brief Decrease the stamina when running
+   */
+  void staminaDecreaseRun();
   
   /**
    * @brief Check if the stamina is high. "high" depends on the parameter
@@ -131,7 +135,13 @@ public:
    * @brief Decrease the hunger
    * @todo  Review it
    */
-  void hungerDecrease();
+  void hungerDecreaseWalk();
+
+  /**
+   * @brief Decrease the hunger
+   * @todo  Review it
+   */
+  void hungerDecreaseRun();
 
   /**
    * @brief Check if the the boid is hungry
@@ -163,7 +173,13 @@ public:
    * @brief Decrease the thirst
    * @todo  Review it
    */
-  void thirstDecrease();
+  void thirstDecreaseWalk();
+
+  /**
+   * @brief Decrease the thirst
+   * @todo  Review it
+   */
+  void thirstDecreaseRun();
 
   /**
    * @brief Check if the boid is thristy
@@ -235,10 +251,12 @@ public:
           Getter methods
   ***********************************/
   /**
-   * @brief Getter for the maximum speed value
+   * @brief Getter for the maximum speed value of walking
    * @return Returns the maximum speed value
    */
-  float getMaxSpeed() const;
+  float getMaxSpeedWalk() const;
+
+  float getMaxSpeedRun() const;
 
   /**
    * @brief Getter for the maximum force value
@@ -345,13 +363,16 @@ public:
   float m_highDangerValue; ///< Value of the high danger
 
   float m_staminaIncCoeff; ///< Coefficient to increase the stamina
-  float m_staminaDecCoeff; ///< Coefficient to decrease the stamina
+  float m_staminaDecCoeffWalk; ///< Coefficient to decrease the stamina when walking
+  float m_staminaDecCoeffRun; ///< Coefficient to decrease the stamina when running
 
   float m_hungerIncCoeff; ///< Coefficient to increase the hunger
-  float m_hungerDecCoeff; ///< Coefficient to decrease the hunger
+  float m_hungerDecCoeffWalk; ///< Coefficient to decrease the hunger when walking
+  float m_hungerDecCoeffRun; ///< Coefficient to decrease the hunger when running
 
   float m_thirstIncCoeff; ///< Coefficient to increase the thirst
-  float m_thirstDecCoeff; ///< Coefficient to decrease the thirst
+  float m_thirstDecCoeffWalk; ///< Coefficient to decrease the thirst when walking
+  float m_thirstDecCoeffRun; ///< Coefficient to decrease the thirst when running
 
   float m_affinityIncCoeff; ///< Coefficient to increase the affinity
   float m_affinityDecCoeff; ///< Coefficient to decrease the affinity
