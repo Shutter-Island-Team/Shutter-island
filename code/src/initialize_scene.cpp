@@ -18,6 +18,7 @@
 #include "../include/boids2D/MovableParameters.hpp"
 #include "../include/boids2D/SightRenderable.hpp"
 #include "../include/boids2D/StateRenderable.hpp"
+#include "../include/boids2D/RabbitsRenderable.hpp"
 
 #include "../include/graphicPrimitives/QuadRenderable.hpp"
 #include "../include/terrain/MapGenerator.hpp"
@@ -175,6 +176,24 @@ void display_boid( Viewer& viewer, BoidsManagerPtr boidsManager,
         BoidRenderablePtr br = std::make_shared<BoidRenderable>(texShader, m);
         HierarchicalRenderable::addChild( systemRenderable, br );
     }
+}
+
+void display_boids( Viewer& viewer, BoidsManagerPtr boidsManager, 
+    DynamicSystemBoidRenderablePtr systemRenderable)
+{
+    ShaderProgramPtr instanceShader = std::make_shared<ShaderProgram>(
+        std::list<std::string>{
+                "../shaders/instanceVertex.vert", 
+                "../shaders/instanceFragment.frag"
+            });
+
+    viewer.addShaderProgram( instanceShader );
+
+    RabbitsRenderablePtr rabbitsRenderable = std::make_shared<RabbitsRenderable>(instanceShader, 
+        boidsManager, "../meshes/rabbit.obj", "../textures/rabbit_texture.png");
+
+
+    viewer.addRenderable(rabbitsRenderable);
 }
 
 void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
