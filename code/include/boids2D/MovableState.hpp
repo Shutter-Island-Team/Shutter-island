@@ -205,7 +205,7 @@ class MovableState
    * @param[in] b   The concerned boid
    * @param[in] mvB Others boids
    */
-  bool updateAffinity(MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const;
+  void updateAffinity(MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const;
 
 };
 

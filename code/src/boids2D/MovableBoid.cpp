@@ -29,6 +29,7 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
 	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
 	m_rootedPrey((RootedBoidPtr) nullptr), m_hunter((MovableBoidPtr) nullptr),
+	m_leader((MovableBoidPtr) nullptr), m_soulMate((MovableBoidPtr) nullptr),
 	m_isDead(false), m_waterTarget(glm::vec3(0,0,2.0f))
 {
 	#ifdef DEBUG 
@@ -250,6 +251,20 @@ void MovableBoid::walkStateHandler(const BoidsManager & boidsManager)
 		switchToState(FIND_FOOD_STATE, boidsManager);
 	} else if (m_parameters->isTired()) {
 		switchToState(STAY_STATE, boidsManager);
+	} else if (m_parameters->isHighAffinity()) {
+		#pragma omp critical(dataupdate)
+		{
+			if (hasSoulMate()) {
+				switchToState(MATE_STATE, boidsManager);
+			} else {
+				MovableBoidPtr soulMate = findMate(boidsManager.getMovableBoids());
+				if (soulMate != nullptr) {
+					m_soulMate = soulMate;
+					soulMate->m_soulMate = (MovableBoidPtr) this;
+					switchToState(MATE_STATE, boidsManager);
+				}
+			}
+		}
 	} else {
 		return; //Stay in walk state
 	}
@@ -409,8 +424,7 @@ bool MovableBoid::nextToWater(const BoidsManager & boidsManager) const
 
 bool MovableBoid::hasSoulMate() const
 {
-	///< @todo
-	return false;
+	return m_soulMate != (MovableBoidPtr) nullptr;
 }
 
 bool MovableBoid::isNoLongerMating() const
@@ -511,6 +525,11 @@ void MovableBoid::updateDeadStatus()
 		&& m_parameters->getThirst() == 0.0f);
 }
 
+const MovableBoidPtr MovableBoid::getMate() const
+{
+	return m_soulMate;
+}
+
 void MovableBoid::updateWaterTarget(const BoidsManager & b)
 {
 	glm::vec2 posBoid(m_location.x, m_location.y);
@@ -522,6 +541,25 @@ void MovableBoid::updateWaterTarget(const BoidsManager & b)
 glm::vec3 MovableBoid::getWaterTarget() const
 {
 	return m_waterTarget;
+}
+
+MovableBoidPtr MovableBoid::findMate(const std::vector<MovableBoidPtr> & mvB) const
+{
+	std::vector<MovableBoidPtr>::const_iterator it = mvB.begin();
+	bool found = false;
+	while ( !found && it != mvB.end() ) {
+		// Ajouter condition different de self
+		if ((*it)->m_parameters->isHighAffinity() && !((*it)->hasSoulMate()) && (*it)->getLeader() == getLeader()) {
+			found = true;
+		} else {
+			++it;
+		}
+	}
+	if ( it == mvB.end() ) {
+		return (MovableBoidPtr) nullptr;
+	} else {
+		return *it;
+	}
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2)

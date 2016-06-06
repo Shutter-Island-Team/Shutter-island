@@ -242,7 +242,7 @@ class MovableBoid : public Boid
    * @brief   Getter for the mate of the boid
    * @return  Returns the mate of the boid
    */
-  MovableBoidPtr getMate() const;
+  const MovableBoidPtr getMate() const;
 
   /**
    * @brief  Setter for the mate of the boid
@@ -275,7 +275,7 @@ class MovableBoid : public Boid
   MovableBoidPtr m_hunter; ///< Hunter of the boid
   MovableBoidPtr m_leader; ///< Leader of the boid
 
-  MovableBoidPtr m_mate; ///< Mate of the boid
+  MovableBoidPtr m_soulMate; ///< Mate of the boid
 
   BoidType m_predator; ///< Type of the predator
 
@@ -395,6 +395,12 @@ class MovableBoid : public Boid
    * @return  true if is night time, false otherwise
    */
   bool isNight() const;
+
+  /**
+   * @brief Look for a species with the same leader and associate the mate
+   *        if the other wants to mate too 
+   */
+  MovableBoidPtr findMate(const std::vector<MovableBoidPtr> & mvB) const;
 };
 
 /**

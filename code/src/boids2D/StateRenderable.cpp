@@ -218,7 +218,7 @@ glm::vec4 StateRenderable::getColorFromState()
             break;
         case MATE_STATE:
             // Pink
-            color = glm::vec4(0.91, 0.11, 0.38, 1.0);
+            color = glm::vec4(0.94, 0.38, 0.57, 1.0);
             break;
         case DEAD_STATE:
             // Black

@@ -326,3 +326,8 @@ float MovableParameters::getDistAttack() const
 {
 	return m_distAttack;
 }
+
+bool MovableParameters::isHighAffinity() const
+{
+	return m_affinity == 100.0f;
+}

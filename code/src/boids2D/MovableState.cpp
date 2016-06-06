@@ -73,7 +73,7 @@ glm::vec3 MovableState::arrive(const MovableBoid& b, const glm::vec3 & target) c
 	glm::vec3 desiredVelocity = target - b.getLocation();
 
 	float distance = glm::length(desiredVelocity);
-	glm::normalize(desiredVelocity);
+	desiredVelocity = glm::normalize(desiredVelocity);
 	if (distance < b.getParameters()->getDistStartSlowingDown()) {
 		// Set the magnitude according to how close we are.
 		// Linear computation of the magnitude
@@ -323,7 +323,7 @@ void MovableState::updateDanger(MovableBoid& b, const std::list<MovableBoidPtr> 
 	}
 }
 
-bool MovableState::updateAffinity(MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const
+void MovableState::updateAffinity(MovableBoid& b, const std::list<MovableBoidPtr> & mvB) const
 {
 	bool friendFound = false;
 
@@ -340,8 +340,6 @@ bool MovableState::updateAffinity(MovableBoid& b, const std::list<MovableBoidPtr
 	} else {
 		b.getParameters()->affinityDecrease();
 	}
-
-	return friendFound;
 }
 
 glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j, const float & dt) const
@@ -726,8 +724,8 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	// Set affinity to 0.0 to limit the number of birth
 
-
-	newForces += arrive(b, b.getLocation());
+	std::cerr << "Mate vs this : " << b.getMate() << ", " << this << std::endl;
+	newForces += arrive(b, b.getMate()->getLocation());
 	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
@@ -767,7 +765,8 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 			newForces += glm::vec3(0,0,0);
 			break;
 	}
-	newForces += globalAvoid(b, boidsManager, i, j, dt);
+	newForces += avoidEnvironment(b, boidsManager, i, j);
+	newForces += separate(b, mvB);
 	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	return newForces;

@@ -330,6 +330,8 @@ public:
    */
   float getDistAttack() const;
 
+  bool isHighAffinity() const;
+
  private:
   float m_maxSpeedWalk; ///< Maximum speed of the boid
   float m_maxSpeedRun; ///< Maximum speed of the boid
