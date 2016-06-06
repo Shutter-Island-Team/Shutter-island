@@ -1,4 +1,4 @@
-#include "../../include/boids2D/RabbitsRenderable.hpp"
+#include "../../include/boids2D/RootedBoidsRenderable.hpp"
 #include "../../include/gl_helper.hpp"
 #include "../../include/log.hpp"
 #include "../../include/Io.hpp"
@@ -8,10 +8,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-RabbitsRenderable::RabbitsRenderable(ShaderProgramPtr shaderProgram, BoidsManagerPtr boidsManager, 
+RootedBoidsRenderable::RootedBoidsRenderable(ShaderProgramPtr shaderProgram, BoidsManagerPtr boidsManager, BoidType boidType,
     const std::string& mesh, const std::string & texture) 
     : HierarchicalRenderable(shaderProgram),
-    m_instanceVBO(0), m_VBO(0), m_texId(0), m_boidsManager(boidsManager)
+    m_instanceVBO(0), m_VBO(0), m_boidType(boidType), m_boidsManager(boidsManager)
 {
     std::vector< glm::vec2 > texCoords;
     std::vector< glm::vec3 > positions;
@@ -50,43 +50,9 @@ RabbitsRenderable::RabbitsRenderable(ShaderProgramPtr shaderProgram, BoidsManage
     //Release the texture
     glcheck(glBindTexture(GL_TEXTURE_2D, 0));
 
-    for(MovableBoidPtr m : m_boidsManager->getMovableBoids()) {
-        if(m->getBoidType() == RABBIT) {
-            glm::mat4 transformation(1.0);
-            glm::mat4 model = getModelMatrix();
-            
-            float cz = cos(0.0);
-            float sz = sin(0.0);
-            float cy = cos(m->getAngle());
-            float sy = sin(m->getAngle());
-            float cx = cos(- M_PI / 2.0);
-            float sx = sin(- M_PI / 2.0);
-            float scale = m->getScale();
-            glm::vec3 position = m->getLocation();
-
-            transformation[0][0] = scale * cz * cy;
-            transformation[0][1] = scale * sz * cy;
-            transformation[0][2] = - scale * sy;
-
-            transformation[1][0] = scale * (-sz * cx + sx * cz * sy);
-            transformation[1][1] = scale * (cz * cx + sx * sz * sy);
-            transformation[1][2] = scale * (-sx * cy) ;
-            
-            transformation[2][0] = scale * (sz * sx + cz * cx * sy);
-            transformation[2][1] = scale * (-sx * cz + sz * sy * cx);
-            transformation[2][2] = scale * (cy * cx);
-
-            transformation[3][0] = position.x;
-            transformation[3][1] = position.y;
-            transformation[3][2] = position.z;
-            transformation[3][3] = 1;
-
-            m_modelMatrix.push_back(model * transformation);
-            m_VAOs.push_back(0); 
-        }
+    for(RootedBoidPtr m : m_boidsManager->getAllRootedBoids()){
+        m_VAOs.push_back(0); 
     }
-    
-
 
     for(unsigned int i = 0; i < m_VAOs.size(); ++i) {
         glGenVertexArrays(1, &(m_VAOs[i]));
@@ -97,6 +63,7 @@ RabbitsRenderable::RabbitsRenderable(ShaderProgramPtr shaderProgram, BoidsManage
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_VBO));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_vectorBuffer.size() * sizeof(glm::vec3), m_vectorBuffer.data(), GL_STATIC_DRAW));
 
+    compute_modelMatrix();
     glGenBuffers(1, &m_instanceVBO);
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_modelMatrix.size() * sizeof(glm::mat4), m_modelMatrix.data(), GL_DYNAMIC_DRAW));
@@ -107,46 +74,9 @@ RabbitsRenderable::RabbitsRenderable(ShaderProgramPtr shaderProgram, BoidsManage
 
 }
 
-void RabbitsRenderable::do_draw()
+void RootedBoidsRenderable::do_draw()
 {
-
-    
-    m_modelMatrix.clear();
-    for(MovableBoidPtr m : m_boidsManager->getMovableBoids()) {
-        if(m->getBoidType() == RABBIT) {
-            glm::mat4 transformation(1.0);
-            glm::mat4 model = getModelMatrix();
-            
-            float cz = cos(m->getAngle() - M_PI / 2.0);
-            float sz = sin(m->getAngle() - M_PI / 2.0);
-            float cy = cos(0.0);
-            float sy = sin(0.0);
-            float cx = cos(- M_PI / 2.0);
-            float sx = sin(- M_PI / 2.0);
-            float scale = m->getScale();
-            glm::vec3 position = m->getLocation();
-
-            transformation[0][0] = scale * cz * cy;
-            transformation[0][1] = scale * sz * cy;
-            transformation[0][2] = - scale * sy;
-
-            transformation[1][0] = scale * (-sz * cx + sx * cz * sy);
-            transformation[1][1] = scale * (cz * cx + sx * sz * sy);
-            transformation[1][2] = scale * (-sx * cy) ;
-            
-            transformation[2][0] = scale * (sz * sx + cz * cx * sy);
-            transformation[2][1] = scale * (-sx * cz + sz * sy * cx);
-            transformation[2][2] = scale * (cy * cx);
-
-            transformation[3][0] = position.x;
-            transformation[3][1] = position.y;
-            transformation[3][2] = position.z;
-            transformation[3][3] = 1;
-
-            m_modelMatrix.push_back(model * transformation);
-            m_VAOs.push_back(0); 
-        }
-    }
+    compute_modelMatrix();
 
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_instanceVBO));
     glcheck(glBufferData(GL_ARRAY_BUFFER, m_modelMatrix.size() * sizeof(glm::mat4), m_modelMatrix.data(), GL_DYNAMIC_DRAW));
@@ -246,9 +176,51 @@ void RabbitsRenderable::do_draw()
     }
 }
 
-void RabbitsRenderable::do_animate(float time) {}
+void RootedBoidsRenderable::do_animate(float time) {}
 
-RabbitsRenderable::~RabbitsRenderable()
+void RootedBoidsRenderable::compute_modelMatrix()
+{
+    m_modelMatrix.clear();
+    std::vector<RootedBoidPtr> rtB = m_boidsManager->getAllRootedBoids();
+
+    for (RootedBoidPtr r : rtB) {
+        if(r->getBoidType() == m_boidType && r->toDisplay()) {
+            glm::mat4 transformation(1.0);
+            glm::mat4 model = getModelMatrix();
+            
+            float cz = cos(r->getAngle() - M_PI / 2.0);
+            float sz = sin(r->getAngle() - M_PI / 2.0);
+            float cy = cos(0.0);
+            float sy = sin(0.0);
+            float cx = cos(- M_PI / 2.0);
+            float sx = sin(- M_PI / 2.0);
+            float scale = r->getScale();
+             
+            glm::vec3 position = r->getLocation();
+
+            transformation[0][0] = scale * cz * cy;
+            transformation[0][1] = scale * sz * cy;
+            transformation[0][2] = - scale * sy;
+
+            transformation[1][0] = scale * (-sz * cx + sx * cz * sy);
+            transformation[1][1] = scale * (cz * cx + sx * sz * sy);
+            transformation[1][2] = scale * (-sx * cy) ;
+            
+            transformation[2][0] = scale * (sz * sx + cz * cx * sy);
+            transformation[2][1] = scale * (-sx * cz + sz * sy * cx);
+            transformation[2][2] = scale * (cy * cx);
+
+            transformation[3][0] = position.x;
+            transformation[3][1] = position.y;
+            transformation[3][2] = position.z;
+            transformation[3][3] = 1;
+
+            m_modelMatrix.push_back(model * transformation);
+        }
+    }
+}
+
+RootedBoidsRenderable::~RootedBoidsRenderable()
 {
     glcheck(glDeleteBuffers(1, &m_instanceVBO));
     for(unsigned int i = 0; i < m_VAOs.size(); ++i) {
@@ -257,7 +229,7 @@ RabbitsRenderable::~RabbitsRenderable()
     glcheck(glDeleteBuffers(1, &m_VBO));
 }
 
-void RabbitsRenderable::setMaterial(const MaterialPtr& material)
+void RootedBoidsRenderable::setMaterial(const MaterialPtr& material)
 {
     m_material = material;
 }

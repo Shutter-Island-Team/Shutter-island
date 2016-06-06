@@ -18,7 +18,8 @@
 #include "../include/boids2D/MovableParameters.hpp"
 #include "../include/boids2D/SightRenderable.hpp"
 #include "../include/boids2D/StateRenderable.hpp"
-#include "../include/boids2D/RabbitsRenderable.hpp"
+#include "../include/boids2D/MovableBoidsRenderable.hpp"
+#include "../include/boids2D/RootedBoidsRenderable.hpp"
 
 #include "../include/graphicPrimitives/QuadRenderable.hpp"
 #include "../include/terrain/MapGenerator.hpp"
@@ -152,7 +153,7 @@ void place_boid( Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boi
     }
 }
 
-void display_boid( Viewer& viewer, BoidsManagerPtr boidsManager, 
+void display_2Dboids( Viewer& viewer, BoidsManagerPtr boidsManager, 
     DynamicSystemBoidRenderablePtr systemRenderable, ShaderProgramPtr texShader, ShaderProgramPtr flatShader )
 {
     for(MovableBoidPtr m : boidsManager->getMovableBoids())
@@ -178,22 +179,33 @@ void display_boid( Viewer& viewer, BoidsManagerPtr boidsManager,
     }
 }
 
-void display_boids( Viewer& viewer, BoidsManagerPtr boidsManager, 
-    DynamicSystemBoidRenderablePtr systemRenderable)
+void display_3Dboids( Viewer& viewer, BoidsManagerPtr boidsManager, 
+    DynamicSystemBoidRenderablePtr systemRenderable, ShaderProgramPtr instanceShader)
 {
-    ShaderProgramPtr instanceShader = std::make_shared<ShaderProgram>(
-        std::list<std::string>{
-                "../shaders/instanceVertex.vert", 
-                "../shaders/instanceFragment.frag"
-            });
-
-    viewer.addShaderProgram( instanceShader );
-
-    RabbitsRenderablePtr rabbitsRenderable = std::make_shared<RabbitsRenderable>(instanceShader, 
-        boidsManager, "../meshes/rabbit.obj", "../textures/rabbit_texture.png");
-
-
+    MovableBoidsRenderablePtr rabbitsRenderable = std::make_shared<MovableBoidsRenderable>(instanceShader, 
+        boidsManager, RABBIT, "../meshes/rabbit.obj", "../textures/rabbit_texture.png");
+    rabbitsRenderable->setMaterial(Material::Pearl());
     viewer.addRenderable(rabbitsRenderable);
+
+    MovableBoidsRenderablePtr wolfsRenderable = std::make_shared<MovableBoidsRenderable>(instanceShader, 
+        boidsManager, WOLF, "../meshes/wolf.obj", "../textures/wolf_texture.png");
+    wolfsRenderable->setMaterial(Material::Pearl());
+    viewer.addRenderable(wolfsRenderable);
+
+    RootedBoidsRenderablePtr treesRenderable = std::make_shared<RootedBoidsRenderable>(instanceShader, 
+        boidsManager, TREE, "../meshes/trunk.obj", "../textures/trunk_texture.png");
+    treesRenderable->setMaterial(Material::Bronze());
+
+    RootedBoidsRenderablePtr leafsRenderable = std::make_shared<RootedBoidsRenderable>(instanceShader, 
+        boidsManager, TREE, "../meshes/leaf.obj", "../textures/leaf_texture.png");
+    treesRenderable->setMaterial(Material::Pearl());
+    viewer.addRenderable(leafsRenderable); 
+    viewer.addRenderable(treesRenderable);    
+
+    RootedBoidsRenderablePtr carrotsRenderable = std::make_shared<RootedBoidsRenderable>(instanceShader, 
+        boidsManager, CARROT, "../meshes/carrot.obj", "../textures/carrot_texture.png");
+    treesRenderable->setMaterial(Material::Pearl());
+    viewer.addRenderable(carrotsRenderable); 
 }
 
 void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
@@ -297,6 +309,9 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     );
     viewer.addShaderProgram(flatShader);
 
+    FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
+    viewer.addRenderable(frame);
+
     /*
      * Creating the map renderable and adding it to the system.
      */
@@ -321,6 +336,11 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
         "../shaders/textureFragment.frag"});
     viewer.addShaderProgram( texShader );
 
+    ShaderProgramPtr instanceShader = std::make_shared<ShaderProgram>(std::list<std::string>{
+                "../shaders/instanceVertex.vert", 
+                "../shaders/instanceFragment.frag"});
+    viewer.addShaderProgram( instanceShader );
+
     BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator);
 
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
@@ -335,23 +355,27 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    place_boid( viewer, mapGenerator, boidsManager, Plains, 5, 5, 5, 5); 
+
+
+    place_boid( viewer, mapGenerator, boidsManager, Plains, 40, 40, 40, 40); 
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
     leaderRabbit->setNewLeader(leaderRabbit);
-
-    for (int i = 0; i < 6; ++i) {
-        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
+    
+    for (int i = 0; i < 1; ++i) {
+        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(0.5, 0.5, 0.0));
         rabbitFellow->setNewLeader(leaderRabbit);
     }
-
+    
+    
     MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(300, 350), random(300, 350), 2));
     leaderWolf->setNewLeader(leaderWolf);
-    for (int i = 0; i < 4; ++i) {
-        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(random(300, 350), random(300, 350), 2));
+    for (int i = 0; i < 1; ++i) {
+        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(0.0, 0.0, 0.5));
         wolfFellow->setNewLeader(leaderWolf);
     }
+    
 
     for (int i = 0; i < 10; ++i) {
         boidsManager->addRootedBoid(CARROT, glm::vec3(random(300, 350), random(300, 350), 2));
@@ -362,7 +386,8 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     }
     */
 
-    display_boid(viewer, boidsManager, systemRenderable, texShader, flatShader);
+    //display_2Dboids(viewer, boidsManager, systemRenderable, texShader, flatShader);
+    display_3Dboids(viewer, boidsManager, systemRenderable, instanceShader);
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();

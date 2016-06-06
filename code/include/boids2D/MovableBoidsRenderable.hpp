@@ -1,5 +1,5 @@
-#ifndef RABBITS_RENDERABLE_HPP
-#define RABBITS_RENDERABLE_HPP
+#ifndef MOVABLE_BOIDS_RENDERABLE_HPP
+#define MOVABLE_BOIDS_RENDERABLE_HPP
 
 #include <glm/glm.hpp>
 #include "../HierarchicalRenderable.hpp"
@@ -8,22 +8,23 @@
 #include "BoidsManager.hpp"
 
 /**
- * @class RabbitsRenderable
+ * @class MovableBoidsRenderable
  * @brief Renderable for all the rabbit in the RabbitsManager. @see Renderable
  */
-class RabbitsRenderable : public HierarchicalRenderable
+class MovableBoidsRenderable : public HierarchicalRenderable
 {
     public:
-        RabbitsRenderable(ShaderProgramPtr shaderProgram, BoidsManagerPtr boidsManager, 
+        MovableBoidsRenderable(ShaderProgramPtr shaderProgram, BoidsManagerPtr boidsManager, BoidType boidType,
     		const std::string& mesh, const std::string & texture);
 
-        ~RabbitsRenderable();
+        ~MovableBoidsRenderable();
         
         void setMaterial(const MaterialPtr& material);
 
     private:
         void do_draw();
         void do_animate( float time );
+        void compute_modelMatrix();
 
         std::vector< glm::vec2 > m_texCoords;
 	    std::vector< glm::vec3 > m_vectorBuffer;
@@ -37,9 +38,10 @@ class RabbitsRenderable : public HierarchicalRenderable
 	    unsigned int m_texId;
 
 	    MaterialPtr m_material;
+	    BoidType m_boidType;
 	    BoidsManagerPtr m_boidsManager;     
 };
 
-typedef std::shared_ptr<RabbitsRenderable> RabbitsRenderablePtr;
+typedef std::shared_ptr<MovableBoidsRenderable> MovableBoidsRenderablePtr;
 
 #endif
