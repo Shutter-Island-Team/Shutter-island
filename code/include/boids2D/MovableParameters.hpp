@@ -150,6 +150,12 @@ public:
   bool isHungry() const;
 
   /**
+   * @brief Check if the the boid is starving
+   * @return true if the boid is hungry, false otherwise
+   */
+  bool isStarving() const;
+
+  /**
    * @brief   Check if the boid is not hungry
    * @return  true if the boid is not hungry, false otherwise
    */

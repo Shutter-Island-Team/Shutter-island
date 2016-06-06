@@ -262,8 +262,9 @@ void MovableBoid::stayStateHandler(const BoidsManager & boidsManager)
 		switchToState(FLEE_STATE, boidsManager);
 	} else if (m_parameters->isThirsty()) {
 		switchToState(FIND_WATER_STATE, boidsManager);
-	} else if (m_parameters->isHungry()) {
-		switchToState(FIND_FOOD_STATE, boidsManager);
+
+	} else if (m_parameters->isStarving()) {
+		switchToState(FIND_FOOD_STATE, boidsManager);		
 	} else if (!m_parameters->isNotTired() && isNight()) {
 		switchToState(SLEEP_STATE, boidsManager);
 	} else if (!m_parameters->isNotTired()) { 
@@ -286,10 +287,12 @@ void MovableBoid::findFoodStateHandler(const BoidsManager & boidsManager)
 		switchToState(FLEE_STATE, boidsManager);
 	} else if (hasPrey()) {
 		switchToState(ATTACK_STATE, boidsManager);
-	} else if (m_parameters->isThirsty() && m_parameters->getThirst() < m_parameters->getHunger()) {
+	} else if (m_parameters->isThirsty()) {
 		// If the boid don't find food for a long time it might be better to find water
 		switchToState(FIND_WATER_STATE, boidsManager); 
-	} else if (m_parameters->isTired() && m_parameters->getStamina() < m_parameters->getHunger()) {
+	} else if (m_parameters->isStarving()) {
+		return;
+	} else if (m_parameters->isTired()) {
 		// If the boid don't find food for a long time it might be better to refill stamina
 		switchToState(STAY_STATE, boidsManager);
 	} else {

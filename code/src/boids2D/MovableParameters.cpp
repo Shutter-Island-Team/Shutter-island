@@ -227,6 +227,11 @@ bool MovableParameters::isHungry() const
 	return m_hunger <= m_lowHungerValue;
 }
 
+bool MovableParameters::isStarving() const
+{
+	return m_hunger <= (m_lowHungerValue / 2);
+}
+
 bool MovableParameters::isNotHungry() const
 {
 	return m_hunger >= m_highHungerValue;
