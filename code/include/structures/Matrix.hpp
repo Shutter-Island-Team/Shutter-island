@@ -89,6 +89,9 @@ class Matrix
   std::list<T> *m_content; ///< Container of in the class
 };
 
+template<typename T>
+std::ostream& operator<< (std::ostream &out, const Matrix<T> &mat);
+
 #include "../../src/structures/Matrix.tpp"
 
 #endif

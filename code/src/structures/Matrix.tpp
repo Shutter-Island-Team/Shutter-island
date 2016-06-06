@@ -9,6 +9,8 @@
 #ifndef MATRIX_TPP
 #define MATRIX_TPP
 
+#include <iostream>
+
 template<typename T>
 Matrix<T>::Matrix( size_t n, size_t m ) : m_numLine(n), m_numCol(m) {
 	if (m < 0 || n < 0) {
@@ -93,11 +95,32 @@ void Matrix<T>::move(const T & elt, const unsigned int & iprev, const unsigned i
 		}
 	}
 
-	if (it == at(iprev, jprev).end()) {
-		throw std::invalid_argument("In function move : Element not in the initial list");
-	}
+	if (it == at(iprev, jprev).end() ) {
+		throw std::invalid_argument("Did not find elt in initial list");
+	} 
 
-	at(iprev, jprev).splice(it, at(inext, jnext));
+	at(inext, jnext).splice(at(inext, jnext).begin(), at(iprev, jprev), it);
 }
+
+template<typename T>
+std::ostream& operator<< (std::ostream &out, const std::list<T> &l)
+{
+	out << l.size();
+	return out;
+}
+
+template<typename T>
+std::ostream& operator<< (std::ostream &out, const Matrix<T> &mat)
+{
+	for (unsigned int i = 0; i < mat.getNumLine(); ++i) {
+		for (unsigned int j = 0; j < mat.getNumCol(); ++j) {
+			if (mat.at(i,j).size() != 0) {			
+				out << "(" << i << "," << j << "): " << mat.at(i, j) << " | ";
+			}
+		}
+	}
+	return out;
+}
+
 
 #endif

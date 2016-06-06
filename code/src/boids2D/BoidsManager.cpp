@@ -180,9 +180,9 @@ void BoidsManager::updateBoidInGrid(MovableBoidPtr mvB, const unsigned int & ipr
 	unsigned int inext = 0;
 	unsigned int jnext = 0;
 	coordToBox(mvB->getLocation(), inext, jnext);
-	// if (iprev != inext || jprev != jnext) {
-	// 	m_movableBoids->move(mvB, iprev, jprev, inext, jnext);
-	// }
+	if (iprev != inext || jprev != jnext) {
+		m_movableBoids->move(mvB, iprev, jprev, inext, jnext);
+	}
 }
 
 void BoidsManager::updateTick()

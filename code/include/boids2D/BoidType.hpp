@@ -11,10 +11,14 @@
 #ifndef BOID_TYPE_HPP
 #define BOID_TYPE_HPP
 
+#include <ostream>
+
 /**
  * @enum  BoidType
  * @brief Enumeration of the different type of boids
  */
 enum BoidType { RABBIT, WOLF, RANDOM, TREE, CARROT, UNKNOWN };
+
+std::ostream& operator<< (std::ostream &out, const BoidType &boidType);
 
 #endif

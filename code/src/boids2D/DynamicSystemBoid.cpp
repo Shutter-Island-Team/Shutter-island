@@ -36,7 +36,6 @@ void DynamicSystemBoid::setBoidsManager(BoidsManagerPtr boidsManager) {
  */ 
 void DynamicSystemBoid::computeSimulationStep()
 {
-    // MatrixMovableBoidPtr mvB = m_boidsManager->getMovableBoidsMatrix();
     std::vector<MovableBoidPtr> mvB = m_boidsManager->getMovableBoids();
     const bool updateTick = m_boidsManager->isUpdateTick();
     #pragma omp parallel for
