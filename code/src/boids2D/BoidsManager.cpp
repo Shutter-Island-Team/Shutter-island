@@ -142,14 +142,20 @@ void BoidsManager::removeDead()
 		}
 	}
 
+	std::vector<std::vector<MovableBoidPtr>::iterator> toDelete;
 	for (std::vector<MovableBoidPtr>::iterator i = m_movableBoidsVec.begin(); i != m_movableBoidsVec.end(); ++i)
 	{
-		if(!((*i)->isFoodRemaining())) {
+		if(!((*i)->isFoodRemaining()) || (*i)->isDecomposed()) {
 			(*i)->disapear();
-			iter_swap(i, m_movableBoidsVec.end() - 1);
-			m_movableBoidsVec.pop_back();
+			toDelete.push_back(i);
 		}
 	}
+
+	for (std::vector<std::vector<MovableBoidPtr>::iterator >::iterator it = toDelete.begin(); it != toDelete.end(); ++it)
+	{
+		m_movableBoidsVec.erase(*it);
+	}
+	toDelete.clear();
 
 	std::list<RootedBoidPtr>::iterator itr;
 	for (unsigned int i = 0; i < m_rootedBoids->getNumLine(); ++i) {
