@@ -508,8 +508,7 @@ void MovableBoid::die()
 void MovableBoid::updateDeadStatus()
 {
 	m_isDead = (m_parameters->getStamina() == 0.0f 
-		&& m_parameters->getHunger() == 0.0f 
-		&& m_parameters->getThirst() == 0.0f);
+		&& (m_parameters->getHunger() == 0.0f || m_parameters->getThirst() == 0.0f));
 }
 
 const MovableBoidPtr MovableBoid::getMate() const

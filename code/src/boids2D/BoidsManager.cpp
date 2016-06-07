@@ -132,7 +132,7 @@ void BoidsManager::removeDead()
 		for (unsigned int j = 0; j < m_movableBoids->getNumCol(); ++j) {
 			itm = m_movableBoids->at(i,j).begin();
 			while ( itm != m_movableBoids->at(i,j).end()) {
-				if (!((*itm)->isFoodRemaining())) {
+				if (!((*itm)->isFoodRemaining()) || (*itm)->isDecomposed()) {
 					(*itm)->disapear();
 					itm = m_movableBoids->at(i,j).erase(itm);
 				} else {
@@ -180,8 +180,8 @@ bool BoidsManager::getNearestLake(const glm::vec2 & position, glm::vec2 & result
 void BoidsManager::coordToBox(const glm::vec3 & location, unsigned int & i, unsigned int & j) const
 {
 	///< @todo : Mistake ?
-	i = floor(location.x / 20.0f);
-	j = floor(location.y / 20.0f);
+	i = (unsigned int) floor(location.x / 20.0f);
+	j = (unsigned int) floor(location.y / 20.0f);
 }
 
 void BoidsManager::updateBoidInGrid(MovableBoidPtr mvB, const unsigned int & iprev, const unsigned int & jprev)

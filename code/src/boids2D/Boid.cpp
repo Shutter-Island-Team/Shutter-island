@@ -75,5 +75,5 @@ bool Boid::isDecomposed() const
 
 void Boid::bodyDecomposition()
 {
-	m_decomposition -= 0.01f;
+	m_decomposition = m_decomposition - 0.1f;
 }
