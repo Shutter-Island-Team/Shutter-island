@@ -135,13 +135,22 @@ void BoidsManager::removeDead()
 				if (!((*itm)->isFoodRemaining())) {
 					(*itm)->disapear();
 					itm = m_movableBoids->at(i,j).erase(itm);
-					m_movableBoidsVec.erase(std::remove(m_movableBoidsVec.begin(), m_movableBoidsVec.end(), *itm), m_movableBoidsVec.end());
 				} else {
 					itm++;
 				}
 			}
 		}
 	}
+
+	for (std::vector<MovableBoidPtr>::iterator i = m_movableBoidsVec.begin(); i != m_movableBoidsVec.end(); ++i)
+	{
+		if(!((*i)->isFoodRemaining())) {
+			(*i)->disapear();
+			iter_swap(i, m_movableBoidsVec.end() - 1);
+			m_movableBoidsVec.pop_back();
+		}
+	}
+
 	std::list<RootedBoidPtr>::iterator itr;
 	for (unsigned int i = 0; i < m_rootedBoids->getNumLine(); ++i) {
 		for (unsigned int j = 0; j < m_rootedBoids->getNumCol(); ++j) {
