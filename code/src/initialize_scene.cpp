@@ -180,7 +180,7 @@ void display_2Dboids( Viewer& viewer, BoidsManagerPtr boidsManager,
 }
 
 void display_3Dboids( Viewer& viewer, BoidsManagerPtr boidsManager, 
-    DynamicSystemBoidRenderablePtr systemRenderable, ShaderProgramPtr instanceShader)
+    DynamicSystemBoidRenderablePtr systemRenderable, ShaderProgramPtr instanceShader, ShaderProgramPtr flatShader)
 {
     MovableBoidsRenderablePtr rabbitsRenderable = std::make_shared<MovableBoidsRenderable>(instanceShader, 
         boidsManager, RABBIT, "../meshes/rabbit.obj", "../textures/rabbit_texture.png");
@@ -206,6 +206,17 @@ void display_3Dboids( Viewer& viewer, BoidsManagerPtr boidsManager,
         boidsManager, CARROT, "../meshes/carrot.obj", "../textures/carrot_texture.png");
     treesRenderable->setMaterial(Material::Pearl());
     viewer.addRenderable(carrotsRenderable); 
+
+    #ifdef DEBUG
+    for(MovableBoidPtr m : boidsManager->getMovableBoids())
+    {
+        SightRenderablePtr sight = std::make_shared<SightRenderable>(flatShader, m);
+        viewer.addRenderable(sight);
+
+        StateRenderablePtr state = std::make_shared<StateRenderable>(flatShader, m);
+        viewer.addRenderable(state);  
+    }
+    #endif
 }
 
 void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
@@ -355,7 +366,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    place_boid( viewer, mapGenerator, boidsManager, Plains, 40, 40, 40, 40); 
+    place_boid( viewer, mapGenerator, boidsManager, Plains, 20, 20, 20, 20); 
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
@@ -385,7 +396,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     */
 
     //display_2Dboids(viewer, boidsManager, systemRenderable, texShader, flatShader);
-    display_3Dboids(viewer, boidsManager, systemRenderable, instanceShader);
+    display_3Dboids(viewer, boidsManager, systemRenderable, instanceShader, flatShader);
 
     viewer.addRenderable(systemRenderable);
     viewer.startAnimation();
