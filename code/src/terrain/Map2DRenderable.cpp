@@ -7,6 +7,7 @@
 #include "./../../include/gl_helper.hpp"
 #include "./../../include/log.hpp"
 #include "./../../include/Utils.hpp"
+#include "./../../include/terrain/MapUtils.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -783,22 +784,86 @@ void Map2DRenderable::sendMasks() {
     // Mountain-Peak
     float* maskMP           = new float [2*effMapDimension*effMapDimension];
 
+
+    // Variables to store the local neighbourhood
+    int seaNeighbour;
+    int sandNeighbour;
+    int plainsNeighbour;
+    int lakeNeighbour;
+    int mountainNeighbour;
+    int peakNeighbour;
+
+    
+    int neighbourhoodWidth = 5;
+    int neighbourhoodSize  = 1;
+
     // Computing
-    // TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // For now we only have snow everywhere
     for (int i = 0; i < effMapSize; i++) {
         for (int j = 0; j < effMapSize; j++) {
 
-	    // The soloprint is ok regarding the texture itself, but the
-	    // scale is not correct
+	    
+	    if (j == 0) {
+		// We start on a now column : reset of the neighbourhood
+		// Reset to 0
+		seaNeighbour      = 0;
+		sandNeighbour     = 0;
+		plainsNeighbour   = 0;
+		lakeNeighbour     = 0;
+		mountainNeighbour = 0;
+		peakNeighbour     = 0;
+		neighbourhoodSize = 0;
+		// Counting the new neighbourhood
+		for (int ni = MAX(0, i - neighbourhoodWidth);
+		     ni < MIN(effMapSize, i + neighbourhoodWidth);
+		     ++ni) {
+		    for (int nj = MAX(0, j - neighbourhoodWidth);
+			 nj < MIN(effMapSize, j + neighbourhoodWidth);
+			 ++nj) {
+			++neighbourhoodSize;
+			countBiome(m_mapGenerator.biomeMap[ni+nj*effMapSize], 1,
+				   &seaNeighbour,     &sandNeighbour,
+				   &plainsNeighbour,  &lakeNeighbour,
+				   &mountainNeighbour, &peakNeighbour);
+		    }
+		}
+	    } else {
+		// We are on the same column
+		if (j > neighbourhoodWidth) {
+		    // We are far enough in the column to start forgetting a row
+		    int nj = j - neighbourhoodWidth - 1;
+		    for (int ni = MAX(0, i - neighbourhoodWidth);
+			 ni < MIN(effMapSize, i + neighbourhoodWidth);
+			 ++ni) {
+			--neighbourhoodSize;
+			countBiome(m_mapGenerator.biomeMap[ni+nj*effMapSize], -1,
+				   &seaNeighbour,     &sandNeighbour,
+				   &plainsNeighbour,  &lakeNeighbour,
+				   &mountainNeighbour, &peakNeighbour);
+		    }
+		}
+		if (j < effMapSize - neighbourhoodWidth) {
+		    // We are not close to the end of the column, we can add the next row
+		    int nj = j + neighbourhoodWidth;
+		    for (int ni = MAX(0, i - neighbourhoodWidth);
+			 ni < MIN(effMapSize, i + neighbourhoodWidth);
+			 ++ni) {
+			++neighbourhoodSize;
+			countBiome(m_mapGenerator.biomeMap[ni+nj*effMapSize], 1,
+				   &seaNeighbour,     &sandNeighbour,
+				   &plainsNeighbour,  &lakeNeighbour,
+				   &mountainNeighbour, &peakNeighbour);
+		    }
+		}    
+	    }
+
 	    // First mask
-	    maskSSPL[(i+j*effMapDimension)*4]     = 0.0f; 
-            maskSSPL[(i+j*effMapDimension)*4 + 1] = 0.0f; 
-            maskSSPL[(i+j*effMapDimension)*4 + 2] = 0.0f; 
-            maskSSPL[(i+j*effMapDimension)*4 + 3] = 1.0f;
+	    maskSSPL[(i+j*effMapDimension)*4]     = (float)seaNeighbour      / (float)neighbourhoodSize; 
+            maskSSPL[(i+j*effMapDimension)*4 + 1] = (float)sandNeighbour     / (float)neighbourhoodSize; 
+            maskSSPL[(i+j*effMapDimension)*4 + 2] = (float)plainsNeighbour   / (float)neighbourhoodSize; 
+            maskSSPL[(i+j*effMapDimension)*4 + 3] = (float)lakeNeighbour     / (float)neighbourhoodSize;
 	    // Second mask
-	    maskMP[(i+j*effMapDimension)*2]       = 0.0f;
-	    maskMP[(i+j*effMapDimension)*2 + 1]   = 0.0f;
+	    maskMP[(i+j*effMapDimension)*2]       = (float)mountainNeighbour / (float)neighbourhoodSize;
+	    maskMP[(i+j*effMapDimension)*2 + 1]   = (float)peakNeighbour     / (float)neighbourhoodSize;
 	}
     }
     // Copying the last row and columns

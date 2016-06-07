@@ -15,6 +15,25 @@
 #include <glm/glm.hpp>
 
 /**
+ * @brief
+ * Min function between two numbers.
+ *
+ * @param a First number.
+ * @param b Second number.
+ */
+#define MIN(a, b) (((a)<(b))?(a):(b))
+
+/**
+ * @brief
+ * Max function between two numbers.
+ *
+ * @param a First number.
+ * @param b Second number.
+ */
+#define MAX(a, b) (((a)>(b))?(a):(b))
+
+
+/**
  * @brief Find the centroid of the biome associated to a position
  *
  * @param pos   The desired position.
@@ -134,5 +153,22 @@ float computeInterpolationCoefficient(MapParameters & mapParameters,
 				      Biome biome1, Biome biome2,
 				      float x,      float xMax);
 
+/**
+ * @brief Increment a coefficient to count a biome
+ *
+ * @param biome         The biome
+ * @param scale         Scale parameter to see how much a biome counts 
+ *                           (1 or -1 typically) 
+ * @param seaCount      Number of sea      biomes
+ * @param sandCount     Number of sand     biomes
+ * @param plainsCount   Number of plains   biomes
+ * @param lakeCount     Number of lake     biomes
+ * @param mountainCount Number of mountain biomes
+ * @param peakCount     Number of peak     biomes
+ */
+void countBiome(Biome biome,        int scale,
+		int *seaCount,      int *sandCount,
+		int *plainsCount,   int *lakeCount,
+		int *mountainCount, int *peakCount);
 
 #endif

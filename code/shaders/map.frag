@@ -203,10 +203,7 @@ void main() {
     vec4 peakValue     = texture(peakTex,     mapPosition/scaleTexture);
 
     // Blending
-    fColor = (  seaCoefficient      * seaValue      + sandCoefficient * sandValue
+    fColor = (seaCoefficient      * seaValue      + sandCoefficient * sandValue
 	      + plainsCoefficient   * plainsValue   + lakeCoefficient * lakeValue
-	      + mountainCoefficient * mountainValue + peakCoefficient * peakValue)/
-	(seaCoefficient        + sandCoefficient
-	 + plainsCoefficient   + lakeCoefficient
-	 + mountainCoefficient + peakCoefficient);
+	      + mountainCoefficient * mountainValue + peakCoefficient * peakValue);
 }

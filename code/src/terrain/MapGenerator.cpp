@@ -4,24 +4,6 @@
  * @see MapGenerator.hpp
  */
 
-/**
- * @brief
- * Min function between two numbers.
- *
- * @param a First number.
- * @param b Second number.
- */
-#define MIN(a, b) (((a)<(b))?(a):(b))
-
-/**
- * @brief
- * Max function between two numbers.
- *
- * @param a First number.
- * @param b Second number.
- */
-#define MAX(a, b) (((a)>(b))?(a):(b))
-
 
 #include "../../include/terrain/Seed.hpp"
 #include "../../include/terrain/MapGenerator.hpp"

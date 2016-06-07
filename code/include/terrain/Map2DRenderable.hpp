@@ -219,6 +219,7 @@ private:
      * @brief Compute the texture masks and send them
      */
     void sendMasks();
+
 };
 
 /**

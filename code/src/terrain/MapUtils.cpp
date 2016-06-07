@@ -187,3 +187,41 @@ float computeInterpolationCoefficient(MapParameters & mapParameters,
 }
 
 					 
+void countBiome(Biome biome,        int scale,
+		int *seaCount,      int *sandCount,
+		int *plainsCount,   int *lakeCount,
+		int *mountainCount, int *peakCount) {
+    
+    switch(biome) {
+    
+	
+    case Sea:
+	*seaCount += scale;
+	break;
+
+    case InnerBeach:
+    case OuterBeach:
+	*sandCount += scale;
+	break;
+
+    case Plains:
+	*plainsCount += scale;
+	break;
+
+    case Lake:
+	*lakeCount += scale;
+	break;
+
+    case Mountain:
+	*mountainCount += scale;
+	break;
+
+    case Peak:
+	*peakCount += scale;
+	break;
+
+    default:
+	throw std::invalid_argument("Wrong biome (countBiome)");
+	break;
+    }
+}
