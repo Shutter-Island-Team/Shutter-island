@@ -179,7 +179,6 @@ vec3 computeSpotLight(SpotLight light, vec3 positionToCamera)
 void main() {
 
     // Compute the light and blend the texture
-    //fColor = vec4((gNormal + vec3(1.0f))/2, 1.0f);
     
     // Taking the values from the masks
     vec4 firstMask  = texture(seaSandPlainsLakeMask, gTexCoord);

@@ -22,7 +22,6 @@ uniform sampler2D heightMap;
 uniform float heightMin;
 uniform float heightScale;
 
-// In the paper, he has a MVP matrix - don't know what it stands for
 
 /////////// In parameters
 

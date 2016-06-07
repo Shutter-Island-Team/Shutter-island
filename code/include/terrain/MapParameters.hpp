@@ -381,7 +381,7 @@ public:
      *
      * @return The value of m_textureScaling.
      */
-    float getTextureScaling();
+    float getLandTextureScaling();
 
     /**************************************************************************
      * End of Map2DRenderable class "getters".
@@ -699,7 +699,7 @@ private:
      * @brief
      * Defines the scaling for the texture application
      */
-    float m_textureScaling;
+    float m_landTextureScaling;
     /**************************************************************************
      * End of Map2DRenderable class "defines".
      *************************************************************************/

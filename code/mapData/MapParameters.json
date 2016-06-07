@@ -56,8 +56,8 @@
     },
 
     "Map2D" : {
-        "tessellationLevel" :   10.0,
+        "tessellationLevel" :    5.0,
         "heightmapScaling"  :    1,
-	"textureScaling"    :    2.0
+	"landTextureScaling"    :    2.0
     }
 }

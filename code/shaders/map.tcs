@@ -20,11 +20,6 @@ uniform float tessellationLevel;
 // The maximal distance to tesselate
 uniform float maxDist = 500.0f;
 
-// The height map as a sampler
-// (x, y, z) contains the normals
-// w         contains the heights
-uniform sampler2D heightMap;
-
 
 ////////// In parameters
 

@@ -8,6 +8,7 @@
 #include "./../../include/log.hpp"
 #include "./../../include/Utils.hpp"
 #include "./../../include/terrain/MapUtils.hpp"
+#include "./../../include/texturing/TexUtils.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -59,42 +60,42 @@ Map2DRenderable::Map2DRenderable(
     for (int i = minRes; i <= maxRes; ++i) {
 	filenames.push_back(name + std::to_string(i) + extension);
     }
-    sendTexture(filenames, &m_seaTexId);
+    sendMipMapTextures(filenames, &m_seaTexId);
     filenames.clear();
     // Beach
     name = "../textures/shutter_texture_sand_beach";
     for (int i = minRes; i <= maxRes; ++i) {
 	filenames.push_back(name + std::to_string(i) + extension);
     }
-    sendTexture(filenames, &m_sandTexId);
+    sendMipMapTextures(filenames, &m_sandTexId);
     filenames.clear();
     // Plains
     name = "../textures/shutter_texture_grass";
     for (int i = minRes; i <= maxRes; ++i) {
 	filenames.push_back(name + std::to_string(i) + extension);
     }
-    sendTexture(filenames, &m_plainsTexId);
+    sendMipMapTextures(filenames, &m_plainsTexId);
     filenames.clear();
     // Lake
     name = "../textures/shutter_texture_lake";
     for (int i = minRes; i <= maxRes; ++i) {
 	filenames.push_back(name + std::to_string(i) + extension);
     }    
-    sendTexture(filenames, &m_lakeTexId);
+    sendMipMapTextures(filenames, &m_lakeTexId);
     filenames.clear();
     // Mountain
     name = "../textures/shutter_texture_mountain";
     for (int i = minRes; i <= maxRes; ++i) {
 	filenames.push_back(name + std::to_string(i) + extension);
     }
-    sendTexture(filenames, &m_mountainTexId);
+    sendMipMapTextures(filenames, &m_mountainTexId);
     filenames.clear();
     // Peak
     name = "../textures/shutter_texture_snow";
     for (int i = minRes; i <= maxRes; ++i) {
 	filenames.push_back(name + std::to_string(i) + extension);
     }
-    sendTexture(filenames, &m_peakTexId);
+    sendMipMapTextures(filenames, &m_peakTexId);
     filenames.clear();
 
     // Compute the masks
@@ -256,7 +257,7 @@ void Map2DRenderable::do_draw()
     if (scaleTextureLocation != ShaderProgram::null_location)
     {
         glcheck(glUniform1f(scaleTextureLocation, 
-			    m_mapGenerator.m_mapParameters.getTextureScaling()));
+			    m_mapGenerator.m_mapParameters.getLandTextureScaling()));
     }
 
     // Sea Texture
@@ -601,9 +602,6 @@ void Map2DRenderable::sendVoronoiDiagram() {
 
 
 
-
-
-
 void Map2DRenderable::sendHeightMap() {
     /*
      * Creating and computing the 2D texture representing the heightmap.
@@ -720,52 +718,6 @@ void Map2DRenderable::sendHeightMap() {
      */
     glBindTexture(GL_TEXTURE_2D, 0);
     delete [] heightMap;
-
-}
-
-
-void Map2DRenderable::sendTexture(std::vector<std::string> &filenames,
-				  GLuint *idPtr) {
-    
-    // Images to load
-    std::vector<sf::Image> images;
-    sf::Vector2u imageSize(0,0);
-    images.resize(filenames.size());
-
-    //Create texture
-    glGenTextures(1, idPtr);
-
-    //Bind the texture
-    glBindTexture(GL_TEXTURE_2D, *idPtr);
-
-    // Texture parameters
-    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    glcheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-
-    // Loading images
-    for(unsigned int i=0; i<images.size(); ++i)
-	{
-	    images[i].loadFromFile(filenames[i]);
-	    images[i].flipVertically(); // sfml inverts the v axis... put the image in OpenGL convention: lower left corner is (0,0)
-	    if(i==0) imageSize = images[i].getSize();
-	}
-
-    // Creating the mip map
-    glTexStorage2D(GL_TEXTURE_2D, images.size(), GL_RGBA32F, imageSize.x, imageSize.y);
-
-    // Pushing all sub images
-    for(unsigned int i=0; i<images.size(); ++i)
-    {
-        glTexSubImage2D(GL_TEXTURE_2D, i, 0, 0, 
-			images[i].getSize().x, images[i].getSize().y, 
-			GL_RGBA, GL_UNSIGNED_BYTE, (const GLvoid*)images[i].getPixelsPtr());
-    }
-    
-    //Release the texture
-    glBindTexture(GL_TEXTURE_2D, 0);
-
 
 }
 

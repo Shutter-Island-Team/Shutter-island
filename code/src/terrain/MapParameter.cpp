@@ -99,7 +99,7 @@ MapParameters::MapParameters(const std::string& filename)
       */
      m_tessellationLevel = document["Map2D"]["tessellationLevel"].GetFloat();
      m_heightmapScaling = document["Map2D"]["heightmapScaling"].GetFloat();
-     m_textureScaling = document["Map2D"]["textureScaling"].GetFloat();
+     m_landTextureScaling = document["Map2D"]["landTextureScaling"].GetFloat();
 }
 
 /*
@@ -316,7 +316,7 @@ float MapParameters::getHeightmapScaling()
     return m_heightmapScaling;
 }
 
-float MapParameters::getTextureScaling()
+float MapParameters::getLandTextureScaling()
 {
-    return m_textureScaling;
+    return m_landTextureScaling;
 }

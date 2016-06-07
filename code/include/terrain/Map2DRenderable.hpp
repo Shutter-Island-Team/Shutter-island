@@ -207,15 +207,6 @@ private:
     void sendHeightMap();
 
     /**
-     * @brief Read textures and send them as a mip map.
-     *
-     * @param filename The file name of the texture
-     * @param idPtr    The texture buffer identifier
-     */
-    void sendTexture(std::vector<std::string> &filenames,
-		     GLuint *idPtr);
-
-    /**
      * @brief Compute the texture masks and send them
      */
     void sendMasks();
