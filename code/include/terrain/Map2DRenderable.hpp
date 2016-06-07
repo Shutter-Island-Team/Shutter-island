@@ -9,7 +9,7 @@
 #ifndef MAP_2D_RENDERABLE_HPP
 #define MAP_2D_RENDERABLE_HPP
 
-#include "../Renderable.hpp"
+#include "../HierarchicalRenderable.hpp"
 #include "./../lighting/Material.hpp"
 #include "MapGenerator.hpp"
 
@@ -25,7 +25,7 @@
  * The class Map2DRenderable implements the rendering step of the
  * bi-dimensional map.
  */
-class Map2DRenderable : public Renderable
+class Map2DRenderable : public HierarchicalRenderable
 {
 public:
     /**

@@ -24,6 +24,7 @@
 #include "../include/graphicPrimitives/QuadRenderable.hpp"
 #include "../include/terrain/MapGenerator.hpp"
 #include "../include/terrain/Map2DRenderable.hpp"
+#include "../include/terrain/SeaRenderable.hpp"
 
 #define MAP_SIZE 500.0
 #define NB_RABBIT_MIN 6
@@ -233,13 +234,13 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
     /*
      * Loading default shaders.
      */
-   ShaderProgramPtr flatShader = std::make_shared<ShaderProgram>(
+   ShaderProgramPtr seaShader = std::make_shared<ShaderProgram>(
             std::list<std::string>{
-                "../shaders/flatVertex.vert", 
-                "../shaders/flatFragment.frag"
+                "../shaders/sea.vert", 
+                "../shaders/sea.frag"
             }
     );
-    viewer.addShaderProgram(flatShader);
+    viewer.addShaderProgram(seaShader);
 
     ShaderProgramPtr mapShader = std::make_shared<ShaderProgram>(
             std::list<std::string>{
@@ -269,15 +270,14 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
     /*
      * Creating a QuadRenderable at the altitude 0, so as to represent a calm sea.
      */
-    PlaneRenderablePtr seaRenderable = std::make_shared<QuadRenderable>(
-        flatShader,
+    SeaRenderablePtr seaRenderable = std::make_shared<SeaRenderable>(
+        seaShader,
         glm::vec3(0.0, 0.0, 0.1),
         glm::vec3(mapSize, 0.0, 0.1),
         glm::vec3(mapSize, mapSize, 0.1),
-        glm::vec3(0.0, mapSize, 0.1),
-        //glm::vec4(0.00f, 0.345f, 1.00f, 1.00f)
-        glm::vec4(1.00f, 0.345f, 0.00f, 1.00f)
+        glm::vec3(0.0, mapSize, 0.1)
     );
+    seaRenderable->setMaterial(material);
     viewer.addRenderable(seaRenderable);
 
 

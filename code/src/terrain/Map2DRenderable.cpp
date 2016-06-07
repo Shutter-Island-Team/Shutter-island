@@ -34,7 +34,7 @@ Map2DRenderable::Map2DRenderable(
     ShaderProgramPtr shaderProgram, 
     MapGenerator& mapGenerator
 )
-    :   Renderable(shaderProgram),
+    :   HierarchicalRenderable(shaderProgram),
         m_positions(0),
         m_minAltitude(0.0),
         m_scaleAltitude(0.0),
