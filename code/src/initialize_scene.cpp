@@ -71,35 +71,35 @@ glm::vec3 compute_biome_positionFellow(MapGenerator& mapGenerator, Biome biome,
 
 void place_rabbit_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
 {
-    glm::vec3 position = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
+    glm::vec3 positionMaster = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
     glm::vec3 positionFellow;
 
-    MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, position);
+    MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, positionMaster, positionMaster);
     leaderRabbit->setNewLeader(leaderRabbit);
 
     int nbRabbit = randInt(NB_RABBIT_MIN, NB_RABBIT_MAX);
     glm::vec3 diffPos;
 
     for (int i = 0; i < nbRabbit; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, position, 0, MAP_SIZE, 2.0, 10.0f);
-        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, positionFellow);
+        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, positionMaster, 0, MAP_SIZE, 2.0, 10.0f);
+        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, positionFellow, positionMaster);
         rabbitFellow->setNewLeader(leaderRabbit);
     }
 }
 
 void place_wolf_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
 {
-    glm::vec3 position = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
+    glm::vec3 positionMaster = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
     glm::vec3 positionFellow;
 
-    MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, position);
+    MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, positionMaster, positionMaster);
     leaderWolf->setNewLeader(leaderWolf);
 
     int nbWolf = randInt(NB_WOLF_MIN, NB_WOLF_MAX);
 
     for (int i = 0; i < nbWolf; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, position, 0, MAP_SIZE, 2.0, 10.0f);
-        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, positionFellow);
+        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, positionMaster, 0, MAP_SIZE, 2.0, 10.0f);
+        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, positionFellow, positionMaster);
         wolfFellow->setNewLeader(leaderWolf);
     }
 }
@@ -366,7 +366,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    place_boid( viewer, mapGenerator, boidsManager, Plains, 20, 20, 20, 20); 
+    place_boid( viewer, mapGenerator, boidsManager, Plains, 1, 0, 10, 10); 
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));

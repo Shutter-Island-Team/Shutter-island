@@ -91,14 +91,9 @@ glm::vec3 MovableState::arrive(const MovableBoid& b, const glm::vec3 & target) c
 	return steer;
 }
 
-glm::vec3 MovableState::stop(const MovableBoid & b) const
+void MovableState::stop(MovableBoid & b) const
 {
-	///< @todo : Maybe parameter this
-	if (glm::length(b.getVelocity()) < 0.5f) {
-		return glm::vec3(0,0,0);
-	}
-	glm::vec3 positionBehind = b.getLocation() + glm::normalize(-1.0f * b.getVelocity()) * b.getParameters()->getDistToLeader();
-	return 1000.0f * arrive(b, positionBehind);
+	b.resetVelocity();
 }
 
 glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
@@ -426,7 +421,6 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	if (updateTick) {
@@ -440,11 +434,9 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
+	stop(b);
 
-	newForces += stop(b);
-	newForces.z = 0.0f; // Trick to compute force in 2D
-
-	return newForces;
+	return glm::vec3(0,0,0);
 }
 
 glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
@@ -589,7 +581,6 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	if (updateTick) {
@@ -604,10 +595,8 @@ glm::vec3 EatState::computeNewForces(MovableBoid& b, const BoidsManager & boidsM
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	newForces += arrive(b, b.getLocation());
-	newForces += globalAvoid(b, boidsManager, i, j, dt);
-	newForces.z = 0.0f; // Trick to compute force in 2D
-	return newForces;
+	stop(b);
+	return glm::vec3(0,0,0);
 }
 
 glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
@@ -664,11 +653,9 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	newForces += stop(b);
-	newForces.z = 0.0f; // Trick to compute force in 2D
+	stop(b);
 
-	///< TODO maybe it better with the target ?
-	return newForces;
+	return glm::vec3(0,0,0);
 }
 
 glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
@@ -747,7 +734,6 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 
 glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
-	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 	
 	// Update boid status parameters
@@ -762,10 +748,16 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
-	// wander and avoid obstacle until the boid need to eat or find a group
-	newForces += wander(b) + globalAvoid(b, boidsManager, i, j, dt); 
-	newForces.z = 0.0f; // Trick to compute force in 2D
-	return newForces;
+
+	if (glm::length(b.getVelocity()) < 0.2f && glm::distance(b.getLocation(), b.getLandmarkPosition()) < 5.0f) {
+		stop(b);
+		return glm::vec3(0,0,0);
+	} else {
+		// wander and avoid obstacle until the boid need to eat or find a group
+		glm::vec3 newForces = arrive(b, b.getLandmarkPosition()) + globalAvoid(b, boidsManager, i, j, dt); 
+		newForces.z = 0.0f; // Trick to compute force in 2D
+		return newForces;
+	}
 }
 
 glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const

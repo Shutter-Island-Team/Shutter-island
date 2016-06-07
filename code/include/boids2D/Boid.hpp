@@ -86,7 +86,7 @@ class Boid
   float m_angle; ///< Angle of position of the boid
   float m_scale; ///< Size of the boid
   bool m_display;
-  int m_amountFood; ///< @todo : change this in int
+  int m_amountFood; 
   float m_decomposition;
 };
 

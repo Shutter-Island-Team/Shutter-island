@@ -37,7 +37,7 @@ class MovableBoid : public Boid
    * @param[in] t           Type of the boid
    * @param[in] parameters  Parameter of the boid
    */
-	MovableBoid(glm::vec3 location, BoidType t, MovableParametersPtr parameters);
+	MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, BoidType t, MovableParametersPtr parameters);
 
   /**
    * @brief Constructor of a MovableBoid
@@ -46,7 +46,7 @@ class MovableBoid : public Boid
    * @param[in] t           Type of the boid
    * @param[in] parameters  Parameter of the boid
    */
-  MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t,
+  MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, BoidType t,
               MovableParametersPtr parameters);
 
   /**
@@ -57,7 +57,7 @@ class MovableBoid : public Boid
    * @param[in] t           Type of the boid
    * @param[in] parameters  Parameter of the boid
    */
-  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
+  MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, float mass, BoidType t,
               MovableParametersPtr parameters);
 
  protected:
@@ -70,7 +70,7 @@ class MovableBoid : public Boid
    * @param[in] parameters  Parameter of the boid
    * @param[in] amountFood  Amount of food in the boid
    */
-  MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass, BoidType t,
+  MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, float mass, BoidType t,
               MovableParametersPtr parameters, int amountFood);
  public:
 
@@ -100,6 +100,11 @@ class MovableBoid : public Boid
    * @brief Set the acceleration field of the class to 0
    */
   void resetAcceleration();
+
+  /**
+   * @brief Set the velocity to 0
+   */
+  void resetVelocity();
 
   /**
    * @brief     Update the acceleration of the boid. Save the value
@@ -261,6 +266,8 @@ class MovableBoid : public Boid
    */
   glm::vec3 getWaterTarget() const;
 
+  const glm::vec3 & getLandmarkPosition() const;
+
  private:
   glm::vec3 m_velocity; ///< Velocity of the boid
   glm::vec3 m_acceleration; ///< Acceleration of the boid
@@ -282,6 +289,8 @@ class MovableBoid : public Boid
   bool m_isDead; ///< Boolean to know if the boid is dead
 
   glm::vec3 m_waterTarget; ///< Position of the water source
+
+  glm::vec3 m_landmarkPosition; ///< Position for the landmark
 
   /**
    * @brief     Make all the change when a boid get to the new state stateType

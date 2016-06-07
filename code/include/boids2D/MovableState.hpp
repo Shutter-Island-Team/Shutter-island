@@ -89,7 +89,7 @@ class MovableState
    */
   glm::vec3 arrive(const MovableBoid& b, const glm::vec3 & target) const;
   
-  glm::vec3 stop(const MovableBoid & b) const;
+  void stop(MovableBoid & b) const;
 
   /**
    * @brief     Computes the force for a boid b to stay within a border

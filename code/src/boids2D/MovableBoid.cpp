@@ -4,33 +4,33 @@
 #include "../../include/boids2D/StateType.hpp"
 #include "../../include/boids2D/MovableBoid.hpp"
 
-MovableBoid::MovableBoid(glm::vec3 location, BoidType t, MovableParametersPtr parameters) 
-	: MovableBoid(location, glm::vec3(0,0,0), t, parameters)
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, BoidType t, MovableParametersPtr parameters) 
+	: MovableBoid(location, landmarkPosition, glm::vec3(0,0,0), t, parameters)
 {
 
 }
 
-MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, BoidType t, MovableParametersPtr parameters) 
-	: MovableBoid(location, velocity, 0.05f, t, parameters)
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, BoidType t, MovableParametersPtr parameters) 
+	: MovableBoid(location, landmarkPosition, velocity, 0.05f, t, parameters)
 {
 
 }
 
-MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, float mass,
     BoidType t, MovableParametersPtr parameters) :
-    MovableBoid(location, velocity, mass, t, parameters, 1) 
+    MovableBoid(location, landmarkPosition, velocity, mass, t, parameters, 1) 
 {
 
 }
 
-MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
+MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, float mass,
     BoidType t, MovableParametersPtr parameters, int amountFood)
 	: Boid(location, t, amountFood), m_velocity(velocity), 
 	m_acceleration(glm::vec3(0,0,0)), m_mass(mass),
 	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
 	m_rootedPrey((RootedBoidPtr) nullptr), m_hunter((MovableBoidPtr) nullptr),
 	m_leader((MovableBoidPtr) nullptr), m_soulMate((MovableBoidPtr) nullptr),
-	m_isDead(false), m_waterTarget(glm::vec3(0,0,2.0f))
+	m_isDead(false), m_waterTarget(glm::vec3(0,0,2.0f)), m_landmarkPosition(landmarkPosition)
 {
     m_stateType = WALK_STATE;
 	m_currentState.reset(new WalkState());
@@ -71,6 +71,11 @@ StateType MovableBoid::getStateType() const
 void MovableBoid::resetAcceleration()
 {
 	m_acceleration = glm::vec3(0, 0, 0);
+}
+
+void MovableBoid::resetVelocity()
+{
+	m_velocity = glm::vec3(0,0,0);
 }
 
 void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const float & dt, const bool & updateTick)
@@ -181,6 +186,9 @@ void MovableBoid::switchToState(const StateType & stateType, const BoidsManager 
 {
 	switch(stateType) {
 		case WALK_STATE:
+			// if(isLeader()) {
+			// 	std::cerr << "Hello!" << std::endl;
+			// }
 			m_currentState.reset(new WalkState());
 			break;
 		case STAY_STATE:
@@ -243,7 +251,7 @@ void MovableBoid::walkStateHandler(const BoidsManager & boidsManager)
 				MovableBoidPtr soulMate = findMate(boidsManager.getMovableBoids());
 				if (soulMate != nullptr) {
 					m_soulMate = soulMate;
-					soulMate->m_soulMate = (MovableBoidPtr) this;
+					*soulMate->m_soulMate = *this;
 					switchToState(MATE_STATE, boidsManager);
 				}
 			}
@@ -264,7 +272,7 @@ void MovableBoid::stayStateHandler(const BoidsManager & boidsManager)
 		switchToState(FIND_WATER_STATE, boidsManager);
 	} else if (m_parameters->isStarving()) {
 		switchToState(FIND_FOOD_STATE, boidsManager);
-	} else if (m_leader->getStateType() == STAY_STATE) {
+	} else if (m_leader->getStateType() == STAY_STATE && *m_leader != *this) {
 		return;
 	} else if (!m_parameters->isNotTired() && isNight()) {
 		switchToState(SLEEP_STATE, boidsManager);
@@ -546,6 +554,11 @@ MovableBoidPtr MovableBoid::findMate(const std::vector<MovableBoidPtr> & mvB) co
 	} else {
 		return *it;
 	}
+}
+
+const glm::vec3 & MovableBoid::getLandmarkPosition() const
+{
+	return m_landmarkPosition;
 }
 
 bool operator==(const MovableBoid& b1, const MovableBoid& b2)

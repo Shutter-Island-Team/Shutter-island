@@ -71,7 +71,7 @@ class BoidsManager
   * @param[in] velocity Velocity of the movable boid
   * @return Return the pointer of the movable boid
   */
-  MovableBoidPtr addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity = glm::vec3(0,0,0));
+  MovableBoidPtr addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 landmarkLocation, glm::vec3 velocity = glm::vec3(0,0,0));
 
   /**
   * @brief Getter for the time of the day

@@ -15,7 +15,7 @@ BoidsManager::~BoidsManager()
 
 }
 
-MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 velocity) 
+MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 location, glm::vec3 landmarkLocation, glm::vec3 velocity) 
 {
 	MovableBoidPtr movableBoid;
 	MovableParametersPtr parameters = std::make_shared<MovableParameters>(boidType);
@@ -23,10 +23,10 @@ MovableBoidPtr BoidsManager::addMovableBoid(BoidType boidType, glm::vec3 locatio
 	switch(boidType)
 	{
 		case WOLF:
-			movableBoid = std::make_shared<MovableBoid>(location, velocity, WOLF, parameters);
+			movableBoid = std::make_shared<MovableBoid>(location, landmarkLocation, velocity, WOLF, parameters);
 			break;
 		case RABBIT:
-			movableBoid = std::make_shared<MovableBoid>(location, velocity, RABBIT, parameters);
+			movableBoid = std::make_shared<MovableBoid>(location, landmarkLocation, velocity, RABBIT, parameters);
 			break;
 		default:
 			throw std::invalid_argument("valid boidType required");

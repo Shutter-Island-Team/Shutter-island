@@ -15,7 +15,7 @@ class Wolf : public MovableBoid
    * @param[in]	location	Initial position of the wolf
    * @param[in]	parameters 	Parameter of the wolf
    */
-  Wolf(glm::vec3 location, MovableParametersPtr parameters);
+  Wolf(glm::vec3 location, glm::vec3 landmarkPosition, MovableParametersPtr parameters);
 
   /**
    * @brief 	Constructor for Wolf
@@ -23,7 +23,7 @@ class Wolf : public MovableBoid
    * @param[in]	velocity	Initial velocity of the wolf
    * @param[in]	parameters 	Parameter of the wolf
    */
-  Wolf(glm::vec3 location, glm::vec3 velocity, MovableParametersPtr parameters);
+  Wolf(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, MovableParametersPtr parameters);
 
   /**
    * @brief 	Constructor for Wolf
@@ -32,7 +32,7 @@ class Wolf : public MovableBoid
    * @param[in]	mass		Mass of the wolf
    * @param[in]	parameters 	Parameter of the wolf
    */
-  Wolf(glm::vec3 location, glm::vec3 velocity, float mass,
+  Wolf(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, float mass,
 		MovableParametersPtr parameters);
 };
 
