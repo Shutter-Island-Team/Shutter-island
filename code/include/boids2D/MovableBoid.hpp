@@ -113,7 +113,7 @@ class MovableBoid : public Boid
    * @param[in] dt           Time step
    * @param[in] updateTick   True if the current tick should have update of state of boids
    */
-  void computeAcceleration(const BoidsManager & boidsManager, const float & dt, const bool & updateTick);
+  void computeAcceleration(BoidsManager & boidsManager, const float & dt, const bool & updateTick);
 
   /**
    * @brief     Update the position and the velocity for the next step in the simulation 
@@ -127,6 +127,8 @@ class MovableBoid : public Boid
    * @param[in] distView  The maximum distance viewable by this
    */
 	bool canSee(const Boid & other, const float & distView) const;
+
+  bool distVision (const glm::vec3 & position, const float & distView) const;
 
   /**
    * @brief     Check if the other boid is in the circle of center of the
@@ -327,7 +329,7 @@ class MovableBoid : public Boid
   /**
    * @brief Contain the rules for a boid when he is lost
    */
-  void lostStateHandler(const BoidsManager & boidsManager);
+  void lostStateHandler(BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid when he sleeps

@@ -215,7 +215,7 @@ void display_3Dboids( Viewer& viewer, BoidsManagerPtr boidsManager,
         viewer.addRenderable(sight);
 
         StateRenderablePtr state = std::make_shared<StateRenderable>(flatShader, m);
-        viewer.addRenderable(state);  
+        viewer.addRenderable(state);
     }
     #endif
 }
@@ -352,7 +352,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
                 "../shaders/instanceFragment.frag"});
     viewer.addShaderProgram( instanceShader );
 
-    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator);
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator, viewer, flatShader);
 
     //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
     DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
@@ -366,7 +366,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    place_boid( viewer, mapGenerator, boidsManager, Plains, 1, 0, 10, 10); 
+    place_boid( viewer, mapGenerator, boidsManager, Plains, 10, 3, 10, 10); 
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));

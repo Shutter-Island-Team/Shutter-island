@@ -32,6 +32,10 @@ class RootedBoid : public Boid
    */
   RootedBoid(glm::vec3 location, BoidType t, int amountFood);
 
+  RootedBoid(glm::vec3 location, BoidType t, float radius);
+
+  RootedBoid(glm::vec3 location, BoidType t, float radius, int amountFood);
+
  private:
   float m_radius; ///< Radius of the boid to have "place" to live
 };

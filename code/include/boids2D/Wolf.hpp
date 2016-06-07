@@ -34,6 +34,9 @@ class Wolf : public MovableBoid
    */
   Wolf(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, float mass,
 		MovableParametersPtr parameters);
+
+ private:
+  BoidType getType() const;
 };
 
 typedef std::shared_ptr<Wolf> WolfPtr;

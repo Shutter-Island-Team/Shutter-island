@@ -75,10 +75,12 @@ void MovableBoid::resetAcceleration()
 
 void MovableBoid::resetVelocity()
 {
-	m_velocity = glm::vec3(0,0,0);
+	if (glm::length(m_velocity) > 0.0001f) {
+		m_velocity /= 1000.0f;
+	}
 }
 
-void MovableBoid::computeAcceleration (const BoidsManager & boidsManager, const float & dt, const bool & updateTick)
+void MovableBoid::computeAcceleration (BoidsManager & boidsManager, const float & dt, const bool & updateTick)
 {
 	if(isDead()) {
 		switchToState(DEAD_STATE, boidsManager);
@@ -158,9 +160,14 @@ bool MovableBoid::canSee(const Boid & other, const float & distView) const
 	return (distVision(other, distView)) && (angleVision(other) && &other != this);
 }
 
+bool MovableBoid::distVision (const glm::vec3 & position, const float & distView) const
+{
+	return (glm::distance(m_location, position) < distView);
+}
+
 bool MovableBoid::distVision (const Boid & other, const float & distView) const
 {
-	return (glm::distance(m_location, other.getLocation()) < distView);
+	return distVision(other.getLocation(), distView);
 }
 
 bool MovableBoid::sameSpecies(const Boid & other) const
@@ -186,10 +193,15 @@ void MovableBoid::switchToState(const StateType & stateType, const BoidsManager 
 {
 	switch(stateType) {
 		case WALK_STATE:
-			// if(isLeader()) {
-			// 	std::cerr << "Hello!" << std::endl;
-			// }
-			m_currentState.reset(new WalkState());
+			if(isLeader()) {
+				if(std::rand() % 5 == 0) {
+					m_currentState.reset(new LostState()); // The leader return to the landmark
+				} else {
+					m_currentState.reset(new WalkState());
+				}
+			} else {
+				m_currentState.reset(new WalkState());
+			}
 			break;
 		case STAY_STATE:
 			m_currentState.reset(new StayState());
@@ -242,20 +254,6 @@ void MovableBoid::walkStateHandler(const BoidsManager & boidsManager)
 		switchToState(FIND_FOOD_STATE, boidsManager);
 	} else if (m_parameters->isTired()) {
 		switchToState(STAY_STATE, boidsManager);
-	} else if (m_parameters->isHighAffinity()) {
-		#pragma omp critical(dataupdate)
-		{
-			if (hasSoulMate()) {
-				switchToState(MATE_STATE, boidsManager);
-			} else {
-				MovableBoidPtr soulMate = findMate(boidsManager.getMovableBoids());
-				if (soulMate != nullptr) {
-					m_soulMate = soulMate;
-					*soulMate->m_soulMate = *this;
-					switchToState(MATE_STATE, boidsManager);
-				}
-			}
-		}
 	} else if (!distVision(*m_leader, m_parameters->getDistViewMax())){
 		switchToState(LOST_STATE, boidsManager);
 	} else if (getLeader()->getStateType() == STAY_STATE){
@@ -350,7 +348,7 @@ void MovableBoid::eatStateHandler(const BoidsManager & boidsManager)
 }
 
 
-void MovableBoid::lostStateHandler(const BoidsManager & boidsManager)
+void MovableBoid::lostStateHandler(BoidsManager & boidsManager)
 {
 	if (m_parameters->isInDanger()) {
 		switchToState(FLEE_STATE, boidsManager);
@@ -360,12 +358,42 @@ void MovableBoid::lostStateHandler(const BoidsManager & boidsManager)
 		switchToState(FIND_FOOD_STATE, boidsManager);
 	} else if (m_parameters->isTired()) {
 		switchToState(STAY_STATE, boidsManager);
-	} else if (distVision(*m_leader, m_parameters->getDistViewMax())) {
+	} else if (isLeader() && distVision(getLandmarkPosition(), 15.0f)) {
+		switchToState(WALK_STATE, boidsManager);
+	} else if (!isLeader() && distVision(*m_leader, m_parameters->getDistViewMax())) {
 		switchToState(WALK_STATE, boidsManager);	
 	} else if (isNight()) {
 		switchToState(SLEEP_STATE, boidsManager);
 	} else {
-		return; //Stay in walk state
+		#pragma omp critical
+		{
+			if (m_parameters->isHighAffinity()) {
+				unsigned int i = 0;
+				unsigned int j = 0;
+				boidsManager.coordToBox(m_location, i, j);
+				std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
+				std::list<MovableBoidPtr> neighbours;
+				for (std::list<MovableBoidPtr>::iterator it = mvB.begin(); it != mvB.end(); ++it) {
+					if ((*it)->m_stateType == LOST_STATE && (*it)->getLeader() == getLeader() && (*it)->m_parameters->isHighAffinity()) {
+						neighbours.insert(neighbours.begin(), *it);
+					}
+				}
+				if (neighbours.size() >= 2) {
+					glm::vec3 position;
+					for (std::list<MovableBoidPtr>::iterator itn = neighbours.begin(); itn != neighbours.end(); ++itn) {
+						(*itn)->m_parameters->resetAffinity();
+						position += (*itn)->getLocation();
+					}
+					position /= neighbours.size();
+					MovableBoidPtr newborn = boidsManager.addMovableBoid(getBoidType(), position, m_landmarkPosition, glm::vec3(0,0,0));
+					newborn->setNewLeader(getLeader());
+				    #ifdef DEBUG
+					// boidsManager.addDebugMovableBoid(newborn);
+				    #endif
+					std::cerr << "NAISSANCE !" << std::endl;
+				}
+			}
+		}
 	}
 }
 

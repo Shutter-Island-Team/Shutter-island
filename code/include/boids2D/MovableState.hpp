@@ -343,7 +343,6 @@ class DeadState : public MovableState
   glm::vec3 computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const;
 };
 
-
 // Return the closest animal of b of the good type in the list.
 // Need to be seen too.
 MovableBoidPtr closestAnimal(const MovableBoid & b, const BoidType & type, const std::list<MovableBoidPtr> & mvB);

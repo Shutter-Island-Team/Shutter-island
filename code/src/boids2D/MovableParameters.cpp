@@ -331,3 +331,9 @@ bool MovableParameters::isHighAffinity() const
 {
 	return m_affinity == 100.0f;
 }
+
+void MovableParameters::resetAffinity()
+{
+	m_affinity = 0.0f;
+}
+

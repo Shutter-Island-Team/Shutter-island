@@ -1,7 +1,7 @@
 {
 	"maxSpeedWalk": 5.0,
 	"maxSpeedRun": 9.0,
-	"maxForce": 1.2,
+	"maxForce": 4.2,
 	"angleView": 3.25,
 	"distSeparate": 3.0,
 	"distCohesion": 1.0,
@@ -10,7 +10,7 @@
 	"distToLeader": 1.0,
 	"distSeeAhead": 1.5,
 	"distStartSlowingDown": 9.0,
-	"rCircleWander": 3.0,
-	"distToCircle": 3.0,
+	"rCircleWander": 8.0,
+	"distToCircle": 9.0,
 	"distMaxToLeader": 20.0
 }

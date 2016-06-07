@@ -34,6 +34,9 @@ class Rabbit : public MovableBoid
    */
   Rabbit(glm::vec3 location, glm::vec3 landmarkPosition, glm::vec3 velocity, float mass,
 		MovableParametersPtr parameters);
+
+ private:
+  BoidType getType() const;
 };
 
 typedef std::shared_ptr<Rabbit> RabbitPtr;

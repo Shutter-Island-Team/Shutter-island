@@ -332,6 +332,8 @@ public:
 
   bool isHighAffinity() const;
 
+  void resetAffinity();
+
  private:
   float m_maxSpeedWalk; ///< Maximum speed of the boid
   float m_maxSpeedRun; ///< Maximum speed of the boid

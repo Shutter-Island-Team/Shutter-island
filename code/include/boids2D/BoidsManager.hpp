@@ -10,6 +10,7 @@
 #include "../terrain/MapGenerator.hpp"
 #include "../terrain/Biome.hpp"
 #include "../structures/Matrix.hpp"
+#include "../Viewer.hpp"
 
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;
@@ -23,7 +24,7 @@ class BoidsManager
   /**
    * @brief Constructor for the BoidsManager
    */
-  BoidsManager(MapGenerator& map);
+  BoidsManager(MapGenerator& map, Viewer& viewer, ShaderProgramPtr& m_shader);
 
   /**
    * @brief Destructor for the BoidsManager
@@ -171,8 +172,12 @@ class BoidsManager
    */
   void resetTick();
 
+  void addDebugMovableBoid(MovableBoidPtr m);
+
  private:
   MapGenerator& m_map; ///< Reference of the map
+  Viewer& m_viewer; ///< Reference of the viewer
+  ShaderProgramPtr& m_shader; ///< Reference of the shader
   MatrixMovableBoidPtr m_movableBoids; ///< Matrix of the movable boids
   std::vector<MovableBoidPtr> m_movableBoidsVec; ///< Vector of movable boids
   MatrixRootedBoidPtr m_rootedBoids; ///< Matrix of the rooted boids

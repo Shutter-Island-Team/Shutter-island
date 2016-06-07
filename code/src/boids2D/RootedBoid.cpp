@@ -7,7 +7,19 @@ RootedBoid::RootedBoid(glm::vec3 location, BoidType t)
 }
 
 RootedBoid::RootedBoid(glm::vec3 location, BoidType t, int amountFood)
-	: Boid(location, t, amountFood), m_radius(2.0f)
+	: RootedBoid(location, t, 2.0f, amountFood)
+{
+
+}
+
+RootedBoid::RootedBoid(glm::vec3 location, BoidType t, float radius)
+	: RootedBoid(location, t, radius, 1)
+{
+
+}
+
+RootedBoid::RootedBoid(glm::vec3 location, BoidType t, float radius, int amountFood)
+	: Boid(location, t, amountFood), m_radius(radius)
 {
 
 }

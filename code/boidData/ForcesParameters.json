@@ -1,8 +1,8 @@
 {
-	"separate" : 7.0,
+	"separate" : 3.0,
 	"evade" : 7.0,
-	"cohesion" : 0.02,
-	"align" : 0.05,
+	"cohesion" : 0.2,
+	"align" : 2.0,
 	"stayOnIsland" : 4000.0,
 	"collisionAvoidance" : 133.0,
 	"followLeader" : 2.6

@@ -2,9 +2,11 @@
 #include <iostream>
 
 #include "../../include/boids2D/BoidsManager.hpp"
+#include "../../include/boids2D/SightRenderable.hpp"
+#include "../../include/boids2D/StateRenderable.hpp"
 
-BoidsManager::BoidsManager(MapGenerator& map) 
-	: m_map(map), m_updateCoeff(0), m_updatePeriod(10)
+BoidsManager::BoidsManager(MapGenerator& map, Viewer& viewer, ShaderProgramPtr& shader) 
+	: m_map(map), m_viewer(viewer), m_shader(shader), m_updateCoeff(0), m_updatePeriod(10)
 {
 	m_movableBoids = std::make_shared<Matrix<MovableBoidPtr> >(25, 25);
 	m_rootedBoids = std::make_shared<Matrix<RootedBoidPtr> >(25, 25);
@@ -213,4 +215,13 @@ bool BoidsManager::isUpdateTick() const
 void BoidsManager::resetTick()
 {
 	m_updateCoeff = 0;
+}
+
+void BoidsManager::addDebugMovableBoid(MovableBoidPtr m)
+{
+    SightRenderablePtr sight = std::make_shared<SightRenderable>(m_shader, m);
+    m_viewer.addRenderable(sight);
+
+    StateRenderablePtr state = std::make_shared<StateRenderable>(m_shader, m);
+    m_viewer.addRenderable(state);
 }
