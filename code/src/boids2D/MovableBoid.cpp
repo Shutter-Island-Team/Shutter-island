@@ -216,6 +216,7 @@ void MovableBoid::switchToState(const StateType & stateType, const BoidsManager 
 			break;
 		case DEAD_STATE:
 			m_currentState.reset(new DeadState());
+			break;
 		default:
 			std::cerr << "Unknown state : " << stateType << std::endl;
 			break;
