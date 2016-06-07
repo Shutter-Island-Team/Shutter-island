@@ -38,7 +38,7 @@ void DynamicSystemBoid::computeSimulationStep()
 {
     std::vector<MovableBoidPtr> mvB = m_boidsManager->getMovableBoids();
     const bool updateTick = m_boidsManager->isUpdateTick();
-    #pragma omp parallel for
+    // #pragma omp parallel for
     for (unsigned int i = 0; i < mvB.size(); ++i) {
         mvB[i]->computeAcceleration(*m_boidsManager, m_dt, updateTick);
     }

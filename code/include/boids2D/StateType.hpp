@@ -16,7 +16,6 @@
  * @brief Record the different type of behavior
  */
 enum StateType {
-	TEST_STATE,
 	WALK_STATE,
 	STAY_STATE,
 	SLEEP_STATE,

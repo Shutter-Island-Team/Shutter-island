@@ -73,7 +73,7 @@ glm::vec3 MovableState::arrive(const MovableBoid& b, const glm::vec3 & target) c
 	glm::vec3 desiredVelocity = target - b.getLocation();
 
 	float distance = glm::length(desiredVelocity);
-	desiredVelocity = glm::normalize(desiredVelocity);
+	desiredVelocity = cNormalize(desiredVelocity);
 	if (distance < b.getParameters()->getDistStartSlowingDown()) {
 		// Set the magnitude according to how close we are.
 		// Linear computation of the magnitude
@@ -89,6 +89,16 @@ glm::vec3 MovableState::arrive(const MovableBoid& b, const glm::vec3 & target) c
 	glm::vec3 steer = desiredVelocity - b.getVelocity();
 	limitVec3(steer, b.getParameters()->getMaxForce());
 	return steer;
+}
+
+glm::vec3 MovableState::stop(const MovableBoid & b) const
+{
+	///< @todo : Maybe parameter this
+	if (glm::length(b.getVelocity()) < 0.5f) {
+		return glm::vec3(0,0,0);
+	}
+	glm::vec3 positionBehind = b.getLocation() + glm::normalize(-1.0f * b.getVelocity()) * b.getParameters()->getDistToLeader();
+	return 1000.0f * arrive(b, positionBehind);
 }
 
 glm::vec3 MovableState::stayWithinWalls(const MovableBoid& b) const
@@ -283,9 +293,6 @@ glm::vec3 MovableState::evade(const MovableBoid & prey, const MovableBoid & hunt
 glm::vec3 MovableState::followLeader(const MovableBoid & b, const std::list<MovableBoidPtr> & mvB, const float & dt,
 	const float & separateCoeff, const float & evadeCoeff) const
 {
-	if (!b.hasLeader()) {
-		throw std::invalid_argument("The requested boid can't follow a leader when it has none");
-	}
 	glm::vec3 steer(0,0,0);
 	MovableBoidPtr leader = b.getLeader();
 	if (leader->getVelocity() == glm::vec3(0,0,0)) { // Trick to avoid error with normalize when leader->getVelocity() == (0,0,0)
@@ -350,7 +357,7 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 		+ boidsManager.m_forceController.getAlign() * align(b, mvB) 
 		+ avoidEnvironment(b, boidsManager, i, j);
 
-	if(b.hasLeader()  && b.getLeader()->canSee(b, 1.4f * b.getLeader()->getParameters()->getDistSeparate())) {
+	if(b.getLeader()->canSee(b, 1.4f * b.getLeader()->getParameters()->getDistSeparate())) {
 		avoid += boidsManager.m_forceController.getEvade() * evade(b, *b.getLeader(), dt);
 	}
 	return avoid;
@@ -373,38 +380,6 @@ glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManag
  * State priority : FleeState, FindFood, Eat, Stay, Walk, ...
  * 
  */
-glm::vec3 TestState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
-{
-	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
-
-	if (updateTick) {
-		b.getParameters()->staminaDecreaseWalk();
-		b.getParameters()->hungerDecreaseWalk();
-		b.getParameters()->thirstDecreaseWalk();
-	}
-
-	// Detect danger and update danger parameter 
-	updateDanger(b, mvB);
-
-	// Detect if alone and update affinity
-	updateAffinity(b, mvB);
-
-	glm::vec3 newForces(0,0,0);
-	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters()->getDistViewMax())) { // Can see the leader
-		newForces = boidsManager.m_forceController.getFollowLeader() * followLeader(b, mvB, dt,
-			boidsManager.m_forceController.getSeparate(),
-			boidsManager.m_forceController.getEvade())
-			+ avoidEnvironment(b, boidsManager, i, j);
-	} else if (b.isLeader()) {
-		newForces = wander(b) + avoidEnvironment(b, boidsManager, i, j);
-	} else { // Can't see the leader
-		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt);
-	}
-
-	
-	newForces.z = 0.0f; // Trick to compute force in 2D
-	return newForces;
-}
 
 glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
 {
@@ -429,15 +404,13 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	if(b.hasLeader() && b.canSee(*b.getLeader(), b.getParameters()->getDistViewMax())) { // Can see the leader
+	if(b != *b.getLeader()) { // Follower of the leader
 		newForces = boidsManager.m_forceController.getFollowLeader() * followLeader(b, mvB, dt,
 			boidsManager.m_forceController.getSeparate(),
 			boidsManager.m_forceController.getEvade())
 			+ avoidEnvironment(b, boidsManager, i, j);
-	} else if (b.isLeader()) {
+	} else  { // Only leader
 		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt); //avoidEnvironment(b, boidsManager, i, j);
-	} else { // Can't see the leader
-		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt); 
 	}
 
 	newForces.z = 0.0f; // Trick to compute force in 2D
@@ -468,7 +441,7 @@ glm::vec3 StayState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	newForces += arrive(b, b.getLocation());
+	newForces += stop(b);
 	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	return newForces;
@@ -691,7 +664,7 @@ glm::vec3 DrinkState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
 
-	newForces += arrive(b, b.getLocation());
+	newForces += stop(b);
 	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	///< TODO maybe it better with the target ?
@@ -789,7 +762,7 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 
 	// Detect if alone and update affinity
 	updateAffinity(b, mvB);
-	// wander and avoid obstacle until the boid need to eat or fin a group
+	// wander and avoid obstacle until the boid need to eat or find a group
 	newForces += wander(b) + globalAvoid(b, boidsManager, i, j, dt); 
 	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;

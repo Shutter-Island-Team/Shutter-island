@@ -32,24 +32,8 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 velocity, float mass,
 	m_leader((MovableBoidPtr) nullptr), m_soulMate((MovableBoidPtr) nullptr),
 	m_isDead(false), m_waterTarget(glm::vec3(0,0,2.0f))
 {
-	#ifdef DEBUG 
-    	m_stateType = WALK_STATE;
-    #else
-    	m_stateType = WALK_STATE;
-    #endif
-
-	switch(m_stateType) {
-		case TEST_STATE:
-			m_currentState.reset(new TestState());
-			break;
-		case WALK_STATE:
-			m_currentState.reset(new WalkState());
-			break;
-		default:
-			std::cerr << "State not recognize. Default state walk initialization" << std::endl;
-			m_currentState.reset(new WalkState());
-			break;
-	}
+    m_stateType = WALK_STATE;
+	m_currentState.reset(new WalkState());
 
 	switch(t) {
 		case RABBIT:
@@ -228,12 +212,10 @@ void MovableBoid::switchToState(const StateType & stateType, const BoidsManager 
 			m_currentState.reset(new MateState());
 			break;
 		case LOST_STATE:
-			m_currentState.reset(new LostState());
+			m_currentState.reset(new LostState()); 
 			break;
 		case DEAD_STATE:
-			m_currentState.reset(new DeadState()); 
-		case TEST_STATE:
-			break;
+			m_currentState.reset(new DeadState());
 		default:
 			std::cerr << "Unknown state : " << stateType << std::endl;
 			break;
@@ -265,8 +247,10 @@ void MovableBoid::walkStateHandler(const BoidsManager & boidsManager)
 				}
 			}
 		}
-	} else {
-		return; //Stay in walk state
+	} else if (!distVision(*m_leader, m_parameters->getDistViewMax())){
+		switchToState(LOST_STATE, boidsManager);
+	} else if (getLeader()->getStateType() == STAY_STATE){
+		switchToState(STAY_STATE, boidsManager);
 	}
 }
 
@@ -277,9 +261,10 @@ void MovableBoid::stayStateHandler(const BoidsManager & boidsManager)
 		switchToState(FLEE_STATE, boidsManager);
 	} else if (m_parameters->isThirsty()) {
 		switchToState(FIND_WATER_STATE, boidsManager);
-
 	} else if (m_parameters->isStarving()) {
-		switchToState(FIND_FOOD_STATE, boidsManager);		
+		switchToState(FIND_FOOD_STATE, boidsManager);
+	} else if (m_leader->getStateType() == STAY_STATE) {
+		return;
 	} else if (!m_parameters->isNotTired() && isNight()) {
 		switchToState(SLEEP_STATE, boidsManager);
 	} else if (!m_parameters->isNotTired()) { 
@@ -287,10 +272,12 @@ void MovableBoid::stayStateHandler(const BoidsManager & boidsManager)
 		return; // Stay in the state
 	} else if (hasSoulMate()) {
 		switchToState(MATE_STATE, boidsManager);
-	} else if (hasLeader() && m_parameters->isHighStamina()) {
-		switchToState(WALK_STATE, boidsManager);
-	} else if (!hasLeader()) {
-		switchToState(LOST_STATE, boidsManager);
+	} else if (m_parameters->isHighStamina()) {
+		if (canSee(*m_leader, m_parameters->getDistViewMax())) {
+			switchToState(WALK_STATE, boidsManager);			
+		} else {
+			switchToState(LOST_STATE, boidsManager);
+		}
 	} else {
 		return; // Stay in stay state
 	}
@@ -356,10 +343,20 @@ void MovableBoid::eatStateHandler(const BoidsManager & boidsManager)
 
 void MovableBoid::lostStateHandler(const BoidsManager & boidsManager)
 {
-	if (isInGroup()) {
-		switchToState(WALK_STATE, boidsManager);
+	if (m_parameters->isInDanger()) {
+		switchToState(FLEE_STATE, boidsManager);
+	} else if (m_parameters->isThirsty()) {
+		switchToState(FIND_WATER_STATE, boidsManager);
+	} else if (m_parameters->isHungry()) {
+		switchToState(FIND_FOOD_STATE, boidsManager);
+	} else if (m_parameters->isTired()) {
+		switchToState(STAY_STATE, boidsManager);
+	} else if (distVision(*m_leader, m_parameters->getDistViewMax())) {
+		switchToState(WALK_STATE, boidsManager);	
 	} else if (isNight()) {
 		switchToState(SLEEP_STATE, boidsManager);
+	} else {
+		return; //Stay in walk state
 	}
 }
 
@@ -459,17 +456,6 @@ void MovableBoid::setNewLeader(MovableBoidPtr newLeader)
 	float scale = (*newLeader == *this) ? 2.0f : 1.0f;
 	setScale(scale);
 	m_leader = newLeader;
-}
-
-bool MovableBoid::hasLeader() const
-{
-	return getLeader() != (MovableBoidPtr) nullptr 
-			&& !isLeader();
-}
-
-bool MovableBoid::isInGroup() const
-{
-	return !(getLeader() == nullptr);
 }
 
 void MovableBoid::setMovablePrey(const MovableBoidPtr & boid)

@@ -172,7 +172,7 @@ class MovableBoid : public Boid
    * @brief   Check if the boid has a leader
    * @return  true if the boid has a leader, false otherwise
    */
-  bool hasLeader() const;
+  // bool hasLeader() const;
 
   /**
    * @brief Setter for the movable prey of the boid
@@ -358,12 +358,6 @@ class MovableBoid : public Boid
    * @return  true if the boid is close to the prey, false otherwise
    */
   bool closeToPrey() const;
-
-  /**
-   * @brief   Check if the boid is in a group
-   * @return  true if the boid is in a group, false otherwise
-   */
-  bool isInGroup() const;
 
   /**
    * @brief     Check if the boid is next to a source of water (can touch it)

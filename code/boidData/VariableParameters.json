@@ -30,13 +30,13 @@
 		},
 		"WalkState": {
 			"Stamina" : 1,
-			"Hunger" : 0.5,
-			"Thirst" : 0.1
+			"Hunger" : 0.1,
+			"Thirst" : 0.2
 		},
 		"RunState": {
 			"Stamina" : 2,
-			"Hunger" : 1,
-			"Thirst" : 0.2
+			"Hunger" : 0.3,
+			"Thirst" : 0.4
 		}	
 	}
 }
