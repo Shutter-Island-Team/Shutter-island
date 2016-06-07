@@ -99,6 +99,7 @@ MapParameters::MapParameters(const std::string& filename)
       */
      m_tessellationLevel = document["Map2D"]["tessellationLevel"].GetFloat();
      m_heightmapScaling = document["Map2D"]["heightmapScaling"].GetFloat();
+     m_textureScaling = document["Map2D"]["textureScaling"].GetFloat();
 }
 
 /*
@@ -313,4 +314,9 @@ float MapParameters::getTessellationLevel()
 float MapParameters::getHeightmapScaling()
 {
     return m_heightmapScaling;
+}
+
+float MapParameters::getTextureScaling()
+{
+    return m_textureScaling;
 }

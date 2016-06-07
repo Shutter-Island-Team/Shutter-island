@@ -17,10 +17,17 @@ uniform sampler2D heightMap;
 
 ////////// In parameters
 
+// The global position
+in vec3 tsPosition[3];
+
 // The texture coordinates
 in vec2 tsTexCoord[3];
 
+
 ////////// Out values
+
+// The global position
+out vec3 gPosition;
 
 // The texture coordinates
 out vec2 gTexCoord;
@@ -44,6 +51,8 @@ void main() {
     gl_Position = gl_in[0].gl_Position;
     // Normal
     gNormal = restoreNormal(texture(heightMap, tsTexCoord[0]).xyz);
+    // Position 
+    gPosition = tsPosition[0];
     // TexCoord
     gTexCoord = tsTexCoord[0];
     EmitVertex();
@@ -53,6 +62,8 @@ void main() {
     gl_Position = gl_in[1].gl_Position;
     // Normal
     gNormal = restoreNormal(texture(heightMap, tsTexCoord[1]).xyz);
+    // Position 
+    gPosition = tsPosition[1];
     // TexCoord
     gTexCoord = tsTexCoord[1];
     EmitVertex();
@@ -62,6 +73,8 @@ void main() {
     gl_Position = gl_in[2].gl_Position;
     // Normal
     gNormal = restoreNormal(texture(heightMap, tsTexCoord[2]).xyz);
+    // Position 
+    gPosition = tsPosition[2];
     // TexCoord
     gTexCoord = tsTexCoord[2];
     EmitVertex();

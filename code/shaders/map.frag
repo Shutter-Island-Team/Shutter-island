@@ -66,21 +66,27 @@ uniform SpotLight spotLight[MAX_NR_SPOT_LIGHTS];
 
 ////////// Uniforms to set
 
+///// The texture scale
+uniform float scaleTexture;
+
 ///// Textures
 uniform sampler2D seaTex;
 uniform sampler2D sandTex;
 uniform sampler2D plainsTex;
 uniform sampler2D lakeTex;
 uniform sampler2D mountainTex;
+uniform sampler2D peakTex;
 
 ///// Masks 
-uniform sampler2D seaMask;
-uniform sampler2D sandMask;
-uniform sampler2D plainsMask;
-uniform sampler2D lakeMask;
-uniform sampler2D mountainMask;
+//(x, y, z, w) = (sea, sand, plains, lake)
+uniform sampler2D seaSandPlainsLakeMask;
+//(x, y)       = (mountain, peak)
+uniform sampler2D mountainPeakMask;
 
 ////////// In parameters
+
+// The global position
+in vec3 gPosition;
 
 // The texture coordinates
 in vec2 gTexCoord;
@@ -173,6 +179,34 @@ vec3 computeSpotLight(SpotLight light, vec3 positionToCamera)
 void main() {
 
     // Compute the light and blend the texture
-    //fragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);   
-    fColor = vec4((gNormal + vec3(1.0f))/2, 1.0f);   
+    //fColor = vec4((gNormal + vec3(1.0f))/2, 1.0f);
+    
+    // Taking the values from the masks
+    vec4 firstMask  = texture(seaSandPlainsLakeMask, gTexCoord);
+    vec4 secondMask = texture(mountainPeakMask,      gTexCoord);
+    
+    float seaCoefficient      = firstMask.x;
+    float sandCoefficient     = firstMask.y;
+    float plainsCoefficient   = firstMask.z;
+    float lakeCoefficient     = firstMask.w;
+    float mountainCoefficient = secondMask.x;
+    float peakCoefficient     = secondMask.y;
+
+    
+    vec2 mapPosition = gPosition.xy;
+    // Taking the texture values
+    vec4 seaValue      = texture(seaTex,      mapPosition/scaleTexture);
+    vec4 sandValue     = texture(sandTex,     mapPosition/scaleTexture);
+    vec4 plainsValue   = texture(plainsTex,   mapPosition/scaleTexture);
+    vec4 lakeValue     = texture(lakeTex,     mapPosition/scaleTexture);
+    vec4 mountainValue = texture(mountainTex, mapPosition/scaleTexture);
+    vec4 peakValue     = texture(peakTex,     mapPosition/scaleTexture);
+
+    // Blending
+    fColor = (  seaCoefficient      * seaValue      + sandCoefficient * sandValue
+	      + plainsCoefficient   * plainsValue   + lakeCoefficient * lakeValue
+	      + mountainCoefficient * mountainValue + peakCoefficient * peakValue)/
+	(seaCoefficient        + sandCoefficient
+	 + plainsCoefficient   + lakeCoefficient
+	 + mountainCoefficient + peakCoefficient);
 }

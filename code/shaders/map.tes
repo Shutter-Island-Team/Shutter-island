@@ -34,6 +34,9 @@ in vec2 tcTexCoord[];
 
 ////////// Out values
 
+// The position
+out vec3 tsPosition;
+
 // The tex coords
 out vec2 tsTexCoord;
 
@@ -47,9 +50,9 @@ void main()
     // use the gl_TessCoord.x, gl_TessCoord.y, gl_TessCoord.z
     // to compute the position of the vertex depending on the 3
     // vertices of the triangle (tcPosition[0, 1, 2])
-    vec2 tsPosition = ((gl_TessCoord.x * tcPosition[0]) +
-                        (gl_TessCoord.y * tcPosition[1]) +
-                        (gl_TessCoord.z * tcPosition[2])).xy;
+    tsPosition = ((gl_TessCoord.x * tcPosition[0]) +
+    	          (gl_TessCoord.y * tcPosition[1]) +
+                  (gl_TessCoord.z * tcPosition[2])).xyz;
 
     tsTexCoord = (gl_TessCoord.x * tcTexCoord[0]) +
                  (gl_TessCoord.y * tcTexCoord[1]) +

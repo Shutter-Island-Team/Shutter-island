@@ -132,6 +132,49 @@ private:
      */
     MaterialPtr m_material;
 
+
+    /**
+     * @brief The texture ID for the biome 'Sea'
+     */
+    GLuint m_seaTexId;
+
+    /**
+     * @brief The texture ID for the biomse 'InnerBeach' and 'OuterBeach'
+     */
+    GLuint m_sandTexId;
+
+    /**
+     * @brief The texture ID for the biome 'Plains'
+     */
+    GLuint m_plainsTexId;
+
+    /**
+     * @brief The texture ID for the biome 'Lake'
+     */
+    GLuint m_lakeTexId;
+
+    /**
+     * @brief The texture ID for the biome 'Mountain'
+     */
+    GLuint m_mountainTexId;
+
+    /**
+     * @brief The texture ID for the biome 'Peak'
+     */
+    GLuint m_peakTexId;
+
+    /**
+     * @brief The texture ID for the first mask
+     * (x, y, z, w) = (sea, sand, plains, lake)
+     */
+    GLuint m_seaSandPlainsLakeMaskId;
+
+    /**
+     * @brief The texture ID for the second mask
+     * (x, y)        = (mountain, peak)
+     */
+    GLuint m_mountainPeakMaskId;
+
     /**
      * @brief Performs a sorted insert of a pair of coordinates into a 
      *  list according to its angle with the abscissa axis.
@@ -150,6 +193,32 @@ private:
         float centerX,
         float centerY
     );
+
+    
+    /**
+     * @brief Cut the voronoi diagram into triangles
+     * and send them
+     */
+    void sendVoronoiDiagram();
+
+    /**
+     * @brief Create and send the height map texture
+     */
+    void sendHeightMap();
+
+    /**
+     * @brief Read textures and send them as a mip map.
+     *
+     * @param filename The file name of the texture
+     * @param idPtr    The texture buffer identifier
+     */
+    void sendTexture(std::vector<std::string> &filenames,
+		     GLuint *idPtr);
+
+    /**
+     * @brief Compute the texture masks and send them
+     */
+    void sendMasks();
 };
 
 /**

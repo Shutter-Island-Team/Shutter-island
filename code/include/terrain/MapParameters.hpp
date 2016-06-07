@@ -374,6 +374,15 @@ public:
      * @return The value of m_heightmapScaling.
      */
     float getHeightmapScaling();
+
+    /**
+     * @brief
+     * Getter on m_textureScaling.
+     *
+     * @return The value of m_textureScaling.
+     */
+    float getTextureScaling();
+
     /**************************************************************************
      * End of Map2DRenderable class "getters".
      *************************************************************************/
@@ -685,6 +694,12 @@ private:
      * "mapSize*heightmapScaling".
      */
     float m_heightmapScaling;
+
+    /**
+     * @brief
+     * Defines the scaling for the texture application
+     */
+    float m_textureScaling;
     /**************************************************************************
      * End of Map2DRenderable class "defines".
      *************************************************************************/
