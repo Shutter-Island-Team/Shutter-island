@@ -318,6 +318,8 @@ void MapRenderable::do_draw()
     glcheck(glPatchParameteri(GL_PATCH_VERTICES, 3));
     glcheck(glDrawArrays(GL_PATCHES, 0, m_positions.size()));
 
+    // Release texture 
+    glcheck(glBindTexture(GL_TEXTURE_2D, 0));
     /*
      * Disabling the buffers.
      */
@@ -325,6 +327,12 @@ void MapRenderable::do_draw()
     {
         glcheck(glDisableVertexAttribArray(positionLocation));
     }
+    if(texCoordLocation != ShaderProgram::null_location)
+    { 
+	glcheck(glDisableVertexAttribArray(texCoordLocation));
+    }
+
+
 }
 
 void MapRenderable::do_animate(float time) 

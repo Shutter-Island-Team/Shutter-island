@@ -133,6 +133,9 @@ void SeaRenderable::do_draw()
     //Draw triangles elements
     glcheck(glDrawArrays(GL_TRIANGLES, 0, m_positions.size()));
     
+
+    // Release texture
+    glcheck(glBindTexture(GL_TEXTURE_2D, 0));
     /*
      * Disabling the buffers.
      */
