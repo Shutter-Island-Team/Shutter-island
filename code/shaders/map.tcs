@@ -53,6 +53,22 @@ float distanceToTessellation(float dist)
     return tessLevel;
 }
 
+///////// Offscreen function
+
+bool offscreen(vec3 vertex){
+    if(vertex.z < -0.5){
+        return true;
+    }   
+    return any(lessThan(vertex.xy, vec2(-1.7))) ||
+	any(greaterThan(vertex.xy, vec2(1.7)));
+}
+
+////////// Projection function
+vec3 project(mat4 mvp, vec3 vertex){
+    vec4 result = mvp * vec4(vertex, 1.0);
+    result /= result.w;
+    return result.xyz;
+}
 
 ///////// Main
 
@@ -64,30 +80,45 @@ void main()
 
     // The Tessellation levels are set only once by patch.
     if (ID == 0) {
-        // Camera position
-        vec3 cameraPosition = - vec3( viewMat[3] ) * mat3( viewMat );
+	
+	mat4 mvp = projMat*viewMat*modelMat;
+	
+	// if (all(bvec3(offscreen(project(mvp, gl_in[0].gl_Position)),
+	// 	      offscreen(project(mvp, gl_in[1].gl_Position)),
+	// 	      offscreen(project(mvp, gl_in[2].gl_Position))))) {
+	if (all(bvec3(offscreen(project(mvp, vPosition[0])),
+		      offscreen(project(mvp, vPosition[1])),
+		      offscreen(project(mvp, vPosition[2]))))) {
+	    gl_TessLevelOuter[0] = 0;
+	    gl_TessLevelOuter[1] = 0;
+	    gl_TessLevelOuter[2] = 0;
 
-        // Compute the center of each edge
-        vec3 center0 = (vPosition[0] + vPosition[1])/2;
-        vec3 center1 = (vPosition[1] + vPosition[2])/2;
-        vec3 center2 = (vPosition[2] + vPosition[0])/2;
+	    gl_TessLevelInner[0] = 0;
+	} else {
+	    // Camera position
+	    vec3 cameraPosition = - vec3( viewMat[3] ) * mat3( viewMat );
 
-        // Distance to the camera
-        float distance0 = distance(center0, cameraPosition);
-        float distance1 = distance(center1, cameraPosition);
-        float distance2 = distance(center2, cameraPosition);
+	    // Compute the center of each edge
+	    vec3 center0 = (vPosition[0] + vPosition[1])/2;
+	    vec3 center1 = (vPosition[1] + vPosition[2])/2;
+	    vec3 center2 = (vPosition[2] + vPosition[0])/2;
 
-        // Compute the tessellation levels
-        float tessLevel0 = distanceToTessellation(distance0);
-        float tessLevel1 = distanceToTessellation(distance1);
-        float tessLevel2 = distanceToTessellation(distance2);      
+	    // Distance to the camera
+	    float distance0 = distance(center0, cameraPosition);
+	    float distance1 = distance(center1, cameraPosition);
+	    float distance2 = distance(center2, cameraPosition);
 
-        // Set the tessellation levels
-        gl_TessLevelOuter[0] = tessLevel0;
-        gl_TessLevelOuter[1] = tessLevel1;
-        gl_TessLevelOuter[2] = tessLevel2;
+	    // Compute the tessellation levels
+	    float tessLevel0 = distanceToTessellation(distance0);
+	    float tessLevel1 = distanceToTessellation(distance1);
+	    float tessLevel2 = distanceToTessellation(distance2);      
 
-        gl_TessLevelInner[0] = (tessLevel0 + tessLevel1 + tessLevel2)/3;
+	    // Set the tessellation levels
+	    gl_TessLevelOuter[0] = tessLevel0;
+	    gl_TessLevelOuter[1] = tessLevel1;
+	    gl_TessLevelOuter[2] = tessLevel2;
+
+	    gl_TessLevelInner[0] = (tessLevel0 + tessLevel1 + tessLevel2)/3;
+	}
     }
-
 }
