@@ -7,6 +7,7 @@
 #include "BoidsManager.hpp"
 
 class BoidsManager;
+typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;
 
 class MovableBoid;
 typedef std::shared_ptr<MovableBoid> MovableBoidPtr;

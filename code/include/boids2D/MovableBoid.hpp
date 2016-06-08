@@ -12,6 +12,7 @@
 #include "RootedBoid.hpp"
 
 class BoidsManager;
+typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;
 
 class MovableState;
 typedef std::shared_ptr<MovableState> MovableStatePtr;
@@ -118,8 +119,9 @@ class MovableBoid : public Boid
   /**
    * @brief     Update the position and the velocity for the next step in the simulation 
    * @param[in] dt Value of the time step
+   * @param[in] boidsManager The boid's manager
    */
-  const glm::vec3 computeNextStep(const float & dt);
+  const glm::vec3 computeNextStep(const float & dt, const BoidsManagerPtr & boidsManager);
 
   /**
    * @brief     Check if the other boid is in the cone of vision of this

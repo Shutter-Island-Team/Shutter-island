@@ -136,7 +136,7 @@ void MovableBoid::computeAcceleration (BoidsManager & boidsManager, const float 
 }
 
 // x(t + dt) = x(t) + v(t+dt) * dt
-const glm::vec3 MovableBoid::computeNextStep(const float & dt)
+const glm::vec3 MovableBoid::computeNextStep(const float & dt, const BoidsManagerPtr & boidsManager)
 {
 	glm::vec3 prevLocation = m_location;
 	glm::vec3 nextVelocity = m_velocity + (dt / m_mass) * limitVec3(m_acceleration, getParameters()->getMaxForce());
@@ -153,6 +153,7 @@ const glm::vec3 MovableBoid::computeNextStep(const float & dt)
   	}
 	setAngle(atan2(m_velocity.y, m_velocity.x));
     m_location += dt * m_velocity;
+    m_location.z = boidsManager->getHeight(m_location.x, m_location.y);
     return prevLocation;
 }
 

@@ -136,7 +136,7 @@ void StateRenderable::do_draw()
     transformation[2][2] = scale;
     transformation[3][0] = position.x;
     transformation[3][1] = position.y;
-    transformation[3][2] = position.z;
+    transformation[3][2] = position.z + 1.0f;
     transformation[3][3] = 1;
 
     glcheck(glUniformMatrix4fv( modelLocation, 1, GL_FALSE, glm::value_ptr(model * transformation)));

@@ -203,18 +203,7 @@ void MovableBoidsRenderable::compute_modelMatrix()
             }
              
             glm::vec3 position = m->getLocation();
-            position.z = m_boidsManager->getHeight(position.x, position.y);
-
-            if(m->getBoidType() == WOLF && !m->isLeader()) {
-                position.z += 0.7;
-            } else if(m->getBoidType() == WOLF && m->isLeader()) {
-                position.z += 1.4;
-            } else if(m->getBoidType() == RABBIT && !m->isLeader()) {
-                position.z += 0.2;
-            } else if(m->getBoidType() == RABBIT && m->isLeader()) {
-                position.z += 0.4;
-            }
-
+            
             transformation[0][0] = scale * cz * cy;
             transformation[0][1] = scale * sz * cy;
             transformation[0][2] = - scale * sy;
