@@ -3,6 +3,8 @@
 
 #include "./../../include/HierarchicalRenderable.hpp"
 #include "./../../include/dynamics/ConstantForceField.hpp"
+#include "./../../include/Viewer.hpp"
+#include "./../../include/terrain/MapGenerator.hpp"
 
 /**@brief Status of a ControlledForceField.
  *
@@ -58,7 +60,7 @@ public:
    * @param program The shader program used to render the force applied to particles.
    * @param forceField The force field to control with user inputs.
    */
-  ControlledForceFieldRenderable(ShaderProgramPtr program,ConstantForceFieldPtr forceField );
+  ControlledForceFieldRenderable(ShaderProgramPtr program, ConstantForceFieldPtr forceField,  MapGenerator & map, Viewer & viewer);
   ~ControlledForceFieldRenderable();
 
 private:
@@ -70,6 +72,8 @@ private:
 
   ControlledForceFieldStatus m_status;
   ConstantForceFieldPtr m_force;
+  MapGenerator & m_map;
+  Viewer & m_viewer;
 
   std::vector< glm::vec3 > m_positions;
   std::vector< glm::vec4 > m_colors;

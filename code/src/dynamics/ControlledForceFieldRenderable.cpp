@@ -39,8 +39,8 @@ void ControlledForceFieldStatus::clear()
     turning_right =  false;
 }
 
-ControlledForceFieldRenderable::ControlledForceFieldRenderable(ShaderProgramPtr program,ConstantForceFieldPtr forceField )
-    : HierarchicalRenderable(program), m_force( forceField ), m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
+ControlledForceFieldRenderable::ControlledForceFieldRenderable(ShaderProgramPtr program, ConstantForceFieldPtr forceField,  MapGenerator & map, Viewer & viewer)
+    : HierarchicalRenderable(program), m_force( forceField ), m_map(map), m_viewer(viewer), m_pBuffer(0), m_cBuffer(0), m_nBuffer(0)
 {
     glm::vec3 initial_direction(1,0,0);
     m_status = ControlledForceFieldStatus(initial_direction);
@@ -172,16 +172,35 @@ void ControlledForceFieldRenderable::do_draw()
     m_normals.resize(0);
 
     //Display an arrow representing the movement of the particle
+    /*
     for(ParticlePtr p : particles)
     {
-        m_positions.push_back(p->getPosition());
-        m_positions.push_back(p->getPosition()  + 2.0f* m_status.movement);
+        glm::vec3 position = p->getPosition();
+        position.z = m_map.getHeight(position.x, position.y) + 5.0f;
+
+        m_positions.push_back(position);
+        m_positions.push_back(position  + 2.0f* m_status.movement);
         m_colors.push_back(glm::vec4(1.0,0.0,0.0,1.0));
         m_colors.push_back(glm::vec4(1.0,0.0,0.0,1.0));
         m_normals.push_back(glm::vec3(1.0,0.0,0.0));
         m_normals.push_back(glm::vec3(1.0,0.0,0.0));
     }
- 
+    */
+
+    // TODO to remove and do better
+    // This trick is done in order to follow a particule with the camera
+    glm::vec3 position;
+    if(particles.size() != 0) {
+        position = particles[0]->getPosition();
+        position.z = m_map.getHeight(position.x, position.y) + 5.0f;
+
+        m_positions.push_back(position);
+        m_positions.push_back(position  + 2.0f* m_status.movement);
+        m_colors.push_back(glm::vec4(1.0,0.0,0.0,1.0));
+        m_colors.push_back(glm::vec4(1.0,0.0,0.0,1.0));
+        m_normals.push_back(glm::vec3(1.0,0.0,0.0));
+        m_normals.push_back(glm::vec3(1.0,0.0,0.0));
+    }
     
     //Update data on the GPU
     glcheck(glBindBuffer(GL_ARRAY_BUFFER, m_pBuffer));
@@ -235,5 +254,12 @@ void ControlledForceFieldRenderable::do_draw()
     if(normalLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(normalLocation));
+    }
+
+    if (particles.size() != 0 && m_viewer.getCamera().isFollowingParticle()) {
+        float ecartY = 6.0;
+        float angleCamera = m_status.angle ;
+        glm::vec3 cercle = glm::vec3(ecartY*sin(angleCamera), ecartY*(1-cos(angleCamera)), 0.0);
+        m_viewer.getCamera().setViewMatrix( glm::lookAt( position + glm::vec3(0.2, -ecartY, 4.0) + cercle, position + glm::vec3(0.0, 0.0, 2.0), glm::vec3( 0, 0, 1 ) ) );
     }
 }

@@ -145,7 +145,7 @@ const glm::vec3 MovableBoid::computeNextStep(const float & dt, const BoidsManage
 	} else {
 		nextVelocity = limitVec3(nextVelocity, getParameters()->getMaxSpeedWalk());
 	}
-  	float k = 0.5f;
+  	float k = 0.15f;
   	if(glm::length(m_velocity) < FLT_EPSILON) {
   		m_velocity = 0.015f * nextVelocity + (1.0f - 0.015f) * m_velocity;
   	} else {

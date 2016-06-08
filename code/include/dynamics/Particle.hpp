@@ -91,12 +91,6 @@ public:
      * @param force The new force applied to this particle.
      */
     void setForce(const glm::vec3 &force);
-    /**@brief Set the particle's radius.
-     *
-     * Set the radius of this particle.
-     * @param radius The new radius of this particle.
-     */
-    void setRadius(const float& radius);
     /**@brief Set the particle's fixed flag.
      *
      * Set the fixed flag of this particle.

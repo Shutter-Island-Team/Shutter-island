@@ -7,11 +7,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticlePtr particle, MapGenerator& map, Viewer& viewer) :
+ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticlePtr particle, MapGenerator& map) :
     HierarchicalRenderable(shaderProgram),
     m_particle(particle),
     m_map(map),
-    m_viewer(viewer),
     m_pBuffer(0),
     m_cBuffer(0),
     m_nBuffer(0)
@@ -45,9 +44,9 @@ ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticleP
             m_normals.push_back( faceNormal );
             m_normals.push_back( faceNormal );
             m_normals.push_back( faceNormal );
-            m_colors.push_back( glm::vec4(1.0,0.0,0.0,1.0) );
-            m_colors.push_back( glm::vec4(1.0,0.0,0.0,1.0) );
-            m_colors.push_back( glm::vec4(1.0,0.0,0.0,1.0) );
+            m_colors.push_back( glm::vec4(0.0,0.0,1.0,1.0) );
+            m_colors.push_back( glm::vec4(0.0,0.0,1.0,1.0) );
+            m_colors.push_back( glm::vec4(0.0,0.0,1.0,1.0) );
 
             vTriangles[0] = center + glm::vec3(radius*cos(curr_theta)*sin(curr_phi), radius*sin(curr_theta)*sin(curr_phi), radius*cos(curr_phi));
             vTriangles[1] = center + glm::vec3(radius*cos(next_theta)*sin(next_phi), radius*sin(next_theta)*sin(next_phi), radius*cos(next_phi));
@@ -136,13 +135,6 @@ void ParticleRenderable::do_draw()
     if(normalLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(normalLocation));
-    }
-
-    if (m_viewer.getCamera().isFollowingParticle()) {
-        float ecartY = 6.0;
-        float angleCamera = atan2(m_particle->getVelocity().y, m_particle->getVelocity().x);
-        glm::vec3 cercle = glm::vec3(ecartY*sin(angleCamera), ecartY*(1-cos(angleCamera)), 0.0);
-        m_viewer.getCamera().setViewMatrix( glm::lookAt( m_particle->getPosition(), m_particle->getPosition() + glm::vec3(0.0, 0.0, 2.0), glm::vec3( 0, 0, 1 ) ) );
     }
 }
 

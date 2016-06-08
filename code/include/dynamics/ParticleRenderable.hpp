@@ -26,7 +26,7 @@ class ParticleRenderable : public HierarchicalRenderable
          * @param program The shader program used to render the particle.
          * @param particle The particle to render.
          */
-        ParticleRenderable(ShaderProgramPtr shaderProgram, ParticlePtr particle, MapGenerator& map, Viewer &viewer);
+        ParticleRenderable(ShaderProgramPtr shaderProgram, ParticlePtr particle, MapGenerator& map);
 
     private:
         void do_draw();
@@ -34,7 +34,6 @@ class ParticleRenderable : public HierarchicalRenderable
 
         ParticlePtr m_particle;
         MapGenerator& m_map;
-        Viewer& m_viewer;
 
         std::vector< glm::vec3 > m_positions;
         std::vector< glm::vec4 > m_colors;
