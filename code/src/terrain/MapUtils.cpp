@@ -74,8 +74,8 @@ Biome findApproximativeBiome(Vertex2D & pos,
 			     Biome* biomeMap,
 			     int mapScaling) {
     // Simply taking the closest lower bound value
-    int closeI = (int) pos.first*mapScaling;
-    int closeJ = (int) pos.second*mapScaling;
+    int closeI = MIN((int) pos.first*mapScaling, effMapSize - 1);
+    int closeJ = MIN((int) pos.second*mapScaling, effMapSize - 1);
 
     return biomeMap[closeI+closeJ*effMapSize];
 }
