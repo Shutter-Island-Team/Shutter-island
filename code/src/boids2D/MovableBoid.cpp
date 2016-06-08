@@ -405,6 +405,10 @@ void MovableBoid::drinkStateHandler(const BoidsManager & boidsManager)
 
 void MovableBoid::mateStateHandler(BoidsManager & boidsManager)
 {
+	if (m_parameters->isInDanger()) {
+		switchToState(FLEE_STATE, boidsManager);
+		return;
+	}
 	unsigned int i = 0;
 	unsigned int j = 0;
 	boidsManager.coordToBox(m_location, i, j);
