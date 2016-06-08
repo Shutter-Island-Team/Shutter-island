@@ -420,7 +420,9 @@ void MovableBoid::mateStateHandler(BoidsManager & boidsManager)
 			neighbours.insert(neighbours.begin(), *it);
 		}
 		if (neighbours.size() >= 2) {
-			m_mateStatus -= 0.01f;
+			m_mateStatus -= 0.1f;
+		} else {
+			m_mateStatus -= 1.0f;
 		}
 	}
 	if (isNoLongerMating()) {
@@ -564,7 +566,7 @@ void MovableBoid::updateWaterTarget(const BoidsManager & b)
 	glm::vec2 posBoid(m_location.x, m_location.y);
 	glm::vec2 result(0,0);
 	b.getNearestLake(posBoid, result);
-	m_waterTarget = glm::vec3(result.x, result.y, 2.0f);
+	m_waterTarget = glm::vec3(result.x, result.y, 0.0f);
 }
 
 glm::vec3 MovableBoid::getWaterTarget() const

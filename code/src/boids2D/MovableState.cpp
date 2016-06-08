@@ -424,7 +424,7 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 			boidsManager.m_forceController.getEvade())
 			+ avoidEnvironment(b, boidsManager, i, j);
 	} else  { // Only leader
-		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt); //avoidEnvironment(b, boidsManager, i, j);
+		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt);
 	}
 
 	newForces.z = 0.0f; // Trick to compute force in 2D
