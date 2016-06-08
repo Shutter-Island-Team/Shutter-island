@@ -7,6 +7,14 @@
 #include "../../include/Utils.hpp"
 
 #define MAP_SIZE 500.0
+#define NB_RABBIT_MIN 6
+#define NB_RABBIT_MAX 10
+#define NB_WOLF_MIN 2
+#define NB_WOLF_MAX 15
+#define NB_TREE_MIN 8
+#define NB_TREE_MAX 15
+#define NB_CARROT_MIN 8
+#define NB_CARROT_MAX 15
 
 BoidsManager::BoidsManager(MapGenerator& map, Viewer& viewer, ShaderProgramPtr& shader) 
 	: m_map(map), m_viewer(viewer), m_shader(shader), m_updateCoeff(0), m_updatePeriod(10),
@@ -250,4 +258,111 @@ void BoidsManager::repopCarrot()
 const int & BoidsManager::getCountCarrot() const
 {
 	return m_countCarrot;	
+}
+
+glm::vec3 BoidsManager::computeBiomeLeaderPosition(Biome biome, float min, float max, float zPos)
+{
+    glm::vec3 position(random(min, max), random(min, max), zPos);
+
+    while(m_map.getBiome(position.x, position.y) != biome) {
+        position = glm::vec3(random(min, max), random(min, max), zPos);
+    }
+
+    return position;
+}
+
+glm::vec3 BoidsManager::computeBiomeFellowPosition(Biome biome, 
+    glm::vec3 position, float min, float max, float zPos, float radius)
+{
+    glm::vec3 positionFellow(random(min, max), random(min, max), zPos);
+
+    while(glm::length(positionFellow - position) >= radius || m_map.getBiome(positionFellow.x, positionFellow.y) != biome) {
+        positionFellow = glm::vec3(random(min, max), random(min, max), zPos);
+    }
+
+    return positionFellow;
+}
+
+void BoidsManager::placeRabbitGroup(Biome biomeType)
+{
+    glm::vec3 positionMaster = computeBiomeLeaderPosition(biomeType, 0, MAP_SIZE, 0.0);
+    glm::vec3 positionFellow;
+
+    MovableBoidPtr leaderRabbit = addMovableBoid(RABBIT, positionMaster, positionMaster);
+    leaderRabbit->setNewLeader(leaderRabbit);
+
+    int nbRabbit = randInt(NB_RABBIT_MIN, NB_RABBIT_MAX);
+
+    for (int i = 0; i < nbRabbit; ++i) {
+        positionFellow = computeBiomeFellowPosition(biomeType, positionMaster, 0, MAP_SIZE, 0.0, 10.0f);
+        MovableBoidPtr rabbitFellow = addMovableBoid(RABBIT, positionFellow, positionMaster);
+        rabbitFellow->setNewLeader(leaderRabbit);
+    }
+}
+
+void BoidsManager::placeWolfGroup(Biome biomeType)
+{
+    glm::vec3 positionMaster = computeBiomeLeaderPosition(biomeType, 0, MAP_SIZE, 2.0);
+    glm::vec3 positionFellow;
+
+    MovableBoidPtr leaderWolf = addMovableBoid(WOLF, positionMaster, positionMaster);
+    leaderWolf->setNewLeader(leaderWolf);
+
+    int nbWolf = randInt(NB_WOLF_MIN, NB_WOLF_MAX);
+
+    for (int i = 0; i < nbWolf; ++i) {
+        positionFellow = computeBiomeFellowPosition(biomeType, positionMaster, 0, MAP_SIZE, 2.0, 10.0f);
+        MovableBoidPtr wolfFellow = addMovableBoid(WOLF, positionFellow, positionMaster);
+        wolfFellow->setNewLeader(leaderWolf);
+    }
+}
+
+void BoidsManager::placeForest(Biome biomeType)
+{
+    glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, MAP_SIZE, 2.0);
+    addRootedBoid(TREE, position);
+
+    glm::vec3 positionFellow;
+
+    int nbTree = randInt(NB_TREE_MIN, NB_TREE_MAX);
+
+    for (int i = 0; i < nbTree - 1; ++i) {
+        positionFellow = computeBiomeFellowPosition(biomeType, position, 0, MAP_SIZE, 2.0, 25.0f);
+        addRootedBoid(TREE, positionFellow);
+    }
+}
+
+void BoidsManager::placeCarrotField(Biome biomeType)
+{
+    glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, MAP_SIZE, 2.0);
+    addRootedBoid(CARROT, position);
+
+    glm::vec3 positionFellow;
+
+    int nbCarrot = randInt(NB_CARROT_MIN, NB_CARROT_MAX);
+
+    for (int i = 0; i < nbCarrot - 1; ++i) {
+        positionFellow = computeBiomeFellowPosition(biomeType, position, 0, MAP_SIZE, 2.0, 30.0f);
+        addRootedBoid(CARROT, positionFellow);
+    }
+}
+
+void BoidsManager::placeBoids( Biome biomeType, int nbRabbitGroup, int nbWolfGroup, 
+	int nbForest,  int nbCarrotField) 
+{
+    for(int i = 0; i < nbRabbitGroup; i++) {
+        placeRabbitGroup(biomeType);
+    }
+
+    for(int i = 0; i < nbWolfGroup; i++) {
+        placeWolfGroup(biomeType);
+    }
+
+    for(int i = 0; i < nbForest; i++) {
+        placeForest(biomeType);
+    }
+
+    for(int i = 0; i < nbCarrotField; i++) {
+        placeCarrotField(biomeType);
+    }
 }

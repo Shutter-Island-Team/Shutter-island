@@ -24,7 +24,7 @@ class BoidsManager
   /**
    * @brief Constructor for the BoidsManager
    */
-  BoidsManager(MapGenerator& map, Viewer& viewer, ShaderProgramPtr& m_shader);
+  BoidsManager(MapGenerator& map, Viewer& viewer, ShaderProgramPtr& shader);
 
   /**
    * @brief Destructor for the BoidsManager
@@ -178,6 +178,8 @@ class BoidsManager
 
   const int & getCountCarrot() const;
 
+  void placeBoids( Biome biomeType, int nbRabbitGroup, int nbWolfGroup, int nbForest,  int nbCarrotField);
+
  private:
   MapGenerator& m_map; ///< Reference of the map
   Viewer& m_viewer; ///< Reference of the viewer
@@ -191,6 +193,18 @@ class BoidsManager
   const int m_updatePeriod; ///< Period of tick before the update of the state of the boids
 
   int m_countCarrot;
+
+  glm::vec3 computeBiomeLeaderPosition(Biome biome, float min, float max, float zPos);
+
+  glm::vec3 computeBiomeFellowPosition(Biome biome, glm::vec3 position, float min, float max, float zPos, float radius);
+
+  void placeRabbitGroup(Biome biomeType);
+
+  void placeWolfGroup(Biome biomeType);
+
+  void placeForest(Biome biomeType);
+
+  void placeCarrotField(Biome biomeType);
 };
 
 typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;

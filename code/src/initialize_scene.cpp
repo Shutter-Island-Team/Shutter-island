@@ -41,118 +41,7 @@
 
 #include "../include/boids2D/DynamicSystemBoid.hpp"
 #include "../include/boids2D/DynamicSystemBoidRenderable.hpp"
-
 #include "../include/Utils.hpp"
-
-
-///< TODO : ajouté la vérif sur le boidsManager avec les boids déjà placé
-glm::vec3 compute_biome_positionLeader(MapGenerator& mapGenerator, Biome biome, float min, float max, float zPos)
-{
-    glm::vec3 position(random(min, max), random(min, max), zPos);
-
-    while(mapGenerator.getBiome(position.x, position.y) != biome) {
-        position = glm::vec3(random(min, max), random(min, max), zPos);
-    }
-
-    return position;
-}
-
-glm::vec3 compute_biome_positionFellow(MapGenerator& mapGenerator, Biome biome, 
-    glm::vec3 position, float min, float max, float zPos, float raduis)
-{
-    glm::vec3 positionFellow(random(min, max), random(min, max), zPos);
-
-    while(glm::length(positionFellow - position) >= raduis || mapGenerator.getBiome(positionFellow.x, positionFellow.y) != biome) {
-        positionFellow = glm::vec3(random(min, max), random(min, max), zPos);
-    }
-
-    return positionFellow;
-}
-
-void place_rabbit_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
-{
-    glm::vec3 positionMaster = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
-    glm::vec3 positionFellow;
-
-    MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, positionMaster, positionMaster);
-    leaderRabbit->setNewLeader(leaderRabbit);
-
-    int nbRabbit = randInt(NB_RABBIT_MIN, NB_RABBIT_MAX);
-    glm::vec3 diffPos;
-
-    for (int i = 0; i < nbRabbit; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, positionMaster, 0, MAP_SIZE, 2.0, 10.0f);
-        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, positionFellow, positionMaster);
-        rabbitFellow->setNewLeader(leaderRabbit);
-    }
-}
-
-void place_wolf_group(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
-{
-    glm::vec3 positionMaster = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
-    glm::vec3 positionFellow;
-
-    MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, positionMaster, positionMaster);
-    leaderWolf->setNewLeader(leaderWolf);
-
-    int nbWolf = randInt(NB_WOLF_MIN, NB_WOLF_MAX);
-
-    for (int i = 0; i < nbWolf; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, positionMaster, 0, MAP_SIZE, 2.0, 10.0f);
-        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, positionFellow, positionMaster);
-        wolfFellow->setNewLeader(leaderWolf);
-    }
-}
-
-void place_forest(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
-{
-    glm::vec3 position = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
-    boidsManager->addRootedBoid(TREE, position);
-
-    glm::vec3 positionFellow;
-
-    int nbTree = randInt(NB_TREE_MIN, NB_TREE_MAX);
-
-    for (int i = 0; i < nbTree - 1; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, position, 0, MAP_SIZE, 2.0, 25.0f);
-        boidsManager->addRootedBoid(TREE, positionFellow);
-    }
-}
-
-void place_carrot_field(Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType)
-{
-    glm::vec3 position = compute_biome_positionLeader(mapGenerator, biomeType, 0, MAP_SIZE, 2.0);
-    boidsManager->addRootedBoid(CARROT, position);
-
-    glm::vec3 positionFellow;
-
-    int nbCarrot = randInt(NB_CARROT_MIN, NB_CARROT_MAX);
-
-    for (int i = 0; i < nbCarrot - 1; ++i) {
-        positionFellow = compute_biome_positionFellow(mapGenerator, biomeType, position, 0, MAP_SIZE, 2.0, 30.0f);
-        boidsManager->addRootedBoid(CARROT, positionFellow);
-    }
-}
-
-void place_boid( Viewer& viewer, MapGenerator& mapGenerator, BoidsManagerPtr boidsManager, Biome biomeType,
-    int nbRabbitGroup, int nbWolfGroup, int nbForest,  int nbCarrotField) 
-{
-    for(int i = 0; i < nbRabbitGroup; i++) {
-        place_rabbit_group(viewer, mapGenerator, boidsManager, biomeType);
-    }
-
-    for(int i = 0; i < nbWolfGroup; i++) {
-        place_wolf_group(viewer, mapGenerator, boidsManager, biomeType);
-    }
-
-    for(int i = 0; i < nbForest; i++) {
-        place_forest(viewer, mapGenerator, boidsManager, biomeType);
-    }
-
-    for(int i = 0; i < nbCarrotField; i++) {
-        place_carrot_field(viewer, mapGenerator, boidsManager, biomeType);
-    }
-}
 
 void display_2Dboids( Viewer& viewer, BoidsManagerPtr boidsManager, 
     DynamicSystemBoidRenderablePtr systemRenderable, ShaderProgramPtr texShader, ShaderProgramPtr flatShader )
@@ -371,12 +260,6 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     seaRenderable->setMaterial(material);
     viewer.addRenderable(seaRenderable);
 
-    /*
-     * Creating the map renderable and adding it to the system.
-     */
-    //MapRenderablePtr mapRenderable = std::make_shared<MapRenderable>(flatShader, mapGenerator);
-    //viewer.addRenderable(mapRenderable);
-
     //Default shader
 
     glm::mat4 parentTransformation(1.0), localTransformation(1.0);
@@ -400,9 +283,9 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
                 "../shaders/instanceFragment.frag"});
     viewer.addShaderProgram( instanceShader );
 
-    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator, viewer, flatShader);
+    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator, viewer, instanceShader);
 
-    //Initialize a dynamic system (Solver, Time step, Restitution coefficient)
+    //Initialize a dynamic boid system
     DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
     SolverBoidPtr solver = std::make_shared<SolverBoid>();
     system->setSolver(solver);
@@ -414,7 +297,9 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    place_boid( viewer, mapGenerator, boidsManager, Plains, 20, 10, 30, 10); 
+    boidsManager->placeBoids(Plains, 20, 10, 30, 10);
+
+    //place_boid( viewer, mapGenerator, boidsManager, Plains, 20, 10, 30, 10); 
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
