@@ -274,6 +274,8 @@ public:
      */
     void update( float dx, float dy );
     ///@}
+
+    const bool & isFollowingParticle() const; 
 private:
 
     /** @name Private members */
@@ -284,6 +286,7 @@ private:
     float m_zfar;
     CAMERA_MOUSE_BEHAVIOR m_mouseBehavior;
     glm::mat4 m_projection;
+    bool m_followParticule;
 };
 
 #endif

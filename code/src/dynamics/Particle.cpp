@@ -45,6 +45,12 @@ void Particle::setDragged(bool isDragged)
 Particle::~Particle()
 {}
 
+
+glm::vec3 & Particle::getPosition()
+{
+    return m_position;
+}
+
 const glm::vec3 & Particle::getPosition() const
 {
     return m_position;

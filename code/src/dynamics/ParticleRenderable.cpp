@@ -7,9 +7,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 
-ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticlePtr particle) :
+ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticlePtr particle, MapGenerator& map, Viewer& viewer) :
     HierarchicalRenderable(shaderProgram),
     m_particle(particle),
+    m_map(map),
+    m_viewer(viewer),
     m_pBuffer(0),
     m_cBuffer(0),
     m_nBuffer(0)
@@ -81,10 +83,12 @@ ParticleRenderable::ParticleRenderable(ShaderProgramPtr shaderProgram, ParticleP
 void ParticleRenderable::do_draw()
 {
     //Update the parent and local transform matrix to position the geometric data according to the particle's data.
-    const glm::vec3& pPosition = m_particle->getPosition();
-    glm::mat4 scale = glm::scale(glm::mat4(1.0), glm::vec3(100.0));
-    glm::mat4 translate = glm::translate(glm::mat4(1.0), glm::vec3(pPosition));
-    setLocalTransform(translate*scale);
+    glm::vec3 position = m_particle->getPosition();
+    position.z = m_map.getHeight(position.x, position.y) + 5.0f;
+
+    glm::mat4 scale = glm::scale(glm::mat4(1.0), glm::vec3(1.0f));
+    glm::mat4 translate = glm::translate(glm::mat4(1.0), glm::vec3(position));
+    setLocalTransform(translate * scale);
 
     //Draw geometric data
     int positionLocation = m_shaderProgram->getAttributeLocation("vPosition");
@@ -132,6 +136,13 @@ void ParticleRenderable::do_draw()
     if(normalLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(normalLocation));
+    }
+
+    if (m_viewer.getCamera().isFollowingParticle()) {
+        float ecartY = 6.0;
+        float angleCamera = atan2(m_particle->getVelocity().y, m_particle->getVelocity().x);
+        glm::vec3 cercle = glm::vec3(ecartY*sin(angleCamera), ecartY*(1-cos(angleCamera)), 0.0);
+        m_viewer.getCamera().setViewMatrix( glm::lookAt( m_particle->getPosition(), m_particle->getPosition() + glm::vec3(0.0, 0.0, 2.0), glm::vec3( 0, 0, 1 ) ) );
     }
 }
 

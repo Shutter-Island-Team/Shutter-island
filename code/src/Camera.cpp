@@ -10,7 +10,7 @@ using namespace std;
 Camera::Camera()
     : m_view{ glm::lookAt( glm::vec3{0, 0, -5}, glm::vec3{}, glm::vec3{0,1,0}) },
       m_fov{ 1.04f }, m_ratio{ 1.0f }, m_znear{ 1.0f }, m_zfar{ 1500.0f },
-      m_mouseBehavior{ ARCBALL_BEHAVIOR }
+      m_mouseBehavior{ ARCBALL_BEHAVIOR }, m_followParticule(false)
 {}
 
 Camera::~Camera()
@@ -168,6 +168,7 @@ void Camera::update( float dx, float dy )
     {
     case ARCBALL_BEHAVIOR:
     {
+        m_followParticule = false;
         glm::mat4 rotation = glm::rotate( glm::mat4( glm::mat3(m_view) ), dx, getUp());
         rotation = glm::rotate( rotation, dy, getRight());
 
@@ -181,6 +182,7 @@ void Camera::update( float dx, float dy )
 
     case SPACESHIP_BEHAVIOR:
     {
+        m_followParticule = false;
         const float cx = float( std::cos( dx ) );
         const float sx = float( std::sin( dx ) );
         const float cy = float( std::cos( dy ) );
@@ -207,11 +209,16 @@ void Camera::update( float dx, float dy )
 
     case FOLLOW_BEHAVIOR:
     {
-        std::cerr << "Tu peux m'implémenter bordel ? :(" << std::endl;
+        m_followParticule = true;
     }
         break;
 
     default:
         assert(false);
     }
+}
+
+const bool & Camera::isFollowingParticle() const
+{
+    return m_followParticule;
 }

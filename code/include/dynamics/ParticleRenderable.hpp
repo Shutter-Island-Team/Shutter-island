@@ -3,6 +3,9 @@
 
 #include "../HierarchicalRenderable.hpp"
 #include "Particle.hpp"
+#include "../terrain/MapGenerator.hpp"
+
+#include "../Viewer.hpp"
 
 #include <vector>
 #include <glm/glm.hpp>
@@ -23,13 +26,15 @@ class ParticleRenderable : public HierarchicalRenderable
          * @param program The shader program used to render the particle.
          * @param particle The particle to render.
          */
-        ParticleRenderable( ShaderProgramPtr program, ParticlePtr particle );
+        ParticleRenderable(ShaderProgramPtr shaderProgram, ParticlePtr particle, MapGenerator& map, Viewer &viewer);
 
     private:
         void do_draw();
         void do_animate( float time );
 
         ParticlePtr m_particle;
+        MapGenerator& m_map;
+        Viewer& m_viewer;
 
         std::vector< glm::vec3 > m_positions;
         std::vector< glm::vec4 > m_colors;

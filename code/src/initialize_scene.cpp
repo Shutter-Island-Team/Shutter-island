@@ -360,13 +360,12 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     DynamicSystemRenderablePtr systemRenderableParticule = std::make_shared<DynamicSystemRenderable>(systemParticule);
     viewer.addRenderable(systemRenderableParticule);
 
-    glm::vec3 px(50.0,50.0,50.0),pv(0.0,0.0,0.0);
+    glm::vec3 px(150.0,150.0,0.0),pv(0.0,0.0,0.0);
     float pm=1.0;
-    px = glm::vec3(0.0,0.0,1.0);
     ParticlePtr mobile = std::make_shared<Particle>( px, pv, pm);
     systemParticule->addParticle( mobile );
 
-    ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>( flatShader, mobile );
+    ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>( flatShader, mobile, mapGenerator, viewer );
     HierarchicalRenderable::addChild(systemRenderableParticule, mobileRenderable);
 
     //Initialize a force field that apply only to the mobile particle

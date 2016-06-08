@@ -44,6 +44,9 @@ public:
      * @return The particle's position.
      */
     const glm::vec3& getPosition() const;
+
+    glm::vec3 & getPosition();
+
     /**@brief Access to this particle's velocity.
      *
      * Get the velocity of this particle.
