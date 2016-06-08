@@ -108,6 +108,8 @@ void SightRenderable::do_draw()
     float scale = m_boid->getParameters()->getDistViewMax();
 
     glm::vec3 position = m_boid->getLocation();
+    //position.z = m_boidsManager->getHeight(position.x, position.y) + 1.0;
+
     transformation[0][0] = scale * c;
     transformation[0][1] = scale * s;
 

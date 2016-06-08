@@ -125,9 +125,10 @@ glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager &
 {
 	glm::vec3 posAheadMax = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters()->getDistViewMax();
 	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead();
-	glm::vec3 stayOnIsland(0,0,0);
 
-	if(boidsManager.getBiome(posAheadMax.x, posAheadMax.y) == Sea || boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
+	if(boidsManager.getBiome(posAheadMax.x, posAheadMax.y) == Sea 
+		|| boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
+		
 		///< TODO move to the center of the map
 		glm::vec3 islandCenter(250.0, 250.0, 0.0);
 
@@ -145,6 +146,23 @@ glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager &
 		} else {
 			return glm::vec3(0,0,0); // There is no lake
 		}
+	} else {
+		return glm::vec3(0,0,0);
+	}
+}
+
+glm::vec3 MovableState::coherentWalk(const MovableBoid & b, const BoidsManager & boidsManager) const
+{
+	glm::vec3 posAheadMax = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters()->getDistViewMax();
+	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead();
+
+	float heightDifference = boidsManager.getHeight(posAheadMax.x, posAheadMax.y) - boidsManager.getHeight(b.getLocation().x, b.getLocation().y);
+	if(heightDifference > -2.0f || heightDifference < -2.0f
+		|| boidsManager.getBiome(posAheadMax.x, posAheadMax.y) == Mountain 
+		|| boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Mountain
+		|| boidsManager.getBiome(posAheadMax.x, posAheadMax.y) == Peak 
+		|| boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Peak) {
+		return cNormalize(- posAheadMax) * b.getParameters()->getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);
 	}
@@ -360,7 +378,8 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j) const
 {
-	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager)
+	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager) 
+			//+ boidsManager.m_forceController.getStayOnIsland() * coherentWalk(b, boidsManager)
 			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids(i, j));
 }
 

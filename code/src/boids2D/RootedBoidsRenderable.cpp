@@ -197,6 +197,7 @@ void RootedBoidsRenderable::compute_modelMatrix()
             float scale = r->getScale();
              
             glm::vec3 position = r->getLocation();
+            position.z = m_boidsManager->getHeight(position.x, position.y);
 
             transformation[0][0] = scale * cz * cy;
             transformation[0][1] = scale * sz * cy;

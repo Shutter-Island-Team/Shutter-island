@@ -125,6 +125,8 @@ void StateRenderable::do_draw()
     float scale = m_boid->getScale();
 
     glm::vec3 position = m_boid->getLocation();
+    //position.z = m_boidsManager->getHeight(position.x, position.y) + 1.0;
+
     transformation[0][0] = scale;
     transformation[0][1] = 0;
 

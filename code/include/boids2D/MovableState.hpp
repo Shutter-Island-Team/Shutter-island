@@ -105,6 +105,11 @@ class MovableState
   glm::vec3 stayOnIsland(const MovableBoid & b, const BoidsManager & boidsManager) const;
 
   /**
+   * @brief Compute the force for a boid to avoid walking on mountains and inside lake
+   */
+  glm::vec3 coherentWalk(const MovableBoid & b, const BoidsManager & boidsManager) const;
+
+  /**
    * @brief     Computes the force for a boid b separate from others boids
    * @param[in] b     The concerned boid
    * @param[in] bVec  list of boids which b should be awared of

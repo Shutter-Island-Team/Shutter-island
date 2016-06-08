@@ -320,14 +320,60 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     );
     viewer.addShaderProgram(flatShader);
 
-    FrameRenderablePtr frame = std::make_shared<FrameRenderable>(flatShader);
-    viewer.addRenderable(frame);
+     /*
+     * Loading default shaders.
+     */
+   ShaderProgramPtr seaShader = std::make_shared<ShaderProgram>(
+            std::list<std::string>{
+                "../shaders/sea.vert", 
+                "../shaders/sea.frag"
+            }
+    );
+    viewer.addShaderProgram(seaShader);
+
+    ShaderProgramPtr mapShader = std::make_shared<ShaderProgram>(
+            std::list<std::string>{
+                "../shaders/map.vert", 
+                "../shaders/map.tcs", 
+                "../shaders/map.tes", 
+                "../shaders/map.geom", 
+                "../shaders/map.frag"
+            }
+    );
+    viewer.addShaderProgram(mapShader);
+
+
+    /*
+     * Creating the material
+     */
+    glm::vec3 mAmbient(1.0), mDiffuse(0.2), mSpecular(0.1);
+    float mShininess=0.2*128;
+    MaterialPtr material = std::make_shared<Material>(mAmbient, mDiffuse, mSpecular, mShininess);
+    /*
+     * Creating the map renderable and adding it to the system.
+     */
+    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(mapShader, mapGenerator);
+    mapRenderable->setMaterial(material);
+    viewer.addRenderable(mapRenderable);
+    
+    /*
+     * Creating a QuadRenderable at the altitude 0, so as to represent a calm sea.
+     */
+    SeaRenderablePtr seaRenderable = std::make_shared<SeaRenderable>(
+        seaShader,
+        glm::vec3(0.0, 0.0, 0.1),
+        glm::vec3(mapSize, 0.0, 0.1),
+        glm::vec3(mapSize, mapSize, 0.1),
+        glm::vec3(0.0, mapSize, 0.1)
+    );
+    seaRenderable->setMaterial(material);
+    viewer.addRenderable(seaRenderable);
 
     /*
      * Creating the map renderable and adding it to the system.
      */
-    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(flatShader, mapGenerator);
-    viewer.addRenderable(mapRenderable);
+    //Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(flatShader, mapGenerator);
+    //viewer.addRenderable(mapRenderable);
 
     //Default shader
 
