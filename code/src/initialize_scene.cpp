@@ -26,6 +26,7 @@
 #include "../include/terrain/MapGenerator.hpp"
 #include "../include/terrain/MapRenderable.hpp"
 #include "../include/terrain/SeaRenderable.hpp"
+#include "../include/terrain/LakeRenderable.hpp"
 
 #define MAP_SIZE 500.0
 #define NB_RABBIT_MIN 6
@@ -172,15 +173,24 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
      */
     SeaRenderablePtr seaRenderable = std::make_shared<SeaRenderable>(
         seaShader,
-	mapGenerator,
-        glm::vec3(0.0, 0.0, 0.1),
-        glm::vec3(mapSize, 0.0, 0.1),
-        glm::vec3(mapSize, mapSize, 0.1),
-        glm::vec3(0.0, mapSize, 0.1)
+        mapGenerator,
+        glm::vec3(0.0, 0.0, 0.0),
+        glm::vec3(mapSize, 0.0, 0.0),
+        glm::vec3(mapSize, mapSize, 0.0),
+        glm::vec3(0.0, mapSize, 0.0)
     );
     seaRenderable->setMaterial(material);
     viewer.addRenderable(seaRenderable);
 
+    /*
+     * Creating the lakes renderables.
+     */
+    LakeRenderablePtr lakeRenderable = std::make_shared<LakeRenderable>(
+        seaShader,
+        mapRenderable->getLakesTriangles()
+    );
+    lakeRenderable->setMaterial(material);
+    viewer.addRenderable(lakeRenderable);
 
 
     //Define a point light
@@ -262,16 +272,24 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
      */
     SeaRenderablePtr seaRenderable = std::make_shared<SeaRenderable>(
         seaShader,
-	mapGenerator,
-        glm::vec3(0.0, 0.0, 0.1),
-        glm::vec3(mapSize, 0.0, 0.1),
-        glm::vec3(mapSize, mapSize, 0.1),
-        glm::vec3(0.0, mapSize, 0.1)
+        mapGenerator,
+        glm::vec3(0.0, 0.0, 0.0),
+        glm::vec3(mapSize, 0.0, 0.0),
+        glm::vec3(mapSize, mapSize, 0.0),
+        glm::vec3(0.0, mapSize, 0.0)
     );
     seaRenderable->setMaterial(material);
     viewer.addRenderable(seaRenderable);
 
-    //Default shader
+    /*
+     * Creating the lakes renderables.
+     */
+    LakeRenderablePtr lakeRenderable = std::make_shared<LakeRenderable>(
+        seaShader,
+        mapRenderable->getLakesTriangles()
+    );
+    lakeRenderable->setMaterial(material);
+    viewer.addRenderable(lakeRenderable);
 
     glm::mat4 parentTransformation(1.0), localTransformation(1.0);
     MaterialPtr pearl = Material::Pearl();

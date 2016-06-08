@@ -38,7 +38,7 @@ MapRenderable::MapRenderable(
         m_positions(0),
         m_minAltitude(0.0),
         m_scaleAltitude(0.0),
-	m_mapGenerator(mapGenerator)
+        m_mapGenerator(mapGenerator)
 {
 
     // Geometry part : decomposing the voronoi diagram in triangles
@@ -390,12 +390,33 @@ void MapRenderable::insertIntoList(
     }
 }
 
+static bool findVector(
+    std::vector< std::pair< std::vector<int>, std::vector<glm::vec3> > >& lakes,
+    int lakeID,
+    std::pair< std::vector<int>, std::vector<glm::vec3> >* resultPair
+)
+{
+    for (
+        auto itLakes = lakes.begin(); 
+        itLakes != lakes.end(); 
+        itLakes++
+    ) {
+        for (
+            auto itLakeIDs = itLakes->first.begin();
+            itLakeIDs != itLakes->first.end();
+            itLakeIDs++
+        ) {
+            if (*itLakeIDs == lakeID)
+                resultPair = &(*itLakes);
+                return true;
+        }
+    }
 
+    return false;
+}
 
-
-
-
-void MapRenderable::sendVoronoiDiagram() {
+void MapRenderable::sendVoronoiDiagram() 
+{
    
     /*
      * Iterating on each cell in order to obtain the coordinates of each
@@ -471,10 +492,11 @@ void MapRenderable::sendVoronoiDiagram() {
      * necessary data to render the map.
      */
     auto seedsIt = m_mapGenerator.seeds.begin();
+    int count = 0;
     for (
         auto listIt = listOfVertices.begin();
         listIt != listOfVertices.end();
-        listIt++, seedsIt++
+        listIt++, seedsIt++, count++
     ) {
         /*
          * Getting the centroid and the biome of the cell, since all the 
@@ -490,6 +512,62 @@ void MapRenderable::sendVoronoiDiagram() {
             cY,
             m_mapGenerator.getHeight(cX, cY)
         );
+
+        /*
+         * In order to merge connexe lakes, we have to iterate over their
+         * neighbourhoods, and insert their triangles into shared vectors.
+         */
+        bool newLake = true;
+        std::vector<glm::vec3>* lakeVector = NULL;
+        if (seedsIt->getBiome() == Lake) {
+            /*
+             * Iterating over the lake's neighbourhood.
+             */
+            std::vector<int> neighbours;
+            seedsIt->getCell()->neighbors(neighbours);
+
+            std::pair< 
+                std::vector<int>, 
+                std::vector<glm::vec3> 
+            >* insertPair;
+
+            for (
+                auto neighboursIt = neighbours.begin();
+                neighboursIt != neighbours.end();
+                neighboursIt++
+            )
+            {
+//                std::cout << "Neighbours =======>" << std::endl;
+//                std::cout << *neighboursIt << std::endl;
+//                std::cout << "In the map =======>" << std::endl;
+//                for (auto it = lakesTriangles.begin(); it != lakesTriangles.end(); it++)
+//                    std::cout << it->first << std::endl;
+//
+//                std::cout << "\n" << std::endl;
+                /*
+                 * If one of its neighbour has already been inserted into the
+                 * lakes list, then the considered lake is connexe to its
+                 * neighbour.
+                 */
+                if (findVector(m_lakesTriangles, *neighboursIt, insertPair)) {
+                    //std::cout << "Found!" << std::endl;
+                    newLake = false;
+                    break;
+                }
+            }
+            /*
+             * Otherwise, we have to insert the lake into the list of lakes.
+             */
+            if (newLake) {
+                m_lakesTriangles.push_back(
+                    std::pair< std::vector<int>, std::vector<glm::vec3> >()
+                );
+                insertPair = &(m_lakesTriangles.back());
+            }
+                //std::cout << "End =======>" << std::endl;
+            insertPair->first.push_back(count);
+            lakeVector = &(insertPair->second);
+        }
 
         auto current = (*listIt)->begin();
         auto previous = current;
@@ -532,6 +610,12 @@ void MapRenderable::sendVoronoiDiagram() {
             m_positions.push_back(centroid);
             m_texCoords.push_back(glm::vec2(centroid)/m_mapGenerator.mapSize);
 
+            if (lakeVector != NULL) {
+                lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p1-centroid)+glm::vec2(centroid), p1.z));
+                lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p2-centroid)+glm::vec2(centroid), p2.z));
+                lakeVector->push_back(centroid);
+            }
+
             previous = current;
             current++;
         }
@@ -552,6 +636,12 @@ void MapRenderable::sendVoronoiDiagram() {
      
         m_positions.push_back(centroid);
         m_texCoords.push_back(glm::vec2(centroid)/m_mapGenerator.mapSize);
+
+        if (lakeVector != NULL) {
+            lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p1-centroid)+glm::vec2(centroid), p1.z));
+            lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p2-centroid)+glm::vec2(centroid), p2.z));
+            lakeVector->push_back(centroid);
+        }
     }
 
 
@@ -907,4 +997,14 @@ void MapRenderable::sendMasks() {
     delete [] maskSSPL;
     delete [] maskMP;
 
+}
+
+std::vector< 
+    std::pair<
+        std::vector<int>, 
+        std::vector<glm::vec3> 
+    >
+>& MapRenderable::getLakesTriangles()
+{
+    return m_lakesTriangles;
 }

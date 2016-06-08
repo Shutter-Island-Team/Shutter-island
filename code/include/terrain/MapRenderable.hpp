@@ -51,6 +51,20 @@ public:
      */
     void setMaterial(const MaterialPtr& material);
 
+    /**
+     * @brief
+     * Getter for the data structure containing the connexe lakes.
+     *
+     * @return A reference on the data structure containing the
+     * connexe lakes.
+     */
+    std::vector< 
+        std::pair<
+            std::vector<int>, 
+            std::vector<glm::vec3> 
+        >
+    >& getLakesTriangles();
+
 private:
     /**
      * @brief 
@@ -174,6 +188,18 @@ private:
      * (x, y)        = (mountain, peak)
      */
     GLuint m_mountainPeakMaskId;
+
+    /**
+     * @brief
+     * In order to take account the connexity of the lakes,
+     * we have to use an auxiliar data structure.
+     */
+    std::vector< 
+        std::pair<
+            std::vector<int>, 
+            std::vector<glm::vec3> 
+        >
+    > m_lakesTriangles;
 
     /**
      * @brief Performs a sorted insert of a pair of coordinates into a 
