@@ -77,6 +77,7 @@ void BillBoardPlaneRenderable::do_draw()
     //Location
     int colorLocation = m_shaderProgram->getAttributeLocation("vColor");
     int shiftLocation = m_shaderProgram->getAttributeLocation("vShift");
+    int modelLocation = m_shaderProgram->getUniformLocation("modelMat");
     int texSampleLoc = m_shaderProgram->getUniformLocation("texSampler");
     int billboardPositionLocation = m_shaderProgram->getUniformLocation("billboard_world_position");
     int billboardDimensionsLocation = m_shaderProgram->getUniformLocation("billboard_world_dimensions");
@@ -85,6 +86,11 @@ void BillBoardPlaneRenderable::do_draw()
     Material::sendToGPU(m_shaderProgram, m_material);
 
     //Send uniform to the graphics card
+    if(modelLocation != ShaderProgram::null_location)
+    {
+        glcheck(glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(getModelMatrix())));
+    }
+
     if( billboardPositionLocation != ShaderProgram::null_location )
     {
         glcheck(glUniform3fv( billboardPositionLocation, 1, glm::value_ptr( m_billboardWorldPosition ) ) );
