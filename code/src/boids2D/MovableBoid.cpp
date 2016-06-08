@@ -30,7 +30,8 @@ MovableBoid::MovableBoid(glm::vec3 location, glm::vec3 landmarkPosition, glm::ve
 	m_parameters(parameters), m_movablePrey((MovableBoidPtr) nullptr),
 	m_rootedPrey((RootedBoidPtr) nullptr), m_hunter((MovableBoidPtr) nullptr),
 	m_leader((MovableBoidPtr) nullptr), m_soulMate((MovableBoidPtr) nullptr),
-	m_isDead(false), m_waterTarget(glm::vec3(0,0,2.0f)), m_landmarkPosition(landmarkPosition)
+	m_isDead(false), m_waterTarget(glm::vec3(0,0,2.0f)), m_landmarkPosition(landmarkPosition),
+	m_mateStatus(0.0f)
 {
     m_stateType = WALK_STATE;
 	m_currentState.reset(new WalkState());
@@ -348,7 +349,7 @@ void MovableBoid::eatStateHandler(const BoidsManager & boidsManager)
 }
 
 
-void MovableBoid::lostStateHandler(BoidsManager & boidsManager)
+void MovableBoid::lostStateHandler(const BoidsManager & boidsManager)
 {
 	if (m_parameters->isInDanger()) {
 		switchToState(FLEE_STATE, boidsManager);
@@ -364,36 +365,11 @@ void MovableBoid::lostStateHandler(BoidsManager & boidsManager)
 		switchToState(WALK_STATE, boidsManager);	
 	} else if (isNight()) {
 		switchToState(SLEEP_STATE, boidsManager);
+	} else if (m_parameters->isHighAffinity()) {
+		m_mateStatus = 1.0f;
+		switchToState(MATE_STATE, boidsManager);
 	} else {
-		#pragma omp critical
-		{
-			if (m_parameters->isHighAffinity()) {
-				unsigned int i = 0;
-				unsigned int j = 0;
-				boidsManager.coordToBox(m_location, i, j);
-				std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
-				std::list<MovableBoidPtr> neighbours;
-				for (std::list<MovableBoidPtr>::iterator it = mvB.begin(); it != mvB.end(); ++it) {
-					if ((*it)->m_stateType == LOST_STATE && (*it)->getLeader() == getLeader() && (*it)->m_parameters->isHighAffinity()) {
-						neighbours.insert(neighbours.begin(), *it);
-					}
-				}
-				if (neighbours.size() >= 2) {
-					glm::vec3 position;
-					for (std::list<MovableBoidPtr>::iterator itn = neighbours.begin(); itn != neighbours.end(); ++itn) {
-						(*itn)->m_parameters->resetAffinity();
-						position += (*itn)->getLocation();
-					}
-					position /= neighbours.size();
-					MovableBoidPtr newborn = boidsManager.addMovableBoid(getBoidType(), position, m_landmarkPosition, glm::vec3(0,0,0));
-					newborn->setNewLeader(getLeader());
-				    #ifdef DEBUG
-					// boidsManager.addDebugMovableBoid(newborn);
-				    #endif
-					std::cerr << "NAISSANCE !" << std::endl;
-				}
-			}
-		}
+		return;
 	}
 }
 
@@ -427,10 +403,36 @@ void MovableBoid::drinkStateHandler(const BoidsManager & boidsManager)
 	}
 }
 
-void MovableBoid::mateStateHandler(const BoidsManager & boidsManager)
+void MovableBoid::mateStateHandler(BoidsManager & boidsManager)
 {
+	unsigned int i = 0;
+	unsigned int j = 0;
+	boidsManager.coordToBox(m_location, i, j);
+	std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
+	std::list<MovableBoidPtr> neighbours;
+	for (std::list<MovableBoidPtr>::iterator it = mvB.begin(); it != mvB.end(); ++it) {
+		if ((*it)->m_stateType == MATE_STATE && (*it)->getLeader() == getLeader()) {
+			neighbours.insert(neighbours.begin(), *it);
+		}
+		if (neighbours.size() >= 2) {
+			m_mateStatus -= 0.01f;
+		}
+	}
 	if (isNoLongerMating()) {
-		switchToState(SLEEP_STATE, boidsManager);
+		glm::vec3 position;
+		for (std::list<MovableBoidPtr>::iterator itn = neighbours.begin(); itn != neighbours.end(); ++itn) {
+			(*itn)->m_parameters->resetAffinity();
+			position += (*itn)->getLocation();
+		}
+		position /= neighbours.size();
+		MovableBoidPtr newborn = boidsManager.addMovableBoid(getBoidType(), position, m_landmarkPosition, glm::vec3(0,0,0));
+		newborn->setNewLeader(getLeader());
+	    #ifdef DEBUG
+		// boidsManager.addDebugMovableBoid(newborn);
+	    #endif
+		std::cerr << "NAISSANCE !" << std::endl;
+		switchToState(WALK_STATE, boidsManager);
+		m_parameters->resetAffinity();
 	}
 }
 
@@ -464,7 +466,7 @@ bool MovableBoid::hasSoulMate() const
 bool MovableBoid::isNoLongerMating() const
 {
 	///< @todo
-	return false;
+	return m_mateStatus < 0.0f;
 }
 
 bool MovableBoid::preyIsDead() const

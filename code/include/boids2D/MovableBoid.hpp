@@ -294,6 +294,8 @@ class MovableBoid : public Boid
 
   glm::vec3 m_landmarkPosition; ///< Position for the landmark
 
+  float m_mateStatus;
+
   /**
    * @brief     Make all the change when a boid get to the new state stateType
    * @param[in] stateType     The state the boid change to
@@ -329,7 +331,7 @@ class MovableBoid : public Boid
   /**
    * @brief Contain the rules for a boid when he is lost
    */
-  void lostStateHandler(BoidsManager & boidsManager);
+  void lostStateHandler(const BoidsManager & boidsManager);
 
   /**
    * @brief Contain the rules for a boid when he sleeps
@@ -354,7 +356,7 @@ class MovableBoid : public Boid
   /**
    * @brief Contain the rules for a boid when he mates
    */
-  void mateStateHandler(const BoidsManager & boidsManager);
+  void mateStateHandler(BoidsManager & boidsManager);
 
   StateType m_stateType; ///< Save the current state of a boid
 

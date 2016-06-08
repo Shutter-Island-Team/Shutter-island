@@ -687,7 +687,6 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	// if predator is near danger <- di(danger) else danger <- dd(danger)
 	// if in a group of same species affinity <- ai(affinity)
 	// if alone affinity <- ad(affinity)
-	glm::vec3 newForces(0,0,0);
 	const std::list<MovableBoidPtr> mvB = boidsManager.getNeighbour(i, j);
 
 	MovableBoidPtr mate = closestMovable(b, b.getBoidType(), mvB);
@@ -702,11 +701,8 @@ glm::vec3 MateState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	updateDanger(b, mvB);
 
 	// Set affinity to 0.0 to limit the number of birth
-
-	std::cerr << "Mate vs this : " << b.getMate() << ", " << this << std::endl;
-	newForces += arrive(b, b.getMate()->getLocation());
-	newForces.z = 0.0f; // Trick to compute force in 2D
-	return newForces;
+	stop(b);
+	return glm::vec3(0,0,0);
 }
 
 glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boidsManager, const float & dt, const int & i, const int & j, const bool & updateTick) const
