@@ -195,7 +195,7 @@ glm::vec3 MovableState::separate(const MovableBoid& b, const std::list<MovableBo
 
 glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::list<RootedBoidPtr> & rootB) const
 {
-	float coeff = glm::length(b.getVelocity()) / b.getParameters()->getMaxSpeedRun();
+	float coeff = glm::length(b.getVelocity()) / b.getParameters()->getMaxSpeedWalk();
 	glm::vec3 posAhead = b.getLocation() + coeff * cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead();
 	glm::vec3 posAhead2 = b.getLocation() + coeff *  cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead() * 0.5f;
 	std::list<RootedBoidPtr>::const_iterator it = rootB.begin();
@@ -204,16 +204,16 @@ glm::vec3 MovableState::collisionAvoid (const MovableBoid& b, const std::list<Ro
 	RootedBoidPtr elt;
 	while (it != rootB.end() && eltClose == (RootedBoidPtr) nullptr) {
 		elt = *it;
-		if (glm::distance(elt->getLocation(), posAhead) <= elt->getRadius()) {
+		if (glm::distance(elt->getLocation(), posAhead) < elt->getRadius()) {
 			eltFar = elt;
-		} else if (glm::distance(elt->getLocation(), posAhead2) <= elt->getRadius()) {
+		} else if (glm::distance(elt->getLocation(), posAhead2) < elt->getRadius()) {
 			eltClose = elt;
 		}
 		it++;
 	}
-	if (!(eltClose == (RootedBoidPtr) nullptr)) {
+	if (eltClose != (RootedBoidPtr) nullptr) {
 		return glm::normalize(posAhead - eltClose->getLocation()) * b.getParameters()->getMaxForce();
-	} else if (!(eltFar == (RootedBoidPtr) nullptr)) {
+	} else if (eltFar != (RootedBoidPtr) nullptr) {
 		return glm::normalize(posAhead - eltFar->getLocation()) * b.getParameters()->getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);

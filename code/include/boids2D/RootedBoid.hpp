@@ -23,7 +23,6 @@ class RootedBoid : public Boid
    */
   float getRadius() const;
   
- protected:
   /**
    * @brief Constructor for a RootedBoid
    * @param[in] location    Location of the object

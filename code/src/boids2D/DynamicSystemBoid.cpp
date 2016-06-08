@@ -53,4 +53,8 @@ void DynamicSystemBoid::computeSimulationStep()
     } else {
         m_boidsManager->updateTick();
     }
+
+    if (m_boidsManager->getCountCarrot() < 20) {
+        m_boidsManager->repopCarrot();
+    }
 }

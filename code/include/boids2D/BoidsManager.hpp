@@ -174,6 +174,10 @@ class BoidsManager
 
   void addDebugMovableBoid(MovableBoidPtr m);
 
+  void repopCarrot();
+
+  const int & getCountCarrot() const;
+
  private:
   MapGenerator& m_map; ///< Reference of the map
   Viewer& m_viewer; ///< Reference of the viewer
@@ -185,6 +189,8 @@ class BoidsManager
 
   int m_updateCoeff; ///< State of the update coefficient to check if the status of the boids need to be updated
   const int m_updatePeriod; ///< Period of tick before the update of the state of the boids
+
+  int m_countCarrot;
 };
 
 typedef std::shared_ptr<BoidsManager> BoidsManagerPtr;

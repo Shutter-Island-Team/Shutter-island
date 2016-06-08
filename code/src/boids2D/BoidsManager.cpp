@@ -4,9 +4,13 @@
 #include "../../include/boids2D/BoidsManager.hpp"
 #include "../../include/boids2D/SightRenderable.hpp"
 #include "../../include/boids2D/StateRenderable.hpp"
+#include "../../include/Utils.hpp"
+
+#define MAP_SIZE 500.0
 
 BoidsManager::BoidsManager(MapGenerator& map, Viewer& viewer, ShaderProgramPtr& shader) 
-	: m_map(map), m_viewer(viewer), m_shader(shader), m_updateCoeff(0), m_updatePeriod(10)
+	: m_map(map), m_viewer(viewer), m_shader(shader), m_updateCoeff(0), m_updatePeriod(10),
+		m_countCarrot(0)
 {
 	m_movableBoids = std::make_shared<Matrix<MovableBoidPtr> >(25, 25);
 	m_rootedBoids = std::make_shared<Matrix<RootedBoidPtr> >(25, 25);
@@ -49,10 +53,11 @@ RootedBoidPtr BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 	switch(boidType)
 	{
 		case CARROT:
-			rootedBoid = std::make_shared<RootedBoid>(location, CARROT);
+			m_countCarrot++;
+			rootedBoid = std::make_shared<RootedBoid>(location, CARROT, 0.0f, 1);
 			break;
 		case TREE:
-			rootedBoid = std::make_shared<RootedBoid>(location, TREE);
+			rootedBoid = std::make_shared<RootedBoid>(location, TREE, 2.0f, 1);
 			break;
 		default:
 			throw std::invalid_argument("valid boidType required");
@@ -166,6 +171,7 @@ void BoidsManager::removeDead()
 			while ( itr != m_rootedBoids->at(i,j).end()) {
 				if (!((*itr)->isFoodRemaining())) {
 					(*itr)->disapear();
+					m_countCarrot--;
 					itr = m_rootedBoids->at(i,j).erase(itr);
 				} else {
 					itr++;
@@ -224,4 +230,24 @@ void BoidsManager::addDebugMovableBoid(MovableBoidPtr m)
 
     StateRenderablePtr state = std::make_shared<StateRenderable>(m_shader, m);
     m_viewer.addRenderable(state);
+}
+
+void BoidsManager::repopCarrot()
+{
+	float x = random(0, MAP_SIZE);
+	float y = random(0, MAP_SIZE);
+	glm::vec3 positionFellow(x, y, getHeight(x, y));
+
+    while(getBiome(positionFellow.x, positionFellow.y) != Plains) {
+		x = random(0, MAP_SIZE);
+		y = random(0, MAP_SIZE);
+		positionFellow = glm::vec3(x, y, getHeight(x, y));
+    }
+
+	addRootedBoid(CARROT, positionFellow);
+}
+
+const int & BoidsManager::getCountCarrot() const
+{
+	return m_countCarrot;	
 }
