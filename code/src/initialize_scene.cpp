@@ -257,8 +257,8 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
     /*
      * Creating the material
      */
-    glm::vec3 mAmbient(1.0), mDiffuse(0.2), mSpecular(0.1);
-    float mShininess=0.2*128;
+    glm::vec3 mAmbient(0.8), mDiffuse(0.3), mSpecular(0.0);
+    float mShininess=0.125*128;
     MaterialPtr material = std::make_shared<Material>(mAmbient, mDiffuse, mSpecular, mShininess);
     /*
      * Creating the map renderable and adding it to the system.
@@ -347,8 +347,8 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     /*
      * Creating the material
      */
-    glm::vec3 mAmbient(1.0), mDiffuse(0.2), mSpecular(0.1);
-    float mShininess=0.2*128;
+    glm::vec3 mAmbient(0.8), mDiffuse(0.3), mSpecular(0.0);
+    float mShininess=0.125*128;
     MaterialPtr material = std::make_shared<Material>(mAmbient, mDiffuse, mSpecular, mShininess);
     /*
      * Creating the map renderable and adding it to the system.

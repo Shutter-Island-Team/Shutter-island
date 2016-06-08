@@ -66,6 +66,10 @@ uniform SpotLight spotLight[MAX_NR_SPOT_LIGHTS];
 
 ////////// Uniforms to set
 
+// Camera related informations
+uniform mat4 projMat, viewMat, modelMat;
+
+
 ///// The texture scale
 uniform float scaleTexture;
 
@@ -179,7 +183,26 @@ vec3 computeSpotLight(SpotLight light, vec3 positionToCamera)
 void main() {
 
     // Compute the light and blend the texture
+
+    // Illumination
+    vec3 cameraPosition    = - vec3(viewMat[3]) * mat3(viewMat);
+    vec3 positionToCamera = normalize(cameraPosition - gPosition);
+
+    int clampedNumberOfPointLight = max(0, min(numberOfPointLight, MAX_NR_POINT_LIGHTS));
+    int clampedNumberOfSpotLight = max(0, min(numberOfSpotLight, MAX_NR_SPOT_LIGHTS));
+
+    vec3 illumination = vec3(0.0, 0.0, 0.0);
+
+    illumination += computeDirectionalLight(directionalLight, positionToCamera);
+
+    for(int i=0; i<clampedNumberOfPointLight; ++i)
+        illumination += computePointLight(pointLight[i], positionToCamera);
+
+    for(int i=0; i<clampedNumberOfSpotLight; ++i)
+        illumination += computeSpotLight(spotLight[i], positionToCamera);
+
     
+    // Texture
     // Taking the values from the masks
     vec4 firstMask  = texture(seaSandPlainsLakeMask, gTexCoord);
     vec4 secondMask = texture(mountainPeakMask,      gTexCoord);
@@ -201,8 +224,11 @@ void main() {
     vec4 mountainValue = texture(mountainTex, mapPosition/scaleTexture);
     vec4 peakValue     = texture(peakTex,     mapPosition/scaleTexture);
 
-    // Blending
-    fColor = (seaCoefficient      * seaValue      + sandCoefficient * sandValue
-	      + plainsCoefficient   * plainsValue   + lakeCoefficient * lakeValue
-	      + mountainCoefficient * mountainValue + peakCoefficient * peakValue);
+    // Blending the textures
+    vec4 texture = (seaCoefficient      * seaValue      + sandCoefficient * sandValue
+		    + plainsCoefficient   * plainsValue   + lakeCoefficient * lakeValue
+		    + mountainCoefficient * mountainValue + peakCoefficient * peakValue);
+
+    // Final result
+    fColor = texture*vec4(illumination, 1.0);
 }
