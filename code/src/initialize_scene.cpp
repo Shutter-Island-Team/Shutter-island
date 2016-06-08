@@ -42,6 +42,16 @@
 
 #include "../include/boids2D/DynamicSystemBoid.hpp"
 #include "../include/boids2D/DynamicSystemBoidRenderable.hpp"
+
+#include "../include/dynamics/DynamicSystem.hpp"
+#include "../include/dynamics/EulerExplicitSolver.hpp"
+#include "../include/dynamics/DynamicSystemRenderable.hpp"
+#include "../include/dynamics/ParticleRenderable.hpp"
+#include "../include/dynamics/ConstantForceField.hpp"
+#include "../include/dynamics/ControlledForceFieldRenderable.hpp"
+#include "../include/dynamics/DampingForceField.hpp"
+#include "../include/dynamics/Particle.hpp"
+
 #include "../include/Utils.hpp"
 
 void display_2Dboids( Viewer& viewer, BoidsManagerPtr boidsManager, 
@@ -341,6 +351,44 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     display_3Dboids(viewer, boidsManager, systemRenderable, instanceShader, flatShader);
 
     viewer.addRenderable(systemRenderable);
-    viewer.startAnimation();
 
+    DynamicSystemPtr systemParticule = std::make_shared<DynamicSystem>();
+    EulerExplicitSolverPtr solverParticule = std::make_shared<EulerExplicitSolver>();
+    systemParticule->setSolver(solverParticule);
+    systemParticule->setDt(0.01);
+
+    DynamicSystemRenderablePtr systemRenderableParticule = std::make_shared<DynamicSystemRenderable>(systemParticule);
+    viewer.addRenderable(systemRenderableParticule);
+
+    glm::vec3 px(50.0,50.0,50.0),pv(0.0,0.0,0.0);
+    float pm=1.0;
+    px = glm::vec3(0.0,0.0,1.0);
+    ParticlePtr mobile = std::make_shared<Particle>( px, pv, pm);
+    systemParticule->addParticle( mobile );
+
+    ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>( flatShader, mobile );
+    HierarchicalRenderable::addChild(systemRenderableParticule, mobileRenderable);
+
+    //Initialize a force field that apply only to the mobile particle
+    glm::vec3 nullForce(0.0,0.0,0.0);
+    std::vector<ParticlePtr> vParticle;
+    vParticle.push_back(mobile);
+    ConstantForceFieldPtr force = std::make_shared<ConstantForceField>(vParticle, nullForce);
+    systemParticule->addForceField( force );
+
+    //Initialize a renderable for the force field applied on the mobile particle.
+    //This renderable allows to modify the attribute of the force by key/mouse events
+    //Add this renderable to the systemRenderableParticule.
+    ControlledForceFieldRenderablePtr forceRenderable = std::make_shared<ControlledForceFieldRenderable>( flatShader, force );
+    HierarchicalRenderable::addChild(systemRenderableParticule, forceRenderable);
+
+    //Add a damping force field to the mobile.
+    DampingForceFieldPtr dampingForceField = std::make_shared<DampingForceField>(vParticle, 0.9);
+    systemParticule->addForceField( dampingForceField );
+
+    //Activate collision and set the restitution coefficient to 1.0
+    systemParticule->setCollisionsDetection(true);
+    systemParticule->setRestitution(1.0f);
+
+    viewer.startAnimation();
 }

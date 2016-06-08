@@ -245,7 +245,8 @@ public:
       /** The view matrix is modified to turn the camera around the world origin.*/
       ARCBALL_BEHAVIOR,
       /** The view matrix is modified to point its 'nose' in the direction pointed by the mouse. */
-      SPACESHIP_BEHAVIOR
+      SPACESHIP_BEHAVIOR,
+      FOLLOW_BEHAVIOR
     };
 
     /** @name Mouse Control

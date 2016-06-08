@@ -205,6 +205,12 @@ void Camera::update( float dx, float dy )
     }
         break;
 
+    case FOLLOW_BEHAVIOR:
+    {
+        std::cerr << "Tu peux m'implémenter bordel ? :(" << std::endl;
+    }
+        break;
+
     default:
         assert(false);
     }

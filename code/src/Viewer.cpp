@@ -458,13 +458,14 @@ void Viewer::takeScreenshot()
 
 void Viewer::changeCameraMode()
 {
-    if( m_camera.getMouseBehavior() == Camera::ARCBALL_BEHAVIOR )
-    {
+    if( m_camera.getMouseBehavior() == Camera::ARCBALL_BEHAVIOR ) {
         m_camera.setMouseBehavior( Camera::SPACESHIP_BEHAVIOR );
         m_modeInformationText = "Spaceship Camera Activated";
     }
-    else
-    {
+    else if (m_camera.getMouseBehavior() == Camera::SPACESHIP_BEHAVIOR) {
+        m_camera.setMouseBehavior( Camera::FOLLOW_BEHAVIOR );
+        m_modeInformationText = "Following camera activated";
+    } else if (m_camera.getMouseBehavior() == Camera::FOLLOW_BEHAVIOR) {
         m_camera.setMouseBehavior( Camera::ARCBALL_BEHAVIOR );
         m_modeInformationText = "Arcball Camera Activated";
     }
