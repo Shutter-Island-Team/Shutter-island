@@ -8,6 +8,7 @@
 #include "../include/texturing/MipMapCubeRenderable.hpp"
 #include "../include/texturing/TexturedLightedMeshRenderable.hpp"
 #include "../include/lighting/DirectionalLightRenderable.hpp"
+#include "../include/lighting/SpotLightRenderable.hpp"
 
 #include "../include/boids2D/Rabbit.hpp"
 #include "../include/boids2D/Wolf.hpp"
@@ -266,12 +267,13 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     MaterialPtr pearl = Material::Pearl();
 
     //Define a directional light for the whole scene
+    
     glm::vec3 d_direction = glm::normalize(glm::vec3(0.0,0.0,-1.0));
     glm::vec3 d_ambient(1.0,1.0,1.0), d_diffuse(1.0,1.0,0.8), d_specular(1.0,1.0,1.0);
     DirectionalLightPtr directionalLight = std::make_shared<DirectionalLight>(d_direction, d_ambient, d_diffuse, d_specular);
     //Add a renderable to display the light and control it via mouse/key event
     viewer.setDirectionalLight(directionalLight);
-
+    
     //Textured shader
     ShaderProgramPtr texShader = std::make_shared<ShaderProgram>(std::list<std::string>{
         "../shaders/textureVertex.vert",
@@ -282,6 +284,15 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
                 "../shaders/instanceVertex.vert", 
                 "../shaders/instanceFragment.frag"});
     viewer.addShaderProgram( instanceShader );
+
+    // Skybox
+    TexturedLightedMeshRenderablePtr skybox = std::make_shared<TexturedLightedMeshRenderable>( texShader, "../meshes/skybox.obj", "../textures/skybox_texture.png");
+    skybox->setMaterial(pearl);
+    parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3( 0, 0, 0.0 ) );
+    parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0) );
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(250,250,250));
+    skybox->setParentTransform( parentTransformation );
+    viewer.addRenderable(skybox);
 
     BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator, viewer, instanceShader);
 
@@ -298,8 +309,6 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
     boidsManager->placeBoids(Plains, 20, 10, 30, 10);
-
-    //place_boid( viewer, mapGenerator, boidsManager, Plains, 20, 10, 30, 10); 
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
