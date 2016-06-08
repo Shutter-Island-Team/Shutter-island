@@ -1,9 +1,9 @@
 /**
- * @file Map2DRenderable.cpp
+ * @file MapRenderable.cpp
  *
- * @see Map2DRenderable.hpp
+ * @see MapRenderable.hpp
  */
-#include "./../../include/terrain/Map2DRenderable.hpp"
+#include "./../../include/terrain/MapRenderable.hpp"
 #include "./../../include/gl_helper.hpp"
 #include "./../../include/log.hpp"
 #include "./../../include/Utils.hpp"
@@ -30,7 +30,7 @@
     if((x)<0.0) x = 0.0;\
     if((y)<0.0) y = 0.0;
 
-Map2DRenderable::Map2DRenderable(
+MapRenderable::MapRenderable(
     ShaderProgramPtr shaderProgram, 
     MapGenerator& mapGenerator
 )
@@ -102,7 +102,7 @@ Map2DRenderable::Map2DRenderable(
     sendMasks();
 }
 
-Map2DRenderable::~Map2DRenderable()
+MapRenderable::~MapRenderable()
 {
     /*
      * Disabling the GPU buffers used while rendering.
@@ -113,7 +113,7 @@ Map2DRenderable::~Map2DRenderable()
 
 }
 
-void Map2DRenderable::do_draw()
+void MapRenderable::do_draw()
 {
     /*
      * Drawing geometric data
@@ -327,18 +327,18 @@ void Map2DRenderable::do_draw()
     }
 }
 
-void Map2DRenderable::do_animate(float time) 
+void MapRenderable::do_animate(float time) 
 {
 }
 
 
-void Map2DRenderable::setMaterial(const MaterialPtr& material)
+void MapRenderable::setMaterial(const MaterialPtr& material)
 {
     m_material = material;
 }
 
 
-void Map2DRenderable::insertIntoList(
+void MapRenderable::insertIntoList(
     std::list< std::pair<float, float> >& list,
     float x,
     float y,
@@ -387,7 +387,7 @@ void Map2DRenderable::insertIntoList(
 
 
 
-void Map2DRenderable::sendVoronoiDiagram() {
+void MapRenderable::sendVoronoiDiagram() {
    
     /*
      * Iterating on each cell in order to obtain the coordinates of each
@@ -602,7 +602,7 @@ void Map2DRenderable::sendVoronoiDiagram() {
 
 
 
-void Map2DRenderable::sendHeightMap() {
+void MapRenderable::sendHeightMap() {
     /*
      * Creating and computing the 2D texture representing the heightmap.
      */
@@ -722,7 +722,7 @@ void Map2DRenderable::sendHeightMap() {
 }
 
 
-void Map2DRenderable::sendMasks() {
+void MapRenderable::sendMasks() {
     
     // Computing the parameters
     int heightmapScaling    = m_mapGenerator.m_mapParameters.getHeightmapScaling();

@@ -95,7 +95,7 @@ MapParameters::MapParameters(const std::string& filename)
      m_vsgMinDist = document["VSG"]["vsgMinDist"].GetFloat();
 
      /*
-      * Map2DRenderable "defines".
+      * MapRenderable "defines".
       */
      m_tessellationLevel = document["Map2D"]["tessellationLevel"].GetFloat();
      m_heightmapScaling = document["Map2D"]["heightmapScaling"].GetFloat();
@@ -304,7 +304,7 @@ float MapParameters::getVsgMinDist()
 }
 
 /*
- * Map2DRenderable "getters".
+ * MapRenderable "getters".
  */
 float MapParameters::getTessellationLevel()
 {

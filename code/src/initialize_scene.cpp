@@ -23,7 +23,7 @@
 
 #include "../include/graphicPrimitives/QuadRenderable.hpp"
 #include "../include/terrain/MapGenerator.hpp"
-#include "../include/terrain/Map2DRenderable.hpp"
+#include "../include/terrain/MapRenderable.hpp"
 #include "../include/terrain/SeaRenderable.hpp"
 
 #define MAP_SIZE 500.0
@@ -263,7 +263,7 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
     /*
      * Creating the map renderable and adding it to the system.
      */
-    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(mapShader, mapGenerator);
+    MapRenderablePtr mapRenderable = std::make_shared<MapRenderable>(mapShader, mapGenerator);
     mapRenderable->setMaterial(material);
     viewer.addRenderable(mapRenderable);
     
@@ -352,7 +352,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     /*
      * Creating the map renderable and adding it to the system.
      */
-    Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(mapShader, mapGenerator);
+    MapRenderablePtr mapRenderable = std::make_shared<MapRenderable>(mapShader, mapGenerator);
     mapRenderable->setMaterial(material);
     viewer.addRenderable(mapRenderable);
     
@@ -372,7 +372,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     /*
      * Creating the map renderable and adding it to the system.
      */
-    //Map2DRenderablePtr mapRenderable = std::make_shared<Map2DRenderable>(flatShader, mapGenerator);
+    //MapRenderablePtr mapRenderable = std::make_shared<MapRenderable>(flatShader, mapGenerator);
     //viewer.addRenderable(mapRenderable);
 
     //Default shader

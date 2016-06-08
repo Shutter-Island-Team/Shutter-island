@@ -6,7 +6,7 @@
 
 #include "./../../include/terrain/SeaRenderable.hpp"
 
-#include "./../../include/terrain/Map2DRenderable.hpp"
+#include "./../../include/terrain/MapRenderable.hpp"
 #include "./../../include/gl_helper.hpp"
 #include "./../../include/log.hpp"
 #include "./../../include/Utils.hpp"

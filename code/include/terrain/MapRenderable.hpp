@@ -1,9 +1,9 @@
 /**
- * @file Map2DRenderable.hpp
+ * @file MapRenderable.hpp
  *
  * @brief
  * This file contains the interface of the bi-dimensional map
- * renderable. In other words, the class Map2DRenderable will
+ * renderable. In other words, the class MapRenderable will
  * be in charge of rendering the generated map, within the plane.
  */
 #ifndef MAP_2D_RENDERABLE_HPP
@@ -19,13 +19,13 @@
 #include <glm/glm.hpp>
 
 /**
- * @class Map2DRenderable
+ * @class MapRenderable
  *
  * @brief
- * The class Map2DRenderable implements the rendering step of the
+ * The class MapRenderable implements the rendering step of the
  * bi-dimensional map.
  */
-class Map2DRenderable : public HierarchicalRenderable
+class MapRenderable : public HierarchicalRenderable
 {
 public:
     /**
@@ -37,13 +37,13 @@ public:
      * @param mapGenerator Reference on the MapGenerator which generated
      * the map data.
      */
-    Map2DRenderable(ShaderProgramPtr shaderProgram, MapGenerator& mapGenerator);
+    MapRenderable(ShaderProgramPtr shaderProgram, MapGenerator& mapGenerator);
 
     /**
      * @brief
      * Default destructor, nothing particular to say about it.
      */
-    ~Map2DRenderable();
+    ~MapRenderable();
 
     /**
      * @brief
@@ -216,6 +216,6 @@ private:
 /**
  * @brief Typedef for smart pointer to map renderable.
  * */
-typedef std::shared_ptr<Map2DRenderable> Map2DRenderablePtr; 
+typedef std::shared_ptr<MapRenderable> MapRenderablePtr; 
 
 #endif

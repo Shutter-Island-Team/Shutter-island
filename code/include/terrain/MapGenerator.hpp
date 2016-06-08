@@ -19,7 +19,7 @@
  * @brief 
  * Promise of definition of the friend class.
  */
-class Map2DRenderable;
+class MapRenderable;
 
 /**
  * @brief
@@ -34,7 +34,7 @@ class MapGenerator {
      * Friend class definition, in order to access the MapGenerator's attributes
      * without using getters.
      */
-    friend class Map2DRenderable;
+    friend class MapRenderable;
 
 public :
 
