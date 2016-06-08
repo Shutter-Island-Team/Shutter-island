@@ -746,16 +746,17 @@ void MapRenderable::sendMasks() {
 
 
     // Variables to store the local neighbourhood
-    int seaNeighbour;
-    int sandNeighbour;
-    int plainsNeighbour;
-    int lakeNeighbour;
-    int mountainNeighbour;
-    int peakNeighbour;
+    float seaNeighbour;
+    float sandNeighbour;
+    float plainsNeighbour;
+    float lakeNeighbour;
+    float mountainNeighbour;
+    float peakNeighbour;
 
+    float increment;
     
-    int neighbourhoodWidth = 5;
-    int neighbourhoodSize  = 1;
+    int neighbourhoodWidth   = 5;
+    float neighbourhoodSize  = 1.0f;
 
     // Computing
     for (int i = 0; i < effMapSize; i++) {
@@ -765,13 +766,13 @@ void MapRenderable::sendMasks() {
 	    if (j == 0) {
 		// We start on a now column : reset of the neighbourhood
 		// Reset to 0
-		seaNeighbour      = 0;
-		sandNeighbour     = 0;
-		plainsNeighbour   = 0;
-		lakeNeighbour     = 0;
-		mountainNeighbour = 0;
-		peakNeighbour     = 0;
-		neighbourhoodSize = 0;
+		seaNeighbour      = 0.0f;
+		sandNeighbour     = 0.0f;
+		plainsNeighbour   = 0.0f;
+		lakeNeighbour     = 0.0f;
+		mountainNeighbour = 0.0f;
+		peakNeighbour     = 0.0f;
+		neighbourhoodSize = 0.0f;
 		// Counting the new neighbourhood
 		for (int ni = MAX(0, i - neighbourhoodWidth);
 		     ni < MIN(effMapSize, i + neighbourhoodWidth);
@@ -779,11 +780,12 @@ void MapRenderable::sendMasks() {
 		    for (int nj = MAX(0, j - neighbourhoodWidth);
 			 nj < MIN(effMapSize, j + neighbourhoodWidth);
 			 ++nj) {
-			++neighbourhoodSize;
-			countBiome(m_mapGenerator.biomeMap[ni+nj*effMapSize], 1,
-				   &seaNeighbour,     &sandNeighbour,
-				   &plainsNeighbour,  &lakeNeighbour,
-				   &mountainNeighbour, &peakNeighbour);
+			increment = countBiome(m_mapGenerator.m_mapParameters,
+					       m_mapGenerator.biomeMap[ni+nj*effMapSize], 1,
+					       &seaNeighbour,      &sandNeighbour,
+					       &plainsNeighbour,   &lakeNeighbour,
+					       &mountainNeighbour, &peakNeighbour);
+			neighbourhoodSize += increment;
 		    }
 		}
 	    } else {
@@ -794,11 +796,13 @@ void MapRenderable::sendMasks() {
 		    for (int ni = MAX(0, i - neighbourhoodWidth);
 			 ni < MIN(effMapSize, i + neighbourhoodWidth);
 			 ++ni) {
-			--neighbourhoodSize;
-			countBiome(m_mapGenerator.biomeMap[ni+nj*effMapSize], -1,
-				   &seaNeighbour,     &sandNeighbour,
-				   &plainsNeighbour,  &lakeNeighbour,
-				   &mountainNeighbour, &peakNeighbour);
+			increment = countBiome(m_mapGenerator.m_mapParameters,
+					       m_mapGenerator.biomeMap[ni+nj*effMapSize], -1,
+					       &seaNeighbour,      &sandNeighbour,
+					       &plainsNeighbour,   &lakeNeighbour,
+					       &mountainNeighbour, &peakNeighbour);
+			
+			neighbourhoodSize += increment;
 		    }
 		}
 		if (j < effMapSize - neighbourhoodWidth) {
@@ -807,23 +811,24 @@ void MapRenderable::sendMasks() {
 		    for (int ni = MAX(0, i - neighbourhoodWidth);
 			 ni < MIN(effMapSize, i + neighbourhoodWidth);
 			 ++ni) {
-			++neighbourhoodSize;
-			countBiome(m_mapGenerator.biomeMap[ni+nj*effMapSize], 1,
-				   &seaNeighbour,     &sandNeighbour,
-				   &plainsNeighbour,  &lakeNeighbour,
-				   &mountainNeighbour, &peakNeighbour);
+			increment = countBiome(m_mapGenerator.m_mapParameters,
+					       m_mapGenerator.biomeMap[ni+nj*effMapSize], 1,
+					       &seaNeighbour,      &sandNeighbour,
+					       &plainsNeighbour,   &lakeNeighbour,
+					       &mountainNeighbour, &peakNeighbour);
+			neighbourhoodSize += increment;
 		    }
 		}    
 	    }
 
 	    // First mask
-	    maskSSPL[(i+j*effMapDimension)*4]     = (float)seaNeighbour      / (float)neighbourhoodSize; 
-            maskSSPL[(i+j*effMapDimension)*4 + 1] = (float)sandNeighbour     / (float)neighbourhoodSize; 
-            maskSSPL[(i+j*effMapDimension)*4 + 2] = (float)plainsNeighbour   / (float)neighbourhoodSize; 
-            maskSSPL[(i+j*effMapDimension)*4 + 3] = (float)lakeNeighbour     / (float)neighbourhoodSize;
+	    maskSSPL[(i+j*effMapDimension)*4]     = seaNeighbour      / neighbourhoodSize; 
+            maskSSPL[(i+j*effMapDimension)*4 + 1] = sandNeighbour     / neighbourhoodSize; 
+            maskSSPL[(i+j*effMapDimension)*4 + 2] = plainsNeighbour   / neighbourhoodSize; 
+            maskSSPL[(i+j*effMapDimension)*4 + 3] = lakeNeighbour     / neighbourhoodSize;
 	    // Second mask
-	    maskMP[(i+j*effMapDimension)*2]       = (float)mountainNeighbour / (float)neighbourhoodSize;
-	    maskMP[(i+j*effMapDimension)*2 + 1]   = (float)peakNeighbour     / (float)neighbourhoodSize;
+	    maskMP[(i+j*effMapDimension)*2]       = mountainNeighbour / neighbourhoodSize;
+	    maskMP[(i+j*effMapDimension)*2 + 1]   = peakNeighbour     / neighbourhoodSize;
 	}
     }
     // Copying the last row and columns

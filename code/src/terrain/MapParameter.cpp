@@ -102,6 +102,16 @@ MapParameters::MapParameters(const std::string& filename)
      m_landTextureScaling = document["Map"]["landTextureScaling"].GetFloat();
      m_seaTextureScaling = document["Map"]["seaTextureScaling"].GetFloat();
      m_lakeTextureScaling = document["Map"]["lakeTextureScaling"].GetFloat();
+
+     /*
+      * Texture "defines"
+      */
+     m_seaTextureExtent = document["Texture"]["seaTextureExtent"].GetFloat();
+     m_sandTextureExtent = document["Texture"]["sandTextureExtent"].GetFloat();
+     m_plainsTextureExtent = document["Texture"]["plainsTextureExtent"].GetFloat();
+     m_lakeTextureExtent = document["Texture"]["lakeTextureExtent"].GetFloat();
+     m_mountainTextureExtent = document["Texture"]["mountainTextureExtent"].GetFloat();
+     m_peakTextureExtent = document["Texture"]["peakTextureExtent"].GetFloat();
 }
 
 /*
@@ -331,4 +341,32 @@ float MapParameters::getSeaTextureScaling()
 float MapParameters::getLakeTextureScaling()
 {
     return m_lakeTextureScaling;
+}
+
+/*
+ * Texture "getters"
+ */
+
+float MapParameters::getSeaTextureExtent() {
+    return m_seaTextureExtent;
+}
+
+float MapParameters::getSandTextureExtent() {
+    return m_sandTextureExtent;
+}
+
+float MapParameters::getPlainsTextureExtent() {
+    return m_plainsTextureExtent;
+}
+
+float MapParameters::getLakeTextureExtent() {
+    return m_lakeTextureExtent;
+}
+
+float MapParameters::getMountainTextureExtent() {
+    return m_mountainTextureExtent;
+}
+
+float MapParameters::getPeakTextureExtent() {
+    return m_peakTextureExtent;
 }

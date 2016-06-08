@@ -402,6 +402,64 @@ public:
     /**************************************************************************
      * End of MapRenderable class "getters".
      *************************************************************************/
+
+    /**************************************************************************
+     * Texture class "getters".
+     *************************************************************************/
+    
+    /**
+     * @brief
+     * Getter on m_seaTextureExtent
+     *
+     * @return The value of m_seaTextureExtent
+     */
+    float getSeaTextureExtent();
+
+    /**
+     * @brief
+     * Getter on m_sandTextureExtent
+     *
+     * @return The value of m_sandTextureExtent
+     */
+    float getSandTextureExtent();
+
+    /**
+     * @brief
+     * Getter on m_plainsTextureExtent
+     *
+     * @return The value of m_plainsTextureExtent
+     */
+    float getPlainsTextureExtent();
+
+    /**
+     * @brief
+     * Getter on m_lakeTextureExtent
+     *
+     * @return The value of m_lakeTextureExtent
+     */
+    float getLakeTextureExtent();
+
+    /**
+     * @brief
+     * Getter on m_mountainTextureExtent
+     *
+     * @return The value of m_mountainTextureExtent
+     */
+    float getMountainTextureExtent();
+
+    /**
+     * @brief
+     * Getter on m_peakTextureExtent
+     *
+     * @return The value of m_peakTextureExtent
+     */
+    float getPeakTextureExtent();
+
+
+    /**************************************************************************
+     * End of Texture "getters".
+     *************************************************************************/
+    
 private:
     /**************************************************************************
      * Biome class "defines".
@@ -717,7 +775,7 @@ private:
      */
     float m_landTextureScaling;
 
-/**
+    /**
      * @brief
      * Defines the scaling for the texture application for the sea
      */
@@ -730,6 +788,51 @@ private:
     float m_lakeTextureScaling;
     /**************************************************************************
      * End of MapRenderable class "defines".
+     *************************************************************************/
+
+     /**************************************************************************
+     * Texture "defines".
+     *************************************************************************/
+
+    /**
+     * @brief
+     * Defines the extent of a sea texture on its neighbours
+     */
+    float m_seaTextureExtent;
+
+    /**
+     * @brief
+     * Defines the extent of a sand texture on its neighbours
+     */
+    float m_sandTextureExtent;
+
+    /**
+     * @brief
+     * Defines the extent of a plains texture on its neighbours
+     */
+    float m_plainsTextureExtent;
+
+    /**
+     * @brief
+     * Defines the extent of a lake texture on its neighbours
+     */
+    float m_lakeTextureExtent;
+
+    /**
+     * @brief
+     * Defines the extent of a mountain texture on its neighbours
+     */
+    float m_mountainTextureExtent;
+
+    /**
+     * @brief
+     * Defines the extent of a peak texture on its neighbours
+     */
+    float m_peakTextureExtent;
+
+    
+    /**************************************************************************
+     * Texture "defines".
      *************************************************************************/
 };
 

@@ -165,10 +165,13 @@ float computeInterpolationCoefficient(MapParameters & mapParameters,
  * @param lakeCount     Number of lake     biomes
  * @param mountainCount Number of mountain biomes
  * @param peakCount     Number of peak     biomes
+ *
+ * @retun The increment
  */
-void countBiome(Biome biome,        int scale,
-		int *seaCount,      int *sandCount,
-		int *plainsCount,   int *lakeCount,
-		int *mountainCount, int *peakCount);
+float countBiome(MapParameters& mapParameters,
+		 Biome biome,          int scale,
+		 float *seaCount,      float *sandCount,
+		 float *plainsCount,   float *lakeCount,
+		 float *mountainCount, float *peakCount);
 
 #endif

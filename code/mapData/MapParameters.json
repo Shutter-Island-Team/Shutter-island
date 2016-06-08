@@ -61,5 +61,14 @@
 	"landTextureScaling" :    2.0,
 	"seaTextureScaling"  :   20.0,
 	"lakeTextureScaling" :   10.0
-    }
+    },
+    
+    "Texture" : {
+    	"seaTextureExtent" :       1.0,
+	"sandTextureExtent" :      1.0,
+	"plainsTextureExtent" :    1.0,
+	"lakeTextureExtent" :     20.0,
+	"mountainTextureExtent" :  1.0,
+	"peakTextureExtent" :      1.0 
+    }   
 }
