@@ -36,6 +36,13 @@ class MapGenerator {
      */
     friend class MapRenderable;
 
+    /**
+     * @brief
+     * Friend class definition, in order to access the MapGenerator's attributes
+     * without using getters.
+     */
+    friend class SeaRenderable;
+
 public :
 
     /**

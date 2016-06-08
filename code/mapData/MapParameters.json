@@ -55,9 +55,11 @@
         "distMin"           :   10
     },
 
-    "Map2D" : {
-        "tessellationLevel" :    5.0,
-        "heightmapScaling"  :    1,
-	"landTextureScaling"    :    2.0
+    "Map" : {
+        "tessellationLevel"  :    5.0,
+        "heightmapScaling"   :    1,
+	"landTextureScaling" :    2.0,
+	"seaTextureScaling"  :   20.0,
+	"lakeTextureScaling" :   10.0
     }
 }

@@ -97,9 +97,11 @@ MapParameters::MapParameters(const std::string& filename)
      /*
       * MapRenderable "defines".
       */
-     m_tessellationLevel = document["Map2D"]["tessellationLevel"].GetFloat();
-     m_heightmapScaling = document["Map2D"]["heightmapScaling"].GetFloat();
-     m_landTextureScaling = document["Map2D"]["landTextureScaling"].GetFloat();
+     m_tessellationLevel = document["Map"]["tessellationLevel"].GetFloat();
+     m_heightmapScaling = document["Map"]["heightmapScaling"].GetFloat();
+     m_landTextureScaling = document["Map"]["landTextureScaling"].GetFloat();
+     m_seaTextureScaling = document["Map"]["seaTextureScaling"].GetFloat();
+     m_lakeTextureScaling = document["Map"]["lakeTextureScaling"].GetFloat();
 }
 
 /*
@@ -319,4 +321,14 @@ float MapParameters::getHeightmapScaling()
 float MapParameters::getLandTextureScaling()
 {
     return m_landTextureScaling;
+}
+
+float MapParameters::getSeaTextureScaling()
+{
+    return m_seaTextureScaling;
+}
+
+float MapParameters::getLakeTextureScaling()
+{
+    return m_lakeTextureScaling;
 }

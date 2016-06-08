@@ -36,12 +36,14 @@ public :
      * @brief Constructor
      *
      * @param shaderProgram Shader program used to render this quad.
+     * @param mapParameters Parameters for the map generation
      * @param p1            First quad vertex.
      * @param p2            Second quad vertex.
      * @param p3            Third quad vertex.
      * @param p4            Fourth quad vertex.
      */
     SeaRenderable(ShaderProgramPtr shaderProgram, 
+		  MapGenerator & mapGenerator,
 		  const glm::vec3& p1,
 		  const glm::vec3& p2,
 		  const glm::vec3& p3,
@@ -71,6 +73,13 @@ private:
      * @see Renderable.hpp
      */
     void do_animate( float time );
+
+
+    /**
+     * @brief
+     * Map generation parameters
+     */
+    MapParameters m_mapParameters;
 
     /**
      * @brief 

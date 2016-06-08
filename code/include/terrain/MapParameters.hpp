@@ -377,11 +377,27 @@ public:
 
     /**
      * @brief
-     * Getter on m_textureScaling.
+     * Getter on m_landTextureScaling.
      *
-     * @return The value of m_textureScaling.
+     * @return The value of m_landTextureScaling.
      */
     float getLandTextureScaling();
+
+    /**
+     * @brief
+     * Getter on m_seaTextureScaling.
+     *
+     * @return The value of m_seaTextureScaling.
+     */
+    float getSeaTextureScaling();
+
+    /**
+     * @brief
+     * Getter on m_lakeTextureScaling.
+     *
+     * @return The value of m_lakeTextureScaling.
+     */
+    float getLakeTextureScaling();
 
     /**************************************************************************
      * End of MapRenderable class "getters".
@@ -697,9 +713,21 @@ private:
 
     /**
      * @brief
-     * Defines the scaling for the texture application
+     * Defines the scaling for the texture application for the land
      */
     float m_landTextureScaling;
+
+/**
+     * @brief
+     * Defines the scaling for the texture application for the sea
+     */
+    float m_seaTextureScaling;
+
+    /**
+     * @brief
+     * Defines the scaling for the texture application for the lakes
+     */
+    float m_lakeTextureScaling;
     /**************************************************************************
      * End of MapRenderable class "defines".
      *************************************************************************/

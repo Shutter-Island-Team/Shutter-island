@@ -19,11 +19,13 @@
 #include <SFML/Graphics/Image.hpp>
 
 SeaRenderable::SeaRenderable(ShaderProgramPtr shaderProgram, 
+			     MapGenerator & mapGenerator,
 			     const glm::vec3& p1,
 			     const glm::vec3& p2,
 			     const glm::vec3& p3,
 			     const glm::vec3& p4) :
-    HierarchicalRenderable(shaderProgram)
+    HierarchicalRenderable(shaderProgram),
+    m_mapParameters{mapGenerator.m_mapParameters}
 {
     // The geometry
     m_positions.push_back(p1);
@@ -119,7 +121,7 @@ void SeaRenderable::do_draw()
     if (scaleTextureLocation != ShaderProgram::null_location)
     {
         glcheck(glUniform1f(scaleTextureLocation, 
-			    20.0f));
+			    m_mapParameters.getSeaTextureScaling()));
     }
 
     // Sea Texture

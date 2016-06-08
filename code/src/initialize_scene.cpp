@@ -272,6 +272,7 @@ void initialize_map2D(Viewer& viewer, MapGenerator& mapGenerator, float mapSize)
      */
     SeaRenderablePtr seaRenderable = std::make_shared<SeaRenderable>(
         seaShader,
+	mapGenerator,
         glm::vec3(0.0, 0.0, 0.1),
         glm::vec3(mapSize, 0.0, 0.1),
         glm::vec3(mapSize, mapSize, 0.1),
@@ -361,6 +362,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
      */
     SeaRenderablePtr seaRenderable = std::make_shared<SeaRenderable>(
         seaShader,
+	mapGenerator,
         glm::vec3(0.0, 0.0, 0.1),
         glm::vec3(mapSize, 0.0, 0.1),
         glm::vec3(mapSize, mapSize, 0.1),
