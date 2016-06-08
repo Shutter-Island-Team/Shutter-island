@@ -153,16 +153,15 @@ glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager &
 
 glm::vec3 MovableState::coherentWalk(const MovableBoid & b, const BoidsManager & boidsManager) const
 {
-	glm::vec3 posAheadMax = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters()->getDistViewMax();
-	glm::vec3 posAhead = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead();
+	glm::vec3 posAheadMax = b.getLocation() + cNormalize(b.getVelocity()) * b.getParameters()->getDistSeeAhead();
 
 	float heightDifference = boidsManager.getHeight(posAheadMax.x, posAheadMax.y) - boidsManager.getHeight(b.getLocation().x, b.getLocation().y);
-	if(heightDifference > -2.0f || heightDifference < -2.0f
+	if(heightDifference > 2.0f || heightDifference < -2.0f
 		|| boidsManager.getBiome(posAheadMax.x, posAheadMax.y) == Mountain 
 		|| boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Mountain
 		|| boidsManager.getBiome(posAheadMax.x, posAheadMax.y) == Peak 
 		|| boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Peak) {
-		return cNormalize(- posAheadMax) * b.getParameters()->getMaxForce();
+		return 4000.0f * cNormalize(- posAheadMax) * b.getParameters()->getMaxForce();
 	} else {
 		return glm::vec3(0,0,0);
 	}
@@ -379,7 +378,7 @@ glm::vec3 MovableState::globalAvoid(const MovableBoid & b, const BoidsManager & 
 glm::vec3 MovableState::avoidEnvironment(const MovableBoid & b, const BoidsManager & boidsManager, const int & i, const int & j) const
 {
 	return boidsManager.m_forceController.getStayOnIsland() * stayOnIsland(b, boidsManager) 
-			//+ boidsManager.m_forceController.getStayOnIsland() * coherentWalk(b, boidsManager)
+			+ boidsManager.m_forceController.getStayOnIsland() * coherentWalk(b, boidsManager)
 			+ boidsManager.m_forceController.getCollisionAvoidance() * collisionAvoid(b, boidsManager.getRootedBoids(i, j));
 }
 
@@ -427,7 +426,6 @@ glm::vec3 WalkState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 		newForces = wander(b) + globalAvoid(b, boidsManager, i, j, dt);
 	}
 
-	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -480,7 +478,6 @@ glm::vec3 SleepState::computeNewForces(MovableBoid& b, const BoidsManager & boid
 	updateAffinity(b, mvB);
 
 	newForces += arrive(b, b.getLocation());
-	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	return newForces;
 }
@@ -532,7 +529,6 @@ glm::vec3 FleeState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	}
 
 	newForces += globalAvoid(b, boidsManager, i, j, dt);
-	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -588,7 +584,6 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 			break;
 	}
 	newForces += globalAvoid(b, boidsManager, i, j, dt);
-	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -644,7 +639,6 @@ glm::vec3 FindWaterState::computeNewForces(MovableBoid& b, const BoidsManager & 
 
 	newForces += arrive(b, b.getWaterTarget());
 	newForces += globalAvoid(b, boidsManager, i, j, dt);
-	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }
 
@@ -742,7 +736,6 @@ glm::vec3 AttackState::computeNewForces(MovableBoid& b, const BoidsManager & boi
 	}
 	newForces += avoidEnvironment(b, boidsManager, i, j);
 	newForces += separate(b, mvB);
-	newForces.z = 0.0f; // Trick to compute force in 2D
 
 	return newForces;
 }
@@ -770,7 +763,6 @@ glm::vec3 LostState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	} else {
 		// wander and avoid obstacle until the boid need to eat or find a group
 		glm::vec3 newForces = arrive(b, b.getLandmarkPosition()) + globalAvoid(b, boidsManager, i, j, dt); 
-		newForces.z = 0.0f; // Trick to compute force in 2D
 		return newForces;
 	}
 }
@@ -781,6 +773,5 @@ glm::vec3 DeadState::computeNewForces(MovableBoid& b, const BoidsManager & boids
 	glm::vec3 newForces(0,0,0);
 
 	newForces += arrive(b, b.getLocation());
-	newForces.z = 0.0f; // Trick to compute force in 2D
 	return newForces;
 }

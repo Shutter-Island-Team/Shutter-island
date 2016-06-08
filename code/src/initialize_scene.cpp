@@ -318,7 +318,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    boidsManager->placeBoids(Plains, 20, 10, 30, 10);
+    boidsManager->placeBoids(Plains, 20, 7, 30, 10);
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
