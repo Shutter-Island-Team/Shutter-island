@@ -190,8 +190,16 @@ void MovableBoidsRenderable::compute_modelMatrix()
             
             float cz = cos(m->getAngle() - M_PI / 2.0);
             float sz = sin(m->getAngle() - M_PI / 2.0);
-            float cy = cos(0.0);
-            float sy = sin(0.0);
+            float cy;
+            float sy;
+            if(m->isDead()) {
+                cy = cos(M_PI / 2.0);
+                sy = sin(M_PI / 2.0);  
+            } else {
+                cy = cos(0.0);
+                sy = sin(0.0); 
+            }
+            
             float cx = cos(- M_PI / 2.0);
             float sx = sin(- M_PI / 2.0);
 
