@@ -580,7 +580,6 @@ glm::vec3 FindFoodState::computeNewForces(MovableBoid& b, const BoidsManager & b
 			break;
 		default:
 			std::cerr << "Unknown animal looking for food" << std::endl;
-			newForces += glm::vec3(0,0,0);
 			break;
 	}
 	newForces += globalAvoid(b, boidsManager, i, j, dt);

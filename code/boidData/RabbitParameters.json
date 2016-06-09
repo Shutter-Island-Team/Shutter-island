@@ -5,7 +5,7 @@
 	"angleView": 3.25,
 	"distSeparate": 1.0,
 	"distCohesion": 5.0,
-	"distAttack": 3.0,
+	"distAttack": 2.0,
 	"distViewMax": 12.0,
 	"distToLeader": 1.0,
 	"distSeeAhead": 2.5,

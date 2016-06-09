@@ -324,6 +324,7 @@ void BoidsManager::placeForest(Biome biomeType)
 {
 	float mapSize = getMap().getMapParameters().getMapSize();
     glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, mapSize, 2.0);
+    position.z = getHeight(position.x, position.y);
     addRootedBoid(TREE, position);
 
     glm::vec3 positionFellow;
@@ -332,6 +333,7 @@ void BoidsManager::placeForest(Biome biomeType)
 
     for (int i = 0; i < nbTree - 1; ++i) {
         positionFellow = computeBiomeFellowPosition(biomeType, position, 0, mapSize, 2.0, 25.0f);
+        positionFellow.z = getHeight(positionFellow.x, positionFellow.y);
         addRootedBoid(TREE, positionFellow);
     }
 }
@@ -339,7 +341,8 @@ void BoidsManager::placeForest(Biome biomeType)
 void BoidsManager::placeCarrotField(Biome biomeType)
 {
 	float mapSize = getMap().getMapParameters().getMapSize();
-    glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, mapSize, 2.0);
+    glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, mapSize, 0.0);
+    position.z = getHeight(position.x, position.y);
     addRootedBoid(CARROT, position);
 
     glm::vec3 positionFellow;
@@ -348,6 +351,7 @@ void BoidsManager::placeCarrotField(Biome biomeType)
 
     for (int i = 0; i < nbCarrot - 1; ++i) {
         positionFellow = computeBiomeFellowPosition(biomeType, position, 0, mapSize, 2.0, 30.0f);
+        positionFellow.z = getHeight(positionFellow.x, positionFellow.y);
         addRootedBoid(CARROT, positionFellow);
     }
 }
