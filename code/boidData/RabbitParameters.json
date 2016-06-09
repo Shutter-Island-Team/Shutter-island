@@ -8,7 +8,7 @@
 	"distAttack": 3.0,
 	"distViewMax": 12.0,
 	"distToLeader": 1.0,
-	"distSeeAhead": 1.5,
+	"distSeeAhead": 2.5,
 	"distStartSlowingDown": 9.0,
 	"rCircleWander": 3.0,
 	"distToCircle": 9.0,
