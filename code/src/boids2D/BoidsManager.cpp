@@ -131,7 +131,7 @@ Biome BoidsManager::getBiome(const float& x, const float& y) const
 
 float BoidsManager::getHeight(const float& x, const float& y) const
 {
-	return m_map.getHeight(x, y);
+	return m_map.getApproximativeHeight(x, y);
 }
 
 

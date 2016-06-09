@@ -81,8 +81,25 @@ Biome findClosestBiome(Vertex2D & pos,
  */
 Biome findApproximativeBiome(Vertex2D & pos,
 			     int effMapSize,
-			     Biome* biomeMap,
+			     Biome *biomeMap,
 			     int mapScaling);
+
+
+/**
+ * @brief Find the approximative height 
+ * associated to a location using a sampled height map
+ * 
+ * @param pos         The desired position
+ * @param effMapSize  The size of the sampled map
+ * @param heightMap   The sampled biome map
+ * @param mapSacing   The sampling resolution
+ *
+ * @return An interpolated height 
+ */
+float findApproximativeHeight(Vertex2D & pos,
+			      int effMapSize,
+			      float *heightMap,
+			      int mapScaling);
 
 /**
  * @brief

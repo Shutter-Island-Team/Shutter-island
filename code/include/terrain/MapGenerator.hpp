@@ -103,6 +103,17 @@ public :
     float getHeight(float x, float y);
 
     /**
+     * @brief Get the approximative height 
+     * associated to a location using a sampled height map
+     * 
+     * @param x Abscissa of the desired position
+     * @param y Ordinna  of the desired position 
+     *
+     * @return An interpolated height
+     */
+    float getApproximativeHeight(float x, float y);
+
+    /**
      * @brief
      * Allows access to the list of the Lake biome through iterators.
      * 
@@ -169,6 +180,9 @@ private :
 
     /// @brief A 'biome map' use to accelerate the computation of a biome
     Biome *biomeMap = NULL;
+
+    /// @brief The sampled height map
+    float *heightMap = NULL;
 
     /**
      * @brief

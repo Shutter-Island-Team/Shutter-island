@@ -40,6 +40,11 @@ MapGenerator::~MapGenerator() {
     }
     if (biomeMap) {
 	delete [] biomeMap;
+	heightMap = NULL;
+    }
+    if (heightMap) {
+	delete [] heightMap;
+	heightMap = NULL;
     }
 }
  
@@ -135,21 +140,23 @@ void MapGenerator::compute() {
     heightTree->computeTree(seedsContainer, seeds);
     
 
-    // Biome map 
-    // This sampled biome map is used to accelerate the search of a biome associated
+    // Biome map and height map
+    // These sampled map are used to accelerate the search of a biome or of a height associated
     // to a position, altough the result is obviously approximative
 
-    // Filling the biome map
+    // Filling the biome map and the height map
     int heightmapScaling    = this->m_mapParameters.getHeightmapScaling();
     int mapSize             = (int) this->mapSize;
     int effMapSize          = mapSize*heightmapScaling;
-    biomeMap = new Biome [effMapSize*effMapSize];
+    biomeMap  = new Biome [effMapSize*effMapSize];
+    heightMap = new float [effMapSize*effMapSize];
     // pragma omp does not work here...
     for (int i = 0; i < effMapSize; i++) {
 	for (int j = 0; j < effMapSize; j++) {
 	    float effI = (float)i / (float)heightmapScaling;
 	    float effJ = (float)j / (float)heightmapScaling;
-	    biomeMap[i+j*effMapSize] = this->getBiome(effI, effJ);
+	    biomeMap[i+j*effMapSize]  = this->getBiome(effI, effJ);
+	    heightMap[i+j*effMapSize] = this->getHeight(effI, effJ);
 	}
     }
 }
@@ -169,6 +176,11 @@ Biome MapGenerator::getBiome(float x, float y) {
 
 Biome MapGenerator::getApproximativeBiome(float x, float y) {
     
+    if (!biomeMap) {
+	std::cerr << "BiomeMap not computed !" << std::endl;
+	exit(EXIT_FAILURE);
+    }
+
     Vertex2D position = clipPosition(x, y);
 
     int heightmapScaling    = this->m_mapParameters.getHeightmapScaling();
@@ -200,6 +212,22 @@ float MapGenerator::getHeight(float x, float y) {
     return heightTree->evalHeight(position, 
 				  effMapSize,
 				  biomeMap);
+}
+
+float MapGenerator::getApproximativeHeight(float x, float y) {
+
+    if (!heightMap) {
+	std::cerr << "HeightMap not computed !" << std::endl;
+	exit(EXIT_FAILURE);
+    }
+
+    Vertex2D position = clipPosition(x, y);
+    
+    int heightmapScaling    = this->m_mapParameters.getHeightmapScaling();
+    int mapSize             = (int) this->mapSize;
+    int effMapSize          = mapSize*heightmapScaling;
+    
+    return findApproximativeHeight(position, effMapSize, heightMap, heightmapScaling);
 }
 
 bool MapGenerator::getLakes(

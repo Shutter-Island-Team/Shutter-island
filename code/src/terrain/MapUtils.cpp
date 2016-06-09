@@ -74,11 +74,46 @@ Biome findApproximativeBiome(Vertex2D & pos,
 			     Biome* biomeMap,
 			     int mapScaling) {
     // Simply taking the closest lower bound value
-    int closeI = MIN((int) pos.first*mapScaling, effMapSize - 1);
+    int closeI = MIN((int) pos.first*mapScaling,  effMapSize - 1);
     int closeJ = MIN((int) pos.second*mapScaling, effMapSize - 1);
 
-    return biomeMap[closeI+closeJ*effMapSize];
+    return biomeMap[closeI + closeJ*effMapSize];
 }
+
+float findApproximativeHeight(Vertex2D & pos,
+			      int effMapSize,
+			      float *heightMap,
+			      int mapScaling) {
+    // Effective position
+    float effPosI = pos.first*mapScaling;
+    float effPosJ = pos.second*mapScaling;
+    
+    // Surrounding square
+    int closeI   = MIN((int) effPosI, effMapSize - 2);
+    int closeJ   = MIN((int) effPosJ, effMapSize - 2);
+    int closeIp1 = closeI + 1;
+    int closeJp1 = closeJ + 1;
+    
+    // Corner values
+    float tlHeight = heightMap[closeI   + closeJp1*effMapSize];
+    float trHeight = heightMap[closeIp1 + closeJp1*effMapSize];
+    float blHeight = heightMap[closeI   + closeJ  *effMapSize];
+    float brHeight = heightMap[closeIp1 + closeJ  *effMapSize];
+
+    // Bilinear interpolation
+    float coeffI = (effPosI - closeI)/mapScaling;
+    float coeffJ = (effPosJ - closeJ)/mapScaling;
+
+    float topHeight = (1 - coeffI)*(tlHeight) + coeffI*trHeight;
+    float botHeight = (1 - coeffI)*(blHeight) + coeffI*brHeight;
+
+    return (1 - coeffJ)*botHeight + coeffJ*topHeight;
+
+}
+
+
+
+
 void findClosestCentroid(Vertex2D & pos, 
 			 voro::container & container, 
 			 std::vector<Seed> & seeds,
