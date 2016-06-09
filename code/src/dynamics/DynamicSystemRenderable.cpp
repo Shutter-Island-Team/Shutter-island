@@ -39,11 +39,7 @@ void DynamicSystemRenderable::setDynamicSystem(const DynamicSystemPtr &system)
 
 void DynamicSystemRenderable::do_keyPressedEvent(sf::Event &e)
 {
-    if(e.key.code == sf::Keyboard::A ) //Toggle collision detection
-    {
-        m_system->setCollisionsDetection( !m_system->getCollisionDetection() );
-    }
-    else if(e.key.code == sf::Keyboard::T ) //Tilt particles
+    if(e.key.code == sf::Keyboard::T ) //Tilt particles
     {
         srand(time(0));
         // "tilt" all particles randomly around their position

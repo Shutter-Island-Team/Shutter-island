@@ -21,27 +21,6 @@ void Particle::setFixed(bool isFixed)
     m_isFixed = isFixed;
 }
 
-bool Particle::isCollisionable() const
-{
-    return m_isCollisionable;
-}
-
-void Particle::setCollisionable(bool isCollisionable)
-{
-    m_isCollisionable = isCollisionable;
-}
-
-
-bool Particle::isDragged() const
-{
-    return m_isDragged;
-}
-
-void Particle::setDragged(bool isDragged)
-{
-    m_isDragged = isDragged;
-}
-
 Particle::~Particle()
 {}
 

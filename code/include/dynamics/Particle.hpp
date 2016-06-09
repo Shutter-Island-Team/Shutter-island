@@ -4,8 +4,6 @@
 #include <iostream>
 #include <memory>
 #include <glm/glm.hpp>
-#include "Collision.hpp"
-#include "Plane.hpp"
 /**
  * @brief Represent a particle affected by physics
  * 
@@ -125,17 +123,6 @@ public:
      * Set the particle's position and velocity to their initial values.
      */
     void restart();
-
-    /**
-     *@brief Check if this particle is affected by collisions.
-     *
-     * @return True if the particle is affected by collisions.
-     */
-    bool isCollisionable() const;
-    /**
-     * @brief Set the particle's collisionable flag.
-     */
-    void setCollisionable(bool isCollisionable);
     
     /**
      *@brief Check if this particle is dragged.
@@ -216,17 +203,6 @@ protected:
      * the position should be constant and the velocity null in simulation steps.
      */
     bool m_isFixed = false;
-    /**
-     * @brief Same as previous to tell if the particle is affected by collisions
-     */
-    bool m_isCollisionable = true;
-    
-   /**
-     * @brief A field to tell that, even if the particle isFixed()
-     * regarding the dynamicSolver and forces, it may still move due
-     * to the particle hierarchy, thus may be affected by collisions
-     */
-    bool m_isDragged = false;
 
     /**
      * @brief Fields to know how to downcast 

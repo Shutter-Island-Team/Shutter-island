@@ -5,8 +5,6 @@
  * @brief Some useful functions to ease the development.
  */
 
-#include "dynamics/Plane.hpp"
-
 #include <array>
 #include <vector>
 #include <utility>

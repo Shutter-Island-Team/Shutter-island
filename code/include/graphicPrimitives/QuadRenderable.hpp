@@ -2,7 +2,6 @@
 #define QUAD_RENDERABLE_HPP
 
 #include "../HierarchicalRenderable.hpp"
-#include "../dynamics/Plane.hpp"
 
 #include <vector>
 #include <glm/glm.hpp>

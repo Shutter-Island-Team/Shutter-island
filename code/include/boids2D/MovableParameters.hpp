@@ -2,6 +2,7 @@
 #define MOVABLE_PARAMETERS_HPP
 
 #include "BoidType.hpp"
+#include <memory>
 
 /**
  * @class MovableParameters

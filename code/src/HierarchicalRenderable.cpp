@@ -1,7 +1,6 @@
 #include "./../include/HierarchicalRenderable.hpp"
 #include "./../include/gl_helper.hpp"
 #include "./../include/Viewer.hpp"
-#include "./../include/dynamics/StickParticle.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <GL/glew.h>
 

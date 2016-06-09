@@ -3,11 +3,9 @@
 
 #include <vector>
 
-#include "Collision.hpp"
 #include "ForceField.hpp"
 #include "Particle.hpp"
 #include "Solver.hpp"
-#include "Plane.hpp"
 
 /**@brief A dynamic system.
  *
@@ -26,12 +24,6 @@ private:
      */
     std::vector<ForceFieldPtr> m_forceFields;
 
-    /**@brief The set of fixed plane obstacles.
-     *
-     * The set of obstacles that would repel the particles after collisions.
-     */
-    std::vector<PlanePtr> m_planeObstacles;
-
     /**@brief The solver of the dynamic system.
      *
      * Solver of the dynamic system: update the particles positions and
@@ -48,12 +40,6 @@ private:
      */
     float m_dt;
 
-    /**@brief Restitution factor of collisions.
-     *
-     * The factor of restitution after a collision between objects.
-     */
-    float m_restitution;
-
     /**@brief The set of particles managed by this system.
      *
      * The particles managed by this dynamic system. Their positions
@@ -61,22 +47,6 @@ private:
      * account the force field applied to them.
      */
     std::vector<ParticlePtr> m_particles;
-
-    /**@brief The set of collision events detected during a simulation step.
-     *
-     * Set of collision events between dynamic components during a simulation
-     * step. Those events would be resolved by updating velocities and positions
-     * of dynamic objects to avoid inter-penetration.
-     */
-    std::vector<CollisionPtr> m_collisions;
-
-    /**@brief A flag to activate/desactivate collision detection.
-     *
-     * If set to false, collisions are ignored, leading to a faster simulation
-     * but less realistic/interesting. When set to true, collisions are detected
-     * and resolved.
-     */
-    bool m_handleCollisions;
 
 public:
     ~DynamicSystem();
@@ -94,13 +64,6 @@ public:
      * @param forceField The force field to add to this system.
      */
     void addForceField(ForceFieldPtr forceField);
-    /**@brief Add a plane obstacle to the system.
-     *
-     * Add an infinite plane obstacle to the dynamic system. If collisions
-     * are activated, this plane will repel particles.
-     * @param planeObstacle The plane to add to this system.
-     */
-    void addPlaneObstacle(PlanePtr planeObstacle);
 
     /**@brief Access to the solver used to resolve the dynamic system.
      *
@@ -114,19 +77,6 @@ public:
      * @param solver The new solver to use.
      */
     void setSolver(SolverPtr solver);
-
-    /**@brief Check if the collision detection is activated.
-     *
-     * Check if the collision are currently handled by this dynamic system.
-     * @return True if the collisions are handled.
-     */
-    bool getCollisionDetection();
-    /**@brief Set the collision detection mode.
-     *
-     * Define if the collisions are detected/handled by this dynamic system.
-     * @param onOff True if the collision should be detected/handled.
-     */
-    void setCollisionsDetection(bool onOff);
 
     /**@brief Access to the set of particles of this system.
      *
@@ -162,19 +112,6 @@ public:
      */
     void computeSimulationStep();
 
-    /**@brief Access to the collision restitution factor.
-     *
-     * Get the current collision restitution factor of this system.
-     * @return The current collision restitution factor.
-     */
-    const float getRestitution();
-    /**@brief Set the collision restitution factor.
-     *
-     * Define the new collision restitution factor for this dynamic system.
-     * @param restitution The new collision restitution factor.
-     */
-    void setRestitution(const float &restitution);
-
     /**@brief Access the time integration interval.
      *
      * Get the time integration interval used by this dynamic system.
@@ -191,13 +128,9 @@ public:
 
     /**@brief Clear the dynamic system.
      *
-     * Clear the system, i.e. empty the particles, force fields and plane obstacles.
+     * Clear the system, i.e. empty the particles and force fields.
      */
     void clear();
-
-private:
-    void detectCollisions();
-    void solveCollisions();
 };
 
 typedef std::shared_ptr<DynamicSystem> DynamicSystemPtr;
