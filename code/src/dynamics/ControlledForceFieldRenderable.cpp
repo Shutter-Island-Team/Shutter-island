@@ -172,26 +172,9 @@ void ControlledForceFieldRenderable::do_draw()
     m_normals.resize(0);
 
     //Display an arrow representing the movement of the particle
-    /*
     for(ParticlePtr p : particles)
     {
         glm::vec3 position = p->getPosition();
-        position.z = m_map.getHeight(position.x, position.y) + 5.0f;
-
-        m_positions.push_back(position);
-        m_positions.push_back(position  + 2.0f* m_status.movement);
-        m_colors.push_back(glm::vec4(1.0,0.0,0.0,1.0));
-        m_colors.push_back(glm::vec4(1.0,0.0,0.0,1.0));
-        m_normals.push_back(glm::vec3(1.0,0.0,0.0));
-        m_normals.push_back(glm::vec3(1.0,0.0,0.0));
-    }
-    */
-
-    // TODO to remove and do better
-    // This trick is done in order to follow a particule with the camera
-    glm::vec3 position;
-    if(particles.size() != 0) {
-        position = particles[0]->getPosition();
         position.z = m_map.getHeight(position.x, position.y) + 5.0f;
 
         m_positions.push_back(position);
@@ -254,12 +237,5 @@ void ControlledForceFieldRenderable::do_draw()
     if(normalLocation != ShaderProgram::null_location)
     {
         glcheck(glDisableVertexAttribArray(normalLocation));
-    }
-
-    if (particles.size() != 0 && m_viewer.getCamera().isFollowingParticle()) {
-        float ecartY = 6.0;
-        float angleCamera = m_status.angle ;
-        glm::vec3 cercle = glm::vec3(ecartY*sin(angleCamera), ecartY*(1-cos(angleCamera)), 0.0);
-        m_viewer.getCamera().setViewMatrix( glm::lookAt( position + glm::vec3(0.2, -ecartY, 4.0) + cercle, position + glm::vec3(0.0, 0.0, 2.0), glm::vec3( 0, 0, 1 ) ) );
     }
 }

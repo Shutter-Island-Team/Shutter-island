@@ -49,7 +49,7 @@
 #include "../include/dynamics/DynamicSystemRenderable.hpp"
 #include "../include/dynamics/ParticleRenderable.hpp"
 #include "../include/dynamics/ConstantForceField.hpp"
-#include "../include/dynamics/ControlledForceFieldRenderable.hpp"
+#include "../include/dynamics/ParticleCamera.hpp"
 #include "../include/dynamics/DampingForceField.hpp"
 #include "../include/dynamics/Particle.hpp"
 
@@ -214,7 +214,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
      * Positionning the camera.
      */
     viewer.getCamera().setViewMatrix(glm::lookAt( 
-                                        glm::vec3(mapSize/2.0, mapSize/2.0, 1.50*mapSize/2.0), 
+                                        glm::vec3(mapSize/2.0, mapSize/2.0, 0.9*mapSize/2.0), 
                                         glm::vec3(mapSize/2.0, mapSize/2.0, 0), 
                                         glm::vec3( 0, 1, 0) 
                                     ) 
@@ -370,42 +370,37 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
 
     viewer.addRenderable(systemRenderable);
 
-    DynamicSystemPtr systemParticule = std::make_shared<DynamicSystem>();
-    EulerExplicitSolverPtr solverParticule = std::make_shared<EulerExplicitSolver>();
-    systemParticule->setSolver(solverParticule);
-    systemParticule->setDt(0.1);
+    // Particle camera for the demonstration
+    // System particle for the camera
+    DynamicSystemPtr systemParticle = std::make_shared<DynamicSystem>();
+    EulerExplicitSolverPtr solverParticle = std::make_shared<EulerExplicitSolver>();
+    systemParticle->setSolver(solverParticle);
+    systemParticle->setDt(0.01);
 
-    DynamicSystemRenderablePtr systemRenderableParticule = std::make_shared<DynamicSystemRenderable>(systemParticule);
-    viewer.addRenderable(systemRenderableParticule);
+    DynamicSystemRenderablePtr systemRenderableParticle = std::make_shared<DynamicSystemRenderable>(systemParticle);
+    viewer.addRenderable(systemRenderableParticle);
 
-    glm::vec3 px(250.0,250.0,0.0),pv(0.0,0.0,0.0);
-    float pm=1.0;
-    ParticlePtr mobile = std::make_shared<Particle>( px, pv, pm);
-    systemParticule->addParticle( mobile );
+    // Creation of the particle use in the camera
+    glm::vec3 particlePosition = boidsManager->computeBiomeLeaderPosition(Plains, 0.0f, MAP_SIZE, 0.0f);
+    glm::vec3 particleVelocity(0.0,0.0,0.0);
+    float particleMass = 1.0;
+    ParticlePtr particle = std::make_shared<Particle>( particlePosition, particleVelocity, particleMass);
+    systemParticle->addParticle( particle );
 
-    ParticleRenderablePtr mobileRenderable = std::make_shared<ParticleRenderable>( flatShader, mobile, mapGenerator );
-    HierarchicalRenderable::addChild(systemRenderableParticule, mobileRenderable);
-
-    //Initialize a force field that apply only to the mobile particle
+    // Initialize a force field that apply only to the camera particle
     glm::vec3 nullForce(0.0,0.0,0.0);
     std::vector<ParticlePtr> vParticle;
-    vParticle.push_back(mobile);
+    vParticle.push_back(particle);
     ConstantForceFieldPtr force = std::make_shared<ConstantForceField>(vParticle, nullForce);
-    systemParticule->addForceField( force );
+    systemParticle->addForceField( force );
 
-    //Initialize a renderable for the force field applied on the mobile particle.
-    //This renderable allows to modify the attribute of the force by key/mouse events
-    //Add this renderable to the systemRenderableParticule.
-    ControlledForceFieldRenderablePtr forceRenderable = std::make_shared<ControlledForceFieldRenderable>( flatShader, force, mapGenerator, viewer );
-    HierarchicalRenderable::addChild(systemRenderableParticule, forceRenderable);
+    // Particle camera renderable (display nothing only to refresh the position with do_animate and do_draw)
+    ParticleCameraPtr camera = std::make_shared<ParticleCamera>( flatShader, force, mapGenerator, viewer );
+    HierarchicalRenderable::addChild(systemRenderableParticle, camera);
 
-    //Add a damping force field to the mobile.
+    //Add a damping force field to the particle camera.
     DampingForceFieldPtr dampingForceField = std::make_shared<DampingForceField>(vParticle, 0.9);
-    systemParticule->addForceField( dampingForceField );
-
-    //Activate collision and set the restitution coefficient to 1.0
-    systemParticule->setCollisionsDetection(true);
-    systemParticule->setRestitution(1.0f);
+    systemParticle->addForceField( dampingForceField );
 
     viewer.startAnimation();
 }

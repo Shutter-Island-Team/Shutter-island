@@ -178,6 +178,10 @@ class BoidsManager
 
   const int & getCountCarrot() const;
 
+  glm::vec3 computeBiomeLeaderPosition(Biome biome, float min, float max, float zPos);
+
+  glm::vec3 computeBiomeFellowPosition(Biome biome, glm::vec3 position, float min, float max, float zPos, float radius);
+
   void placeBoids( Biome biomeType, int nbRabbitGroup, int nbWolfGroup, int nbForest,  int nbCarrotField);
 
  private:
@@ -193,10 +197,6 @@ class BoidsManager
   const int m_updatePeriod; ///< Period of tick before the update of the state of the boids
 
   int m_countCarrot;
-
-  glm::vec3 computeBiomeLeaderPosition(Biome biome, float min, float max, float zPos);
-
-  glm::vec3 computeBiomeFellowPosition(Biome biome, glm::vec3 position, float min, float max, float zPos, float radius);
 
   void placeRabbitGroup(Biome biomeType);
 
