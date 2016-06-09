@@ -2,7 +2,7 @@
 
 This project was created as a end of semester project in the university Ensimag (Grenoble, France). 
 
-It consists of a ecosystem generator we can divid in two part : the generation of the terrain and the behavior of the animals :
+It consists of a ecosystem generator we can divide in two part : the generation of the terrain and the behavior of the animals :
 * Generation of the terrain is a procedural generation of an island with mountains, plains and sands using Voronoi diagramm, tessellation and other technics.
 * Animals are ruled with boids behavior and a graph to go from one behavior to an other.
 
@@ -15,13 +15,15 @@ It consists of a ecosystem generator we can divid in two part : the generation o
 ## Installation
 
 ```bash
-#Compile external libraries (if new lib has been added)
-cd extlib/
-make clean_all
+#Compile voro++
+cd lib/voro++/src
 make
 
-#Compile project
-cd ../
+#Compile external libraries
+cd extlib/
+make
+
+#Compile project (In root of the project)
 rm -rf build/
 mkdir build/
 cd build/
@@ -36,7 +38,7 @@ make -j 8
 * **Doxygen** : Doxygen is a standard tool for generating documentation. For more info, click on [this link](http://www.stack.nl/~dimitri/doxygen/index.html).
 * **Rapidjson** : Rapidjson is a fast JSON parser/generator for C++ with both SAX/DOM style API. For more info, clik on [this link](https://github.com/miloyip/rapidjson).
 * **Voro++** : Voro++ is a software library for carrying out three-dimensional computations of the Voronoi tessellation. For more info, click on [this link](http://math.lbl.gov/voro++/)
-* 
+* **C++ Bitmap Library** : The C++ Bitmap Library consists of simple, robust, optimized and portable processing routines for the 24-bit per pixel bitmap image format. For more info, click on [this link](http://partow.net/programming/bitmap/index.html)
 
 ## Documentation
 
@@ -50,7 +52,7 @@ firefox html/index.html
 ```
 
 ## Known issues
-### Boid issues (last update : 06/98/2016)
+### Boid issues (last update : 06/08/2016)
 
 * On rare occasion, an exception occur following a bad management of the boid when it moves from one cell to an other in the grid (06/08/2016)
 * If a boid gets too close to the border of the map and depending on the precision of the grid, an exception will occur (06/08/2016)
@@ -68,4 +70,5 @@ A very warm thank you to our two awesome teachers who helped us during the proje
 
 ## License
 
-See LISENCE
+See LICENSE
+
