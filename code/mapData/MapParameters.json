@@ -1,6 +1,7 @@
 {
     "Global" : {
-        "mapSize"           :   500.0
+        "mapSize"           :   500.0,
+        "lakesExtension"    :   1.50
     },
 
     "VSG" : {
@@ -21,8 +22,8 @@
     "Biome" : {
         "heightMinSea"          :   -4.0,
         "heightMaxSea"          :   -3.0,
-        "heightMinLake"         :   -2.0,
-        "heightMaxLake"         :   -1.0,
+        "heightMinLake"         :   -1.0,
+        "heightMaxLake"         :   -0.5,
         "heightMinInnerBeach"   :    2.0,
         "heightMaxInnerBeach"   :    3.5,
         "heightMinOuterBeach"   :    0.0,

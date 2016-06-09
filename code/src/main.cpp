@@ -9,12 +9,6 @@
 #include "../include/initialize_scene.hpp"
 #include "../include/Utils.hpp"
 
-/**
- * @brief
- * Defines the size of the map (constrained square plane).
- */
-#define MAP_SIZE 500.0
-
 int main( int argc, char* argv[] )
 {
     std::srand(std::time(0));
@@ -28,11 +22,11 @@ int main( int argc, char* argv[] )
      /*
       * Creating the map generator and generating the map.
       */
-    MapGenerator mapGenerator(mapParameters, MAP_SIZE);
+    MapGenerator mapGenerator(mapParameters, mapParameters.getMapSize());
     mapGenerator.compute();
 
     //initialize_map2D(viewer, mapGenerator, MAP_SIZE);
-    initialize_test_scene(viewer, mapGenerator, MAP_SIZE);
+    initialize_test_scene(viewer, mapGenerator, mapParameters.getMapSize());
     
     while( viewer.isRunning() )
     {

@@ -43,7 +43,7 @@ MapRenderable::MapRenderable(
 
     // Geometry part : decomposing the voronoi diagram in triangles
     // and sending them
-    sendVoronoiDiagram();
+    sendVoronoiDiagram(mapGenerator);
 
     // Computing and binding the height map
     sendHeightMap();
@@ -431,7 +431,7 @@ static bool findVector(
     return false;
 }
 
-void MapRenderable::sendVoronoiDiagram() 
+void MapRenderable::sendVoronoiDiagram(MapGenerator& mapGenerator) 
 {
    
     /*
@@ -622,8 +622,9 @@ void MapRenderable::sendVoronoiDiagram()
              * coefficient.
              */
             if (lakeVector != NULL) {
-                lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p1-centroid)+glm::vec2(centroid), p1.z));
-                lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p2-centroid)+glm::vec2(centroid), p2.z));
+                float coeff = mapGenerator.m_mapParameters.getLakesExtension();
+                lakeVector->push_back(glm::vec3(coeff*glm::vec2(p1-centroid)+glm::vec2(centroid), p1.z));
+                lakeVector->push_back(glm::vec3(coeff*glm::vec2(p2-centroid)+glm::vec2(centroid), p2.z));
                 lakeVector->push_back(centroid);
             }
 
@@ -649,8 +650,9 @@ void MapRenderable::sendVoronoiDiagram()
         m_texCoords.push_back(glm::vec2(centroid)/m_mapGenerator.mapSize);
 
         if (lakeVector != NULL) {
-            lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p1-centroid)+glm::vec2(centroid), p1.z));
-            lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p2-centroid)+glm::vec2(centroid), p2.z));
+            float coeff = mapGenerator.m_mapParameters.getLakesExtension();
+            lakeVector->push_back(glm::vec3(coeff*glm::vec2(p1-centroid)+glm::vec2(centroid), p1.z));
+            lakeVector->push_back(glm::vec3(coeff*glm::vec2(p2-centroid)+glm::vec2(centroid), p2.z));
             lakeVector->push_back(centroid);
         }
     }

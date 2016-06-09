@@ -454,10 +454,30 @@ public:
      * @return The value of m_peakTextureExtent
      */
     float getPeakTextureExtent();
-
-
     /**************************************************************************
      * End of Texture "getters".
+     *************************************************************************/
+
+    /**************************************************************************
+     * Global "getters".
+     *************************************************************************/
+    /**
+     * @brief
+     * Getter on m_mapSize.
+     *
+     * @return The value of m_mapSize.
+     */
+    float getMapSize();
+
+    /**
+     * @brief
+     * Getter on m_lakesExtension.
+     *
+     * @return The value of m_lakesExtension.
+     */
+    float getLakesExtension();
+    /**************************************************************************
+     * End of global "getters".
      *************************************************************************/
     
 private:
@@ -664,7 +684,7 @@ private:
      * @brief
      * Defines the default minimal distance between two generated seeds.
      */
-    int m_distMin = 10;
+    int m_distMin;
     /**************************************************************************
      * End of MapGenerator class "defines".
      *************************************************************************/
@@ -829,10 +849,26 @@ private:
      * Defines the extent of a peak texture on its neighbours
      */
     float m_peakTextureExtent;
-
-    
     /**************************************************************************
-     * Texture "defines".
+     * End of texture "defines".
+     *************************************************************************/
+
+    /**************************************************************************
+     * Global "defines".
+     *************************************************************************/
+    /**
+     * @brief
+     * Defines the size of the square map.
+     */
+    float m_mapSize;
+
+    /**
+     * @brief
+     * Defines the extension coefficient applied to the lakes renderables.
+     */
+    float m_lakesExtension;
+    /**************************************************************************
+     * End of global "defines".
      *************************************************************************/
 };
 

@@ -224,8 +224,10 @@ private:
     /**
      * @brief Cut the voronoi diagram into triangles
      * and send them
+     *
+     * @mapGenerator A reference on the map generator.
      */
-    void sendVoronoiDiagram();
+    void sendVoronoiDiagram(MapGenerator& mapGenerator);
 
     /**
      * @brief Create and send the height map texture

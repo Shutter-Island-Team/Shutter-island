@@ -112,6 +112,12 @@ MapParameters::MapParameters(const std::string& filename)
      m_lakeTextureExtent = document["Texture"]["lakeTextureExtent"].GetFloat();
      m_mountainTextureExtent = document["Texture"]["mountainTextureExtent"].GetFloat();
      m_peakTextureExtent = document["Texture"]["peakTextureExtent"].GetFloat();
+
+     /*
+      * Global "defines".
+      */
+     m_mapSize = document["Global"]["mapSize"].GetFloat();
+     m_lakesExtension = document["Global"]["lakesExtension"].GetFloat();
 }
 
 /*
@@ -369,4 +375,15 @@ float MapParameters::getMountainTextureExtent() {
 
 float MapParameters::getPeakTextureExtent() {
     return m_peakTextureExtent;
+}
+
+/*
+ * Global "getters".
+ */
+float MapParameters::getMapSize() {
+    return m_mapSize;
+}
+
+float MapParameters::getLakesExtension() {
+    return m_lakesExtension;
 }
