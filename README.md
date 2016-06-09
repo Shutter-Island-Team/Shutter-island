@@ -1,12 +1,12 @@
 # Ecosystem generator
 
-This project was created as a end of semester project in the university Ensimag (Grenoble, France). 
+This project was created as an end of semester project in the engineering school Ensimag (Grenoble, France). 
 
 It consists of a ecosystem generator we can divide in two part : the generation of the terrain and the behavior of the animals :
 * Generation of the terrain is a procedural generation of an island with mountains, plains and sands using Voronoi diagramm, tessellation and other technics.
 * Animals are ruled with boids behavior and a graph to go from one behavior to an other.
 
-## Author
+## Authors
 * HAMMEN Maxence ([github](https://github.com/bluerock57))
 * KACHER Ilyes ([github](https://github.com/IlyesKacher))
 * LY Mickaël ([github](https://github.com/astcort))
@@ -52,19 +52,20 @@ firefox html/index.html
 ```
 
 ## Known issues
-### Boid issues (last update : 06/08/2016)
+### Boid issues (last update : 06/09/2016)
 
 * On rare occasion, an exception occur following a bad management of the boid when it moves from one cell to an other in the grid (06/08/2016)
 * If a boid gets too close to the border of the map and depending on the precision of the grid, an exception will occur (06/08/2016)
-* The boid can have unexpected behavior when walking on the mountains (06/09/2016)
+* The boid can have unexpected behavior when walking on the mountains
 
-### Terrain issues (last update : 06/08/2016)
+### Terrain issues (last update : 06/09/2016)
 
-No known bugs to this date
+* Sometimes, a small wall can cut the map in two. This is due to the interpolation extending the influence of the mountain on a horizontal/vertical line.
+* The computation of lake connexity is actually not correct. Because lakes are treated in a specific order, two lakes can sometimes not be connected if they are connected through another lake that is treated after these two.  
 
-## Credits
+## Acknowledgements
 
-A very warm thank you to our two awesome teachers who helped us during the project : 
+A very warm thank to our two awesome teachers who helped us during the project : 
 * DELAME Thomas ([website](http://virtual-atom.com/))
 * MANTEAUX Pierre-Luc ([github](http://manteapi.github.io/))
 
@@ -72,3 +73,18 @@ A very warm thank you to our two awesome teachers who helped us during the proje
 
 See LICENSE
 
+## Bibliography
+
+See BIBLIOGRAPHY.md
+
+
+## Credits
+
+### Meshes
+
+The following meshes have been used :
+* [Rabbit](http://www.blendswap.com/blends/view/81060)
+* [Wolf](http://tf3dm.com/3d-model/wolf-rigged-and-game-ready-42808.html)
+* [Tree](http://www.blendswap.com/blends/view/71743)
+
+The 'carrot' has been created by Ilyes Kacher.
