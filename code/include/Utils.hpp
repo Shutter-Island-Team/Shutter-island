@@ -5,7 +5,6 @@
  * @brief Some useful functions to ease the development.
  */
 
-#include "GeometricTransformation.hpp"
 #include "dynamics/Plane.hpp"
 
 #include <array>
