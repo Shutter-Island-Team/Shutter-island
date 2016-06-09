@@ -437,7 +437,6 @@ void MovableBoid::mateStateHandler(BoidsManager & boidsManager)
 	    #ifdef DEBUG
 		// boidsManager.addDebugMovableBoid(newborn);
 	    #endif
-		std::cerr << "NAISSANCE !" << std::endl;
 		switchToState(WALK_STATE, boidsManager);
 		m_parameters->resetAffinity();
 	}

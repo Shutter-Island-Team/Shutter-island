@@ -25,7 +25,6 @@ int main( int argc, char* argv[] )
     MapGenerator mapGenerator(mapParameters, mapParameters.getMapSize());
     mapGenerator.compute();
 
-    //initialize_map2D(viewer, mapGenerator, MAP_SIZE);
     initialize_test_scene(viewer, mapGenerator, mapParameters.getMapSize());
     
     while( viewer.isRunning() )

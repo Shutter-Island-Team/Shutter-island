@@ -6,7 +6,6 @@
 #include "../../include/boids2D/StateRenderable.hpp"
 #include "../../include/Utils.hpp"
 
-#define MAP_SIZE 500.0
 #define NB_RABBIT_MIN 6
 #define NB_RABBIT_MAX 10
 #define NB_WOLF_MIN 2
@@ -20,8 +19,9 @@ BoidsManager::BoidsManager(MapGenerator& map, Viewer& viewer, ShaderProgramPtr& 
 	: m_map(map), m_viewer(viewer), m_shader(shader), m_updateCoeff(0), m_updatePeriod(10),
 		m_countCarrot(0)
 {
-	m_movableBoids = std::make_shared<Matrix<MovableBoidPtr> >(25, 25);
-	m_rootedBoids = std::make_shared<Matrix<RootedBoidPtr> >(25, 25);
+	int gridSize = (int) (map.getMapParameters().getMapSize() / 20);
+	m_movableBoids = std::make_shared<Matrix<MovableBoidPtr> >(gridSize, gridSize);
+	m_rootedBoids = std::make_shared<Matrix<RootedBoidPtr> >(gridSize, gridSize);
 }
 
 BoidsManager::~BoidsManager()
@@ -242,13 +242,14 @@ void BoidsManager::addDebugMovableBoid(MovableBoidPtr m)
 
 void BoidsManager::repopCarrot()
 {
-	float x = random(0, MAP_SIZE);
-	float y = random(0, MAP_SIZE);
+	float mapSize = getMap().getMapParameters().getMapSize();
+	float x = random(0, mapSize);
+	float y = random(0, mapSize);
 	glm::vec3 positionFellow(x, y, getHeight(x, y));
 
     while(getBiome(positionFellow.x, positionFellow.y) != Plains) {
-		x = random(0, MAP_SIZE);
-		y = random(0, MAP_SIZE);
+		x = random(0, mapSize);
+		y = random(0, mapSize);
 		positionFellow = glm::vec3(x, y, getHeight(x, y));
     }
 
@@ -285,7 +286,8 @@ glm::vec3 BoidsManager::computeBiomeFellowPosition(Biome biome,
 
 void BoidsManager::placeRabbitGroup(Biome biomeType)
 {
-    glm::vec3 positionMaster = computeBiomeLeaderPosition(biomeType, 0, MAP_SIZE, 0.0);
+	float mapSize = getMap().getMapParameters().getMapSize();
+    glm::vec3 positionMaster = computeBiomeLeaderPosition(biomeType, 0, mapSize, 0.0);
     glm::vec3 positionFellow;
 
     MovableBoidPtr leaderRabbit = addMovableBoid(RABBIT, positionMaster, positionMaster);
@@ -294,7 +296,7 @@ void BoidsManager::placeRabbitGroup(Biome biomeType)
     int nbRabbit = randInt(NB_RABBIT_MIN, NB_RABBIT_MAX);
 
     for (int i = 0; i < nbRabbit; ++i) {
-        positionFellow = computeBiomeFellowPosition(biomeType, positionMaster, 0, MAP_SIZE, 0.0, 10.0f);
+        positionFellow = computeBiomeFellowPosition(biomeType, positionMaster, 0, mapSize, 0.0, 10.0f);
         MovableBoidPtr rabbitFellow = addMovableBoid(RABBIT, positionFellow, positionMaster);
         rabbitFellow->setNewLeader(leaderRabbit);
     }
@@ -302,7 +304,8 @@ void BoidsManager::placeRabbitGroup(Biome biomeType)
 
 void BoidsManager::placeWolfGroup(Biome biomeType)
 {
-    glm::vec3 positionMaster = computeBiomeLeaderPosition(biomeType, 0, MAP_SIZE, 2.0);
+	float mapSize = getMap().getMapParameters().getMapSize();
+    glm::vec3 positionMaster = computeBiomeLeaderPosition(biomeType, 0, mapSize, 2.0);
     glm::vec3 positionFellow;
 
     MovableBoidPtr leaderWolf = addMovableBoid(WOLF, positionMaster, positionMaster);
@@ -311,7 +314,7 @@ void BoidsManager::placeWolfGroup(Biome biomeType)
     int nbWolf = randInt(NB_WOLF_MIN, NB_WOLF_MAX);
 
     for (int i = 0; i < nbWolf; ++i) {
-        positionFellow = computeBiomeFellowPosition(biomeType, positionMaster, 0, MAP_SIZE, 2.0, 10.0f);
+        positionFellow = computeBiomeFellowPosition(biomeType, positionMaster, 0, mapSize, 2.0, 10.0f);
         MovableBoidPtr wolfFellow = addMovableBoid(WOLF, positionFellow, positionMaster);
         wolfFellow->setNewLeader(leaderWolf);
     }
@@ -319,7 +322,8 @@ void BoidsManager::placeWolfGroup(Biome biomeType)
 
 void BoidsManager::placeForest(Biome biomeType)
 {
-    glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, MAP_SIZE, 2.0);
+	float mapSize = getMap().getMapParameters().getMapSize();
+    glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, mapSize, 2.0);
     addRootedBoid(TREE, position);
 
     glm::vec3 positionFellow;
@@ -327,14 +331,15 @@ void BoidsManager::placeForest(Biome biomeType)
     int nbTree = randInt(NB_TREE_MIN, NB_TREE_MAX);
 
     for (int i = 0; i < nbTree - 1; ++i) {
-        positionFellow = computeBiomeFellowPosition(biomeType, position, 0, MAP_SIZE, 2.0, 25.0f);
+        positionFellow = computeBiomeFellowPosition(biomeType, position, 0, mapSize, 2.0, 25.0f);
         addRootedBoid(TREE, positionFellow);
     }
 }
 
 void BoidsManager::placeCarrotField(Biome biomeType)
 {
-    glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, MAP_SIZE, 2.0);
+	float mapSize = getMap().getMapParameters().getMapSize();
+    glm::vec3 position = computeBiomeLeaderPosition(biomeType, 0, mapSize, 2.0);
     addRootedBoid(CARROT, position);
 
     glm::vec3 positionFellow;
@@ -342,7 +347,7 @@ void BoidsManager::placeCarrotField(Biome biomeType)
     int nbCarrot = randInt(NB_CARROT_MIN, NB_CARROT_MAX);
 
     for (int i = 0; i < nbCarrot - 1; ++i) {
-        positionFellow = computeBiomeFellowPosition(biomeType, position, 0, MAP_SIZE, 2.0, 30.0f);
+        positionFellow = computeBiomeFellowPosition(biomeType, position, 0, mapSize, 2.0, 30.0f);
         addRootedBoid(CARROT, positionFellow);
     }
 }

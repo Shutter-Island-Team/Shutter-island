@@ -214,6 +214,7 @@ float MapGenerator::getHeight(float x, float y) {
 				  biomeMap);
 }
 
+
 float MapGenerator::getApproximativeHeight(float x, float y) {
 
     if (!heightMap) {
@@ -228,6 +229,11 @@ float MapGenerator::getApproximativeHeight(float x, float y) {
     int effMapSize          = mapSize*heightmapScaling;
     
     return findApproximativeHeight(position, effMapSize, heightMap, heightmapScaling);
+}
+
+MapParameters& MapGenerator::getMapParameters()
+{
+    return m_mapParameters;
 }
 
 bool MapGenerator::getLakes(

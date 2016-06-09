@@ -1,12 +1,12 @@
 {
     "Global" : {
-        "mapSize"           :   500.0,
+        "mapSize"           :   1000.0,
         "lakesExtension"    :   1.50
     },
 
     "VSG" : {
-        "vsgWidth"          :   500.0,
-        "vsgHeight"         :   500.0,
+        "vsgWidth"          :   1000.0,
+        "vsgHeight"         :   1000.0,
         "vsgNbSeeds"        :   250,
         "vsgWidthSub"       :   10,
         "vsgHeightSub"      :   10,

@@ -28,16 +28,6 @@
 #include "../include/terrain/SeaRenderable.hpp"
 #include "../include/terrain/LakeRenderable.hpp"
 
-#define MAP_SIZE 500.0
-#define NB_RABBIT_MIN 6
-#define NB_RABBIT_MAX 10
-#define NB_WOLF_MIN 2
-#define NB_WOLF_MAX 15
-#define NB_TREE_MIN 8
-#define NB_TREE_MAX 15
-#define NB_CARROT_MIN 8
-#define NB_CARROT_MAX 15
-
 #include <cstdlib>
 #include <ctime>
 
@@ -313,12 +303,14 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
                 "../shaders/instanceFragment.frag"});
     viewer.addShaderProgram( instanceShader );
 
+    float map_size = mapGenerator.getMapParameters().getMapSize();
+
     // Skybox
     TexturedLightedMeshRenderablePtr skybox = std::make_shared<TexturedLightedMeshRenderable>( texShader, "../meshes/skybox.obj", "../textures/skybox_texture.png");
     skybox->setMaterial(pearl);
     parentTransformation = glm::translate( glm::mat4(1.0), glm::vec3( 0, 0, 0.0 ) );
     parentTransformation = glm::rotate( parentTransformation, float(M_PI_2), glm::vec3(1,0,0) );
-    parentTransformation = glm::scale( parentTransformation, glm::vec3(250,250,250));
+    parentTransformation = glm::scale( parentTransformation, glm::vec3(mapSize / 2.0f,mapSize / 2.0f,mapSize / 2.0f));
     skybox->setParentTransform( parentTransformation );
     viewer.addRenderable(skybox);
 
@@ -336,7 +328,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     //It is also responsible for some of the key/mouse events
     DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    boidsManager->placeBoids(Plains, 20, 7, 30, 10);
+    boidsManager->placeBoids(Plains, 30, 10, 30, 30);
 
     /*
     MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
@@ -381,7 +373,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     viewer.addRenderable(systemRenderableParticle);
 
     // Creation of the particle use in the camera
-    glm::vec3 particlePosition = boidsManager->computeBiomeLeaderPosition(Plains, 0.0f, MAP_SIZE, 0.0f);
+    glm::vec3 particlePosition = boidsManager->computeBiomeLeaderPosition(Plains, 0.0f, map_size, 0.0f);
     glm::vec3 particleVelocity(0.0,0.0,0.0);
     float particleMass = 0.1;
     ParticlePtr particle = std::make_shared<Particle>( particlePosition, particleVelocity, particleMass);

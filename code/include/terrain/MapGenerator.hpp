@@ -114,6 +114,13 @@ public :
     float getApproximativeHeight(float x, float y);
 
     /**
+     * @brief Get the map parameters
+     *
+     * @return The map parameters
+     */
+    MapParameters& getMapParameters();
+
+    /**
      * @brief
      * Allows access to the list of the Lake biome through iterators.
      * 

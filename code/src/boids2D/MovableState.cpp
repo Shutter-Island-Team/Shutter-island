@@ -129,8 +129,8 @@ glm::vec3 MovableState::stayOnIsland(const MovableBoid & b, const BoidsManager &
 	if(boidsManager.getBiome(posAheadMax.x, posAheadMax.y) == Sea 
 		|| boidsManager.getBiome(b.getLocation().x, b.getLocation().y) == Sea) {
 		
-		///< TODO move to the center of the map
-		glm::vec3 islandCenter(250.0, 250.0, 0.0);
+		float mapSize = boidsManager.getMap().getMapParameters().getMapSize();
+		glm::vec3 islandCenter(mapSize/2.0f, mapSize/2.0f, 0.0);
 
 		return cNormalize(islandCenter - b.getLocation()) * b.getParameters()->getMaxForce();
 	} else if (b.getStateType() != FIND_WATER_STATE && 
