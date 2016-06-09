@@ -225,7 +225,7 @@ glm::vec3 MovableState::align (const MovableBoid& b, const std::list<MovableBoid
 	glm::vec3 steer;
 	int count = 0;
 	for (MovableBoidPtr other : mvB) {
-		if(b.sameSpecies(*other)) 
+		if(b.getLeader() == other->getLeader())
 		{
 			float d = glm::distance(b.getLocation(), other->getLocation());
 			if ((d > 0) && (d < b.getParameters()->getDistViewCohesion()) && b.canSee(*other, b.getParameters()->getAngleView())) 
@@ -257,7 +257,7 @@ glm::vec3 MovableState::cohesion (const MovableBoid & b, const std::list<Movable
     glm::vec3 steer;
     int count = 0;
     for (MovableBoidPtr other : mvB) {
-    	if(b.sameSpecies(*other)) 
+    	if(b.getLeader() == other->getLeader()) 
 		{
 			float d = glm::distance(b.getLocation(), other->getLocation());
 			if ((d > 0) && (d < b.getParameters()->getDistViewCohesion()) && b.canSee(*other, b.getParameters()->getAngleView())) {

@@ -62,7 +62,7 @@ RootedBoidPtr BoidsManager::addRootedBoid(BoidType boidType, glm::vec3 location)
 	{
 		case CARROT:
 			m_countCarrot++;
-			rootedBoid = std::make_shared<RootedBoid>(location, CARROT, 0.0f, 1);
+			rootedBoid = std::make_shared<RootedBoid>(location, CARROT, 0.2f, 1);
 			break;
 		case TREE:
 			rootedBoid = std::make_shared<RootedBoid>(location, TREE, 2.0f, 1);
