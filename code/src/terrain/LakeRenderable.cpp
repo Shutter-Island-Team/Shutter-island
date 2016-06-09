@@ -42,18 +42,27 @@ LakeRenderable::LakeRenderable(
         globalIt++
     )
     {
-        float sum = 0.0;
+        /*
+         * So as to set the altitude of the lake coherently, we compute the
+         * average altitude of the vertices constituting the connexe lakes.
+         */
+        float averageAltitude = 0.0;
         for (
             auto localIt = globalIt->second.begin();
             localIt != globalIt->second.end();
             localIt++
         )
         {
-            sum += localIt->z;
+            averageAltitude += localIt->z;
         }
-        sum /= (float)(globalIt->second.size());
-        //if (sum < 0.0) {
-        //  sum = 0.3;
+        averageAltitude /= (float)(globalIt->second.size());
+        
+        /*
+         * If the average altitude is below the sea altitude, we slightly
+         * increase it.
+         */
+        //if (averageAltitude < 0.0) {
+        //  averageAltitude = 0.3;
         //}
 
         for (
@@ -62,7 +71,7 @@ LakeRenderable::LakeRenderable(
             localIt++
         )
         {
-            m_positions.push_back(glm::vec3(localIt->x, localIt->y, sum));
+            m_positions.push_back(glm::vec3(localIt->x, localIt->y, averageAltitude));
         }
     }
 

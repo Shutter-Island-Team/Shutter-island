@@ -390,10 +390,25 @@ void MapRenderable::insertIntoList(
     }
 }
 
+/**
+ * @brief
+ * Static function aiming at finding if, considering a lake a connexe lake, 
+ * identified by "lakeID", has already been inserted into the associated
+ * data structure (namely the vector storing information about lake connexity,
+ * "m_lakesTriangles").
+ *
+ * @param lakes A reference on the data structure containing information about
+ * lakes connexity.
+ * @param lakeID The ID of the connexe lake to search for.
+ * @param resultPair A pointer on the pointer in which the address of the pair
+ * of "lakes" to consider will be stored, if the connexe lake is found.
+ *
+ * @return A boolean representing "the connexe lake has been found".
+ */
 static bool findVector(
     std::vector< std::pair< std::vector<int>, std::vector<glm::vec3> > >& lakes,
     int lakeID,
-    std::pair< std::vector<int>, std::vector<glm::vec3> >* resultPair
+    std::pair< std::vector<int>, std::vector<glm::vec3> >** resultPair
 )
 {
     for (
@@ -406,9 +421,10 @@ static bool findVector(
             itLakeIDs != itLakes->first.end();
             itLakeIDs++
         ) {
-            if (*itLakeIDs == lakeID)
-                resultPair = &(*itLakes);
+            if (*itLakeIDs == lakeID) {
+                *resultPair = &(*itLakes);
                 return true;
+            }
         }
     }
 
@@ -537,20 +553,12 @@ void MapRenderable::sendVoronoiDiagram()
                 neighboursIt++
             )
             {
-//                std::cout << "Neighbours =======>" << std::endl;
-//                std::cout << *neighboursIt << std::endl;
-//                std::cout << "In the map =======>" << std::endl;
-//                for (auto it = lakesTriangles.begin(); it != lakesTriangles.end(); it++)
-//                    std::cout << it->first << std::endl;
-//
-//                std::cout << "\n" << std::endl;
                 /*
                  * If one of its neighbour has already been inserted into the
                  * lakes list, then the considered lake is connexe to its
                  * neighbour.
                  */
-                if (findVector(m_lakesTriangles, *neighboursIt, insertPair)) {
-                    //std::cout << "Found!" << std::endl;
+                if (findVector(m_lakesTriangles, *neighboursIt, &insertPair)) {
                     newLake = false;
                     break;
                 }
@@ -564,7 +572,6 @@ void MapRenderable::sendVoronoiDiagram()
                 );
                 insertPair = &(m_lakesTriangles.back());
             }
-                //std::cout << "End =======>" << std::endl;
             insertPair->first.push_back(count);
             lakeVector = &(insertPair->second);
         }
@@ -577,7 +584,7 @@ void MapRenderable::sendVoronoiDiagram()
          * Iterating on each vertex associated with the seed, that is to say
          * the cell, and constructing the associated triangles.
          * In other words, each pair of consecutive vertices is linked with the
-        / * center of the cell to construct a triangle.
+         * center of the cell to construct a triangle.
          */
         while (current != (*listIt)->end()) {
             /*
@@ -610,6 +617,10 @@ void MapRenderable::sendVoronoiDiagram()
             m_positions.push_back(centroid);
             m_texCoords.push_back(glm::vec2(centroid)/m_mapGenerator.mapSize);
 
+            /*
+             * Pushing the lakes' triangles, possibly extended or shrinked thanks to the dedicated
+             * coefficient.
+             */
             if (lakeVector != NULL) {
                 lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p1-centroid)+glm::vec2(centroid), p1.z));
                 lakeVector->push_back(glm::vec3(1.25f*glm::vec2(p2-centroid)+glm::vec2(centroid), p2.z));
