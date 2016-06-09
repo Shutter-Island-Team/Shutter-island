@@ -383,7 +383,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     // Creation of the particle use in the camera
     glm::vec3 particlePosition = boidsManager->computeBiomeLeaderPosition(Plains, 0.0f, MAP_SIZE, 0.0f);
     glm::vec3 particleVelocity(0.0,0.0,0.0);
-    float particleMass = 1.0;
+    float particleMass = 0.1;
     ParticlePtr particle = std::make_shared<Particle>( particlePosition, particleVelocity, particleMass);
     systemParticle->addParticle( particle );
 

@@ -26,12 +26,12 @@ void ParticleForceFieldStatus::clear()
     angle =  0;
     last_time =  0;
     intensity = 0;
-    acceleration = 50.0;
-    deacceleration = 20.0;
+    acceleration = 50000.0;
+    deacceleration = 50000.0;
     angularSpeed = 2.0;
     dampingFactor = 0.0;
-    min_intensity = -1;
-    max_intensity = 50;
+    min_intensity = -500;
+    max_intensity = 500;
 
     accelerating =  false;
     deaccelerating =  false;
