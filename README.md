@@ -10,7 +10,7 @@ It consists of a ecosystem generator we can divide in two part : the generation 
 * HAMMEN Maxence ([github](https://github.com/bluerock57))
 * KACHER Ilyes ([github](https://github.com/IlyesKacher))
 * LY Mickaël ([github](https://github.com/astcort))
-* STOFFEL Mathieu
+* STOFFEL Mathieu ([github](https://github.com/matsKNY))
 
 ## Installation
 
