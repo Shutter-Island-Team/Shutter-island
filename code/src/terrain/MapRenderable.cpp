@@ -781,12 +781,10 @@ void MapRenderable::sendHeightMap() {
      * altitudes corresponding to the original heightmap's ones.
      */
     m_scaleAltitude = maxAltitude - m_minAltitude;
-    #pragma omp parallel for collapse(2)
-    for (int i = 0; i < effMapDimension; i++) {
-        for (int j = 0; j < effMapDimension; j++) {
-            heightMap[(i*effMapDimension+j)*4 + 3] -= m_minAltitude;
-            heightMap[(i*effMapDimension+j)*4 + 3] /= m_scaleAltitude;
-        }
+    #pragma omp parallel for
+    for (int i = 0; i < effMapDimension*effMapDimension; i++) {
+        heightMap[i*4 + 3] -= m_minAltitude;
+		heightMap[i*4 + 3] /= m_scaleAltitude;
     }
     
      /*
