@@ -89,8 +89,8 @@ float findApproximativeHeight(Vertex2D & pos,
     float effPosJ = pos.second*mapScaling;
     
     // Surrounding square
-    int closeI   = MIN((int) effPosI, effMapSize - 2);
-    int closeJ   = MIN((int) effPosJ, effMapSize - 2);
+    int closeI   = MIN((int) floor(effPosI), effMapSize - 2);
+    int closeJ   = MIN((int) floor(effPosJ), effMapSize - 2);
     int closeIp1 = closeI + 1;
     int closeJp1 = closeJ + 1;
     
@@ -110,7 +110,6 @@ float findApproximativeHeight(Vertex2D & pos,
     return (1 - coeffJ)*botHeight + coeffJ*topHeight;
 
 }
-
 
 
 

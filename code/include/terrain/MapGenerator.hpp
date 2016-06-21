@@ -102,16 +102,6 @@ public :
      */
     float getHeight(float x, float y);
 
-    /**
-     * @brief Get the approximative height 
-     * associated to a location using a sampled height map
-     * 
-     * @param x Abscissa of the desired position
-     * @param y Ordinna  of the desired position 
-     *
-     * @return An interpolated height
-     */
-    float getApproximativeHeight(float x, float y);
 
     /**
      * @brief Get the map parameters
