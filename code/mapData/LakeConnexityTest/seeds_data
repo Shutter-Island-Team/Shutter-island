@@ -1,0 +1,30 @@
+# Seeds' data:
+10.0 10.0 Mountain
+30.0 10.0 Plains
+50.0 10.0 Plains
+70.0 10.0 Plains
+90.0 10.0 Plains
+
+10.0 30.0 Lake
+30.0 30.0 Lake
+50.0 30.0 Lake
+70.0 30.0 Lake
+90.0 30.0 Plains
+
+10.0 50.0 Mountain
+30.0 50.0 Lake
+50.0 50.0 Plains
+70.0 50.0 Lake
+90.0 50.0 Plains
+
+10.0 70.0 Plains
+30.0 70.0 Lake
+50.0 70.0 Lake
+70.0 70.0 Lake
+90.0 70.0 Plains
+
+10.0 90.0 Plains
+30.0 90.0 Plains
+50.0 90.0 Plains
+70.0 90.0 Plains
+90.0 90.0 Plains

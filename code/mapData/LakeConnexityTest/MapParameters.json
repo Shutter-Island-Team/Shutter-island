@@ -1,0 +1,90 @@
+{
+    "Global" : {
+        "mapSize"           :   100.0,
+        "importingHeightmap":   false,
+        "importingSeeds"    :   true,
+        "importSeeds"       :   "seeds_data",
+        "importHeightmap"   :   "heightmap_data",
+        "exportMapEnabled"  :   true,
+        "exportSeeds"       :   "seeds_data",
+        "exportHeightmap"   :   "heightmap_data",
+        "boidsEnabled"      :   false
+    },
+
+    "VSG" : {
+        "vsgWidth"          :   100.0,
+        "vsgHeight"         :   100.0,
+        "vsgNbSeeds"        :   25,
+        "vsgWidthSub"       :   5,
+        "vsgHeightSub"      :   5,
+        "vsgMaxSeedsBySub"  :   1,
+        "vsgMinDist"        :   20.0
+    },
+
+    "HeightTree" : {
+        "detectionThreshold"        :   0.1,
+        "heightBlendingCoefficient" :   0.9
+    },
+
+    "Biome" : {
+        "heightMinSea"          :   -4.0,
+        "heightMaxSea"          :   -3.0,
+        "heightMinLake"         :   -1.0,
+        "heightMaxLake"         :   -0.5,
+        "heightMinInnerBeach"   :    2.0,
+        "heightMaxInnerBeach"   :    3.5,
+        "heightMinOuterBeach"   :    0.0,
+        "heightMaxOuterBeach"   :    0.5,
+        "heightMinPlains"       :    4.0,
+        "heightMaxPlains"       :    5.0,
+        "heightMinMountain"     :   10.0,
+        "heightMaxMountain"     :   20.0,
+        "heightMinPeak"         :   20.0,
+        "heightMaxPeak"         :   25.0,
+        "scaleLimitInfluence"   :    0.03,
+        "biomeDepthMin"         :    2,
+        "biomeDepthMax"         :    8
+    },
+
+    "BiomeRepartition" : {
+        "landBlendingCoefficient"   :   0.7,
+        "lakeGeometricPicking"      :   0.8,
+        "lakeProbTransform"         :   0.1,
+        "lakePositiveInfluence"     :   0.15,
+        "mountainGeometricPicking"  :   0.6,
+        "mountainProbTransform"     :   0.9,
+        "mountainMaxTry"            :   10
+    },
+
+    "MapGenerator" : {
+        "nbSeeds"           :   25,
+        "nbSubdivision"     :   5,
+        "nbSeedsMaxSubdiv"  :   1,
+        "distMin"           :   20
+    },
+
+    "Map" : {
+        "tessellationLevel"  :    5.0,
+        "heightmapScaling"   :    1,
+	    "landTextureScaling" :    2.0,
+	    "seaTextureScaling"  :   20.0,
+	    "lakeTextureScaling" :   10.0
+    },
+
+    "Lake" : {
+        "lakesExtension"    :   1.30
+    },
+    
+    "Texture" : {
+    	"seaTextureExtent"      :   1.0,
+	    "sandTextureExtent"     :   1.0,
+	    "plainsTextureExtent"   :   1.0,
+	    "lakeTextureExtent"     :   20.0,
+	    "mountainTextureExtent" :   1.0,
+	    "peakTextureExtent"     :   1.0 
+    },
+
+    "MapParser" : {
+        "parserBufferSize"  :   256
+    }   
+}
