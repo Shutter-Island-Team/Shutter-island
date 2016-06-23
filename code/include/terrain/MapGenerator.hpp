@@ -8,9 +8,9 @@
 #ifndef MAPGENERATOR_HPP
 #define MAPGENERATOR_HPP
 
-#include "VoronoiSeedsGenerator.hpp"
 #include "HeightTree.hpp"
 #include "MapParameters.hpp"
+#include "VoronoiSeedsGenerator.hpp"
 #include "../structures/Matrix.hpp"
 
 #include <glm/glm.hpp>
@@ -149,6 +149,22 @@ public :
 			float& xLake,
 			float& yLake
 			);
+
+	/**
+	 * @brief
+	 * Exports the map data, that is to say the list of the seeds used to
+	 * build the underlaying Voronoi diagram and the sampled heightmap.
+	 * 
+	 * This function creates a directory (timestamped), and three files within
+	 * the latter:
+	 *	- A file containing the seeds' data;
+	 *	- A file containing the heightmap's data;
+	 *	- A copy of the "MapParameters" JSon file.
+	 *
+	 *	Furthermore, this directory is created within the "mapData" directory,
+	 *	which contains a README explaining how to import the exported data.
+	 */
+	void exportMapData();
 
     /**
      * @brief Destructor

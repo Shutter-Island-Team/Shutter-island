@@ -1,7 +1,14 @@
 {
     "Global" : {
         "mapSize"           :   1000.0,
-        "lakesExtension"    :   1.30
+        "importingHeightmap":   false,
+        "importingSeeds"    :   false,
+        "importSeeds"       :   "seeds_data",
+        "importHeightmap"   :   "heightmap_data",
+        "exportMapEnabled"  :   true,
+        "exportSeeds"       :   "seeds_data",
+        "exportHeightmap"   :   "heightmap_data",
+        "boidsEnabled"      :   true
     },
 
     "VSG" : {
@@ -59,17 +66,25 @@
     "Map" : {
         "tessellationLevel"  :    5.0,
         "heightmapScaling"   :    1,
-	"landTextureScaling" :    2.0,
-	"seaTextureScaling"  :   20.0,
-	"lakeTextureScaling" :   10.0
+	    "landTextureScaling" :    2.0,
+	    "seaTextureScaling"  :   20.0,
+	    "lakeTextureScaling" :   10.0
+    },
+
+    "Lake" : {
+        "lakesExtension"    :   1.30
     },
     
     "Texture" : {
-    	"seaTextureExtent" :       1.0,
-	"sandTextureExtent" :      1.0,
-	"plainsTextureExtent" :    1.0,
-	"lakeTextureExtent" :     20.0,
-	"mountainTextureExtent" :  1.0,
-	"peakTextureExtent" :      1.0 
+    	"seaTextureExtent"      :   1.0,
+	    "sandTextureExtent"     :   1.0,
+	    "plainsTextureExtent"   :   1.0,
+	    "lakeTextureExtent"     :   20.0,
+	    "mountainTextureExtent" :   1.0,
+	    "peakTextureExtent"     :   1.0 
+    },
+
+    "MapParser" : {
+        "parserBufferSize"  :   256
     }   
 }

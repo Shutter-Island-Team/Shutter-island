@@ -222,7 +222,7 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     viewer.addShaderProgram(flatShader);
 
      /*
-     * Loading default shaders.
+		Loading sea shaders.
      */
    ShaderProgramPtr seaShader = std::make_shared<ShaderProgram>(
             std::list<std::string>{
@@ -232,6 +232,9 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     );
     viewer.addShaderProgram(seaShader);
 
+	/*
+		Loading map shaders.
+	*/
     ShaderProgramPtr mapShader = std::make_shared<ShaderProgram>(
             std::list<std::string>{
                 "../shaders/map.vert", 
@@ -314,53 +317,55 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     skybox->setParentTransform( parentTransformation );
     viewer.addRenderable(skybox);
 
-    BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator, viewer, instanceShader);
+	BoidsManagerPtr boidsManager = std::make_shared<BoidsManager>(mapGenerator, viewer, instanceShader);
 
-    //Initialize a dynamic boid system
-    DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
-    SolverBoidPtr solver = std::make_shared<SolverBoid>();
-    system->setSolver(solver);
-    system->setDt(0.01);
-    system->setBoidsManager(boidsManager);
+	if (mapGenerator.getMapParameters().getBoidsEnabled()) {
+		//Initialize a dynamic boid system
+		DynamicSystemBoidPtr system = std::make_shared<DynamicSystemBoid>();
+		SolverBoidPtr solver = std::make_shared<SolverBoid>();
+		system->setSolver(solver);
+		system->setDt(0.01);
+		system->setBoidsManager(boidsManager);
 
-    //Create a renderable associated to the dynamic system
-    //This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
-    //It is also responsible for some of the key/mouse events
-    DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
+		//Create a renderable associated to the dynamic system
+		//This renderable is responsible for calling DynamicSystem::computeSimulationStep() in the animate() function
+		//It is also responsible for some of the key/mouse events
+		DynamicSystemBoidRenderablePtr systemRenderable = std::make_shared<DynamicSystemBoidRenderable>(system);
 
-    boidsManager->placeBoids(Plains, 30, 10, 30, 30);
+		boidsManager->placeBoids(Plains, 30, 10, 30, 30);
 
-    /*
-    MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
-    leaderRabbit->setNewLeader(leaderRabbit);
-    
-    for (int i = 0; i < 1; ++i) {
-        MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(0.5, 0.5, 0.0));
-        rabbitFellow->setNewLeader(leaderRabbit);
-    }
-    
-    
-    MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(300, 350), random(300, 350), 2));
-    leaderWolf->setNewLeader(leaderWolf);
-    for (int i = 0; i < 1; ++i) {
-        MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(0.0, 0.0, 0.5));
-        wolfFellow->setNewLeader(leaderWolf);
-    }
-    
+		/*
+		MovableBoidPtr leaderRabbit = boidsManager->addMovableBoid(RABBIT, glm::vec3(random(300, 350), random(300, 350), 2));
+		leaderRabbit->setNewLeader(leaderRabbit);
 
-    for (int i = 0; i < 10; ++i) {
-        boidsManager->addRootedBoid(CARROT, glm::vec3(random(300, 350), random(300, 350), 2));
-    }
+		for (int i = 0; i < 1; ++i) {
+			MovableBoidPtr rabbitFellow = boidsManager->addMovableBoid(RABBIT, glm::vec3(0.5, 0.5, 0.0));
+			rabbitFellow->setNewLeader(leaderRabbit);
+		}
 
-    for (int i = 0; i < 10; ++i) {
-        boidsManager->addRootedBoid(TREE, glm::vec3(random(300, 350), random(300, 350), 2));
-    }
-    */
 
-    //display_2Dboids(viewer, boidsManager, systemRenderable, texShader, flatShader);
-    display_3Dboids(viewer, boidsManager, systemRenderable, instanceShader, flatShader);
+		MovableBoidPtr leaderWolf = boidsManager->addMovableBoid(WOLF, glm::vec3(random(300, 350), random(300, 350), 2));
+		leaderWolf->setNewLeader(leaderWolf);
+		for (int i = 0; i < 1; ++i) {
+			MovableBoidPtr wolfFellow = boidsManager->addMovableBoid(WOLF, glm::vec3(0.0, 0.0, 0.5));
+			wolfFellow->setNewLeader(leaderWolf);
+		}
 
-    viewer.addRenderable(systemRenderable);
+
+		for (int i = 0; i < 10; ++i) {
+			boidsManager->addRootedBoid(CARROT, glm::vec3(random(300, 350), random(300, 350), 2));
+		}
+
+		for (int i = 0; i < 10; ++i) {
+			boidsManager->addRootedBoid(TREE, glm::vec3(random(300, 350), random(300, 350), 2));
+		}
+		*/
+
+		//display_2Dboids(viewer, boidsManager, systemRenderable, texShader, flatShader);
+		display_3Dboids(viewer, boidsManager, systemRenderable, instanceShader, flatShader);
+
+		viewer.addRenderable(systemRenderable);
+	}
 
     // Particle camera for the demonstration
     // System particle for the camera
@@ -373,7 +378,12 @@ void initialize_test_scene( Viewer& viewer, MapGenerator& mapGenerator, float ma
     viewer.addRenderable(systemRenderableParticle);
 
     // Creation of the particle use in the camera
-    glm::vec3 particlePosition = boidsManager->computeBiomeLeaderPosition(Plains, 0.0f, map_size, 0.0f);
+	glm::vec3 particlePosition;
+	if (mapGenerator.getMapParameters().getBoidsEnabled()) {
+		particlePosition = boidsManager->computeBiomeLeaderPosition(Plains, 0.0f, map_size, 0.0f);
+	} else {
+		particlePosition = glm::vec3(10.0, 10.0, 5.0);
+	}
     glm::vec3 particleVelocity(0.0,0.0,0.0);
     float particleMass = 0.1;
     ParticlePtr particle = std::make_shared<Particle>( particlePosition, particleVelocity, particleMass);

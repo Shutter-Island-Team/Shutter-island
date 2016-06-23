@@ -21,3 +21,4 @@ code/lib/voro++/src/Debug/*
 code/lib/voro++/src/Release/*
 code/lib/voro++/build/*
 code/lib/voro++/CmakeFiles/*
+code/mapData/export*

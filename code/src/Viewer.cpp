@@ -1,12 +1,12 @@
-#include "./../include/Viewer.hpp"
 #include "./../include/gl_helper.hpp"
 #include "./../include/log.hpp"
+#include "./../include/Viewer.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-#include <GL/glew.h>
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
 
 static const Viewer::Duration g_modeInformationTextTimeout = std::chrono::seconds( 3 );
 
@@ -49,7 +49,8 @@ Viewer::Viewer(float width, float height, int maxFPS) :
     m_applicationRunning{ true }, m_animationLoop{ false }, m_animationIsStarted{ false },
     m_loopDuration{0}, m_simulationTime{0},
     m_screenshotCounter{0}, m_helpDisplayed{false},
-    m_lastEventHandleTime{ clock::now() }
+    m_lastEventHandleTime{ clock::now() },
+	m_mapGenerator(NULL)
 {
     sf::ContextSettings settings = m_window.getSettings();
     LOG( info, "Settings of OPENGL Context created by SFML");
@@ -82,6 +83,7 @@ static const std::string g_help_message =
         "      [F4]  Pause/Stop the animation\n"
         "      [F5]  Reset the animation\n"
         "       [c]  Switch the camera mode between Arcball / Space ship\n"
+		"       [e]  Export the map data\n" 
         "[ctrl]+[w]  Quit the application\n"
         "\n"
         "CAMERA CONTROL:\n"
@@ -235,6 +237,11 @@ void Viewer::keyPressedEvent(sf::Event& e)
     case sf::Keyboard::C:
         changeCameraMode();
         break;
+	case sf::Keyboard::E:
+		if (m_mapGenerator->getMapParameters().getExportMapEnabled()) {
+			m_mapGenerator->exportMapData();
+		}
+		break;
     case sf::Keyboard::F1:
         m_helpDisplayed = !m_helpDisplayed;
         break;
@@ -516,8 +523,7 @@ void Viewer::displayText(std::string text, Viewer::Duration duration)
     m_modeInformationTextDisappearanceTime = clock::now() + duration;
 }
 
-
-
-
-
-
+void Viewer::setMapGenerator(MapGenerator* mapGenerator)
+{
+	m_mapGenerator = mapGenerator;
+}

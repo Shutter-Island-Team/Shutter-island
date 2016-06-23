@@ -103,6 +103,11 @@ MapParameters::MapParameters(const std::string& filename)
      m_seaTextureScaling = document["Map"]["seaTextureScaling"].GetFloat();
      m_lakeTextureScaling = document["Map"]["lakeTextureScaling"].GetFloat();
 
+	 /*
+	  * LakeRenderable "defines".
+	  */
+	 m_lakesExtension = document["Lake"]["lakesExtension"].GetFloat();
+
      /*
       * Texture "defines"
       */
@@ -117,7 +122,19 @@ MapParameters::MapParameters(const std::string& filename)
       * Global "defines".
       */
      m_mapSize = document["Global"]["mapSize"].GetFloat();
-     m_lakesExtension = document["Global"]["lakesExtension"].GetFloat();
+	 m_importingSeeds = document["Global"]["importingSeeds"].GetBool();
+	 m_importingHeightmap = document["Global"]["importingHeightmap"].GetBool();
+	 m_importSeeds = document["Global"]["importSeeds"].GetString();
+	 m_importHeightmap = document["Global"]["importHeightmap"].GetString();
+	 m_exportMapEnabled = document["Global"]["exportMapEnabled"].GetBool();
+	 m_exportSeeds = document["Global"]["exportSeeds"].GetString();
+	 m_exportHeightmap = document["Global"]["exportHeightmap"].GetString();
+	 m_boidsEnabled = document["Global"]["boidsEnabled"].GetBool();
+
+	 /*
+		Parser "defines".
+	 */
+	 m_parserBufferSize = document["MapParser"]["parserBufferSize"].GetInt();
 }
 
 /*
@@ -350,9 +367,16 @@ float MapParameters::getLakeTextureScaling()
 }
 
 /*
+ * LakeRenderable "getters".
+ */
+float MapParameters::getLakesExtension()
+{
+	return m_lakesExtension;
+}
+
+/*
  * Texture "getters"
  */
-
 float MapParameters::getSeaTextureExtent() {
     return m_seaTextureExtent;
 }
@@ -380,10 +404,55 @@ float MapParameters::getPeakTextureExtent() {
 /*
  * Global "getters".
  */
-float MapParameters::getMapSize() {
+float MapParameters::getMapSize()
+{
     return m_mapSize;
 }
 
-float MapParameters::getLakesExtension() {
-    return m_lakesExtension;
+bool MapParameters::getImportingHeightmap()
+{
+	return m_importingHeightmap;
+}
+
+bool MapParameters::getImportingSeeds()
+{
+	return m_importingSeeds;
+}
+
+std::string MapParameters::getImportSeeds()
+{
+	return m_importSeeds;
+}
+
+std::string MapParameters::getImportHeightmap()
+{
+	return m_importHeightmap;
+}
+
+bool MapParameters::getExportMapEnabled()
+{
+	return m_exportMapEnabled;
+}
+
+std::string MapParameters::getExportSeeds()
+{
+	return m_exportSeeds;
+}
+
+std::string MapParameters::getExportHeightmap()
+{
+	return m_exportHeightmap;
+}
+
+bool MapParameters::getBoidsEnabled()
+{
+	return m_boidsEnabled;
+}
+
+/*
+	MapParser "getters".
+*/
+int MapParameters::getParserBufferSize()
+{
+	return m_parserBufferSize;
 }

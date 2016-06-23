@@ -25,6 +25,11 @@ int main( int argc, char* argv[] )
     MapGenerator mapGenerator(mapParameters, mapParameters.getMapSize());
     mapGenerator.compute();
 
+	/*
+		Setting the pointer on the "mapGenerator" inside the viewer.
+	*/
+	viewer.setMapGenerator(&mapGenerator);
+
     initialize_test_scene(viewer, mapGenerator, mapParameters.getMapSize());
     
     while( viewer.isRunning() )

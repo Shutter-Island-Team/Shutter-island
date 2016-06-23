@@ -8,25 +8,25 @@
  * the renderables, the user input and the shader programs.
  */
 
-#include "Renderable.hpp"
-#include "HierarchicalRenderable.hpp"
 #include "Camera.hpp"
-#include "lighting/Light.hpp"
-#include "TextEngine.hpp"
 #include "FPSCounter.hpp"
-
+#include "HierarchicalRenderable.hpp"
+#include "Renderable.hpp"
+#include "TextEngine.hpp"
 #include "dynamics/Particle.hpp"
+#include "lighting/Light.hpp"
+#include "terrain/MapGenerator.hpp"
 
-#include <unordered_set>
+#include <chrono>
 #include <memory>
 #include <string>
-#include <chrono>
+#include <unordered_set>
 
 #include <GL/glew.h>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
-#include <glm/gtc/type_precision.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_precision.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 /**
@@ -224,6 +224,15 @@ public:
 
     void displayText(std::string text, Viewer::Duration duration = std::chrono::seconds(3));
 
+	/**
+	 * @brief
+	 * Setter for m_mapGenerator.
+	 *
+	 * @param mapGenerator A pointer on the "MapGenerator" instance used to
+	 * generate the map.
+	 */
+	void setMapGenerator(MapGenerator* mapGenerator);
+
 private:
     /**@brief Forbidden default constructor.
      *
@@ -331,6 +340,11 @@ private:
     bool isFollowing = false;
     ParticlePtr m_particleToFollow = NULL;
     
+	/**
+	 * @brief
+	 * A pointer on the "MapGenerator" instance used to generate the map.
+	 */
+	MapGenerator* m_mapGenerator;
 };
 
 #endif

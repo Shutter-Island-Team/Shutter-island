@@ -402,11 +402,24 @@ public:
     /**************************************************************************
      * End of MapRenderable class "getters".
      *************************************************************************/
+	
+	 /**************************************************************************
+	 * LakeRenderable class "getters".
+	 *************************************************************************/
+	 /**
+	 * @brief
+	 * Getter on m_lakesExtension.
+	 *
+	 * @return The value of m_lakesExtension.
+	 */
+	float getLakesExtension();
+	/**************************************************************************
+	* End of LakeRenderable class "getters".
+	*************************************************************************/
 
     /**************************************************************************
      * Texture class "getters".
      *************************************************************************/
-    
     /**
      * @brief
      * Getter on m_seaTextureExtent
@@ -469,16 +482,87 @@ public:
      */
     float getMapSize();
 
-    /**
-     * @brief
-     * Getter on m_lakesExtension.
-     *
-     * @return The value of m_lakesExtension.
-     */
-    float getLakesExtension();
+	/**
+	 * @brief
+	 * Getter on m_importingHeightmap.
+	 *
+	 * @return The value of m_importingHeightmap.
+	 */
+	bool getImportingHeightmap();
+
+	/**
+	 * @brief
+	 * Getter on m_importingSeeds.
+	 *
+	 * @return The value of m_importingSeeds.
+	 */
+	bool getImportingSeeds();
+
+	/**
+	 * @brief
+	 * Getter on m_importSeeds.
+	 *
+	 * @return The value of m_importSeeds.
+	 */
+	std::string getImportSeeds();
+
+	/**
+	 * @brief
+	 * Getter on m_importHeightmap.
+	 *
+	 * @return The value of m_importHeightmap.
+	 */
+	std::string getImportHeightmap();
+
+	/**
+	 * @brief
+	 * Getter on m_exportMapEnabled.
+	 *
+	 * @return The value of m_exportMapEnabled.
+	 */
+	bool getExportMapEnabled();
+
+	/**
+	 * @brief
+	 * Getter on m_exportSeeds.
+	 *
+	 * @return The value of m_exportSeeds.
+	 */
+	std::string getExportSeeds();
+
+	/**
+	 * @brief
+	 * Getter on m_exportHeightmap.
+	 *
+	 * @return The value of m_exportHeightmap.
+	 */
+	std::string getExportHeightmap();
+
+	/**
+	 * @brief
+	 * Getter on m_boidsEnabled.
+	 *
+	 * @return The value of m_boidsEnabled.
+	 */
+	bool getBoidsEnabled();
+
     /**************************************************************************
      * End of global "getters".
      *************************************************************************/
+	
+	/**************************************************************************
+	 * MapParser class "getters".
+	 *************************************************************************/
+	/**
+	 * @brief
+	 * Getter on m_parserBufferSize.
+	 *
+	 * @return The value of m_parserBufferSize.
+	 */
+	int getParserBufferSize();
+	/**************************************************************************
+	 * End of MapParser class "getters".
+	 *************************************************************************/
     
 private:
     /**************************************************************************
@@ -810,10 +894,21 @@ private:
      * End of MapRenderable class "defines".
      *************************************************************************/
 
-     /**************************************************************************
-     * Texture "defines".
-     *************************************************************************/
+	 /**************************************************************************
+	 * LakeRenderable class "defines".
+	 *************************************************************************/
+	 /**
+	 * @brief
+	 * Defines the extension coefficient applied to the lakes renderables.
+	 */
+	float m_lakesExtension;
+	/**************************************************************************
+	 * End of LakeRenderable class "defines".
+	 *************************************************************************/
 
+     /**************************************************************************
+      * Texture "defines".
+      *************************************************************************/
     /**
      * @brief
      * Defines the extent of a sea texture on its neighbours
@@ -862,14 +957,69 @@ private:
      */
     float m_mapSize;
 
-    /**
-     * @brief
-     * Defines the extension coefficient applied to the lakes renderables.
-     */
-    float m_lakesExtension;
+	/**
+	* @brief
+	* Defines whether the seeds' data are import from external files or not.
+	*/
+	bool m_importingSeeds;
+
+	/**
+	 * @brief
+	 * Defines whether the heightmap data are import from external files or not.
+	 */
+	bool m_importingHeightmap;
+
+	/**
+	 * @brief
+	 * The file storing the seeds data to import.
+	 */
+	std::string m_importSeeds;
+
+	/**
+	* @brief
+	* The file storing the heightmap data to import.
+	*/
+	std::string m_importHeightmap;
+
+	/**
+	* @brief
+	* Defines whether the map data have to be exported to external files or not.
+	*/
+	bool m_exportMapEnabled;
+
+	/**
+	* @brief
+	* The file in which the seeds data have to be exported.
+	*/
+	std::string m_exportSeeds;
+
+	/**
+	* @brief
+	* The file in which the heightmap data have to be exported.
+	*/
+	std::string m_exportHeightmap;
+
+	/**
+	 * @brief
+	 * Defines whether the dynamic boids system should be instanciated or not.
+	 */
+	bool m_boidsEnabled;
     /**************************************************************************
      * End of global "defines".
      *************************************************************************/
+
+	/**************************************************************************
+	 * MapParser class "defines".
+	 *************************************************************************/
+	/**
+	 * @brief
+	 * The number of characters contained in the "comment-skipping" buffer of
+	 * the parser.
+	 */
+	int m_parserBufferSize;
+	/**************************************************************************
+	 * End of MapParser class "defines".
+	 *************************************************************************/
 };
 
 #endif
