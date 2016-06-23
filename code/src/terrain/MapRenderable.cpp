@@ -392,23 +392,29 @@ void MapRenderable::insertIntoList(
 
 /**
  * @brief
- * Static function aiming at finding if, considering a lake a connexe lake, 
+ * Static function aiming at finding if, considering a lake, a connexe lake, 
  * identified by "lakeID", has already been inserted into the associated
  * data structure (namely the vector storing information about lake connexity,
  * "m_lakesTriangles").
+ * If "newLake" is set to "true" when given to the function, then no need for
+ * fusionning lakes (since, if a connexe lake biome is found, it is the first
+ * to be).
+ * On the contrary, if "newLake" has been set to "false" by the current function
+ * during a previous execution, and another connexe lake is found, the latter has
+ * to be fused with the first found connexe lake.
  *
  * @param lakes A reference on the data structure containing information about
  * lakes connexity.
  * @param lakeID The ID of the connexe lake to search for.
  * @param resultPair A pointer on the pointer in which the address of the pair
  * of "lakes" to consider will be stored, if the connexe lake is found.
- *
- * @return A boolean representing "the connexe lake has been found".
+ * @param newLake A boolean representing "the connexe lake has been found".
  */
-static bool findVector(
-    std::vector< std::pair< std::vector<int>, std::vector<glm::vec3> > >& lakes,
+static void findList(
+    std::list< std::pair< std::vector<int>, std::vector<glm::vec3> > >& lakes,
     int lakeID,
-    std::pair< std::vector<int>, std::vector<glm::vec3> >** resultPair
+    std::pair< std::vector<int>, std::vector<glm::vec3> >** resultPair,
+	bool& newLake
 )
 {
     for (
@@ -421,14 +427,46 @@ static bool findVector(
             itLakeIDs != itLakes->first.end();
             itLakeIDs++
         ) {
-            if (*itLakeIDs == lakeID) {
-                *resultPair = &(*itLakes);
-                return true;
-            }
+			if (*itLakeIDs == lakeID) {
+				if (newLake) {
+					*resultPair = &(*itLakes);
+					newLake = false;
+				} else {
+					/*
+					 * If the connexe Lake biome is within the current connexe
+					 * lake, nothing to do.
+					 * Otherwise, we have to fuse the found connexe lake with
+					 * the current one. In other words, to push back the content
+					 * of the associated vectors into those of the final lake, and
+					 * remove of the list the pair which has been fused. 
+					 */
+					if (*resultPair != &(*itLakes)) {
+						for (
+							auto intIt = itLakes->first.begin();
+							intIt != itLakes->first.end();
+							intIt++
+						) {
+							(*resultPair)->first.push_back(*intIt);
+						}
+						for (
+							auto glmIt = itLakes->second.begin();
+							glmIt != itLakes->second.end();
+							glmIt++
+						) {
+							(*resultPair)->second.push_back(*glmIt);
+						}
+						lakes.erase(itLakes);
+					}
+				}
+				/*
+				 * Since a biome lake can be involded in only one connexe lake,
+				 * if the considered biome lake has been found, no need to iterate
+				 * over the remaining connexe lakes.
+				 */
+				return;
+			}
         }
     }
-
-    return false;
 }
 
 void MapRenderable::sendVoronoiDiagram(MapGenerator& mapGenerator) 
@@ -547,22 +585,22 @@ void MapRenderable::sendVoronoiDiagram(MapGenerator& mapGenerator)
                 std::vector<glm::vec3> 
             >* insertPair;
 
-            for (
-                auto neighboursIt = neighbours.begin();
-                neighboursIt != neighbours.end();
-                neighboursIt++
-            )
-            {
-                /*
-                 * If one of its neighbour has already been inserted into the
-                 * lakes list, then the considered lake is connexe to its
-                 * neighbour.
-                 */
-                if (findVector(m_lakesTriangles, *neighboursIt, &insertPair)) {
-                    newLake = false;
-                    break;
-                }
-            }
+			for (
+				auto neighboursIt = neighbours.begin();
+				neighboursIt != neighbours.end();
+				neighboursIt++
+				)
+			{
+				/*
+				 * If one of its neighbour has already been inserted into the
+				 * lakes list, then the considered lake is connexe to its
+				 * neighbour.
+				 * If a connexe lake has already been found, then checking the 
+				 * other neighbours of the considered lake in order to detect 
+				 * secondary connexity.
+				 */
+				findList(m_lakesTriangles, *neighboursIt, &insertPair, newLake);
+			}
             /*
              * Otherwise, we have to insert the lake into the list of lakes.
              */
@@ -1010,7 +1048,7 @@ void MapRenderable::sendMasks() {
 
 }
 
-std::vector< 
+std::list< 
     std::pair<
         std::vector<int>, 
         std::vector<glm::vec3> 

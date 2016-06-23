@@ -40,7 +40,7 @@ public :
      */
     LakeRenderable(
         ShaderProgramPtr shaderProgram, 
-        std::vector<
+        std::list<
             std::pair<
                 std::vector<int>, 
                 std::vector<glm::vec3> 

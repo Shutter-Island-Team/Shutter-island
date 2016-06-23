@@ -58,7 +58,7 @@ public:
      * @return A reference on the data structure containing the
      * connexe lakes.
      */
-    std::vector< 
+    std::list< 
         std::pair<
             std::vector<int>, 
             std::vector<glm::vec3> 
@@ -194,7 +194,7 @@ private:
      * In order to take account the connexity of the lakes,
      * we have to use an auxiliar data structure.
      */
-    std::vector< 
+    std::list< 
         std::pair<
             std::vector<int>, 
             std::vector<glm::vec3> 
