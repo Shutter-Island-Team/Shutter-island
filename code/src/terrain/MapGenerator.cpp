@@ -68,19 +68,20 @@ MapGenerator::MapGenerator(MapParameters& parameters, float size) :
         1 }
 {}
 
-MapGenerator::~MapGenerator() {
-    if (heightTree) {
-        heightTree->freeHeightTree();
-        heightTree = NULL;
-    }
-    if (biomeMap) {
-        delete[] biomeMap;
-        heightMap = NULL;
-    }
-    if (heightMap) {
-        delete[] heightMap;
-        heightMap = NULL;
-    }
+MapGenerator::~MapGenerator()
+{
+	if (heightTree) {
+		heightTree->freeHeightTree();
+		heightTree = NULL;
+	}
+	if (biomeMap) {
+		delete[] biomeMap;
+		heightMap = NULL;
+	}
+	if (heightMap) {
+		delete[] heightMap;
+		heightMap = NULL;
+	}
 }
 
 
