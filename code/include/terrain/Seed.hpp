@@ -9,9 +9,11 @@
 
 
 #include "Biome.hpp"
+
 #include "../../lib/voro++/src/voro++.hh"
-#include <utility>
+
 #include <memory>
+#include <utility>
 
 /**
  * @brief
@@ -36,6 +38,12 @@ typedef std::shared_ptr<voro::voronoicell_neighbor> voroNeighborPtr;
 class Seed {
 
 public:
+	/**
+	 * @brief
+	 * Default constructor.
+	 */
+	Seed();
+
     /**
      * @brief Constructor
      * 

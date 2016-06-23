@@ -5,11 +5,68 @@
  */
 
 #include <iostream>
+#include <string.h>
 
 #include "../../include/Utils.hpp"
 #include "../../include/terrain/Biome.hpp"
 
+const char* biomeToString(Biome biome)
+{
+	switch (biome) {
+		case Undefined:
+			return "Undefined";
+			break;
+		case Lake:
+			return "Lake";
+			break;
+		case Sea:
+			return "Sea";
+			break;
+		case InnerBeach:
+			return "InnerBeach";
+			break;
+		case OuterBeach:
+			return "OuterBeach";
+			break;
+		case Plains:
+			return "Plains";
+			break;
+		case Mountain:
+			return "Mountain";
+			break;
+		case Peak:
+			return "Peak";
+			break;
+		default:
+			std::cerr << "biomeToString - Wrong biome type." << std::endl;
+			exit(EXIT_FAILURE);
+			break;
+	}
+}
 
+Biome stringToBiome(const char* biomeString)
+{
+	if (strcmp(biomeString, "Undefined") == 0) {
+		return Undefined;
+	} else if (strcmp(biomeString, "Lake") == 0) {
+		return Lake;
+	} else if (strcmp(biomeString, "Sea") == 0) {
+		return Sea;
+	} else if (strcmp(biomeString, "InnerBeach") == 0) {
+		return InnerBeach;
+	} else if (strcmp(biomeString, "OuterBeach") == 0) {
+		return OuterBeach;
+	} else if (strcmp(biomeString, "Plains") == 0) {
+		return Plains;
+	} else if (strcmp(biomeString, "Mountain") == 0) {
+		return Mountain;
+	} else if (strcmp(biomeString, "Peak") == 0) {
+		return Peak;
+	} else {
+		std::cerr << "biomeToString - Wrong biome type." << std::endl;
+		exit(EXIT_FAILURE);
+	}
+}
 
 float biomeHeight(MapParameters& parameters, Biome biome) {
 

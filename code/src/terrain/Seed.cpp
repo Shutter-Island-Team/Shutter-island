@@ -7,6 +7,12 @@
 
 #include "../../include/terrain/Seed.hpp"
 
+Seed::Seed()
+	:	position(Vertex2D(-1.0, -1.0)),
+		centroid(Vertex2D(-1.0, -1.0)),
+		biomeType(Undefined),
+		cell(NULL)
+{}
 
 Seed::Seed(float x, float y, Biome biome):
     position{Vertex2D(x, y)},

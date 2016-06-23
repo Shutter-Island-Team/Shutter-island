@@ -24,6 +24,24 @@ enum Biome {
 };
 
 /**
+ * @brief
+ * Converts a biome type to its string representation.
+ *
+ * @param biome The biome type to convert.
+ * @return const char* The string representation of the considered biome type.
+ */
+const char* biomeToString(Biome biome);
+
+/**
+* @brief
+* Converts a string representation of a biome into the matching biome type.
+*
+* @param biomeString The string representation to convert.
+* @return Biome The biome type associated with the string representation.
+*/
+Biome stringToBiome(const char* biomeString);
+
+/**
  * @brief Pick the height of a biome.
  *
  * @param biome The type of biome the height has to be picked.
