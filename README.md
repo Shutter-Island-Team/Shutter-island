@@ -1,10 +1,11 @@
-# Ecosystem generator
+# Ecosystem Generator
 
-This project was created as an end of semester project in the engineering school Ensimag (Grenoble, France). 
+![alt text](https://ensiwiki.ensimag.fr/images/5/56/Shutter_Island_Skybox.png "A wolf hunting a bunch of rabbits on the Island")
 
-It consists of a ecosystem generator we can divide in two part : the generation of the terrain and the behavior of the animals :
-* Generation of the terrain is a procedural generation of an island with mountains, plains and sands using Voronoi diagramm, tessellation and other technics.
-* Animals are ruled with boids behavior and a graph to go from one behavior to an other.
+This project was created as an end of semester project in the engineering school Ensimag (Grenoble, France).  
+It consists of a ecosystem generator we can divide in two parts, namely the generation of the terrain and the behavior of the animals :
+* Generation of the terrain is a procedural generation of an island with mountains, plains and sands using Voronoi diagram, tessellation and other technics;
+* Animals are ruled with boids behavior and a graph to go from one behavior to another.
 
 ## Authors
 * HAMMEN Maxence ([github](https://github.com/bluerock57))
@@ -58,7 +59,7 @@ cmake ..
 * Open the Visual Studio solution in the repository **_extlib/freetype-2.5.5/builds/windows/vc2010/_**, and build both the "Debug" and "Release" versions.
 
 **4)** Build the project:
-* Running CMake so as to generate the Visual Studio solutions (one in "Debug" mode and one in "Release" mode. This separation is entailed by the fact that different versions of the libraries are needed, according to the mode. It must exist a way to unify both thanks to CMake, but, so far, we have not found it);
+* Running CMake so as to generate the Visual Studio solutions (one in "Debug" mode and one in "Release" mode. This separation is entailed by the fact that different versions of the libraries are needed, according to the mode. It must exists a way to unify both thanks to CMake, but, so far, we have not found it);
 ```bash
 # Building the project in Debug and Release modes
 rm -fr build
@@ -91,7 +92,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE ../..
 * **gcc** : gcc is a compiler collection for C++ and other languages. For more info, click on [this link](https://gcc.gnu.org/);
 * **Visual Studio 2015**: Visual Studio 2015 is a complete Development Environment (including, notably, an IDE and a compiler), created and developped by Microsoft. For more info, click on [this link](https://www.microsoft.com/france/visual-studio/essayez/telecharger/visual-studio.aspx);
 * **Doxygen** : Doxygen is a standard tool for generating documentation. For more info, click on [this link](http://www.stack.nl/~dimitri/doxygen/index.html);
-* **Rapidjson** : Rapidjson is a fast JSON parser/generator for C++ with both SAX/DOM style API. For more info, clik on [this link](https://github.com/miloyip/rapidjson);
+* **Rapidjson** : Rapidjson is a fast JSON parser/generator for C++ with both SAX/DOM style API. For more info, click on [this link](https://github.com/miloyip/rapidjson);
 * **Voro++** : Voro++ is a software library for carrying out three-dimensional computations of the Voronoi tessellation. For more info, click on [this link](http://math.lbl.gov/voro++/);
 * **C++ Bitmap Library** : The C++ Bitmap Library consists of simple, robust, optimized and portable processing routines for the 24-bit per pixel bitmap image format. For more info, click on [this link](http://partow.net/programming/bitmap/index.html).
 
@@ -109,28 +110,27 @@ firefox html/index.html
 ## Known issues
 ### Boid issues (last update : 06/09/2016)
 
-* On rare occasion, an exception occur following a bad management of the boid when it moves from one cell to an other in the grid (06/08/2016)
-* If a boid gets too close to the border of the map and depending on the precision of the grid, an exception will occur (06/08/2016)
-* The boid can have unexpected behavior when walking on the mountains
+* On rare occasion, an exception occur following a bad management of the boid when it moves from one cell to an other in the grid (06/08/2016);
+* If a boid gets too close to the border of the map and depending on the precision of the grid, an exception will occur (06/08/2016);
+* The boid can have unexpected behavior when walking on the mountains.
 
-### Terrain issues (last update : 06/09/2016)
+### Terrain issues (last update : 06/22/2016)
 
 * Sometimes, a small wall can cut the map in two. This is due to the interpolation extending the influence of the mountain on a horizontal/vertical line.
-* The computation of lake connexity is actually not correct. Because lakes are treated in a specific order, two lakes can sometimes not be connected if they are connected through another lake that is treated after these two.  
 
 ## Acknowledgements
 
-A very warm thank to our two awesome teachers who helped us during the project : 
+A very warm thank you to our two awesome computer graphics teachers who helped us during this project : 
 * DELAME Thomas ([website](http://virtual-atom.com/))
 * MANTEAUX Pierre-Luc ([github](http://manteapi.github.io/))
 
 ## License
 
-See LICENSE
+See LICENSE.
 
 ## Bibliography
 
-See BIBLIOGRAPHY.md
+See BIBLIOGRAPHY.md.
 
 
 ## Credits
@@ -143,3 +143,4 @@ The following meshes have been used :
 * [Tree](http://www.blendswap.com/blends/view/71743)
 
 The 'carrot' has been created by Ilyes Kacher.
+
